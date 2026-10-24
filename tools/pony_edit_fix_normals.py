@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Пересчёт нормалей наружу для всех частей в assets/pony/eq_pony_edit.blend.
+"""Recalculate normals outward for all parts in assets/pony/eq_pony_edit.blend.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_normals.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_normals.py
 
-После ручного Separate/Join и заплаток на месте разреза часть граней осталась вывернутой внутрь
-(видно в редакторе тёмными провалами — движок изнанку не рисует). Recalculate Normals (Outside)
-разом делает все грани согласованными и развёрнутыми наружу.
+After the manual Separate/Join and patches at the cut some faces stayed turned inward
+(visible in the editor as dark holes — the engine does not draw back faces). Recalculate Normals (Outside)
+makes all faces consistent and facing outward in one go.
 """
 import bpy
 

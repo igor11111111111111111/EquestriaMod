@@ -4,12 +4,12 @@ using TaleWorlds.Library;
 
 namespace EquestriaMod
 {
-    // Временный переключатель "крылья/хвост/рог вкл-выкл" — в лоре MLP не у каждой пони есть все
-    // части: земнопони без рога и крыльев, единороги только с рогом, пегасы только с крыльями,
-    // аликорны — и то и другое. Хвост есть у всех типов, но кнопка на всякий случай тоже нужна
-    // (например, для смотра рас или тестов). Пока это просто кнопки в углу экрана
-    // (EquestriaHairStyleView), а не настоящий выбор типа пони при создании персонажа — тот ещё
-    // предстоит сделать.
+    // Temporary "wings/tail/horn on-off" switch - in MLP lore not every pony has all the
+    // parts: earth ponies have no horn or wings, unicorns only a horn, pegasi only wings,
+    // alicorns both. All types have a tail, but a button is needed for it too just in case
+    // (e.g. for reviewing races or tests). For now these are just buttons in the corner of the screen
+    // (EquestriaHairStyleView), not a real pony type choice at character creation - that is still
+    // to be done.
     public class EquestriaPonyBody : CampaignBehaviorBase
     {
         private static bool _wingsEnabled = true;
@@ -46,7 +46,7 @@ namespace EquestriaMod
             dataStore.SyncData("eq_pony_horn_enabled", ref _hornEnabled);
         }
 
-        // Консоль (Alt+~): equestria.pony_wings on|off, equestria.pony_tail on|off,
+        // Console (Alt+~): equestria.pony_wings on|off, equestria.pony_tail on|off,
         // equestria.pony_horn on|off
         [CommandLineFunctionality.CommandLineArgumentFunction("pony_wings", "equestria")]
         public static string SetWingsCommand(List<string> args)

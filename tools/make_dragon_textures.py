@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Текстуры дракона в именах и раскладке мода — для импорта редактором.
+"""Dragon textures with the mod's names and layout, for import by the editor.
 
   py -3 tools/make_dragon_textures.py
 
-Из текстур модели (assets/dragon/textures, их выгружает make_dragon.py) делаются три файла по
-образцу пони и яка (eq_twilight_body_d/_n/_s):
-  eq_dragon_body_d.png — цвет (2048);
-  eq_dragon_body_n.png — нормали (2048);
-  eq_dragon_body_s.png — блеск: у модели отдельная карта шероховатости, блеск = 1 - шероховатость.
-Файлы остаются в assets/dragon/textures — оттуда их импортируют в редакторе (Resource Browser →
-Import, пакет twilight), и редактор сам копирует их в Module/AssetSources. Класть их туда заранее
-нельзя: при импорте редактор копирует файл в ту же папку и падает с «Unable to copy … to Assets
-folder». Пакет хранит только ссылку на PNG, пиксели печёт редактор в RuntimeDataCache — поэтому
-кодом текстуру в мод не положить.
+From the model textures (assets/dragon/textures, exported by make_dragon.py) three files are made following
+the pony and yak pattern (eq_twilight_body_d/_n/_s):
+  eq_dragon_body_d.png - colour (2048);
+  eq_dragon_body_n.png - normals (2048);
+  eq_dragon_body_s.png - gloss: the model has a separate roughness map, gloss = 1 - roughness.
+The files stay in assets/dragon/textures; from there they are imported in the editor (Resource Browser →
+Import, package twilight), and the editor itself copies them to Module/AssetSources. Putting them there in advance
+is wrong: on import the editor copies the file into the same folder and crashes with "Unable to copy … to Assets
+folder". The package stores only a reference to the PNG, the pixels are baked by the editor into RuntimeDataCache, so
+the texture cannot be put into the mod by code.
 """
 import os
 

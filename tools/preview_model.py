@@ -1,9 +1,9 @@
-# Быстрый просмотр модели: три ортографических вида (спереди, сбоку, сверху) в один PNG.
+# Quick model preview: three orthographic views (front, side, top) in one PNG.
 #
-#   blender --background --factory-startup --python preview_model.py -- <файл .glb/.gltf/.fbx> <out.png>
+#   blender --background --factory-startup --python preview_model.py -- <.glb/.gltf/.fbx file> <out.png>
 #
-# Нужен, чтобы глазами оценить чужую модель до переделки: в какой она позе, куда смотрит,
-# какого размера и не развалилась ли геометрия.
+# Needed to eyeball someone else's model before reworking it: what pose it is in, which way it faces,
+# what size it is and whether the geometry has fallen apart.
 import os
 import sys
 
@@ -28,7 +28,7 @@ for ob in meshes:
 center = (lo + hi) / 2
 size = max(hi - lo)
 
-# свет и мир, иначе кадр чёрный
+# light and world, otherwise the frame is black
 world = bpy.data.worlds.new("w")
 world.use_nodes = True
 world.node_tree.nodes["Background"].inputs[0].default_value = (0.35, 0.38, 0.42, 1)
@@ -64,13 +64,13 @@ for name, (offset, rot) in VIEWS.items():
     scene.render.filepath = out.replace(".png", "_%s.png" % name)
     bpy.ops.render.render(write_still=True)
     frames.append(scene.render.filepath)
-# Координатная сетка поверх кадра: по ней снимаются координаты суставов для анатомической карты
-# (tools/creature_data.py). Камера ортографическая, поэтому пересчёт точный.
+# A coordinate grid over the frame: joint coordinates for the anatomical map are read off it
+# (tools/creature_data.py). The camera is orthographic, so the conversion is exact.
 try:
     from PIL import Image, ImageDraw
 except ImportError:
     Image = None
-AXES = {"спереди": (0, 2), "сбоку": (1, 2), "сверху": (1, 0)}   # какие мировые оси по горизонтали/вертикали
+AXES = {"спереди": (0, 2), "сбоку": (1, 2), "сверху": (1, 0)}   # which world axes are horizontal/vertical
 FLIP = {"спереди": (1, -1), "сбоку": (-1, -1), "сверху": (-1, 1)}
 if Image is not None:
     for name, path_png in zip(VIEWS, frames):

@@ -4,31 +4,31 @@ using TaleWorlds.InputSystem;
 
 namespace EquestriaMod
 {
-    // Константы множителя для кнопки x5 (см. EquestriaTimePanel.cs — там же вся логика кнопки,
-    // встроенной прямо в нативную панель паузы/игры/ускорения).
+    // Multiplier constants for the x5 button (see EquestriaTimePanel.cs - all the logic of the button,
+    // built right into the native pause/play/fast-forward panel, is there).
     //
-    // Как устроена сама перемотка (TaleWorlds.CampaignSystem.Campaign, декомпилировано 04.10.2026):
-    // обычная игра — Campaign.SetTimeSpeed(1), x1. Ускорение (их кнопка) — SetTimeSpeed(2), и дальше
-    // движок считает время как CampaignDt * SpeedUpMultiplier, а SpeedUpMultiplier — обычный
-    // public float на Campaign, по умолчанию 4. Отдельной "второй скорости ускорения" в игре нет:
-    // обе кнопки используют один и тот же режим (TimeControlMode), отличаясь только значением
-    // SpeedUpMultiplier — тот же приём, что у мода Better Time (github.com/OrderWOPower/BetterTime).
+    // How fast-forward itself works (TaleWorlds.CampaignSystem.Campaign, decompiled 04.10.2026):
+    // normal play is Campaign.SetTimeSpeed(1), x1. Fast-forward (their button) is SetTimeSpeed(2), and then
+    // the engine computes time as CampaignDt * SpeedUpMultiplier, and SpeedUpMultiplier is a plain
+    // public float on Campaign, 4 by default. There is no separate "second fast-forward speed" in the game:
+    // both buttons use the same mode (TimeControlMode), differing only in the value of
+    // SpeedUpMultiplier - the same trick as the Better Time mod (github.com/OrderWOPower/BetterTime).
     //
-    // Первая версия ставила множитель 5 (на единицу больше их 4) — разница 25% на глаз не видна,
-    // особенно когда отряд стоит (не идёт никуда — тогда "скорость" заметна только по часам).
-    // 04.10.2026 по жалобе "не вижу разницы с их ускорением" переделано: x5 — это впятеро БЫСТРЕЕ
-    // их ускорения (4*5=20), а не на 1 больше — разница должна быть однозначной.
+    // The first version set the multiplier to 5 (one more than their 4) - a 25% difference is not visible by eye,
+    // especially when the party stands still (going nowhere - then "speed" is noticeable only by the clock).
+    // 04.10.2026, after the complaint "I can't see a difference from their fast-forward", reworked: x5 is five times
+    // FASTER than their fast-forward (4*5=20), not 1 more - the difference must be unambiguous.
     public static class EquestriaTimeSpeed
     {
-        internal const float VanillaMultiplier = 4f;    // Campaign задаёт его в конструкторе
-        internal const float FastMultiplier = VanillaMultiplier * 5f;    // впятеро быстрее их ускорения
+        internal const float VanillaMultiplier = 4f;    // Campaign sets it in the constructor
+        internal const float FastMultiplier = VanillaMultiplier * 5f;    // five times faster than their fast-forward
 
-        // Клавиши 1/2/3 (пауза/игра/ускорение) — родные хоткеи движка, EquestriaTimePanel их не
-        // трогает. Клавиша 4 — наша: тот же приём, что у Better Time (Main.cs,
-        // OnApplicationTick + IsKeyPressed(InputKey.D4)), не клик по кнопке — так работает даже
-        // когда курсор не над панелью. Условие с CurrentMenuContext — то же, что у них: не дёргать
-        // скорость, пока открыто меню (разговор, город и т.п.), кроме как в активном "ожидании"
-        // (IsWaitActive) без ручной блокировки (TimeControlModeLock).
+        // Keys 1/2/3 (pause/play/fast-forward) are the engine's native hotkeys, EquestriaTimePanel does not
+        // touch them. Key 4 is ours: the same trick as in Better Time (Main.cs,
+        // OnApplicationTick + IsKeyPressed(InputKey.D4)), not a click on the button - so it works even
+        // when the cursor is not over the panel. The CurrentMenuContext condition is the same as theirs: do not
+        // touch the speed while a menu is open (conversation, town, etc.), except during an active "wait"
+        // (IsWaitActive) without a manual lock (TimeControlModeLock).
         public static void Tick()
         {
             Campaign campaign = Campaign.Current;
@@ -47,13 +47,13 @@ namespace EquestriaMod
             {
                 return;
             }
-            // Баг (замечено 07.10.2026): нажали 4 (множитель прилип к 20), потом 1/2, потом 3 —
-            // родная клавиша 3 переключает режим перемотки (SetTimeSpeed), но множитель не трогает
-            // вообще (в ваниле он один на всю игру, отдельной "второй скорости" там нет) — он так и
-            // оставался 20, и кнопка 3 выглядела как кнопка 4. Клик мышью чинит это сам
-            // (EquestriaTimePanel.OnUpdate вешает обработчик на FastForwardButton), а клавиша — нет,
-            // у неё свой путь мимо нашего обработчика. Сбрасываем явно, тот же приём, что у Better
-            // Time (Main.cs: IsKeyPressed(InputKey.D3) -> SpeedUpMultiplier = обычный).
+            // Bug (noticed 07.10.2026): pressed 4 (the multiplier stuck at 20), then 1/2, then 3 -
+            // the native key 3 switches the fast-forward mode (SetTimeSpeed) but does not touch the multiplier
+            // at all (in vanilla it is one for the whole game, there is no separate "second speed") - it
+            // stayed at 20, and button 3 looked like button 4. A mouse click fixes this by itself
+            // (EquestriaTimePanel.OnUpdate hooks a handler on FastForwardButton), but the key does not,
+            // it has its own path bypassing our handler. We reset explicitly, the same trick as in Better
+            // Time (Main.cs: IsKeyPressed(InputKey.D3) -> SpeedUpMultiplier = normal).
             if (input.IsKeyPressed(InputKey.D3))
             {
                 campaign.SpeedUpMultiplier = VanillaMultiplier;

@@ -10,48 +10,48 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Прогрев шейдеров: заранее просим движок собрать варианты шейдера для нашей брони, пока
-    // игрок ждёт загрузочный экран.
+    // Shader warm-up: ask the engine in advance to build the shader variants for our armour while
+    // the player is waiting on the loading screen.
     //
-    // Зачем. Скомпилированные шейдеры игра держит одним файлом Shaders\D3D11\compressed_shader
-    // _cache.sack и НИКОГДА его не дописывает: чего в нём нет, то собирается на лету из исходников
-    // Shaders\Sources. У брони улья материал со свечением (self_illumination) на скиннингованном
-    // меше — в ванили такого сочетания нет вовсе (светятся только неподвижные свечи и фонари),
-    // поэтому его вариант приходится собирать первый раз прямо в игре. Без прогрева это случалось
-    // в окне энциклопедии: портреты не появлялись, игра висела (замечено 24.09.2026).
+    // Why. The game keeps compiled shaders in a single file Shaders\D3D11\compressed_shader
+    // _cache.sack and NEVER appends to it: whatever is missing is built on the fly from the sources in
+    // Shaders\Sources. The hive armour has a glowing material (self_illumination) on a skinned
+    // mesh - vanilla has no such combination at all (only static candles and lanterns glow),
+    // so its variant has to be built the first time right in the game. Without the warm-up this happened
+    // in the encyclopedia screen: portraits did not appear and the game hung (noticed 24.09.2026).
     //
-    // MetaMesh.PreloadShaders(useTableau, useTeamColor) делает ровно то, что нужно, и главное —
-    // отдельно готовит вариант ДЛЯ ОКОН (tableau), где и случалось зависание.
+    // MetaMesh.PreloadShaders(useTableau, useTeamColor) does exactly what is needed and, most importantly,
+    // separately prepares the variant FOR SCREENS (tableau), where the hang used to happen.
     //
-    // Второй запуск быстрее уже не из-за игры: собранные шейдеры складывает у себя драйвер
-    // видеокарты. Прогрев только переносит ожидание в загрузочный экран, где оно терпимо и
-    // подписано (см. EquestriaLoadingNote).
+    // The second launch is faster not because of the game: the graphics driver stores the built
+    // shaders on its side. The warm-up only moves the wait to the loading screen, where it is tolerable
+    // and labelled (see EquestriaLoadingNote).
     public static class EquestriaShaderWarmup
     {
-        // Греем ТОЛЬКО свою броню: у неё материалы с непривычным движку сочетанием флагов.
-        // Части тела рас (eq_twilight_tail, eq_changeling_wings и прочие) сидят на обычных
-        // материалах, их варианты давно собраны — на них прогрев тратить нечего. Первая версия
-        // брала первые четыре меша подряд, ими оказались как раз части тела, и прогрев отчитался
-        // «готово за 0.0 с», не собрав ничего нужного (замечено 24.09.2026).
+        // Warm up ONLY our own armour: its materials have a flag combination unusual for the engine.
+        // Race body parts (eq_twilight_tail, eq_changeling_wings and others) use ordinary
+        // materials whose variants were built long ago - no point spending the warm-up on them. The first
+        // version took the first four meshes in a row, those turned out to be body parts, and the warm-up
+        // reported "done in 0.0 s" without building anything useful (noticed 24.09.2026).
         private const string MeshPrefix = "eq_ch_";
         private const double ReportEverySeconds = 2.0;
-        // Сколько мешей брони греем. Все 43 дали 1327 сборок и слишком долгую загрузку
-        // (замечено 24.09.2026). Десяти хватает, чтобы собрать сами варианты шейдера: они
-        // считаются на СОЧЕТАНИЕ флагов материала и разметки вершин, а не на каждый меш.
-        // Сколько сборок добавляет каждый меш, видно в журнале — по этим числам и подбираем.
+        // How many armour meshes to warm up. All 43 gave 1327 builds and too long a load
+        // (noticed 24.09.2026). Ten are enough to build the shader variants themselves: they
+        // are counted per COMBINATION of material flags and vertex layout, not per mesh.
+        // How many builds each mesh adds is visible in the log - we tune by those numbers.
         private const int MeshLimit = 10;
 
         private static bool _started;
         private static bool _finished;
-        private static int _done;              // сколько мешей уже отправлено на сборку
-        private static int _total;             // сколько их всего
-        private static int _peak;              // сколько сборок было в самый разгар
-        private static int _wasQueued;         // сколько сборок было до прошлого меша
+        private static int _done;              // how many meshes have been sent for building
+        private static int _total;             // how many there are in total
+        private static int _peak;              // how many builds there were at the peak
+        private static int _wasQueued;         // how many builds there were before the previous mesh
         private static double _reportedAt;
         private static Stopwatch _clock;
         private static readonly Queue<string> _queue = new Queue<string>();
 
-        /// <summary>Собирает очередь мешей. Возвращает false, если предметов ещё нет.</summary>
+        /// <summary>Builds the mesh queue. Returns false if there are no items yet.</summary>
         private static bool Start()
         {
             if (_started)
@@ -71,7 +71,7 @@ namespace EquestriaMod
             }
             if (names.Count == 0)
             {
-                return false;       // предметы разбираются при запуске кампании, ждём
+                return false;       // items are parsed at campaign launch, wait
             }
             _started = true;
             _clock = Stopwatch.StartNew();
@@ -86,13 +86,13 @@ namespace EquestriaMod
             return true;
         }
 
-        // Меши берём у предметов мода: их имена перечислены в equestria_items.xml, и в игре они
-        // уже разобраны в ItemObject. Так список не приходится держать вторым экземпляром.
+        // Meshes are taken from the mod's items: their names are listed in equestria_items.xml, and in game
+        // they are already parsed into ItemObject. That way the list does not have to be kept in a second copy.
         private static IEnumerable<string> MeshNames()
         {
             var names = new HashSet<string>();
-            // В главном меню опись объектов ещё не создана: MBObjectManager.Instance тут null,
-            // и обращение к нему валило игру на первом же кадре (замечено 24.09.2026).
+            // In the main menu the object registry is not created yet: MBObjectManager.Instance is null here,
+            // and accessing it crashed the game on the very first frame (noticed 24.09.2026).
             var manager = MBObjectManager.Instance;
             var items = manager?.GetObjectTypeList<ItemObject>();
             if (items == null)
@@ -110,7 +110,7 @@ namespace EquestriaMod
             return names;
         }
 
-        /// <summary>Каждый кадр: по одному мешу в сборку, потом ждём, пока движок закончит.</summary>
+        /// <summary>Every frame: one mesh into the build, then wait for the engine to finish.</summary>
         public static void Tick()
         {
             if (_finished)
@@ -121,24 +121,24 @@ namespace EquestriaMod
             {
                 return;
             }
-            // По одному мешу за кадр: так загрузочное окно успевает перерисоваться и показать,
-            // сколько осталось. Разом это отдавать нельзя — окно замирает.
+            // One mesh per frame: that way the loading screen has time to redraw and show
+            // how much is left. Handing it all over at once is not allowed - the screen freezes.
             if (_queue.Count > 0)
             {
                 var name = _queue.Dequeue();
                 EquestriaCrashLog.Try("прогрев шейдеров: " + name, () =>
                 {
-                    // mayReturnNull: пакет может быть ещё не разобран — такой меш просто пропускаем
+                    // mayReturnNull: the package may not be parsed yet - such a mesh is simply skipped
                     var mesh = MetaMesh.GetCopy(name, false, true);
-                    // useTableau: вариант для окон (энциклопедия, инвентарь, отряд),
-                    // useTeamColor: вариант с покраской в цвета клана.
-                    // PreloadForRendering не зовём: это заливка текстур в память видеокарты
-                    // (у брони улья их 138 МБ), к сборке шейдера она отношения не имеет.
+                    // useTableau: the variant for screens (encyclopedia, inventory, party),
+                    // useTeamColor: the variant tinted in clan colours.
+                    // PreloadForRendering is not called: it uploads textures into video memory
+                    // (138 MB for the hive armour) and has nothing to do with building shaders.
                     mesh?.PreloadShaders(true, true);
                 });
                 _done++;
-                // Сколько сборок прибавил именно этот меш: по этим числам видно, делят ли меши
-                // один вариант шейдера (тогда прибавка падает до нуля) или каждому нужен свой.
+                // How many builds this particular mesh added: these numbers show whether meshes share
+                // one shader variant (then the increment drops to zero) or each needs its own.
                 var queued = Compilations();
                 EquestriaCrashLog.Log($"прогрев шейдеров: {_done} из {_total} — {name}, "
                     + $"сборок в очереди {queued} (+{queued - _wasQueued})");
@@ -148,7 +148,7 @@ namespace EquestriaMod
             var left = Compilations();
             if (left < 0)
             {
-                _finished = true;   // в этой сборке движка счётчика нет — молча выходим
+                _finished = true;   // this engine build has no counter - exit silently
                 return;
             }
             if (left > 0)
@@ -163,7 +163,7 @@ namespace EquestriaMod
                 .SetTextVariable("SECONDS", _clock.Elapsed.TotalSeconds.ToString("0")).ToString());
         }
 
-        // Сколько сборок шейдеров в очереди у движка; -1 — счётчика в этой сборке нет.
+        // How many shader builds the engine has queued; -1 means this build has no counter.
         private static int Compilations()
         {
             try

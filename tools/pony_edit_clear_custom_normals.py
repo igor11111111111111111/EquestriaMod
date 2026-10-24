@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Снять старые кастомные нормали (Custom Split Normals) и пересчитать заново.
+"""Remove the old custom normals (Custom Split Normals) and recompute them from scratch.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_clear_custom_normals.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_clear_custom_normals.py
 
-У всех восьми частей обнаружен слой custom split normals (has_custom_normals=True) — отдельные
-нормали по граням, независимые от обхода вершин (winding). Из-за него любой переворот через
-flip_normals/reverse_faces/recalc менял только обход, а видимое освещение и экспорт в FBX
-продолжали жить по старым, кем-то когда-то записанным нормалям — отсюда вся путаница с рябью.
-Здесь слой стирается (mesh.free_normals_split), дальше Recalculate Normals (Outside) пересчитывает
-по-настоящему, в согласии с обходом граней.
+All eight parts were found to have a custom split normals layer (has_custom_normals=True) — separate
+per-face normals independent of the vertex order (winding). Because of it any flip via
+flip_normals/reverse_faces/recalc changed only the winding, while the visible lighting and the FBX export
+kept following the old normals someone once wrote — hence all the confusion with the ripples.
+Here the layer is erased (mesh.free_normals_split), then Recalculate Normals (Outside) recomputes them
+for real, consistent with the face winding.
 """
 import bpy
 

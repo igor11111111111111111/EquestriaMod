@@ -10,15 +10,15 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Проверка детей от родителей разных рас (src/EquestriaMixedOffspring.cs), 10.10.2026.
-    //   /eqmixedbirths:N   дождавшись карты, женит N пар героев разных рас (по одной паре на
-    //                      сочетание «раса жены + раса мужа», пока хватает), каждая пара сразу
-    //                      рожает одного ребёнка (HeroCreator.DeliverOffSpring — тот же вызов, что
-    //                      у обычных родов), а потом жена беременеет по-настоящему. Вместе с
-    //                      /eqlongrun (run.ps1 -MixedBirths) время крутится дальше, и через
-    //                      ~36 дней беременности дети рождаются уже обычным путём движка.
-    // В журнал (eq_exceptions.log) — строки «смешанные роды: …»: пара, пол, раса ребёнка и чья
-    // она, культура, номер причёски; плюс строки самого патча «ребёнок разных рас: …».
+    // Test of children from parents of different races (src/EquestriaMixedOffspring.cs), 10.10.2026.
+    //   /eqmixedbirths:N   once the map is up, marries N pairs of heroes of different races (one pair per
+    //                      "wife's race + husband's race" combination, while they last), each pair immediately
+    //                      gives birth to one child (HeroCreator.DeliverOffSpring - the same call as
+    //                      for normal births), and then the wife gets pregnant for real. Together with
+    //                      /eqlongrun (run.ps1 -MixedBirths) time keeps running, and after
+    //                      ~36 days of pregnancy the children are born the engine's normal way.
+    // The log (eq_exceptions.log) gets lines "mixed births": pair, sex, the child's race
+    // and whose it is, culture, hairstyle number; plus the patch's own lines "mixed-race child: …".
     public static class EquestriaMixedBirthTest
     {
         private const string Prefix = "/eqmixedbirths:";
@@ -86,7 +86,7 @@ namespace EquestriaMod
             var husbands = heroes.Where(h => !h.IsFemale && h.Age >= 18).ToList();
             EquestriaCrashLog.Note($"смешанные роды: свободных невест {wives.Count}, женихов {husbands.Count}");
 
-            // По одной паре на каждое сочетание рас — так в журнале видны все расы сразу
+            // One pair for each combination of races - so all races show up in the log at once
             var used = new HashSet<Hero>();
             var combos = new HashSet<string>();
             var pairs = new List<(Hero wife, Hero husband)>();
@@ -96,8 +96,8 @@ namespace EquestriaMod
                 {
                     break;
                 }
-                // Только пары, которых движок готов поженить: иначе MarriageAction молча ничего не
-                // делает (родня, оба главы кланов, …), а беременность без мужа роняет роды.
+                // Only pairs the engine is willing to marry: otherwise MarriageAction silently does nothing
+                // (relatives, both clan leaders, ...), and a pregnancy without a husband breaks the birth.
                 var husband = husbands.Where(m => !used.Contains(m)
                         && m.CharacterObject.Race != wife.CharacterObject.Race
                         && marriage.IsCoupleSuitableForMarriage(m, wife)

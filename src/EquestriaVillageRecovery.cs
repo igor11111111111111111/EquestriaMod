@@ -4,15 +4,15 @@ using TaleWorlds.CampaignSystem.Settlements;
 
 namespace EquestriaMod
 {
-    // Скорость восстановления деревни после полного разорения (SettlementHitPoints 0 -> 1, пока
-    // не дойдёт до 1 — деревня в состоянии Looted, войти и взаимодействовать нельзя). Декомпил
-    // 07.10.2026: VillageHealCampaignBehavior.DailyTickSettlement считает ставку
-    // 0.06 + (7000 - clamp(сила державы-владельца, 1000, 7000)) / 100000 — то есть 6%/день у
-    // сильной державы, 12%/день у слабой, и передаёт её единственному вызову
-    // IncreaseSettlementHealthAction.Apply (других вызовов этого метода в игре нет — проверено).
-    // По просьбе пользователя 07.10.2026 — вдвое медленнее, только для деревень (осады городов не
-    // трогаем, это отдельный баланс). Патчим ApplyInternal (приватный) через Harmony ref-параметр —
-    // проще и safer, чем переписывать саму формулу внутри чужого CampaignBehaviorBase.
+    // Village recovery speed after being fully raided (SettlementHitPoints 0 -> 1; until it
+    // reaches 1 the village is in the Looted state and cannot be entered or interacted with). Decompiled
+    // 07.10.2026: VillageHealCampaignBehavior.DailyTickSettlement computes the rate
+    // 0.06 + (7000 - clamp(owner realm strength, 1000, 7000)) / 100000 — i.e. 6%/day for a
+    // strong realm, 12%/day for a weak one, and passes it to the only call of
+    // IncreaseSettlementHealthAction.Apply (there are no other calls of this method in the game — checked).
+    // At the user's request 07.10.2026 — twice as slow, villages only (town sieges are left
+    // alone, that is a separate balance). We patch ApplyInternal (private) via a Harmony ref parameter —
+    // simpler and safer than rewriting the formula itself inside someone else's CampaignBehaviorBase.
     [HarmonyPatch(typeof(IncreaseSettlementHealthAction), "ApplyInternal")]
     internal static class EquestriaVillageRecoverySlowdownPatch
     {

@@ -1,9 +1,9 @@
-# Разбор terrain.bin — двоичного файла рельефа сцены.
+# Parsing terrain.bin, the binary terrain file of a scene.
 #
-#   python read_terrain_bin.py <terrain.bin> [ещё один для сравнения]
+#   python read_terrain_bin.py <terrain.bin> [another one for comparison]
 #
-# Нужен, чтобы понять, лежат ли в нём веса слоёв (что где покрашено). Формат не документирован,
-# поэтому идём наощупь: ищем текстовые метки-заголовки и печатаем размеры кусков между ними.
+# Needed to find out whether it holds layer weights (what is painted where). The format is undocumented,
+# so we feel our way: look for text header tags and print the sizes of the chunks between them.
 import os
 import re
 import struct
@@ -18,10 +18,10 @@ def show(path):
     print("%s — %d байт" % (os.path.basename(path), len(data)))
     print("начало:", data[:32])
 
-    # Метки в этом формате — короткие латинские слова заглавными (HGHT, NRML и подобные).
+    # Tags in this format are short uppercase Latin words (HGHT, NRML and the like).
     marks = [(m.start(), m.group().decode("ascii"))
              for m in re.finditer(rb"[A-Z][A-Z0-9]{3,7}", data[:len(data)])]
-    # Оставляем только те, что похожи на заголовки кусков: идут не подряд и не внутри чисел.
+    # Keep only those that look like chunk headers: not back to back and not inside numbers.
     seen = []
     for offset, name in marks:
         if seen and offset - seen[-1][0] < 4:

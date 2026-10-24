@@ -1,9 +1,9 @@
-﻿# Вписать путь в стандартное окно выбора файла Windows и нажать «Открыть».
+﻿# Type a path into the standard Windows file selection dialog and press "Open".
 #
 #   .\tools\file_dialog.ps1 -Title "Open Scene" -Path "D:\...\scene.xscene"
 #
-# SendKeys для этого не годится: скобки в «Program Files (x86)» он считает служебными, а Ctrl+A
-# в этом поле не срабатывает. Поэтому текст кладём прямо в поле имени файла (WM_SETTEXT).
+# SendKeys is no good for this: it treats the brackets in "Program Files (x86)" as special, and Ctrl+A
+# does not work in this field. So we put the text directly into the file name field (WM_SETTEXT).
 param(
     [Parameter(Mandatory)] [string]$Title,
     [Parameter(Mandatory)] [string]$Path

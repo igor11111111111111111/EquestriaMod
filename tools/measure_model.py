@@ -1,11 +1,11 @@
-# Промеры чужой модели: куда смотрит, где ноги, где голова, где хвост.
+# Measurements of a third-party model: where it faces, where the legs, head and tail are.
 #
-#   blender --background --factory-startup --python measure_model.py -- <файл .glb> [ось_длины]
+#   blender --background --factory-startup --python measure_model.py -- <.glb file> [length_axis]
 #
-# Печатает профиль объёма по длинной оси (сколько вершин и какая высота в каждом срезе) и
-# положение «стоп» — сгустков вершин у самого пола. По этому видно, четвероногая ли модель,
-# с какого конца голова и где крепятся ноги. Нужен перед переделкой модели в антро-позу
-# (tools/convert_creature.py).
+# Prints a volume profile along the long axis (how many vertices and what height in each slice) and
+# the position of the "feet" - clusters of vertices right at the floor. From this you can see whether
+# the model is a quadruped, which end the head is on and where the legs attach. Needed before converting
+# the model to an anthro pose (tools/convert_creature.py).
 import sys
 
 import bpy
@@ -26,13 +26,13 @@ size = hi - lo
 print("[measure] вершин %d, габариты X=%.3f Y=%.3f Z=%.3f" % (len(P), *size))
 print("[measure] минимум %s, максимум %s" % (np.round(lo, 3).tolist(), np.round(hi, 3).tolist()))
 
-long_axis = int(np.argmax(size[:2]))          # 0 = X, 1 = Y: длинная горизонтальная ось
+long_axis = int(np.argmax(size[:2]))          # 0 = X, 1 = Y: the long horizontal axis
 if len(sys.argv) > sys.argv.index("--") + 2:
     long_axis = int(sys.argv[sys.argv.index("--") + 2])
 side_axis = 1 - long_axis
 print("[measure] длинная ось: %s, поперечная: %s, верх: Z" % ("XY"[long_axis], "XY"[side_axis]))
 
-# профиль по длинной оси: 20 срезов
+# profile along the long axis: 20 slices
 N = 20
 edges = np.linspace(lo[long_axis], hi[long_axis], N + 1)
 print("[measure] профиль (срез: доля вершин, верх Z, низ Z, ширина по поперечной оси):")
@@ -46,7 +46,7 @@ for i in range(N):
           % (edges[i], edges[i + 1], 100 * m.mean(), q[:, 2].min(), q[:, 2].max(),
              q[:, side_axis].max() - q[:, side_axis].min()))
 
-# «стопы»: вершины у самого пола, разбитые по четвертям
+# "feet": vertices right at the floor, split into quarters
 floor = P[P[:, 2] < lo[2] + 0.12 * size[2]]
 print("[measure] вершин у пола: %d" % len(floor))
 if len(floor):

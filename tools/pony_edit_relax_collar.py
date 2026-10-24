@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Разгладить смятый кластер у плеча/воротника — расширенная зона по высоте (та же техника).
+"""Smooth the crumpled cluster at the shoulder/collar - an extended height zone (same technique).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_collar.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_collar.py
 """
 import numpy as np
 import bpy

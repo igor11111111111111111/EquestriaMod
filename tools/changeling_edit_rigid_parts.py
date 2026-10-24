@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Крылья и хвост в assets/changeling/eq_changeling.blend — жёстко на одну кость персонажа, без
-смешивания (та же правка, что раньше делали пони, см. tools/pony_edit_rigid_parts.py).
+"""Wings and tail in assets/changeling/eq_changeling.blend - rigidly on one character bone, no
+blending (the same fix the ponies got earlier, see tools/pony_edit_rigid_parts.py).
 
-Запуск: blender --background assets/changeling/eq_changeling.blend --python tools/changeling_edit_rigid_parts.py
+Run: blender --background assets/changeling/eq_changeling.blend --python tools/changeling_edit_rigid_parts.py
 
-eq_changeling_wings: 755 из 761 вершин верно на bip01_spine2_11, но суммарный вес 6.0 протёк на
-bip01_pelvis_0 — несколько вершин частично следуют за тазом/ногами вместо жёсткой кости.
-eq_changeling_tail: размазан по 19 группам (бёдра, голени, таз, спина) — то же самое, что было
-у пони до правки (видимо, тоже протянуло группы через Join кусков тела/ног).
-Обе части — предметы на скелете (см. src/EquestriaBodyParts.cs), им положена ровно одна кость
-на 100% веса.
+eq_changeling_wings: 755 of 761 vertices are correctly on bip01_spine2_11, but a total weight of 6.0 leaked onto
+bip01_pelvis_0 - a few vertices partly follow the pelvis/legs instead of the rigid bone.
+eq_changeling_tail: smeared over 19 groups (thighs, calves, pelvis, back) - the same as the ponies had
+before the fix (apparently the groups were also dragged in through a Join of body/leg pieces).
+Both parts are items on the skeleton (see src/EquestriaBodyParts.cs); they are supposed to have exactly one bone
+at 100% weight.
 """
 import bpy
 

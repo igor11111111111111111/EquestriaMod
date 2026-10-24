@@ -1,12 +1,12 @@
-﻿# Щелчок мышью по экрану — для управления редактором, у которого нет программного интерфейса.
+﻿# Mouse click on the screen — for driving the editor, which has no programmatic interface.
 #
-#   .\click.ps1 -X 182 -Y 104                 левый щелчок
-#   .\click.ps1 -X 182 -Y 104 -Right          правый щелчок
-#   .\click.ps1 -X 182 -Y 104 -Double         двойной щелчок
-#   .\click.ps1 -Keys "{ENTER}"               нажать клавиши (формат SendKeys)
-#   .\click.ps1 ... -Shot shot.png -Wait 1    после действия подождать и снять экран
+#   .\click.ps1 -X 182 -Y 104                 left click
+#   .\click.ps1 -X 182 -Y 104 -Right          right click
+#   .\click.ps1 -X 182 -Y 104 -Double         double click
+#   .\click.ps1 -Keys "{ENTER}"               press keys (SendKeys format)
+#   .\click.ps1 ... -Shot shot.png -Wait 1    after the action wait and take a screenshot
 #
-# Перед действием окно редактора (заголовок "Edit Mode") выводится на передний план.
+# Before the action the editor window (title "Edit Mode") is brought to the foreground.
 param(
     [int]$X = -1,
     [int]$Y = -1,
@@ -16,11 +16,11 @@ param(
     [string]$Shot = "",
     [double]$Wait = 0.8,
     [string]$Window = "Edit Mode",
-    # развернуть окно на весь экран: иначе оно двигается, и координаты уплывают
+    # maximize the window: otherwise it moves and the coordinates drift
     [switch]$Maximize,
-    # только навести курсор (чтобы прочитать всплывающую подсказку), без щелчка
+    # only move the cursor (to read a tooltip), without clicking
     [switch]$Move,
-    # прокрутка колесом в точке (X, Y): >0 — от себя, <0 — на себя; по одному «щелчку» колеса за раз
+    # mouse wheel scroll at point (X, Y): >0 — away from you, <0 — towards you; one wheel "notch" at a time
     [int]$Wheel = 0
 )
 

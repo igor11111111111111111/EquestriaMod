@@ -1,11 +1,11 @@
-# Поселения для нашей карты мира.
+# Settlements for our world map.
 #
-# Ванильные поселения удалить нельзя: они лежат в модуле SandBox, от которого зависит кампания.
-# Зато запись с тем же идентификатором можно переопределить. Поэтому берём ванильный settlements.xml,
-# нашим поселениям даём эквестрийские имена, культуру и владельца, а остальные уводим в угол карты,
-# чтобы они не мешали и, главное, не оказались за пределами рельефа (из-за этого игра падала).
+# Vanilla settlements cannot be deleted: they live in the SandBox module, which the campaign depends on.
+# But an entry with the same id can be overridden. So we take the vanilla settlements.xml, give our
+# settlements Equestrian names, culture and owner, and move the rest into a corner of the map so they
+# do not get in the way and, most importantly, do not end up outside the terrain (that crashed the game).
 #
-# py tools/make_settlements.py <папка Modules игры> <папка Module мода> [размер карты в метрах]
+# py tools/make_settlements.py <game Modules folder> <mod Module folder> [map size in metres]
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -18,8 +18,8 @@ OUT = os.path.join(MOD, "ModuleData", "equestria_settlements.xml")
 CULTURE = "Culture.equestria"
 OWNER = "Faction.clan_equestria_royal"
 
-# Наши поселения: тип, имя, доля от размера карты (x, y). Доли те же, что в make_map_heightmap.py,
-# поэтому город встаёт на заранее выровненную площадку.
+# Our settlements: type, name, fraction of the map size (x, y). The fractions are the same as in
+# make_map_heightmap.py, so a town lands on a pre-flattened site.
 OURS = [
     ("town", "Кантерлот", 0.38, 0.42),
     ("town", "Понивилль", 0.58, 0.58),
@@ -28,7 +28,7 @@ OURS = [
     ("village", "Сахарный Уголок", 0.54, 0.64),
     ("village", "Тихий Дол", 0.44, 0.50),
 ]
-# Куда ссылаем остальные: плотная сетка в углу суши, шаг 4 метра
+# Where the rest are sent: a dense grid in a corner of the land, 4 metre step
 PARK_ORIGIN = (0.44, 0.28)
 PARK_STEP = 2.0
 
@@ -75,7 +75,7 @@ for kind, name, fx, fy in OURS:
         del s.attrib["text"]
     print(f"{name}: {s.get('id')} ({kind}) -> {x:.1f}, {y:.1f}")
 
-# остальные — в угол, плотной сеткой; все координаты остаются внутри карты
+# the rest go to the corner in a dense grid; all coordinates stay inside the map
 ox, oy = PARK_ORIGIN[0] * MAP_SIZE, PARK_ORIGIN[1] * MAP_SIZE
 per_row = 25
 parked = 0

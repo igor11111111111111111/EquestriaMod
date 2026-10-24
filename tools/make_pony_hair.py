@@ -1,14 +1,14 @@
-"""Грива Твайлайт — настоящая причёска пони (слот волос) вместе с рогом.
+"""Twilight's mane: a real pony hairstyle (hair slot) together with the horn.
 
-Запуск (headless Blender, на готовой пони после fix_pony_eyes.py):
+Run (headless Blender, on the finished pony after fix_pony_eyes.py):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_pony_hair.py -- ../assets/pony_hair
 
-Из предмета-«шапки» eq_twilight_mane (грива + рог, жёстко на кости головы) получаются:
-  eq_hair_pony_twilight — грива вместе с рогом; веса как у ванильных причёсок (голова → шея → spine2),
-                          поэтому длинные пряди на спине следуют за телом, а не висят в воздухе при повороте головы.
-Отдельного предмета-рога больше нет: рог входит в каждую причёску (tools/make_pony_manes.py).
-Материал — общий атлас eq_twilight_body (в FBX только имя). Остальные причёски пони — мультяшные
-гривы из tools/make_pony_manes.py (там рог добавляется вторым материалом).
+From the "hat" item eq_twilight_mane (mane + horn, rigid on the head bone) we get:
+  eq_hair_pony_twilight: the mane together with the horn; weights like vanilla hairstyles (head → neck → spine2),
+                          so long strands on the back follow the body instead of hanging in the air when the head turns.
+There is no separate horn item any more: the horn is part of every hairstyle (tools/make_pony_manes.py).
+Material: the shared eq_twilight_body atlas (only the name in the FBX). The other pony hairstyles are cartoon
+manes from tools/make_pony_manes.py (there the horn is added as a second material).
 """
 import os
 import sys

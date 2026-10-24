@@ -8,28 +8,29 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Грива с ушами у пони — предмет в слоте шлема без защиты (eq_pony_mane в equestria_items.xml).
-    // Слот причёски для расы pony непригоден: движок рвёт на куски любую причёску, даже ванильную.
-    // Зато настоящий шлем занимает тот же слот и просто заменяет гриву — сквозь него ничего не торчит.
+    // The pony mane with ears is an item in the helmet slot with no protection (eq_pony_mane in
+    // equestria_items.xml). The hair slot is unusable for the pony race: the engine tears any hairstyle
+    // to pieces, even a vanilla one. But a real helmet takes the same slot and simply replaces the mane -
+    // nothing pokes through it.
     public static class EquestriaMane
     {
-        // Грива и рог пони — настоящая причёска расы (tools/make_pony_manes.py), предметов для них нет.
+        // The pony mane and horn are a real race hairstyle (tools/make_pony_manes.py); there are no items for them.
 
         public const string RaceId = "pony";
         public const string ChangelingRaceId = "changeling";
         public const string DeerRaceId = "deer";
 
-        // У пони грива и рог — причёска расы (tools/make_pony_manes.py), слот головы остаётся пустым.
-        // Хвост, крылья и хвост оленя больше не предметы: их вешает на скелет EquestriaBodyParts,
-        // поэтому слот плаща остаётся свободным (можно надеть накидку) и ничего не пропадает.
+        // For ponies the mane and horn are the race hairstyle (tools/make_pony_manes.py); the head slot stays empty.
+        // The tail, wings and the deer tail are no longer items: EquestriaBodyParts attaches them to the skeleton,
+        // so the cape slot stays free (a cloak can be worn) and nothing disappears.
         private static readonly (string Id, EquipmentIndex Slot)[] Parts = { };
-        // У чейнджлингов рог, уши и гребень — часть головы новой модели (make_changeling_model.py),
-        // предмета eq_changeling_crest больше нет. Пока он тут оставался, журнал на каждый запуск
-        // получал по 468 строк «предмет не найден» — по одной на каждого чейнджлинга в мире.
+        // For changelings the horn, ears and crest are part of the new model's head (make_changeling_model.py);
+        // the eq_changeling_crest item no longer exists. While it stayed here, the log got 468 lines of
+        // "item not found" on every launch - one per changeling in the world.
         private static readonly (string Id, EquipmentIndex Slot)[] ChangelingParts = { };
         private static readonly (string Id, EquipmentIndex Slot)[] DeerParts = { };
 
-        // Надевает гриву героям-пони со свободной головой (и в бою, и в гражданской одежде).
+        // Puts the mane on pony heroes with a free head slot (both battle and civilian equipment).
         public static int EnsureForPonies()
         {
             if (Campaign.Current == null)
@@ -43,7 +44,7 @@ namespace EquestriaMod
             var ponies = 0;
             foreach (var hero in Hero.AllAliveHeroes)
             {
-                // GetRaceOrDefault отдаёт 0 (человек), если расы нет, — такую не путаем с людьми
+                // GetRaceOrDefault returns 0 (human) if the race is missing - do not confuse that with humans
                 var heroRace = hero.CharacterObject?.Race ?? -1;
                 var parts = heroRace == race ? Parts
                     : heroRace == changeling && changeling != 0 ? ChangelingParts
@@ -77,7 +78,7 @@ namespace EquestriaMod
             return count;
         }
 
-        // Консоль (Alt+~): equestria.give_mane — выдать гриву и хвост в инвентарь и надеть в свободные слоты
+        // Console (Alt+~): equestria.give_mane - give the mane and tail to the inventory and equip them in free slots
         [CommandLineFunctionality.CommandLineArgumentFunction("give_mane", "equestria")]
         public static string GiveManeCommand(List<string> args)
         {

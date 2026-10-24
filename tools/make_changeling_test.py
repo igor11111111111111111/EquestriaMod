@@ -1,15 +1,15 @@
-"""Тестовый чейнджлинг: детали скачанной модели на нашей антро-пони.
+"""Test changeling: parts of a downloaded model on our anthro pony.
 
-Запуск (headless Blender, открывает готовую пони):
+Run (headless Blender, opens the finished pony):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_changeling_test.py --
       ../assets/reference/changeling/dark_fluttershy/scene.gltf ../assets/changeling_test
 
-Скачанная модель — четвероногая пони одним мешем без скелета (судя по атласу, выдрана из игры Gameloft),
-поэтому ТОЛЬКО для проверки вида, не для публикации. Тело у неё не подходит (у нас антро на человеческом
-скелете), берём отдельные куски:
-  eq_changeling_mane — грива, рог, гребни и уши (слот шлема вместо eq_pony_mane), жёстко на кости головы;
-  eq_changeling_tail — хвост и крылья (слот плаща вместо eq_pony_tail): хвост на тазе, крылья на спине.
-Хитиновый цвет тела даёт окрас кожи расы (движок красит серую шерсть), отдельное тело не нужно.
+The downloaded model is a quadruped pony in one mesh with no skeleton (judging by the atlas, ripped from
+a Gameloft game), so it is ONLY for checking the look, not for publishing. Its body does not fit (ours is
+anthro on a human skeleton), so we take separate pieces:
+  eq_changeling_mane - mane, horn, crests and ears (helmet slot instead of eq_pony_mane), rigid on the head bone;
+  eq_changeling_tail - tail and wings (cape slot instead of eq_pony_tail): tail on the pelvis, wings on the back.
+The chitin body colour comes from the race skin colour (the engine tints the grey coat), no separate body needed.
 """
 import os
 import sys
@@ -38,7 +38,7 @@ bpy.ops.import_scene.gltf(filepath=GLTF)
 src = next(o for o in bpy.context.selected_objects if o.type == "MESH")
 image = next(n.image for m in src.data.materials for n in m.node_tree.nodes if n.type == "TEX_IMAGE")
 
-# ---------------------------------------------------------------- 1. куски модели (связные части)
+# ---------------------------------------------------------------- 1. model pieces (connected parts)
 bm = bmesh.new()
 bm.from_mesh(src.data)
 bm.transform(src.matrix_world)
@@ -64,8 +64,8 @@ for f in bm.faces:
     parts.append({"faces": comp, "lo": pts.min(0), "hi": pts.max(0), "n": len(comp)})
 
 body = max(parts, key=lambda p: p["n"])
-tail = max(parts, key=lambda p: p["hi"][1])            # дальше всех назад (+Y)
-mane = min(parts, key=lambda p: p["lo"][1])            # грива свисает дальше всех вперёд (-Y)
+tail = max(parts, key=lambda p: p["hi"][1])            # furthest back (+Y)
+mane = min(parts, key=lambda p: p["lo"][1])            # the mane hangs furthest forward (-Y)
 wings = [p for p in parts if p not in (body, tail, mane)
          and p["hi"][0] - p["lo"][0] < 0.5 and abs(p["lo"][0]) > 3]
 horn = max((p for p in parts if p not in (body, tail, mane) and p not in wings),
@@ -74,11 +74,11 @@ crests = [p for p in parts if p not in (body, tail, mane, horn) and p not in win
           and p["hi"][2] - p["lo"][2] > 10]
 log(f"parts {len(parts)}: wings {len(wings)}, crests {len(crests)}")
 
-# опорные точки головы по средней линии: кончик морды (мин. Y) и макушка (макс. Z)
+# head reference points on the midline: snout tip (min Y) and crown (max Z)
 mid = np.array([v.co[:] for f in body["faces"] for v in f.verts if abs(v.co.x) < 2.0 and v.co.z > 45])
 cl_snout = mid[mid[:, 1].argmin()]
 cl_crown = mid[mid[:, 2].argmax()]
-# уши торчат по бокам выше макушки
+# the ears stick out at the sides above the crown
 ears = [f for f in body["faces"] if all(v.co.z > cl_crown[2] - 3 and abs(v.co.x) > 2.5 for v in f.verts)]
 log(f"changeling snout {np.round(cl_snout, 1)}, crown {np.round(cl_crown, 1)}, ear faces {len(ears)}")
 
@@ -98,10 +98,10 @@ def placed(scale, src_pt, dst_pt):
     return Matrix.Translation(Vector(dst_pt)) @ Matrix.Scale(scale, 4) @ Matrix.Translation(-Vector(src_pt))
 
 
-# голова: макушки совмещаем, центр по средней точке морда-макушка
+# head: align the crowns, centre on the snout-crown midpoint
 T_HEAD = placed(HEAD_SCALE, (cl_snout + cl_crown) / 2, (pn_snout + pn_crown) / 2 + np.array([0, 0.01, 0.01]))
 
-# хвост: корень (передний верх) — к корню хвоста пони
+# tail: root (front top) goes to the pony's tail root
 BODY_SCALE = HEAD_SCALE * 1.1
 tail_root = np.array([0.0, tail["lo"][1], tail["hi"][2]])
 bv = np.array([(pony["eq_twilight_body"].matrix_world @ v.co)[:] for v in pony["eq_twilight_body"].data.vertices])
@@ -112,17 +112,17 @@ def back_surface(z):
     return near[:, 1].max()
 
 
-# у пони хвост в меше вместе с меткой на бедре, поэтому корень ищем по спине у кости таза
+# the pony's tail is in one mesh with the thigh mark, so we find the root on the back at the pelvis bone
 pelvis = bones["bip01_pelvis_0"]
 pn_tail_root = np.array([0.0, back_surface(pelvis.z) - 0.03, pelvis.z - 0.02])
 T_TAIL = placed(BODY_SCALE, tail_root, pn_tail_root)
 
-# крылья: основание (передний низ) — на спину между лопатками
+# wings: base (front bottom) goes on the back between the shoulder blades
 wing_root = np.array([0.0, min(p["lo"][1] for p in wings), min(p["lo"][2] for p in wings)])
 sp2 = bones["bip01_spine2_11"]
 WING_ROOT = np.array([0.0, back_surface(sp2.z) - 0.02, sp2.z - 0.08])
 WING_SCALE = BODY_SCALE * 1.4
-WING_SPREAD = 0.05  # м, крылья чуть разводим от позвоночника
+WING_SPREAD = 0.05  # m, spread the wings slightly away from the spine
 
 
 def wing_matrix(part):
@@ -162,7 +162,7 @@ def build(name, groups):
                 vs.append(vmap[v])
             try:
                 nf = out.faces.new(vs)
-            except ValueError:  # такая грань уже есть (двусторонние плоскости)
+            except ValueError:  # such a face already exists (double-sided planes)
                 continue
             for l_new, l_old in zip(nf.loops, f.loops):
                 l_new[uv].uv = l_old[uv_layer].uv
@@ -201,15 +201,15 @@ bpy.ops.export_scene.fbx(filepath=fbx, use_selection=True, add_leaf_bones=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y")
 log("exported", fbx)
 
-# ---------------------------------------------------------------- превью: тёмная шерсть + детали
+# ---------------------------------------------------------------- preview: dark coat + parts
 for name in ("eq_twilight_mane", "eq_twilight_tail"):
     pony[name].hide_render = True
 atlas = next(n.image for n in bpy.data.materials["eq_twilight_body"].node_tree.nodes if n.type == "TEX_IMAGE")
 px = np.empty(len(atlas.pixels), dtype=np.float32)
 atlas.pixels.foreach_get(px)
 px = px.reshape(-1, 4)
-# только для картинки, файл не сохраняется: темнеет серая шерсть (и белки — у чейнджлингов их нет),
-# цветные радужки остаются
+# only for the picture, the file is not saved: the grey coat darkens (and the eye whites - changelings
+# have none), the coloured irises stay
 sat = px[:, :3].max(1) - px[:, :3].min(1)
 coat = sat < 0.08
 px[coat, :3] *= np.array([0.16, 0.17, 0.2], dtype=np.float32)

@@ -1,4 +1,4 @@
-# Доля граней, у которых нормаль по порядку обхода и сохранённая нормаль смотрят наружу (от центра меша).
+# Share of faces whose winding normal and stored normal point outward (away from the mesh centre).
 # blender --background --factory-startup --python check_normals.py -- <file.fbx>
 import sys
 

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Нормализует веса костей по вершинам eq_pony_head и eq_pony_body — сумма весов вершины
-приводится к 1.0, пропорции между костями сохраняются (не перекраска руками, чисто
-математическая правка). Чинит "разлёт" вершин у шеи/плеч в бою: у части вершин было по 1.0 сразу
-у двух костей (сумма 2.0) — движок в позе, где кости расходятся, тянул вершину в обе стороны
-сразу (см. diag_pony_neck_weights.py, 30.09.2026). Сохраняет файл.
+"""Normalizes bone weights over the vertices of eq_pony_head and eq_pony_body - the sum of a vertex's
+weights is brought to 1.0, the proportions between bones are kept (not hand repainting, a purely
+mathematical fix). Fixes vertices "flying apart" at the neck/shoulders in battle: some vertices had 1.0
+on two bones at once (sum 2.0) - in a pose where the bones diverge, the engine pulled the vertex both ways
+at once (see diag_pony_neck_weights.py, 30.09.2026). Saves the file.
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\fix_pony_weight_normalize.py
 """

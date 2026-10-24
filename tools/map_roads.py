@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Дороги между поселениями на карте мира.
+"""Roads between settlements on the world map.
 
-  Модуль вызывается из paint_terrain.py: mask(size, log) -> карта дорог 0..1 того же размера,
-  что и карта местности. Дороги вписываются в покраску рельефа сухой землёй (слой 4).
+  The module is called from paint_terrain.py: mask(size, log) -> a 0..1 road map of the same size
+  as the terrain map. Roads are written into the terrain painting as dry earth (layer 4).
 
-В ванильной игре дороги НЕ рисуются ни сущностями, ни слоями: вся земля карты мира запечена в
-виртуальную текстуру (Main_map/TileSets/WorldMap.gts, 2.1 ГБ), и дороги нарисованы прямо в ней
-художником. Декали decal_path_a/b, которые встречаются в сцене, — это дорожки ВНУТРИ моделей
-поселений, а не пути между ними. Повторить запекание нечем: его делает редактор для рельефа
-версии 1, а у нас версия 0. Поэтому дороги прокладываем сами и вписываем в слои.
+In the vanilla game roads are NOT drawn by entities or layers: all the land of the world map is baked into
+a virtual texture (Main_map/TileSets/WorldMap.gts, 2.1 GB), and the roads are painted right in it
+by an artist. The decal_path_a/b decals found in the scene are paths INSIDE settlement
+models, not routes between them. We have nothing to repeat the baking with: the editor does it for terrain
+version 1, and ours is version 0. So we lay the roads ourselves and write them into the layers.
 
-Как считается путь: карта разбивается на клетки по ROUTE_STEP метров, каждой клетке даётся цена
-(вода непроходима, горы и крутизна дороги, равнина дёшево), и между поселениями ищется самый
-дешёвый путь по Дейкстре. Деревня соединяется со своим городом или замком, города и замки — в
-общую сеть: сначала остов по кратчайшим расстояниям, чтобы всё было связано, потом к каждому
-добавляются ближайшие соседи, иначе сеть выглядит деревом, а не дорогами.
+How a route is computed: the map is split into cells of ROUTE_STEP metres, each cell gets a cost
+(water is impassable, mountains and steepness are expensive, plains are cheap), and the cheapest path between
+settlements is found with Dijkstra. A village is connected to its town or castle, towns and castles into
+a common network: first a spanning tree by shortest distances so that everything is connected, then the nearest
+neighbours are added to each, otherwise the network looks like a tree, not roads.
 """
 import heapq
 import math
@@ -28,18 +28,18 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import equus_map  # noqa: E402
 
-ROUTE_STEP = 4.0        # сторона клетки при поиске пути, м
-ROAD_WIDTH = 2.5        # ширина дороги, м (обзор камеры на карте ~70 м, шире смотрится трактом)
-EDGE_SOFT = 1.0         # насколько мягко дорога сходит на нет по краям, м
-SLOPE_COST = 26.0       # во сколько раз дороже подъём: цена = 1 + SLOPE_COST * уклон
+ROUTE_STEP = 4.0        # cell side for the path search, m
+ROAD_WIDTH = 2.5        # road width, m (the map camera view is ~70 m, wider looks like a highway)
+EDGE_SOFT = 1.0         # how softly the road fades out at the edges, m
+SLOPE_COST = 26.0       # how many times more expensive a climb is: cost = 1 + SLOPE_COST * slope
 KIND_COST = {equus_map.PLAIN: 1.0, equus_map.STEPPE: 1.05, equus_map.DESERT: 1.2,
              equus_map.FOREST: 1.6, equus_map.SWAMP: 2.6, equus_map.SNOW: 1.8,
              equus_map.MOUNTAIN: 3.2}
 WATER_KINDS = (equus_map.WATER, equus_map.LAKE, equus_map.RIVER)
-RIVER_COST = 9.0        # реку перейти можно, но дорого — дорога ищет брод, а не идёт вдоль
-NEIGHBOURS = 1          # сколько ближайших соседей соединять сверх остова
-MAX_HUB_LINK = 260.0    # длиннее этого города напрямую не соединяем, м
-SMOOTH_ROUNDS = 2       # сглаживание ломаной
+RIVER_COST = 9.0        # a river can be crossed, but expensively: the road looks for a ford instead of running along
+NEIGHBOURS = 1          # how many nearest neighbours to connect on top of the spanning tree
+MAX_HUB_LINK = 260.0    # towns farther apart than this are not connected directly, m
+SMOOTH_ROUNDS = 2       # smoothing of the polyline
 
 
 def log_nothing(*a):
@@ -47,7 +47,7 @@ def log_nothing(*a):
 
 
 def settlements(mod):
-    """Поселения из equestria_settlements.xml: (id, x, y, вид, к кому привязано)."""
+    """Settlements from equestria_settlements.xml: (id, x, y, kind, what it is bound to)."""
     path = os.path.join(mod, "ModuleData", "equestria_settlements.xml")
     out = {}
     for node in ET.parse(path).getroot():
@@ -70,11 +70,11 @@ def settlements(mod):
 
 
 def cost_grid(size):
-    """Цена прохода по клетке. Вода непроходима (кроме рек — их можно перейти вброд)."""
+    """Cost of passing a cell. Water is impassable (except rivers, which can be forded)."""
     terrain = equus_map.terrain_map()
     heights = equus_map.heights()
     step = equus_map.MAP_SIZE / (size - 1)
-    # усредняем исходные карты до сетки поиска
+    # average the source maps down to the search grid
     src = terrain.shape[0]
     take = np.clip((np.arange(size) * (src - 1) / (size - 1)).round().astype(int), 0, src - 1)
     kind = terrain[np.ix_(take, take)]
@@ -85,7 +85,7 @@ def cost_grid(size):
         cost[kind == k] = value
     cost[kind == equus_map.RIVER] = RIVER_COST
     blocked = np.isin(kind, (equus_map.WATER, equus_map.LAKE)) | (high < 0.4)
-    # уклон между соседними клетками — по нему дорога обходит горы
+    # slope between neighbouring cells: the road uses it to go around mountains
     gy, gx = np.gradient(high, step)
     slope = np.sqrt(gx ** 2 + gy ** 2)
     cost = cost * (1.0 + SLOPE_COST * slope)
@@ -94,7 +94,7 @@ def cost_grid(size):
 
 
 def _dijkstra(cost, start, targets):
-    """Пути от одной клетки до нужных: обычная Дейкстра с ранним выходом."""
+    """Paths from one cell to the needed ones: plain Dijkstra with an early exit."""
     size = cost.shape[0]
     best = np.full(cost.shape, np.inf, dtype=np.float32)
     came = np.full(cost.shape, -1, dtype=np.int32)
@@ -147,7 +147,7 @@ def _dijkstra(cost, start, targets):
 
 
 def _smooth(points):
-    """Скругление ломаной по Чайкину: дорога перестаёт ходить ступеньками."""
+    """Chaikin smoothing of the polyline: the road stops going in steps."""
     for _ in range(SMOOTH_ROUNDS):
         if len(points) < 3:
             break
@@ -161,13 +161,13 @@ def _smooth(points):
 
 
 def _links(places, log):
-    """Какие поселения соединяем: деревня — со своим городом, города и замки — в общую сеть."""
+    """Which settlements to connect: a village to its town, towns and castles into a common network."""
     hubs = [p for p in places.values() if p["kind"] in ("town", "castle")]
     edges = set()
     for place in places.values():
         if place["kind"] == "village" and place["bound"] in places:
             edges.add((place["id"], place["bound"]))
-    # остов по расстоянию, чтобы сеть была связной
+    # spanning tree by distance, so that the network is connected
     if hubs:
         inside = {hubs[0]["id"]}
         rest = {h["id"] for h in hubs[1:]}
@@ -185,7 +185,7 @@ def _links(places, log):
             edges.add((a, b))
             inside.add(b)
             rest.discard(b)
-        # плюс ближайшие соседи — иначе сеть выглядит деревом, а не дорогами
+        # plus the nearest neighbours, otherwise the network looks like a tree, not roads
         for h in hubs:
             near = sorted((math.hypot(h["x"] - o["x"], h["y"] - o["y"]), o["id"])
                           for o in hubs if o["id"] != h["id"])
@@ -197,7 +197,7 @@ def _links(places, log):
 
 
 def routes(mod, log=log_nothing):
-    """Ломаные дорог в метрах карты."""
+    """Road polylines in map metres."""
     places = settlements(mod)
     edges = _links(places, log)
     size = int(round(equus_map.MAP_SIZE / ROUTE_STEP)) + 1
@@ -205,8 +205,8 @@ def routes(mod, log=log_nothing):
     step = equus_map.MAP_SIZE / (size - 1)
 
     def cell(place):
-        """Клетка поселения. Ворота часто стоят у самой воды и попадают на непроходимую клетку —
-        тогда берём ближайшую проходимую, иначе дорога к этому поселению не строится вовсе."""
+        """The settlement's cell. The gate often stands right by the water and falls on an impassable cell;
+        then the nearest passable one is taken, otherwise the road to this settlement is not built at all."""
         gx, gy = place["gate"]
         cy, cx = int(round(gy / step)), int(round(gx / step))
         cy = min(max(cy, 0), size - 1)
@@ -226,7 +226,7 @@ def routes(mod, log=log_nothing):
                 return (best[1], best[2])
         return (cy, cx)
 
-    # группируем по источнику: одна Дейкстра на источник со всеми его целями
+    # group by source: one Dijkstra per source with all its targets
     by_source = {}
     for a, b in edges:
         by_source.setdefault(a, []).append(b)
@@ -247,7 +247,7 @@ def routes(mod, log=log_nothing):
 
 
 def mask(size, mod, log=log_nothing):
-    """Карта дорог 0..1: 1 по оси дороги, к краям сходит на нет."""
+    """Road map 0..1: 1 along the road axis, fading out towards the edges."""
     out = np.zeros((size, size), dtype=np.float32)
     step = equus_map.MAP_SIZE / (size - 1)
     half = ROAD_WIDTH / 2.0
@@ -258,7 +258,7 @@ def mask(size, mod, log=log_nothing):
             length = math.hypot(x1 - x0, y1 - y0)
             if length < 1e-6:
                 continue
-            # штампуем отрезок: для каждой клетки вокруг считаем расстояние до него
+            # stamp the segment: for each cell around it compute the distance to it
             cx0, cy0 = int(round(x0 / step)), int(round(y0 / step))
             cx1, cy1 = int(round(x1 / step)), int(round(y1 / step))
             lo_x, hi_x = min(cx0, cx1) - span, max(cx0, cx1) + span

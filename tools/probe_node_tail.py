@@ -1,4 +1,4 @@
-# Что лежит в данных узла весов ПОСЛЕ масок.
+# What sits in the weight node data AFTER the masks.
 #
 #   python probe_node_tail.py <terrain.bin>
 import os

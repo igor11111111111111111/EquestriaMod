@@ -12,35 +12,35 @@ using Path = System.IO.Path;
 
 namespace EquestriaMod
 {
-    // Женский голос в бою почти всем народам: кряхтение при ударе, вскрик от раны, боевые кличи.
+    // A female voice in battle for almost all peoples: grunting on hits, a cry when wounded, battle cries.
     //
-    // Зачем. Реплики боя игра берёт не из своих файлов озвучки, а из «определений голоса»
-    // (Modules/Native/ModuleData/voice_definitions.xml): male_01..male_08 и female_01..female_05
-    // для звукового класса human. Какое достанется агенту, решает движок по полу тела, и жеребцы,
-    // трутни, яки и олени хрипели мужскими голосами, чего у нас быть не должно.
+    // Why. The game takes battle barks not from its voice-over files but from "voice definitions"
+    // (Modules/Native/ModuleData/voice_definitions.xml): male_01..male_08 and female_01..female_05
+    // for the human sound class. Which one an agent gets is decided by the engine by body gender, and stallions,
+    // drones, yaks and deer grunted in male voices, which we must not have.
     //
-    // Кого не трогаем: грифонов и гиппогрифов (KeepOwnVoice) — птичьим народам мужской голос идёт.
-    // Список именно на исключение, а не на включение: новая раса получит женский голос сама собой,
-    // и о ней не придётся вспоминать.
+    // Who we leave alone: griffons and hippogriffs (KeepOwnVoice); a male voice suits the bird peoples.
+    // The list is for exclusion, not inclusion: a new race gets the female voice by itself,
+    // and nobody has to remember about it.
     //
-    // Подробности по всей звуковой части — docs/voices.md (устройство voice_definitions.xml, чем
-    // боевые крики отличаются от озвучки диалогов, что нужно для своих голосов расам).
+    // Details on the whole sound side are in docs/voices.md (how voice_definitions.xml works, how
+    // battle cries differ from dialogue voice-over, what is needed for races' own voices).
     //
-    // Как. Единственная ручка наружу — MBAgentVisuals.SetVoiceDefinitionIndex(индекс, высота);
-    // ей же игра назначает голоса лошадям (MountVisualCreator.SetVoiceDefinition). Индексы для
-    // класса даёт SkinVoiceManager, но только числами, без имён, поэтому имена читаем сами из
-    // voice_definitions.xml: порядок в файле и порядок в ответе движка совпадают, а на всякий
-    // случай сверяем длины списков и при расхождении молча не трогаем голоса.
+    // How. The only handle exposed is MBAgentVisuals.SetVoiceDefinitionIndex(index, pitch);
+    // the game uses it to assign voices to horses too (MountVisualCreator.SetVoiceDefinition). The indices for
+    // a class come from SkinVoiceManager, but only as numbers, without names, so we read the names ourselves from
+    // voice_definitions.xml: the order in the file and the order in the engine's answer match, and just in
+    // case we compare the list lengths and on a mismatch silently leave the voices alone.
     public class EquestriaBattleVoice : MissionLogic
     {
-        // Расы, которым оставляем ванильный выбор голоса по полу.
+        // Races that keep the vanilla choice of voice by gender.
         private static readonly string[] KeepOwnVoice = { "griffon", "hippogriff" };
         private const string VoiceFile = "voice_definitions.xml";
         private const string FemalePrefix = "female";
 
-        private static HashSet<int> _keep;          // те же расы, но номерами
-        private static int[] _female;               // индексы женских определений для класса агента
-        private static string _forClass;            // для какого звукового класса они посчитаны
+        private static HashSet<int> _keep;          // the same races, but as numbers
+        private static int[] _female;               // indices of female definitions for the agent's class
+        private static string _forClass;            // which sound class they were computed for
         private static bool _complained;
 
         public override void OnAgentBuild(Agent agent, Banner banner)
@@ -65,8 +65,8 @@ namespace EquestriaMod
                 {
                     return;
                 }
-                // Голос и высота — по имени агента: у одного и того же бойца они не меняются
-                // от боя к бою, а по отряду разнятся.
+                // Voice and pitch are by the agent's name: for one and the same soldier they do not change
+                // from battle to battle, but they vary across a troop.
                 int seed = Math.Abs((agent.Name ?? "боец").GetHashCode());
                 visuals.SetVoiceDefinitionIndex(voices[seed % voices.Length],
                     (seed % 1000) / 1000f);
@@ -80,8 +80,8 @@ namespace EquestriaMod
                 _keep = new HashSet<int>();
                 foreach (var id in KeepOwnVoice)
                 {
-                    // 0 отдаётся и для человека, и когда расы нет вовсе: такую в список не берём,
-                    // иначе опечатка в id молча оставила бы без женского голоса половину войска.
+                    // 0 is returned both for the human and when the race does not exist at all: such a race is not
+                    // put into the list, otherwise a typo in the id would silently leave half the army without a female voice.
                     int index = FaceGen.GetRaceOrDefault(id);
                     if (index > 0)
                     {
@@ -98,7 +98,7 @@ namespace EquestriaMod
             return _keep.Contains(race);
         }
 
-        /// <summary>Индексы женских определений голоса для звукового класса; null — не разобрались.</summary>
+        /// <summary>Indices of female voice definitions for a sound class; null means we could not work it out.</summary>
         private static int[] FemaleVoices(string soundClass)
         {
             if (string.IsNullOrEmpty(soundClass))
@@ -139,7 +139,7 @@ namespace EquestriaMod
             return _female;
         }
 
-        /// <summary>Имена определений голоса звукового класса по порядку из voice_definitions.xml.</summary>
+        /// <summary>Names of a sound class's voice definitions in order from voice_definitions.xml.</summary>
         private static List<string> NamesOfClass(string soundClass)
         {
             var names = new List<string>();
@@ -168,8 +168,8 @@ namespace EquestriaMod
             return names;
         }
 
-        // Файл лежит у Native, а модули могут его дополнять. Порядок обхода тот же, что у игры:
-        // сперва Native, потом остальные модули по списку загрузки.
+        // The file lives in Native, and modules may extend it. The traversal order is the same as the game's:
+        // Native first, then the other modules in load order.
         private static IEnumerable<string> VoiceFiles()
         {
             var modules = Path.Combine(BasePath.Name, "Modules");

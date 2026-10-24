@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели чейнджлинга из assets/changeling/eq_changeling.blend в
+"""Export of the fixed changeling model from assets/changeling/eq_changeling.blend to
 assets/changeling/eq_changeling.fbx.
 
-Запуск: blender --background assets/changeling/eq_changeling.blend --python tools/changeling_edit_export.py
+Run: blender --background assets/changeling/eq_changeling.blend --python tools/changeling_edit_export.py
 
-Экспортируются скелет (bip01_notused) и восемь частей из коллекции «Meshy Midnight Changeling» —
-имена объектов там уже в финальном виде (eq_changeling_*), переименовывать не нужно. Те же
-настройки экспорта, что и в основном конвейере tools/make_changeling_model.py (оси X/-Y, без анимации).
+Exported are the skeleton (bip01_notused) and eight parts from the "Meshy Midnight Changeling" collection:
+the object names there are already final (eq_changeling_*), no renaming needed. The same
+export settings as in the main pipeline tools/make_changeling_model.py (axes X/-Y, no animation).
 """
 import os
 
@@ -41,9 +41,9 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye turned off in the Outliner); for the yak
+    # the skeleton turned out to be exactly that, and the export quietly went out without bones (noticed
+    # by the A-pose in battle 07.10.2026, see yak_edit_export.py). Unhide before selecting, just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

@@ -1,17 +1,17 @@
-# Конвертация "Twilight Sparkle (Anthro)" (glTF, MMD-скелет) в набор предметов Bannerlord
-# на человеческом скелете: голова, тело, перчатки, ноги.
+# Conversion of "Twilight Sparkle (Anthro)" (glTF, MMD skeleton) into a set of Bannerlord items
+# on the human skeleton: head, body, gloves, legs.
 #
 # blender --background --factory-startup --python convert_twilight.py -- <scene.gltf> <human_skeleton.fbx> <out_dir>
-#        [<face_morphs.bin>]   — дамп вершинных ключей ванильной головы (tools\dump_face_morphs.ps1)
+#        [<face_morphs.bin>]   - dump of the vanilla head's vertex keys (tools\dump_face_morphs.ps1)
 #
-# Шаги:
-#  1. Скелет Bannerlord импортируется с осями костей X/-Y (как советует документация).
-#  2. Пони (лицом к -Y, как персонаж Bannerlord) масштабируется так, чтобы таз и шея совпали со скелетом.
-#  3. Руки поворачиваются и удлиняются до суставов Bannerlord (с плавным переходом по весам MMD),
-#     голени с копытами сжимаются по высоте, чтобы колени и пол совпали.
-#  4. Веса: голова/грива/хвост жёстко на одну кость, остальное — автоматически по временной копии
-#     скелета, у которой кости направлены на дочерние суставы.
-#  5. Экспорт FBX (скелет + 4 меша), PNG-текстуры, .blend и превью.
+# Steps:
+#  1. The Bannerlord skeleton is imported with bone axes X/-Y (as the documentation advises).
+#  2. The pony (facing -Y, like a Bannerlord character) is scaled so that the pelvis and neck match the skeleton.
+#  3. The arms are rotated and lengthened to the Bannerlord joints (with a smooth transition by MMD weights),
+#     the calves with hooves are compressed in height so that the knees and the floor match.
+#  4. Weights: head/mane/tail rigid on one bone, the rest automatic from a temporary copy
+#     of the skeleton whose bones point at the child joints.
+#  5. Export FBX (skeleton + 4 meshes), PNG textures, .blend and previews.
 import math
 import os
 import re
@@ -26,15 +26,15 @@ from mathutils.kdtree import KDTree
 
 _args = sys.argv[sys.argv.index("--") + 1:]
 GLTF, SKEL, OUT = _args[:3]
-# необязательный 4-й аргумент: дамп вершинных ключей ванильной головы (tools\dump_face_morphs.ps1).
-# Через эти 101 ключ движок делает мимику, моргание и движение глаз; без них лицо статичное.
+# optional 4th argument: dump of the vanilla head's vertex keys (tools\dump_face_morphs.ps1).
+# Through these 101 keys the engine does facial expressions, blinking and eye movement; without them the face is static.
 FACE_MORPHS = _args[3] if len(_args) > 3 else ""
 TEX_DIR = os.path.join(OUT, "textures")
 os.makedirs(TEX_DIR, exist_ok=True)
 
 PREFIX = "eq_twilight"
 
-# материал из glTF -> часть модели
+# material from glTF -> model part
 PARTS = {
     "Material__43": "body",
     "Material__84": "eyelash",
@@ -50,26 +50,26 @@ PARTS = {
     "Material__35": "teeth",
     "Material__37": "tongue",
 }
-# предмет Bannerlord -> части
+# Bannerlord item -> parts
 ITEMS = {
-    # хвост в теле: меш головы движок считает лицом и вершины с костью таза в нём разлетаются
-    # eyelid — веки, построенные по форме глаза (см. build_eyelids): в базовой форме они сжаты в полоску
-    # над глазом и не видны, а в кадрах 86/87/88 движок раскрывает их на весь глаз — это и есть моргание.
+    # the tail is in the body: the engine treats the head mesh as a face, and vertices with the pelvis bone in it fly apart
+    # eyelid: eyelids built to the shape of the eye (see build_eyelids): in the base shape they are squeezed into a strip
+    # above the eye and invisible, and in frames 86/87/88 the engine opens them over the whole eye; that is the blink.
     f"{PREFIX}_head": ["head", "eyes", "eyelash", "teeth", "tongue", "eyelid"],
-    # Грива с ушами — отдельный предмет в слот шлема (equestria_items.xml, eq_pony_mane, 0 защиты):
-    # слот причёски у расы не работает (движок рвёт любую причёску на куски), а настоящий шлем просто
-    # заменяет собой эту «причёску», и ничего сквозь него не торчит. Дыры от ушей в голове заращиваются.
+    # The mane with ears is a separate item in the helmet slot (equestria_items.xml, eq_pony_mane, 0 armour):
+    # the hairstyle slot does not work for the race (the engine tears any hairstyle into pieces), and a real helmet simply
+    # replaces this "hairstyle", and nothing pokes through it. The ear holes in the head are closed up.
     f"{PREFIX}_mane": ["hair_front", "hair_back", "horn"],
-    # Хвост — отдельный предмет в слот плаща (eq_pony_tail): в меше тела его скрывал любой нагрудник
-    # с covers_body, а слот плаща носится вместе с нагрудником.
-    # cutiemark — метка на бедре геометрией (см. build_cutiemarks). Через накладки движка (tattoo_materials)
-    # её не сделать: в Bannerlord они наносятся только на лицо.
+    # The tail is a separate item in the cape slot (eq_pony_tail): in the body mesh any chest armour
+    # with covers_body hid it, and the cape slot is worn together with chest armour.
+    # cutiemark: the mark on the thigh as geometry (see build_cutiemarks). It cannot be done through engine decals
+    # (tattoo_materials): in Bannerlord they are applied only to the face.
     f"{PREFIX}_tail": ["tail", "cutiemark"],
     f"{PREFIX}_body": ["body"],
     f"{PREFIX}_gloves": ["gloves"],
     f"{PREFIX}_legs": ["legs", "hooves"],
 }
-# части, которые целиком двигаются с одной костью
+# parts that move entirely with one bone
 RIGID = {p: "bip01_head_13" for p in ITEMS[f"{PREFIX}_head"] + ITEMS[f"{PREFIX}_mane"]}
 RIGID["tail"] = "bip01_pelvis_0"
 RIGID["cutiemark"] = "bip01_pelvis_0"
@@ -92,12 +92,12 @@ def select_only(objs, active):
     vl.objects.active = active
 
 
-# ---------------------------------------------------------------- 1. скелет Bannerlord
+# ---------------------------------------------------------------- 1. Bannerlord skeleton
 bpy.ops.import_scene.fbx(filepath=SKEL, automatic_bone_orientation=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y")
 skel = next(o for o in scene.objects if o.type == "ARMATURE")
 orig_skel_scale = skel.scale.copy()
-skel.scale = (1, 1, 1)  # в файле TaleWorlds масштаб 0.01 (рост 1.8 см) — работаем и экспортируем в метрах
+skel.scale = (1, 1, 1)  # in the TaleWorlds file the scale is 0.01 (height 1.8 cm); we work and export in metres
 vl.update()
 
 
@@ -114,7 +114,7 @@ H = {
 }
 log("human joints:", {k: tuple(round(c, 3) for c in v) for k, v in H.items()})
 
-# ---------------------------------------------------------------- 2. пони
+# ---------------------------------------------------------------- 2. pony
 before = set(scene.objects)
 bpy.ops.import_scene.gltf(filepath=GLTF)
 pony_objs = [o for o in scene.objects if o not in before]
@@ -143,16 +143,16 @@ log(f"scale factor {s:.3f}")
 
 
 def sim_raw(p):
-    # поворот на 180° вокруг Z (пони смотрит в -Y, скелет Bannerlord — в +Y), масштаб, таз -> таз.
-    # Модель и веса анатомически совпадают со скелетом; разворот для игры делается поворотом всего скелета
-    # при экспорте (см. TURN_SKELETON_ON_EXPORT).
+    # rotation by 180° around Z (the pony faces -Y, the Bannerlord skeleton +Y), scale, pelvis -> pelvis.
+    # The model and weights match the skeleton anatomically; the turn for the game is done by rotating the whole skeleton
+    # on export (see TURN_SKELETON_ON_EXPORT).
     q = p - hip_c
     return Vector((-q.x * s, -q.y * s, q.z * s + H["pelvis"].z))
 
 
-# Корпус пони наклонён вперёд относительно позвоночника Bannerlord: без поправки грудь и спина на уровне
-# плеч стоят на 6–7 см впереди костей, а руки (они ставятся на кости) — позади корпуса. Сдвигаем верх
-# тела по Y: 0 у таза, полный сдвиг от уровня плеч и выше (голова, грива, рог — тоже).
+# The pony's torso leans forward relative to the Bannerlord spine: without a correction the chest and back at
+# shoulder level stand 6-7 cm in front of the bones, and the arms (they are placed on the bones) behind the torso.
+# We shift the upper body along Y: 0 at the pelvis, the full shift from shoulder level up (head, mane, horn too).
 _pony_sh = (sim_raw(pony(42)) + sim_raw(pony(75))) / 2
 _human_sh = (H["l_shoulder"] + H["r_shoulder"]) / 2
 TORSO_SHIFT_Y = _human_sh.y - _pony_sh.y
@@ -162,12 +162,12 @@ log(f"torso shift y {TORSO_SHIFT_Y:+.3f} (pony shoulders y {_pony_sh.y:.3f}, hum
 def sim(p):
     q = sim_raw(p)
     t = min(max((q.z - H["pelvis"].z) / (_human_sh.z - H["pelvis"].z), 0.0), 1.0)
-    t = t * t * (3 - 2 * t)  # плавный переход
+    t = t * t * (3 - 2 * t)  # smooth transition
     q.y += TORSO_SHIFT_Y * t
     return q
 
 
-ARM_BACK = 0.06  # м, сдвиг кисти назад
+ARM_BACK = 0.06  # m, shift of the hand backward
 
 
 def make_arm(shoulder_idx, wrist_idx, group_roots, h_shoulder, h_wrist):
@@ -185,15 +185,15 @@ def make_arm(shoulder_idx, wrist_idx, group_roots, h_shoulder, h_wrist):
         q = rot @ (p - ps)
         d = q.dot(axis)
         q += axis * ((k - 1) * min(max(d, 0.0), lp))
-        # по проверке в Model Viewer руки отстают от корпуса — выносим вперёд (в движке это +Y
-        # до разворота скелета; -Y проверено и оказалось назад), от 0 у плеча до ARM_BACK у запястья и дальше
+        # per a check in the Model Viewer the arms lag behind the torso, so bring them forward (in the engine this is +Y
+        # before the skeleton turn; -Y was checked and turned out to be backward), from 0 at the shoulder to ARM_BACK at the wrist and beyond
         q.y += ARM_BACK * min(max(d / lp, 0.0), 1.0)
         return h_shoulder + q
 
     return groups, transform
 
 
-# после поворота рука пони со стороны -X оказывается на +X — там кости bip01_r
+# after the rotation the pony's arm on the -X side ends up at +X, where the bip01_r bones are
 ARMS = [
     make_arm(42, 27, (42, 45), H["r_shoulder"], H["r_wrist"]),
     make_arm(75, 60, (75, 78), H["l_shoulder"], H["l_wrist"]),
@@ -219,7 +219,7 @@ for ob in pony_objs:
         coords.append(p)
     parts[part] = (me, coords)
 
-# голени: сжать по высоте всё ниже колена, чтобы подошва стояла на полу
+# calves: compress everything below the knee in height so that the sole stands on the floor
 z_min = min(p.z for _, coords in parts.values() for p in coords)
 leg_k = knee_z / (knee_z - z_min)
 log(f"lowest point {z_min:.3f} -> 0, below-knee height x{leg_k:.2f}")
@@ -235,10 +235,10 @@ for part, (me, coords) in parts.items():
     mat.name = f"{PREFIX}_{part}"
     ob = bpy.data.objects.new(f"{PREFIX}_{part}", me)
     scene.collection.objects.link(ob)
-    ob.vertex_groups.clear()  # имена групп MMD хранятся в самом меше — убрать
+    ob.vertex_groups.clear()  # the MMD group names are stored in the mesh itself; remove them
     if part not in RIGID:
-        # glTF разрезает сетку по UV-швам; без склейки половинки шва получат разные веса и разойдутся.
-        # Сохранённые нормали после склейки становятся неверными — сбрасываем и сглаживаем заново.
+        # glTF splits the mesh along UV seams; without merging, the halves of a seam get different weights and separate.
+        # Custom normals become wrong after merging, so we reset them and smooth again.
         select_only([ob], ob)
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
         bm = bmesh.new()
@@ -255,7 +255,7 @@ for o in pony_objs:
     bpy.data.objects.remove(o, do_unlink=True)
 vl.update()
 
-# ---------------------------------------------------------------- 3. временный скелет для весов
+# ---------------------------------------------------------------- 3. temporary skeleton for weights
 wa = skel.copy()
 wa.data = skel.data.copy()
 wa.name = "weighting_rig"
@@ -279,14 +279,14 @@ for side, n in (("l", (14, 15, 16, 17, 18, 19, 20)), ("r", (21, 22, 23, 24, 25, 
              f"bip01_{side}_foretwist1_{n[4]}", f"bip01_{side}_hand_{n[5]}",
              f"bip01_{side}_finger0_{n[6]}"]
     for a, b in zip(chain, chain[1:]):
-        eb[a].tail = eb[b].head  # кисть: запястье -> основание пальцев (ладонь)
-    # пальцы: от основания вдоль направления предплечья (так вытянута кисть пони)
+        eb[a].tail = eb[b].head  # hand: wrist -> base of the fingers (palm)
+    # fingers: from the base along the forearm direction (that is how the pony's hand is stretched)
     finger, fore = eb[chain[-1]], eb[chain[-3]]
     finger.tail = finger.head + (eb[chain[-2]].head - fore.head).normalized() * 0.15
 bpy.ops.object.mode_set(mode="OBJECT")
 for b in wa.data.bones:
-    # finger0 (большой палец) ванильные кисти не используют; с ним в Model Viewer часть вершин перчатки
-    # вытягивалась полосой к полу — пальцы пони целиком идут на кость кисти
+    # finger0 (the thumb) is not used by vanilla hands; with it, in the Model Viewer some glove vertices
+    # stretched in a strip toward the floor; the pony's fingers go entirely on the hand bone
     b.use_deform = not b.name.endswith("notused") and "_finger0_" not in b.name
 
 bone_segments = [(b.name, wa.matrix_world @ b.head_local, wa.matrix_world @ b.tail_local)
@@ -312,8 +312,8 @@ def auto_weights(ob):
     mw = ob.matrix_world.copy()
     ob.parent = None
     ob.matrix_world = mw
-    # Автовеса иногда не находят решения для части вершин (отдельные куски, двойные поверхности).
-    # Такие вершины берут веса ближайшей вершины с весами, а если таких нет — ближайшей кости.
+    # Automatic weights sometimes find no solution for some vertices (separate pieces, double surfaces).
+    # Such vertices take the weights of the nearest weighted vertex, and if there is none, of the nearest bone.
     verts = ob.data.vertices
     weighted = [v for v in verts if sum(g.weight for g in v.groups) > 1e-4]
     zero = [v for v in verts if sum(g.weight for g in v.groups) <= 1e-4]
@@ -341,14 +341,14 @@ MIN_WEIGHT = 0.02
 
 
 def limit_weights(ob):
-    # У ванильных мешей Bannerlord не больше 3 костей на вершину и сумма весов ровно 1 (проверено на
-    # Female_BodyBase). Автовеса дают до 6 костей с суммой меньше 1 — в движке такие вершины сползают.
+    # Vanilla Bannerlord meshes have no more than 3 bones per vertex and a weight sum of exactly 1 (checked on
+    # Female_BodyBase). Automatic weights give up to 6 bones with a sum below 1; in the engine such vertices slide.
     groups = {g.index: g for g in ob.vertex_groups}
     trimmed = 0
     for v in ob.data.vertices:
         ws = sorted(((g.group, g.weight) for g in v.groups if g.weight > 1e-4), key=lambda gw: -gw[1])
-        # веса меньше MIN_WEIGHT движок, видимо, округляет до нуля (8 бит на вес): с ними часть вершин
-        # перчатки улетала полосой в начало координат
+        # weights below MIN_WEIGHT are apparently rounded to zero by the engine (8 bits per weight): with them some
+        # glove vertices flew off in a strip to the origin
         keep = [gw for gw in ws[:MAX_INFLUENCES] if gw[1] >= MIN_WEIGHT] or ws[:1]
         total = sum(w for _, w in keep)
         if len(ws) > MAX_INFLUENCES:
@@ -360,9 +360,9 @@ def limit_weights(ob):
     log(f"weights {ob.name}: {trimmed} verts trimmed to {MAX_INFLUENCES} bones, all normalized")
 
 
-# Раньше модель разворачивалась лицом к -Y с перестановкой весов левой/правой стороны. Для симметричного
-# тела в покое это выглядело верно, но разворот меняет местами перёд и зад у рук: в игре большой палец
-# оказывался сзади, и рука при сгибе выворачивалась назад. Теперь веса по положению, без перестановки.
+# Previously the model was turned to face -Y with the left/right weights swapped. For a symmetric
+# body at rest this looked right, but the turn swaps front and back of the arms: in game the thumb
+# ended up at the back, and the arm twisted backward when bending. Now weights are by position, without swapping.
 for part, ob in parts.items():
     if part in RIGID:
         vg = ob.vertex_groups.new(name=RIGID[part])
@@ -373,12 +373,12 @@ for part, ob in parts.items():
 
 bpy.data.objects.remove(wa, do_unlink=True)
 
-# Голову берём из оригинала как есть: уши остаются на ней. Попытки отрезать уши и заращивать дыры
-# портили череп (рваные края, дыры, гранёная макушка) — при необходимости уши скрываются вырезами
-# в шлемах для пони, а не правкой головы.
-# Низ предплечья — в меш кистей, как у ванильного тела (там кисти начинаются с ~0.82 длины плечо→запястье).
-# Ванильные нагрудники прячут рукав на предплечье внутрь руки, рассчитывая на меш кистей: если предплечье
-# в меше тела, нагрудник (covers_body) скрывает его и вместо руки видна сжатая ткань.
+# The head is taken from the original as is: the ears stay on it. Attempts to cut off the ears and close the holes
+# spoiled the skull (ragged edges, holes, a faceted crown); if needed, the ears are hidden by cut-outs
+# in helmets for ponies, not by editing the head.
+# The lower forearm goes into the hands mesh, as in the vanilla body (there the hands start at ~0.82 of shoulder→wrist).
+# Vanilla chest armour hides the sleeve on the forearm inside the arm, relying on the hands mesh: if the forearm
+# is in the body mesh, the chest armour (covers_body) hides it, and instead of an arm squeezed cloth is visible.
 FOREARM_TO_HANDS_T = 0.72
 
 
@@ -416,32 +416,32 @@ select_only([gloves_ob, forearms], gloves_ob)
 bpy.ops.object.join()
 log(f"forearms: {moved} faces moved from body to gloves (t > {FOREARM_TO_HANDS_T})")
 
-# Материал модели собран без альфы, поэтому ресницы рисуются сплошными тёмными полигонами. У самих глаз
-# они выглядят нормально, а дальние (на лбу и щеках) в игре смотрелись как мусор перед лицом — их удаляем.
-LASH_LIMIT = 0.02  # м от поверхности глаза
+# The model's material is built without alpha, so the eyelashes are drawn as solid dark polygons. Next to the eyes
+# they look fine, but the far ones (on the forehead and cheeks) looked like junk in front of the face in game; we delete them.
+LASH_LIMIT = 0.02  # m from the eye surface
 eyes_pts = [parts["eyes"].matrix_world @ v.co for v in parts["eyes"].data.vertices]
 eyes_tree = KDTree(len(eyes_pts))
 for i, p in enumerate(eyes_pts):
     eyes_tree.insert(p, i)
 eyes_tree.balance()
-# центры глаз пони — по ним потом привязываются лицевые ключи (add_face_morphs)
+# the pony's eye centres; the facial keys are later anchored to them (add_face_morphs)
 _eyes_arr = np.array([tuple(p) for p in eyes_pts])
 PONY_EYES = (_eyes_arr[_eyes_arr[:, 0] > 0].mean(0), _eyes_arr[_eyes_arr[:, 0] < 0].mean(0))
 _eye_l = _eyes_arr[_eyes_arr[:, 0] > 0]
-PONY_EYE_R = float((_eye_l[:, 0].max() - _eye_l[:, 0].min()) / 2)  # половина ширины глаза
-PONY_EYE_RADII = (_eye_l.max(0) - _eye_l.min(0)) / 2  # глаз вытянут по высоте — веко строим по габаритам
+PONY_EYE_R = float((_eye_l[:, 0].max() - _eye_l[:, 0].min()) / 2)  # half the eye width
+PONY_EYE_RADII = (_eye_l.max(0) - _eye_l.min(0)) / 2  # the eye is elongated vertically; the eyelid is built by the bounding box
 log(f"pony eye box {np.round(_eye_l.min(0), 3)}..{np.round(_eye_l.max(0), 3)}, r {PONY_EYE_R:.3f}")
 LID_RINGS, LID_SEGS, LID_ARC = 5, 20, math.radians(96)
-# Движок часто применяет кадр века не на полную силу (в анимациях бывает 0.1–0.5), поэтому веко строится
-# с запасом: при частичном раскрытии глаз уже прикрыт, при полном — веко чуть выступает за глаз.
-LID_OVERSHOOT = 1.15  # сетка крышки-века и её раскрытие по сфере глаза
+# The engine often applies the eyelid frame not at full strength (animations have 0.1-0.5), so the eyelid is built
+# with a margin: at partial opening the eye is already covered, at full the eyelid sticks out slightly beyond the eye.
+LID_OVERSHOOT = 1.15  # the eyelid cap mesh and its opening over the eye sphere
 
 
 def build_eyelids():
-    """Строит меш век: купол по передней части каждого глаза.
+    """Builds the eyelid mesh: a dome over the front part of each eye.
 
-    В экспорт идёт «сжатая» форма — все вершины прижаты к верхнему краю глаза, там их не видно.
-    Раскрытые позиции возвращаются отдельно: из них делаются кадры моргания (add_face_morphs).
+    The export gets the "squeezed" shape: all vertices pressed to the upper edge of the eye, where they are invisible.
+    The opened positions are returned separately: the blink frames are made from them (add_face_morphs).
     """
     skull_c = Vector((0.0, np.median([p[1] for p in eyes_pts]), np.median([p[2] for p in eyes_pts]) + 0.08))
     verts, faces, expanded, base = [], [], [], 0
@@ -451,12 +451,12 @@ def build_eyelids():
         up = Vector((0, 0, 1)) - n * (Vector((0, 0, 1)).dot(n))
         up = up.normalized() if up.length > 1e-6 else Vector((0, 1, 0))
         side_v = n.cross(up).normalized()
-        radii = Vector(PONY_EYE_RADII) * 1.16 * LID_OVERSHOOT  # с запасом, чтобы веко шло поверх глаза
+        radii = Vector(PONY_EYE_RADII) * 1.16 * LID_OVERSHOOT  # with a margin, so the eyelid goes over the eye
 
-        def on_eye(d):  # точка на поверхности глаза в направлении d
+        def on_eye(d):  # a point on the eye surface in direction d
             return c + Vector((d.x * radii.x, d.y * radii.y, d.z * radii.z))
 
-        top = on_eye(n * math.cos(LID_ARC) + up * math.sin(LID_ARC))  # верхний край глаза
+        top = on_eye(n * math.cos(LID_ARC) + up * math.sin(LID_ARC))  # upper edge of the eye
         for ring in range(LID_RINGS + 1):
             a = LID_ARC * (1 - ring / LID_RINGS) if ring else LID_ARC
             for seg in range(LID_SEGS):
@@ -475,7 +475,7 @@ def build_eyelids():
     me.from_pydata([tuple(v) for v in verts], [], faces)
     me.update()
     me.shade_smooth()
-    # UV берём у ближайшей вершины морды: веко должно быть цвета шерсти вокруг глаза
+    # UV is taken from the nearest muzzle vertex: the eyelid must be the colour of the coat around the eye
     head_ob = parts["head"]
     head_uv = head_ob.data.uv_layers.active.data
     uv_of_vert = {}
@@ -493,7 +493,7 @@ def build_eyelids():
             p = Vector(expanded[me.loops[li].vertex_index])
             _, i, _ = head_tree.find(p)
             layer.data[li].uv = uv_of_vert[order[i]]
-    me.materials.append(bpy.data.materials[f"{PREFIX}_head"])  # цвет шерсти, как у морды
+    me.materials.append(bpy.data.materials[f"{PREFIX}_head"])  # coat colour, like the muzzle
     ob = bpy.data.objects.new(f"{PREFIX}_eyelid", me)
     scene.collection.objects.link(ob)
     vg = ob.vertex_groups.new(name=RIGID["head"])
@@ -504,23 +504,23 @@ def build_eyelids():
 
 parts["eyelid"], LID_EXPANDED = build_eyelids()
 
-MARK_SIZE = 0.075      # м, радиус большой звезды
-MARK_OFFSET = 0.0025   # м, отступ от кожи, чтобы метка не мерцала
+MARK_SIZE = 0.075      # m, radius of the big star
+MARK_OFFSET = 0.0025   # m, offset from the skin so the mark does not flicker
 
 
 def build_cutiemarks():
-    """Кьютимарка на бедре: силуэт звезды, положенный на поверхность тела.
+    """Cutie mark on the thigh: a star silhouette laid onto the body surface.
 
-    Накладки движка (tattoo_materials) рисуются только на лице, поэтому метка делается геометрией
-    и входит в предмет-хвост (слот плаща, который пони и так носит).
+    Engine decals (tattoo_materials) are drawn only on the face, so the mark is made as geometry
+    and goes into the tail item (the cape slot, which the pony wears anyway).
     """
     body = parts["body"]
     pts = np.array([tuple(body.matrix_world @ v.co) for v in body.data.vertices])
     z_lo, z_hi = np.percentile(pts[:, 2], [14, 30])
     bvh = BVHTree.FromObject(body, bpy.context.evaluated_depsgraph_get())
     mat = bpy.data.materials.new(f"{PREFIX}_cutiemark")
-    # две половины: слева цвет большой звезды, справа белый для маленьких (мелкая картинка мылится
-    # при масштабировании в атлас, поэтому 64x64, а не 2 пикселя)
+    # two halves: on the left the colour of the big star, on the right white for the small ones (a tiny image blurs
+    # when scaled into the atlas, hence 64x64 rather than 2 pixels)
     img = bpy.data.images.new(f"{PREFIX}_cutiemark_d", 64, 64, alpha=False)
     half = np.zeros((64, 64, 4), dtype=np.float32)
     half[..., 3] = 1.0
@@ -535,12 +535,12 @@ def build_cutiemarks():
     verts, faces, uvs = [], [], []
 
     def star_at(center, normal, radius, uv):
-        """Кладёт силуэт шестиконечной звезды на поверхность тела вокруг точки center."""
+        """Lays a six-pointed star silhouette onto the body surface around the point center."""
         up = Vector((0, 0, 1)) - normal * Vector((0, 0, 1)).dot(normal)
         up = up.normalized()
         side = normal.cross(up).normalized()
         def on_skin(target):
-            # луч строго вдоль нормали: find_nearest тянул точки вбок и звезда выходила кривой
+            # a ray strictly along the normal: find_nearest pulled points sideways and the star came out crooked
             hit, hit_n, _, _ = bvh.ray_cast(target + normal * 0.12, -normal)
             return (hit + hit_n * MARK_OFFSET) if hit else (target + normal * MARK_OFFSET)
 
@@ -561,9 +561,9 @@ def build_cutiemarks():
         center = Vector(sel.mean(0))
         normal = Vector((float(sign), 0, 0))
         star_at(center, normal, MARK_SIZE, (0.25, 0.5))
-        # маленьких звёзд вокруг большой больше не делаем: вся метка жёстко сидит на тазе, а они
-        # ложились уже на ногу и при шаге отрывались от кожи — «летали» отдельным мешем
-        # (убраны 18.09.2026, см. tools/trim_cutiemark.py)
+        # we no longer make small stars around the big one: the whole mark sits rigidly on the pelvis, while they
+        # already lay on the leg and came off the skin when stepping, "flying" as a separate mesh
+        # (removed 18.09.2026, see tools/trim_cutiemark.py)
     me = bpy.data.meshes.new(f"{PREFIX}_cutiemark")
     me.from_pydata([tuple(v) for v in verts], [], faces)
     me.update()
@@ -583,11 +583,11 @@ def build_cutiemarks():
 
 parts["cutiemark"] = build_cutiemarks()
 
-# метка глазных яблок: их веко двигать нельзя (иначе поедет сам глаз)
+# mark for the eyeballs: their eyelid must not move (otherwise the eye itself would shift)
 for _part in ITEMS[f"{PREFIX}_head"]:
     _ob = parts[_part]
     _attr = _ob.data.attributes.new("eq_eye", "INT", "POINT")
-    _lid = _ob.data.attributes.new("eq_lid", "INT", "POINT")  # номер вершины века (0 — не веко)
+    _lid = _ob.data.attributes.new("eq_lid", "INT", "POINT")  # eyelid vertex number (0 = not an eyelid)
     for _i in range(len(_ob.data.vertices)):
         _attr.data[_i].value = 1 if _part == "eyes" else 0
         _lid.data[_i].value = _i + 1 if _part == "eyelid" else 0
@@ -605,7 +605,7 @@ lash_bm.free()
 lash.data.update()
 log(f"eyelashes trimmed: {len(outside)} faces farther than {LASH_LIMIT} m from the eyes")
 
-# ---------------------------------------------------------------- 4. сборка предметов
+# ---------------------------------------------------------------- 4. assembling the items
 items = {}
 for item, part_names in ITEMS.items():
     objs = [parts[p] for p in part_names]
@@ -623,20 +623,20 @@ for item, part_names in ITEMS.items():
     tris = sum(len(p.vertices) - 2 for p in ob.data.polygons)
     log(f"item {item}: {tris} tris, materials {[m.name for m in ob.data.materials]}")
 
-# Скелет остаётся с масштабом 1: в FBX персонаж будет честно 1.8 м (180 см), и при импорте в редактор
-# с "Convert to unit: m" размер совпадёт со скелетом игры. С исходным масштабом 0.01 из human_skeleton.fbx
-# файл описывал фигуру ростом 1.8 см — в игре меш сминался в лучи по полу.
+# The skeleton stays at scale 1: in the FBX the character will honestly be 1.8 m (180 cm), and when imported into the editor
+# with "Convert to unit: m" the size will match the game skeleton. With the original 0.01 scale from human_skeleton.fbx
+# the file described a figure 1.8 cm tall; in game the mesh collapsed into rays along the floor.
 vl.update()
 
-# ---------------------------------------------------------------- 5. атлас: все текстуры в одну, один материал
-# Каждая исходная текстура занимает клетку сетки 4x4 (UV всех частей лежат в 0..1, запекание не нужно).
-# Вся модель получает один материал eq_twilight_body — его настраивают в редакторе один раз.
+# ---------------------------------------------------------------- 5. atlas: all textures into one, one material
+# Each source texture takes a cell of a 4x4 grid (the UVs of all parts lie in 0..1, no baking needed).
+# The whole model gets one material eq_twilight_body; it is set up in the editor once.
 CELL, GRID, PAD = 1024, 4, 8
 INNER = CELL - 2 * PAD
 ATLAS_MAT = f"{PREFIX}_body"
 
-COAT_PARTS = {"body", "head", "legs", "gloves", "hooves"}  # шерсть и копыта — их красит движок
-COAT_LIGHTEN = 1.25  # серая база чуть светлее оригинала, иначе окрас выходит тусклым
+COAT_PARTS = {"body", "head", "legs", "gloves", "hooves"}  # coat and hooves: the engine tints them
+COAT_LIGHTEN = 1.25  # the grey base is slightly lighter than the original, otherwise the colouring comes out dull
 coat_tint = []
 
 part_mats = sorted({m.name for ob in items.values() for m in ob.data.materials})
@@ -647,11 +647,11 @@ for name, i in cells.items():
     col, row = i % GRID, i // GRID
     mat = bpy.data.materials[name]
     src = next((n.image for n in mat.node_tree.nodes if n.type == "TEX_IMAGE" and n.image), None)
-    if src is None:  # у зубов текстуры не было
+    if src is None:  # the teeth had no texture
         px = np.ones((INNER, INNER, 4), dtype=np.float32)
     else:
-        # читаем пиксели напрямую и растягиваем numpy: копия процедурной картинки (image.copy() + scale)
-        # приходила пустой, и клетка атласа получалась чёрной
+        # read the pixels directly and stretch with numpy: a copy of the procedural image (image.copy() + scale)
+        # came out empty, and the atlas cell turned black
         w, h = src.size
         buf = np.empty(w * h * 4, dtype=np.float32)
         src.pixels.foreach_get(buf)
@@ -659,8 +659,8 @@ for name, i in cells.items():
         ys = (np.arange(INNER) * h // INNER).clip(0, h - 1)
         xs = (np.arange(INNER) * w // INNER).clip(0, w - 1)
         px = buf[ys][:, xs].copy()
-    # Шерсть обесцвечиваем: движок умножает текстуру на выбранный цвет кожи, и по насыщенной сиреневой
-    # базе ползунок окраса почти не читался. Грива, хвост, рог и глаза остаются цветными.
+    # The coat is desaturated: the engine multiplies the texture by the chosen skin colour, and on the saturated lilac
+    # base the colouring slider was barely readable. The mane, tail, horn and eyes stay coloured.
     part = name[len(PREFIX) + 1:]
     if part in COAT_PARTS:
         rgb = px[..., :3]
@@ -670,12 +670,12 @@ for name, i in cells.items():
         coat_tint.append(mean_rgb / max(mean_gray * COAT_LIGHTEN, 1e-4))
         log(f"  coat cell {name}: mean {np.round(mean_rgb, 3)} -> grayscale, "
             f"tint {np.round(coat_tint[-1], 3)}")
-    # поля по краю клетки повторяют крайние пиксели — чтобы мипмапы не смешивали соседние клетки
+    # the margins at the cell edge repeat the edge pixels, so mipmaps do not mix neighbouring cells
     px = np.pad(px, ((PAD, PAD), (PAD, PAD), (0, 0)), mode="edge")
     atlas_px[row * CELL:(row + 1) * CELL, col * CELL:(col + 1) * CELL] = px
     log(f"atlas cell {i} ({col},{row}): {name}")
 
-# суффикс _d: редактор Bannerlord распознаёт такую текстуру как DiffuseMap
+# the _d suffix: the Bannerlord editor recognises such a texture as a DiffuseMap
 atlas = bpy.data.images.new(f"{ATLAS_MAT}_d", CELL * GRID, CELL * GRID, alpha=False)
 atlas.pixels.foreach_set(atlas_px.ravel())
 atlas.filepath_raw = os.path.join(TEX_DIR, f"{ATLAS_MAT}_d.png")
@@ -708,11 +708,11 @@ for mat in list(bpy.data.materials):
     if mat.users == 0:
         bpy.data.materials.remove(mat)
 
-# Порядок обхода граней НЕ разворачивать: проверено в Model Viewer 2026-09-15 — с разворотом
-# была видна изнанка модели. Исходный порядок из Blender правильный.
+# Do NOT reverse the face winding order: checked in the Model Viewer 2026-09-15, with the reversal
+# the inside of the model was visible. The original order from Blender is correct.
 
-# Плоская карта нормалей (0.5, 0.5, 1): материалу с Vertex Layout -> Bumpmap нужна карта в слоте NormalMap,
-# без неё освещение модели в игре ломается (тёмная на солнце, засвеченная в меню).
+# Flat normal map (0.5, 0.5, 1): a material with Vertex Layout -> Bumpmap needs a map in the NormalMap slot,
+# without it the model's lighting in game breaks (dark in the sun, overexposed in the menu).
 flat_n = bpy.data.images.new(f"{ATLAS_MAT}_n", 256, 256, alpha=False)
 flat_n.pixels.foreach_set(np.tile(np.array([0.5, 0.5, 1.0, 1.0], dtype=np.float32), 256 * 256))
 flat_n.filepath_raw = os.path.join(TEX_DIR, f"{ATLAS_MAT}_n.png")
@@ -720,8 +720,8 @@ flat_n.file_format = "PNG"
 flat_n.save()
 log(f"texture {flat_n.name}.png (flat normal map)")
 
-# Ровная карта бликов для шейдера кожи faceshader_high: редакторская заглушка default_editor_texture_s —
-# синий шум и даёт рябь на шерсти. Тёмно-серая карта = слабый ровный блик.
+# A flat specular map for the faceshader_high skin shader: the editor placeholder default_editor_texture_s is
+# blue noise and gives ripples on the coat. A dark grey map = a weak even highlight.
 flat_s = bpy.data.images.new(f"{ATLAS_MAT}_s", 256, 256, alpha=False)
 flat_s.pixels.foreach_set(np.tile(np.array([0.15, 0.15, 0.15, 1.0], dtype=np.float32), 256 * 256))
 flat_s.filepath_raw = os.path.join(TEX_DIR, f"{ATLAS_MAT}_s.png")
@@ -729,9 +729,9 @@ flat_s.file_format = "PNG"
 flat_s.save()
 log(f"texture {flat_s.name}.png (flat specular map)")
 
-# Модель построена лицом к +Y, как скелет из modding_resources, но движок показывает такой меш спиной
-# к скелету. Поворачиваем весь скелет вместе с мешами на 180° вокруг Z — так же повёрнут скелет
-# в эталонных FBX мододелов (Skinned Body Base Meshes). Анатомия и веса не меняются.
+# The model is built facing +Y, like the skeleton from modding_resources, but the engine shows such a mesh with its back
+# to the skeleton. We rotate the whole skeleton together with the meshes by 180° around Z; the skeleton is rotated
+# the same way in modders' reference FBXs (Skinned Body Base Meshes). Anatomy and weights do not change.
 TURN_SKELETON_ON_EXPORT = True
 if TURN_SKELETON_ON_EXPORT:
     skel.rotation_mode = "XYZ"
@@ -740,15 +740,15 @@ if TURN_SKELETON_ON_EXPORT:
     log(f"skeleton turned 180° for export, rotation {tuple(round(a, 3) for a in skel.rotation_euler)}")
 
 def add_face_morphs(ob, path):
-    """Переносит вершинные ключи ванильной головы на голову пони.
+    """Transfers the vanilla head's vertex keys onto the pony head.
 
-    Головы очень разные, поэтому сопоставляем их по габаритному ящику черепа: точка пони переводится
-    в координаты человеческой головы, берётся 4 ближайшие вершины человека, их смещения усредняются
-    и масштабируются обратно. Порядок ключей сохраняется — на него ссылаются лицевые анимации игры.
+    The heads are very different, so we match them by the skull's bounding box: a pony point is converted
+    to human head coordinates, the 4 nearest human vertices are taken, their offsets are averaged
+    and scaled back. The key order is kept: the game's facial animations refer to it.
     """
     import struct
 
-    EYE_FRAME = 17  # кадр eye_size из skins.xml — по нему находим глаза на человеческой голове
+    EYE_FRAME = 17  # the eye_size frame from skins.xml; by it we find the eyes on the human head
     with open(path, "rb") as f:
         n, frames = struct.unpack("<ii", f.read(8))
         base = np.frombuffer(f.read(n * 12), dtype="<f4").reshape(n, 3).astype(float)
@@ -758,8 +758,8 @@ def add_face_morphs(ob, path):
             pts = np.frombuffer(f.read(n * 12), dtype="<f4").reshape(n, 3).astype(float)
             deltas.append(pts - base)
 
-    # Привязка по глазам, а не по габаритам головы: с габаритами смещения человеческого лица ложились
-    # пони на уши (у пони голова шире из-за ушей и длиннее из-за морды).
+    # Anchoring by the eyes, not by the head's bounding box: with the bounding box the offsets of the human face landed
+    # on the pony's ears (the pony head is wider because of the ears and longer because of the muzzle).
     moved = np.linalg.norm(deltas[EYE_FRAME], axis=1) > 1e-4
     h_eye_l = base[moved & (base[:, 0] > 0)].mean(0)
     h_eye_r = base[moved & (base[:, 0] < 0)].mean(0)
@@ -767,12 +767,12 @@ def add_face_morphs(ob, path):
     k_x = abs(p_eye_l[0] - p_eye_r[0]) / max(abs(h_eye_l[0] - h_eye_r[0]), 1e-6)
     h_eye_mid, p_eye_mid = (h_eye_l + h_eye_r) / 2, (p_eye_l + p_eye_r) / 2
     k_z = (p_eye_mid[2] - PONY_CHIN_Z) / max(h_eye_mid[2] - base[:, 2].min(), 1e-6)
-    scale = np.array([k_x, (k_x + k_z) / 2, k_z])  # по глубине — среднее, морда пони длиннее лица
+    scale = np.array([k_x, (k_x + k_z) / 2, k_z])  # in depth the average; the pony muzzle is longer than a face
     log(f"face morph fit: human eyes {np.round(h_eye_mid, 3)}, pony {np.round(p_eye_mid, 3)}, "
         f"scale {np.round(scale, 2)}")
 
-    # локальные координаты меша: к этому моменту скелет уже повёрнут на 180°, а ключи и эталонные данные
-    # считаются в исходной системе (она же локальная для меша)
+    # local mesh coordinates: by this point the skeleton is already rotated by 180°, while the keys and reference data
+    # are computed in the original system (it is also the mesh's local one)
     pony_pts = np.array([tuple(v.co) for v in ob.data.vertices])
     h_lo, p_lo = h_eye_mid, p_eye_mid
 
@@ -783,21 +783,21 @@ def add_face_morphs(ob, path):
 
     idx, weight = [], []
     for p in pony_pts:
-        q = h_lo + (p - p_lo) / scale  # точка пони -> координаты человеческой головы
+        q = h_lo + (p - p_lo) / scale  # pony point -> human head coordinates
         near = tree.find_n(Vector(q), 4)
         w = np.array([1.0 / max(d, 1e-4) for _, _, d in near])
         idx.append([i for _, i, _ in near])
         weight.append(w / w.sum())
     idx, weight = np.array(idx), np.array(weight)
 
-    # Кадры 86/87/88 — закрытые веки (по ним движок моргает, см. анимацию idle_normal). Человеческое
-    # веко смещается на 2–4 мм, а глаз пони размером с ладонь, поэтому перенос тут бесполезен:
-    # рисуем закрытое веко сами — кожу вокруг глаза стягиваем к его центру и выводим перед глазом.
+    # Frames 86/87/88 are closed eyelids (the engine blinks by them, see the idle_normal animation). A human
+    # eyelid moves 2-4 mm, while the pony's eye is the size of a palm, so transferring is useless here:
+    # we draw the closed eyelid ourselves: the skin around the eye is pulled to its centre and brought in front of the eye.
     lid_attr = ob.data.attributes.get("eq_lid")
     lid_idx = np.array([lid_attr.data[i].value for i in range(len(ob.data.vertices))]) if lid_attr \
         else np.zeros(len(ob.data.vertices), int)
     is_lid = lid_idx > 0
-    per_eye = len(LID_EXPANDED) // 2  # первая половина вершин — правый глаз (+X), вторая — левый
+    per_eye = len(LID_EXPANDED) // 2  # the first half of the vertices is the right eye (+X), the second the left
 
     eye_attr = ob.data.attributes.get("eq_eye")
     is_eye = np.array([eye_attr.data[i].value for i in range(len(ob.data.vertices))], bool) if eye_attr \
@@ -812,9 +812,9 @@ def add_face_morphs(ob, path):
                 shift[i] = LID_EXPANDED[lid_idx[i] - 1] - pony_pts[i]
             else:
                 sel[i] = False
-        # Само глазное яблоко в кадре моргания сжимается по высоте к центру глаза. Движок часто применяет
-        # кадр не на полную силу, и одного века было почти не видно; со сжатием даже частичное срабатывание
-        # читается как прищур.
+        # The eyeball itself is squeezed vertically toward the eye centre in the blink frame. The engine often applies
+        # the frame not at full strength, and the eyelid alone was barely visible; with the squeeze even a partial trigger
+        # reads as a squint.
         for half in halves:
             c = PONY_EYES[half]
             mask = is_eye & ((pony_pts[:, 0] > 0) if half == 0 else (pony_pts[:, 0] < 0))
@@ -830,7 +830,7 @@ def add_face_morphs(ob, path):
         key = ob.shape_key_add(name=f"key_{k:03d}", from_mix=False)
         shift = blink[k] if k in blink else (d[idx] * weight[:, :, None]).sum(1) * scale
         if k not in blink:
-            shift[is_lid] = 0.0  # веки двигаются только в кадрах моргания
+            shift[is_lid] = 0.0  # eyelids move only in the blink frames
         for i, v in enumerate(key.data):
             v.co = v.co + Vector(shift[i])
     log(f"face morphs: {frames} keys transferred to {ob.name} "
@@ -852,7 +852,7 @@ for img in list(bpy.data.images):
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, f"{PREFIX}.blend"))
 log("saved blend")
 
-# ---------------------------------------------------------------- 6. превью: покой и тестовая поза
+# ---------------------------------------------------------------- 6. preview: rest and a test pose
 lo = Vector((1e9, 1e9, 1e9))
 hi = Vector((-1e9, -1e9, -1e9))
 for ob in items.values():
@@ -887,7 +887,7 @@ def render(name, direction):
 render("rest_front", Vector((0, -1, 0)))
 render("rest_side", Vector((1, 0, 0)))
 
-POSE = {  # произвольная поза, только чтобы проверить сгибы
+POSE = {  # an arbitrary pose, just to check the bends
     "bip01_r_upperarm_twist_22": (0, 0, -1.0),
     "bip01_r_foretwist_24": (0, 0, -1.2),
     "bip01_l_thigh_1": (0, 0, 0.9),

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Хвост и крылья в assets/pony/eq_pony_edit.blend — жёстко на одну кость персонажа, без смешивания.
+"""Tail and wings in assets/pony/eq_pony_edit.blend — rigidly on a single character bone, no blending.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_rigid_parts.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_rigid_parts.py
 
-У eq_pony_tail и eq_pony_wings в коллекции «Пони - цельная» после ручной перекройки веса оказались
-размазаны по костям НОГ (бёдра, голени) — видимо, при Join затянуло группы с кусков, что раньше
-были частью тела/ног. В игре это означало бы, что хвост и крылья дёргаются вместе с ногами при ходьбе.
-Обе части — предметы на скелете (см. src/EquestriaBodyParts.cs), а не часть скиннинга тела, поэтому
-им положена ровно одна кость на 100% веса, как у хвоста самой пони до всех правок.
+After the manual re-cut, the weights of eq_pony_tail and eq_pony_wings in the
+"Pony - whole" collection turned out
+smeared over the LEG bones (thighs, calves) — apparently Join pulled in groups from pieces that used to
+be part of the body/legs. In game this would mean the tail and wings twitch along with the legs when
+walking. Both parts are items on the skeleton (see src/EquestriaBodyParts.cs), not part of the body
+skinning, so they get exactly one bone at 100% weight, like the pony's own tail before all the edits.
 """
 import bpy
 

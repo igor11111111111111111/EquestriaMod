@@ -9,10 +9,10 @@ using TaleWorlds.Library;
 
 namespace EquestriaMod
 {
-    // Смотр логова разбойников на карте (10.10.2026, проверка моделей логов — tools/dress_hideouts.py).
-    //   /eqhideout   дождавшись карты, находит ближайшее логово (сперва занятое разбойниками),
-    //                делает его обнаруженным, ставит отряд игрока в ~15 м от него и ведёт туда.
-    // run.ps1 -Hideout. В журнал — «логово: …» с именем, id и координатами.
+    // Bandit hideout inspection on the map (10.10.2026, checking the hideout models: tools/dress_hideouts.py).
+    //   /eqhideout   once the map is up, finds the nearest hideout (an infested one first),
+    //                makes it spotted, puts the player's party ~15 m from it and leads it there.
+    // run.ps1 -Hideout. The log gets "hideout: …" lines with the name, id and coordinates.
     public static class EquestriaHideoutTest
     {
         private const string Arg = "/eqhideout";
@@ -66,7 +66,7 @@ namespace EquestriaMod
             Settlement target = hideouts.FirstOrDefault(s => s.Hideout.IsInfested) ?? hideouts[0];
             target.Hideout.IsSpotted = true;
 
-            // Ставим отряд в StartDistance от логова — со стороны, откуда шли, — и ведём к нему
+            // Put the party StartDistance from the hideout, on the side it came from, and lead it there
             Vec2 pos = target.GetPosition2D;
             Vec2 dir = me - pos;
             dir = dir.LengthSquared > 0.01f ? dir.Normalized() : new Vec2(-1f, -1f).Normalized();

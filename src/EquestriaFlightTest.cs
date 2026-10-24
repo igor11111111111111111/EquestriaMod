@@ -10,9 +10,9 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Примерочная свитка полёта (замена ездовым коням — зверю на звере ездить нелепо, см.
-    // tools/make_items.py: eq_flight_scroll_50). Тот же приём, что у EquestriaHelmetTest: ждём карту,
-    // выдаём и надеваем предмет сами, без единого клика. /eqflight из консоли/run.ps1 -Flight.
+    // Fitting room for the flight scroll (a replacement for riding horses: a beast riding a beast is absurd, see
+    // tools/make_items.py: eq_flight_scroll_50). The same trick as EquestriaHelmetTest: wait for the map,
+    // give and equip the item ourselves, without a single click. /eqflight from the console/run.ps1 -Flight.
     public static class EquestriaFlightTest
     {
         private const string Arg = "/eqflight";
@@ -50,16 +50,16 @@ namespace EquestriaMod
             }
             _done = true;
             EquestriaCrashLog.Try("свиток полёта по ключу", () => EquestriaCrashLog.Log(Run(null)));
-            // Сразу бой: 100 на 100 бывших конников (кони у всех войск заменены свитками —
-            // EquestriaFlightArmy), чтобы смотреть полёт в массе, а не на одном герое.
+            // Straight into battle: 100 vs 100 former cavalrymen (horses of all troops are replaced with scrolls,
+            // EquestriaFlightArmy), to watch flight en masse, not on a single hero.
             EquestriaCrashLog.Try("свиток полёта: бой по ключу", () => EquestriaCrashLog.Log(
                 EquestriaHelmetTest.BigBattle(new List<string> { BattleSide.ToString(), BattleTroop })));
         }
 
         private const int BattleSide = 100;
-        private const string BattleTroop = "battanian_oathsworn"; // Guard of Deer Grove — олени (пешие, без свитка; баттанийская ветка); чейнджлинги: aserai_faris, гиппогрифы: eq_hg_sturgian_horse_raider, грифоны: khuzait_heavy_lancer, драконы: vlandian_knight
+        private const string BattleTroop = "battanian_oathsworn"; // Guard of Deer Grove: deer (on foot, no scroll; Battanian branch); changelings: aserai_faris, hippogriffs: eq_hg_sturgian_horse_raider, griffons: khuzait_heavy_lancer, dragons: vlandian_knight
 
-        // equestria.flight_test — выдать и надеть свиток полёта на герое
+        // equestria.flight_test: give and equip the flight scroll on the hero
         [CommandLineFunctionality.CommandLineArgumentFunction("flight_test", "equestria")]
         public static string Run(List<string> args)
         {

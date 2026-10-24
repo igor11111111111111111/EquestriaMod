@@ -11,13 +11,13 @@ using TaleWorlds.Localization;
 
 namespace EquestriaMod
 {
-    // Фильтр «Народность» в энциклопедии (10.10.2026): страницы войск, героев, поселений и кланов
-    // перечисляют только культуры с is_main_culture="true" (DefaultEncyclopedia*Page.
-    // InitializeFilterItems). Оления сидит на ванильном id nord, а у нордов этот флаг false —
-    // и олени в фильтре не появлялись, хотя держава и войска у них свои. Флаг не включаем:
-    // по нему же собирается список культур на экране создания персонажа, а там у Олении нет
-    // ни карточки, ни сюжетных веток. Вместо этого дописываем в группу «Народность» каждую
-    // культуру, у которой есть держава на карте, но которой в списке ещё нет.
+    // The "Culture" filter in the encyclopedia (10.10.2026): the troop, hero, settlement and clan
+    // pages list only cultures with is_main_culture="true" (DefaultEncyclopedia*Page.
+    // InitializeFilterItems). Deerland sits on the vanilla id nord, and the Nords have this flag false,
+    // so deer did not appear in the filter, although they have their own realm and troops. We do not enable
+    // the flag: the culture list on the character creation screen is built from it too, and Deerland has
+    // neither a card nor story branches there. Instead we add to the "Culture" group every
+    // culture that has a realm on the map but is not in the list yet.
     public static class EquestriaEncyclopediaCultures
     {
         private static bool _patched;

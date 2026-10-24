@@ -1,13 +1,13 @@
-# Чтение и запись terrain.bin — двоичного рельефа сцены Bannerlord.
+# Reading and writing terrain.bin, the binary terrain of a Bannerlord scene.
 #
-# Формат (версия 2), разобран по нашему файлу:
-#   "ZGR6RTRN" + версия(4)
-#   далее таблица кусков, по 20 байт на кусок:
-#       имя(4) + количество(4) + смещение(4) + длина(4) + длина_без_сжатия(4)
-#   куски: MIDX (индекс), HGHT (высоты), NRML (нормали), WGHT (веса слоёв), PHYM (материалы физики)
-#   Содержимое каждого куска — обычный PNG.
+# Format (version 2), worked out from our file:
+#   "ZGR6RTRN" + version(4)
+#   then the chunk table, 20 bytes per chunk:
+#       name(4) + count(4) + offset(4) + length(4) + uncompressed_length(4)
+#   chunks: MIDX (index), HGHT (heights), NRML (normals), WGHT (layer weights), PHYM (physics materials)
+#   The content of each chunk is a plain PNG.
 #
-# WGHT и есть «что где покрашено»: по картинке на слой, яркость = насколько слой виден.
+# WGHT is exactly "what is painted where": one image per layer, brightness = how visible the layer is.
 import struct
 import zlib
 
@@ -16,12 +16,12 @@ PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 
 # ---------------------------------------------------------------- LZ4
-# Куски сжаты блочным LZ4 (той же библиотекой, что и ассеты .tpac). В таблице кусков рядом с
-# длиной лежит длина без сжатия — по ней и проверяем, что распаковали верно.
+# Chunks are compressed with block LZ4 (the same library as the .tpac assets). In the chunk table next to
+# the length lies the uncompressed length: it is used to check that the decompression is right.
 #
-# Формат блока: байт-признак (старшая половина — сколько байт копировать как есть, младшая —
-# длина совпадения), затем сами байты, затем смещение назад (2 байта) и хвост длины совпадения.
-# Длина 15 означает «продолжение в следующих байтах, пока не встретится не-255».
+# Block format: a token byte (high nibble: how many bytes to copy as is, low nibble: the
+# match length), then the bytes themselves, then the back offset (2 bytes) and the match length tail.
+# A length of 15 means "continued in the following bytes until a non-255 is met".
 def lz4_decompress(data, expected):
     out = bytearray()
     position = 0
@@ -61,7 +61,7 @@ def lz4_decompress(data, expected):
         start = len(out) - offset
         if start < 0:
             raise ValueError("испорченный поток LZ4: смещение за пределы вывода")
-        # Копируем по байту: куски могут перекрываться (так LZ4 кодирует повторы).
+        # Copy byte by byte: the pieces may overlap (that is how LZ4 encodes repeats).
         for i in range(match):
             out.append(out[start + i])
 
@@ -71,14 +71,14 @@ def lz4_decompress(data, expected):
 
 
 def lz4_compress(data):
-    """Простейшее сжатие: всё содержимое как есть, без поиска совпадений.
+    """The simplest compression: all content as is, without searching for matches.
 
-    Игре достаточно корректного потока, а размер нас не жмёт: карта весов невелика.
-    Так мы не рискуем ошибиться в поиске совпадений — а распаковщик всё равно наш же.
+    A correct stream is enough for the game, and the size does not bother us: the weight map is small.
+    This way we do not risk a mistake in the match search, and the decompressor is ours anyway.
     """
-    # Блок LZ4 — это последовательности «литералы + совпадение», и только ПОСЛЕДНЯЯ может
-    # состоять из одних литералов. Поэтому пишем весь буфер одной такой последовательностью:
-    # признак с длиной 15 означает «продолжение в следующих байтах».
+    # An LZ4 block is a series of "literals + match" sequences, and only the LAST one may
+    # consist of literals alone. So the whole buffer is written as one such sequence:
+    # a token with length 15 means "continued in the following bytes".
     size = len(data)
     out = bytearray()
     if size < 15:
@@ -120,7 +120,7 @@ def read(path):
         name = blob[position:position + 4]
         if not name.isalpha() and not name.isalnum():
             break
-        if not all(65 <= b <= 90 for b in name):  # заголовки — латиница заглавными
+        if not all(65 <= b <= 90 for b in name):  # headers are uppercase Latin letters
             break
         count, offset, length, raw_length = struct.unpack_from("<4I", blob, position + 4)
         if offset + length > len(blob):
@@ -128,9 +128,9 @@ def read(path):
         chunks.append(Chunk(name.decode("ascii"), count, offset, length, raw_length))
         position += 20
 
-    # ВАЖНО: поле «длина» в таблице — это длина СЖАТОГО ПОТОКА, а не всего куска. Перед потоком
-    # ещё лежит таблица смещений по узлам рельефа (по 4 байта на узел). Поэтому настоящие границы
-    # куска берём по началу следующего: так ничего не теряется в хвосте.
+    # IMPORTANT: the "length" field in the table is the length of the COMPRESSED STREAM, not of the whole chunk.
+    # Before the stream there is also an offset table per terrain node (4 bytes per node). So the real chunk
+    # boundaries are taken from the start of the next chunk: this way nothing is lost at the tail.
     chunks.sort(key=lambda c: c.offset)
     for i, chunk in enumerate(chunks):
         end = chunks[i + 1].offset if i + 1 < len(chunks) else len(blob)
@@ -140,7 +140,7 @@ def read(path):
 
 
 def split_pngs(data):
-    """Внутри куска может лежать несколько PNG подряд (по одному на слой или узел)."""
+    """A chunk may hold several PNGs in a row (one per layer or node)."""
     out = []
     position = 0
     while True:
@@ -150,20 +150,20 @@ def split_pngs(data):
         end = data.find(b"IEND", start)
         if end < 0:
             break
-        end += 8  # длина имени + контрольная сумма
+        end += 8  # name length + checksum
         out.append(data[start:end])
         position = end
     return out
 
 
 def png_info(png):
-    """Ширина, высота, глубина бита, тип цвета из заголовка PNG."""
+    """Width, height, bit depth, colour type from the PNG header."""
     width, height, depth, color = struct.unpack_from(">IIBB", png, 16)
     return width, height, depth, color
 
 
 def png_pixels(png):
-    """Распаковка PNG без чересстрочности в список строк байтов (после снятия фильтров)."""
+    """Unpack a non-interlaced PNG into a list of byte rows (after removing the filters)."""
     width, height, depth, color = png_info(png)
     channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color]
     stride = width * channels * depth // 8
@@ -206,8 +206,8 @@ def png_pixels(png):
 
 
 def make_png(width, height, depth, color, rows, filter_type=0):
-    """Сборка PNG. filter_type=2 («вверх», строка минус предыдущая) сильно уменьшает файл на
-    плавных данных вроде высот и нормалей — на мелкой сетке это разница в разы."""
+    """Build a PNG. filter_type=2 ("up", row minus the previous one) shrinks the file a lot on
+    smooth data like heights and normals: on a fine grid the difference is several times."""
     if filter_type == 2:
         lines, previous = [], bytes(len(rows[0])) if rows else b""
         for row in rows:
@@ -228,7 +228,7 @@ def make_png(width, height, depth, color, rows, filter_type=0):
 
 
 def write(path, version, chunks):
-    """Пересборка файла: таблица кусков пересчитывается под новые длины."""
+    """Rebuild the file: the chunk table is recomputed for the new lengths."""
     header = MAGIC + struct.pack("<I", version)
     table_size = 20 * len(chunks)
     position = len(header) + table_size
@@ -236,7 +236,7 @@ def write(path, version, chunks):
     table = b""
     body = b""
     for chunk in chunks:
-        # В таблицу пишем длину сжатого потока (без таблицы смещений в начале куска).
+        # The table gets the length of the compressed stream (without the offset table at the start of the chunk).
         stream_length = len(chunk.data) - chunk.header_size
         table += (chunk.name.encode("ascii") + struct.pack("<4I", chunk.count, position,
                                                            stream_length, chunk.raw_length))

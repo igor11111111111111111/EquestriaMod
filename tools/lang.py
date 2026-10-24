@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Двуязычные строки мода: в XML идёт английский, русский уезжает в Languages/RU.
+"""Bilingual mod strings: English goes into the XML, Russian moves to Languages/RU.
 
-Так устроена сама игра: базовый текст лежит прямо в XML, а переводы — языковыми файлами
-(Modules/Native/ModuleData/Languages/<код>). Английского файла нет и быть не может: английский —
-это и есть базовый текст. Пока наши XML были русскими, игрок с любой локалью видел русский.
+This is how the game itself works: the base text sits right in the XML, and translations are language files
+(Modules/Native/ModuleData/Languages/<code>). There is no English file and there cannot be one: English
+is the base text itself. While our XML was Russian, a player with any locale saw Russian.
 
-Таблицы мода (tools/world_data.py и прочие) написаны по-русски, переписывать их не нужно: здесь
-русская строка переводится по словарю tools/lang_words.py — сначала целиком, потом по словам
-(«Медовый Ручей» = «Медовый» + «Ручей»). Чего в словаре нет, то остаётся русским и попадает в
-отчёт: `lang.report()` печатает список, по нему словарь и пополняется.
+The mod's tables (tools/world_data.py and others) are written in Russian and need no rewriting: here
+a Russian string is translated with the dictionary tools/lang_words.py - first as a whole, then word by word
+("Honey Creek" = "Honey" + "Creek"). Whatever is missing from the dictionary stays Russian and goes into
+the report: `lang.report()` prints the list, and the dictionary is extended from it.
 
-Пользоваться так:
+Usage:
     import lang
-    body.append('name="%s"' % lang.loc("culture_empire", "Эквестрия"))
+    body.append('name="%s"' % lang.loc("culture_empire", "<Russian text>"))
     ...
-    lang.write(DATA, "eq_world")   # Languages/*/eq_world_*.xml для всех языков игры
+    lang.write(DATA, "eq_world")   # Languages/*/eq_world_*.xml for all game languages
 """
 import os
 import re
 
 import lang_words
 
-# Языки игры: код папки -> (id языка, как он записан в language_data.xml, суффикс файлов).
-# Английского в списке нет: он берётся из базового текста XML.
+# Game languages: folder code -> (language id as written in language_data.xml, file suffix).
+# English is not in the list: it comes from the base text of the XML.
 LANGUAGES = [
     ("BR", "Português (BR)", "bra"),
     ("CNs", "简体中文", "chs"),
@@ -38,19 +38,19 @@ LANGUAGES = [
     ("TR", "Türkçe", "tur"),
 ]
 
-# Английский — тоже язык с файлами: у самой игры они лежат в корне Languages (std_*.xml с
-# <tag language="English"/>). Нужен только репликам: их базового текста в XML нет, код строит
-# TextObject("{=eq_...}") без текста по умолчанию, и без английского файла такой ключ пуст.
+# English is also a language with files: the game's own ones sit in the root of Languages (std_*.xml with
+# <tag language="English"/>). Needed only for dialogue lines: they have no base text in XML, the code builds
+# TextObject("{=eq_...}") with no default text, and without an English file such a key is empty.
 ENGLISH = ("EN", "English", "eng")
 
 
 _CYRILLIC = re.compile(r"[А-Яа-яЁё]")
 _TOKEN = re.compile(r"[А-Яа-яЁё]+(?:[-’'][А-Яа-яЁё]+)*")
 
-# Побуквенная запись латиницей — для имён, которых нет в словаре. Почти все названия на карте
-# пришли из Equestria at War и сами были когда-то английскими, поэтому обратная запись даёт
-# близкое к исходному: «Аглоссата» → Aglossata, «Хярлигхамн» → Hyarlighamn. Для предложений так
-# делать нельзя — они остаются русскими и попадают в отчёт.
+# Letter-by-letter Latin spelling - for names missing from the dictionary. Almost all map names
+# came from Equestria at War and were once English themselves, so the reverse spelling gives
+# something close to the original, e.g. Aglossata, Hyarlighamn. This must not be
+# done for sentences - they stay Russian and go into the report.
 _LETTERS = {
     "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo", "ж": "zh",
     "з": "z", "и": "i", "й": "y", "к": "k", "л": "l", "м": "m", "н": "n", "о": "o",
@@ -75,15 +75,15 @@ def translit(text):
 
 
 def _looks_like_name(text, tokens):
-    """Имя (а не предложение и не собранная строка): без точки, без подстановок вроде
-    {FIRSTNAME}, и все русские слова с большой буквы."""
+    """A name (not a sentence and not an assembled string): no full stop, no substitutions like
+    {FIRSTNAME}, and all Russian words capitalised."""
     return ("." not in text and "{" not in text and bool(tokens)
             and all(t[0].isupper() for t in tokens))
 
-_pairs = []       # [(id строки, русский текст)] в порядке появления
+_pairs = []       # [(string id, Russian text)] in order of appearance
 _seen = set()
-_missing = {}      # непереведённое -> сколько раз встретилось
-_translit = {}     # записанное латиницей побуквенно -> сколько раз
+_missing = {}      # untranslated -> how many times seen
+_translit = {}     # spelled in Latin letter by letter -> how many times
 
 
 def esc(text):
@@ -92,22 +92,22 @@ def esc(text):
 
 
 def en(ru):
-    """Английский текст для русской строки. Чего не знаем — отдаём как есть и запоминаем."""
+    """English text for a Russian string. Whatever is unknown is returned as is and remembered."""
     ru = (ru or "").strip()
     if not ru or not _CYRILLIC.search(ru):
         return ru
     whole = lang_words.PHRASES.get(ru)
     if whole:
         return whole
-    # Составное имя: переводим по словам, но только если известны ВСЕ слова — иначе выйдет
-    # полурусская каша вроде «Honey Ручей», которую в отчёте потом не разглядеть.
+    # Compound name: translate word by word, but only if ALL words are known - otherwise we get
+    # a half-Russian mess like "Honey" plus an untranslated Russian word, which is then hard to spot in the report.
     tokens = _TOKEN.findall(ru)
     if tokens and all(t in lang_words.WORDS for t in tokens):
         return _TOKEN.sub(lambda m: lang_words.WORDS[m.group(0)], ru)
     if _looks_like_name(ru, tokens):
-        # Незнакомое имя: пишем латиницей пословно, известные части всё равно берём из словаря.
-        # Запоминаем отдельно: у канонных имён есть настоящее английское написание («Кантерлот» —
-        # это Canterlot, а не Kanterlot), и такие места надо просматривать глазами.
+        # Unknown name: spell it in Latin word by word, still taking known parts from the dictionary.
+        # Remembered separately: canon names have a real English spelling (the Russian name is
+        # Canterlot, not Kanterlot), and such places need to be reviewed by eye.
         _translit[ru] = _translit.get(ru, 0) + 1
         return _TOKEN.sub(lambda m: lang_words.WORDS.get(m.group(0)) or translit(m.group(0)), ru)
     _missing[ru] = _missing.get(ru, 0) + 1
@@ -115,10 +115,10 @@ def en(ru):
 
 
 def loc(key, ru, english=None):
-    """'{=ключ}English' для XML; русский запоминается для языкового файла.
+    """'{=key}English' for XML; the Russian is remembered for the language file.
 
-    english передают там, где английский текст собирается рядом с русским (описания поселений
-    строятся по шаблону, и переводить готовое предложение по словарю было бы гаданием).
+    english is passed where the English text is assembled next to the Russian one (settlement descriptions
+    are built from a template, and translating a finished sentence with the dictionary would be guesswork).
     """
     text = english if english is not None else en(ru)
     if key not in _seen:
@@ -128,18 +128,18 @@ def loc(key, ru, english=None):
 
 
 def report(log=print, dump=None):
-    """Сколько строк собрано и что осталось непереведённым.
+    """How many strings were collected and what remains untranslated.
 
-    Полный список пишется в файл (по умолчанию tools/lang_missing.txt): сверху неизвестные слова
-    — их и стоит дописывать в WORDS, потому что из них складываются составные имена, — снизу
-    целые строки для PHRASES.
+    The full list is written to a file (tools/lang_missing.txt by default): unknown words at the top
+    - these are what should be added to WORDS, because compound names are built from them - and
+    whole strings for PHRASES at the bottom.
     """
     log("строк с переводом: %d" % len(_pairs))
     path = dump or os.path.join(os.path.dirname(os.path.abspath(__file__)), "lang_missing.txt")
     if not _missing and not _translit:
         log("весь текст переведён по словарю")
         if os.path.exists(path):
-            os.remove(path)   # чтобы список от прошлой сборки не сбивал с толку
+            os.remove(path)   # so that the list from the previous build does not confuse
         return
     words = {}
     for text, count in _missing.items():
@@ -163,16 +163,16 @@ def report(log=print, dump=None):
 
 
 def strings_file(language, pairs, comment, groups=()):
-    """Текст языкового файла. pairs — [(id, текст)], groups — {id: заголовок-комментарий перед ним}."""
+    """Language file text. pairs - [(id, text)], groups - {id: heading comment before it}."""
     groups = dict(groups)
     rows = []
     for key, text in pairs:
         if key in groups:
             rows.append("\n    <!-- %s -->" % groups[key])
         rows.append('    <string id="%s" text="%s" />' % (key, esc(text)))
-    # Комментарий — только ВНУТРИ <base>: игра берёт ChildNodes[1] документа и ждёт там корень.
-    # Комментарий перед <base> занимает это место, и файл молча пропускается целиком
-    # (LocalizedTextManager.LoadLanguage, проверено по IL 19.09.2026).
+    # The comment goes only INSIDE <base>: the game takes the document's ChildNodes[1] and expects the root there.
+    # A comment before <base> takes that place, and the whole file is silently skipped
+    # (LocalizedTextManager.LoadLanguage, checked against the IL 19.09.2026).
     return ('<?xml version="1.0" encoding="utf-8"?>\n'
             '<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
             ' xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">\n'
@@ -182,10 +182,10 @@ def strings_file(language, pairs, comment, groups=()):
 
 
 def index(data_dir, code, language, suffix):
-    """language_data.xml папки языка — по содержимому папки.
+    """language_data.xml of a language folder - from the folder's contents.
 
-    Собирается заново каждый раз, поэтому сборщики (мир, предметы, войска, реплики) кладут свои
-    файлы и ничего чужого не затирают; написанные руками файлы попадают в список так же.
+    Rebuilt every time, so the builders (world, items, troops, dialogue) drop in their own
+    files and overwrite nothing of others; hand-written files get into the list the same way.
     """
     folder = os.path.join(data_dir, "Languages", code)
     os.makedirs(folder, exist_ok=True)
@@ -200,12 +200,12 @@ def index(data_dir, code, language, suffix):
 
 
 def write(data_dir, name, log=print):
-    """Языковые файлы всех языков игры. name — основа имени файла, например "eq_world".
+    """Language files for all game languages. name - the file name stem, e.g. "eq_world".
 
-    RU получает настоящий перевод (наши таблицы русские), остальные — заготовку с английским
-    текстом: переводчику остаётся заменить строки, а до тех пор игра и так покажет английский,
-    потому что он базовый. Английской папки здесь нет: для этих строк английский уже лежит в XML,
-    и второй экземпляр только мешал бы (правишь XML — а игра показывает старое из файла).
+    RU gets the real translation (our tables are Russian), the others get a stub with the English
+    text: a translator only has to replace the strings, and until then the game shows English anyway,
+    because it is the base. There is no English folder here: for these strings English is already in the XML,
+    and a second copy would only get in the way (you edit the XML - and the game shows the old text from the file).
     """
     comment = ("Собран скриптом из tools/. Русский текст берётся из таблиц мода,\n"
                "     английский (базовый, лежит в самих XML) — из tools/lang_words.py.")

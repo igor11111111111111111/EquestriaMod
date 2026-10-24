@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Жёсткие меши крыльев для машущих крыльев (10.10.2026): eq_<раса>_wing_l / eq_<раса>_wing_r.
+"""Rigid wing meshes for flapping wings (10.10.2026): eq_<race>_wing_l / eq_<race>_wing_r.
 
-Меш крыльев расы делится по знаку X, каждая половина переносится так, что НАЧАЛО КООРДИНАТ —
-корень крыла (центр вершин у позвоночника). Взмах делает код (EquestriaWingsTest): поворот
-сущности вокруг корня по синусу. Скелет птицы и скиннинг не используются — их привязку в игре
-измерить нельзя, перебор не сошёлся.
+The race's wing mesh is split by the sign of X, each half is moved so that the ORIGIN is
+the wing root (the centre of the vertices at the spine). The flap is done by code (EquestriaWingsTest): rotating
+the entity around the root by a sine. The bird skeleton and skinning are not used: their binding in game
+cannot be measured, the trial-and-error search did not converge.
 
-Запуск: blender --background <blend расы> --python tools/make_wing_meshes.py -- <раса>
-    пони:   assets/pony/eq_pony_edit.blend   -- pony
-    дракон: assets/dragon/eq_dragon.blend    -- dragon
-    грифон: assets/griffon/eq_griffon.blend  -- griffon
-    гиппогриф: assets/hippogriff/hippogriff.blend -- hippogriff
-    чейнджлинг: assets/changeling/eq_changeling.blend -- changeling
-Выход: assets/wings/eq_<раса>_wing_lr.fbx (+ печать корней в координатах модели для кода:
-RootLeft/RootRight в EquestriaWingsTest.Races).
+Run: blender --background <race blend> --python tools/make_wing_meshes.py -- <race>
+    pony:       assets/pony/eq_pony_edit.blend   -- pony
+    dragon:     assets/dragon/eq_dragon.blend    -- dragon
+    griffon:    assets/griffon/eq_griffon.blend  -- griffon
+    hippogriff: assets/hippogriff/hippogriff.blend -- hippogriff
+    changeling: assets/changeling/eq_changeling.blend -- changeling
+Output: assets/wings/eq_<race>_wing_lr.fbx (+ printing of the roots in model coordinates for the code:
+RootLeft/RootRight in EquestriaWingsTest.Races).
 """
 import os
 
@@ -24,7 +24,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RACE = sys.argv[sys.argv.index("--") + 1] if "--" in sys.argv else "pony"
-# раса → (коллекция или None, объект крыльев в blend)
+# race → (collection or None, wing object in the blend)
 SOURCES = {
     "pony": ("Пони - цельная", "eq_pony_wings"),
     "dragon": (None, "eq_wings"),
@@ -32,12 +32,12 @@ SOURCES = {
     "hippogriff": (None, "eq_hippogriff_wings"),
     "changeling": (None, "eq_changeling_wings"),
 }
-# Материал меша в FBX должен называться как материал расы в модуле (pony_skins.xml: eq_<раса>_body),
-# иначе редактор при каждом запуске показывает "Unable to find material" (замечено 10.10.2026 у дракона:
-# в blend материал звался Material.001).
+# The mesh material in the FBX must be named like the race material in the module (pony_skins.xml: eq_<race>_body),
+# otherwise the editor shows "Unable to find material" on every launch (noticed 10.10.2026 on the dragon:
+# in the blend the material was called Material.001).
 MATERIALS = {"pony": "eq_pony_body", "dragon": "eq_dragon_body", "griffon": "eq_griffon_body", "hippogriff": "eq_hippogriff_body", "changeling": "eq_changeling_body"}
 OUT_FBX = os.path.join(ROOT, "assets", "wings", "eq_%s_wing_lr.fbx" % RACE)
-ROOT_BAND = 0.03  # м: вершины ближе этого к плоскости симметрии считаем корнем
+ROOT_BAND = 0.03  # m: vertices closer than this to the symmetry plane count as the root
 
 collection, obj_name = SOURCES[RACE]
 wings = (bpy.data.collections[collection].objects if collection else bpy.data.objects)[obj_name]
@@ -55,7 +55,7 @@ for name, sign in (("eq_%s_wing_l" % RACE, 1), ("eq_%s_wing_r" % RACE, -1)):
     mat = bpy.data.materials.get(mat_name) or bpy.data.materials.new(mat_name)
     mesh.materials.clear()
     mesh.materials.append(mat)
-    # оставить половину
+    # keep one half
     bpy.context.view_layer.objects.active = ob
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="DESELECT")

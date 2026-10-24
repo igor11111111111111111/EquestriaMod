@@ -1,9 +1,9 @@
-# Выбирает ванильную имперскую броню для переделки под пони.
+# Picks vanilla Empire armour to rework for ponies.
 #
-#   python pick_armor.py [папка игры]
+#   python pick_armor.py [game folder]
 #
-# Печатает по пять вещей в каждом слоте (шлем, корпус, ноги, руки) — самые защищённые из имперских,
-# с именем меша, которое нужно выгрузить утилитой tpac_export и скормить adapt_armor.py.
+# Prints five items per slot (helmet, body, legs, hands), the best-protected Empire ones,
+# with the mesh name to extract with the tpac_export tool and feed to adapt_armor.py.
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -12,7 +12,7 @@ GAME = sys.argv[1] if len(sys.argv) > 1 else \
     r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord"
 ITEMS = os.path.join(GAME, "Modules", "SandBoxCore", "ModuleData", "items")
 
-# файл -> (как называется слот у нас, какое поле брони считать главным)
+# file -> (what we call the slot, which armour field counts as the main one)
 SLOTS = [
     ("head_armors.xml", "head", "head_armor"),
     ("body_armors.xml", "body", "body_armor"),
@@ -37,7 +37,7 @@ for filename, slot, field in SLOTS:
     for item in root.iter("Item"):
         if (item.get("culture") or "") != "Culture.empire":
             continue
-        # Женские варианты и «полные» дубли пропускаем: у пони одна модель на всех.
+        # Skip female variants and "full" duplicates: ponies have one model for everyone.
         item_id = item.get("id") or ""
         if item_id.endswith("_female") or "_civil" in item_id:
             continue

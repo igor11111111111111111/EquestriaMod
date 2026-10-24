@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели грифона из assets/griffon/eq_griffon.blend в assets/griffon/eq_griffon.fbx.
+"""Export of the fixed griffon model from assets/griffon/eq_griffon.blend to assets/griffon/eq_griffon.fbx.
 
-Запуск: blender --background assets/griffon/eq_griffon.blend --python tools/griffon_edit_export.py
+Run: blender --background assets/griffon/eq_griffon.blend --python tools/griffon_edit_export.py
 
-Экспортируются скелет (bip01_notused) и семь частей из коллекции «Meshy Skybound Griffin» — имена
-объектов там уже в финальном виде (eq_griffon_*, ухо — eq_griffon_ear в единственном числе),
-переименовывать не нужно. Те же настройки экспорта, что и в основном конвейере tools/make_griffon.py
-(оси X/-Y, без анимации).
+Exported are the skeleton (bip01_notused) and seven parts from the collection «Meshy Skybound Griffin» - the object
+names there are already final (eq_griffon_*, the ear is eq_griffon_ear in the singular),
+no renaming needed. The same export settings as in the main pipeline tools/make_griffon.py
+(axes X/-Y, no animation).
 """
 import os
 
@@ -40,9 +40,9 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye in the Outliner turned off) - for the yak
+    # the skeleton turned out to be exactly like that, the export quietly went out without bones (noticed by the
+    # A-pose in battle 07.10.2026, see yak_edit_export.py). Unhide before selecting just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

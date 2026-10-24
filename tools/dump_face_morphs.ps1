@@ -1,10 +1,10 @@
-﻿# Выгружает вершинные ключи (морфы) ванильной головы Bannerlord в простой бинарный файл.
-# Ими движок делает моргание, движение глаз и мимику; у импортированной головы их нет.
+﻿# Exports the vertex keys (morphs) of the vanilla Bannerlord head into a simple binary file.
+# The engine uses them for blinking, eye movement and facial expressions; an imported head has none.
 #
 #   .\tools\dump_face_morphs.ps1 [-Mesh head_female_a] [-Out assets\reference\face_morphs\head_female_a.bin]
 #
-# Формат: int32 verts, int32 frames, float32[verts*3] базовые позиции,
-#         затем на каждый кадр: int32 time, float32[verts*3] позиции.
+# Format: int32 verts, int32 frames, float32[verts*3] base positions,
+#         then for each frame: int32 time, float32[verts*3] positions.
 param(
     [string]$Mesh = "head_female_a",
     [string]$Out = ""

@@ -11,15 +11,15 @@ using TaleWorlds.Core;
 
 namespace EquestriaMod
 {
-    // Краш 10.10.2026 (прогон -MixedBirths, 24-й день): отряд лорда заходит в город и продаёт
-    // добычу (PartiesSellLootCampaignBehavior.OnSettlementEntered). Ванильное условие
+    // Crash 10.10.2026 (-MixedBirths run, day 24): a lord's party enters a town and sells
+    // loot (PartiesSellLootCampaignBehavior.OnSettlementEntered). The vanilla condition
     //   item.ItemType != Horse || !item.HorseComponent.IsRideable || …
-    // считает, что у любого предмета типа «конь» есть HorseComponent. У свитков полёта
-    // (eq_flight_scroll_*) тип Horse, а компонента нет — NullReferenceException, как только свиток
-    // попал в обоз лорда (добыча после боя). Код повторён целиком, свиток считается ездовым и
-    // не продаётся — как ванильные ездовые кони, которые лорды держат для своей конницы.
-    // Остальные обращения к HorseComponent в кампании проверены (декомпиляция 10.10.2026):
-    // защищены HasHorseComponent/IsMountable или уже закрыты патчами EquestriaFlightScroll.
+    // assumes that any item of type "horse" has a HorseComponent. Flight scrolls
+    // (eq_flight_scroll_*) have type Horse but no component: a NullReferenceException as soon as a scroll
+    // gets into a lord's baggage (loot after a battle). The code is repeated in full, the scroll counts
+    // as a riding mount and is not sold, like the vanilla riding horses that lords keep for their cavalry.
+    // The other HorseComponent accesses in the campaign were checked (decompilation 10.10.2026):
+    // guarded by HasHorseComponent/IsMountable or already covered by EquestriaFlightScroll patches.
     [HarmonyPatch(typeof(PartiesSellLootCampaignBehavior), nameof(PartiesSellLootCampaignBehavior.OnSettlementEntered))]
     internal static class EquestriaScrollLootFix
     {
@@ -44,7 +44,7 @@ namespace EquestriaMod
                 if (item.ItemType == ItemObject.ItemTypeEnum.Horse)
                 {
                     HorseComponent horse = item.HorseComponent;
-                    // свиток полёта (компонента нет) — ездовой, как и целый ездовой конь
+                    // a flight scroll (no component) is a riding mount, just like a whole riding horse
                     if (horse == null || (horse.IsRideable && itemModifier == null && !horse.IsPackAnimal))
                     {
                         continue;
@@ -66,17 +66,17 @@ namespace EquestriaMod
         }
     }
 
-    // Краш 10.10.2026 (прогон -MixedBirths, сохранение на 45-м дне): снимок главного героя для
-    // карточки сохранения (SandBox.View.MainHeroSaveVisualSupplier.GetMainHeroVisualCode) при
-    // непустом слоте коня читает item.HorseComponent.Monster — у свитка его нет. Падало ЛЮБОЕ
-    // сохранение героя со свитком полёта. На время снимка свиток и сбруя снимаются с героя
-    // (на снимке он пеший, как и в игре — свиток не виден) и сразу возвращаются.
+    // Crash 10.10.2026 (-MixedBirths run, save on day 45): the main hero snapshot for the
+    // save card (SandBox.View.MainHeroSaveVisualSupplier.GetMainHeroVisualCode) with a
+    // non-empty horse slot reads item.HorseComponent.Monster, which the scroll does not have. ANY
+    // save of a hero with a flight scroll crashed. For the snapshot the scroll and harness are taken off the hero
+    // (in the snapshot he is on foot, as in the game, the scroll is not visible) and put back right away.
     //
-    // ВНИМАНИЕ: ставится НЕ атрибутом (PatchAll при загрузке мода), а из Apply() на старте игры
-    // (SubModule.OnGameStart). Метод обращается к ActionIndexCache.act_inventory_idle; при установке
-    // патча Harmony компилирует оригинал, и движок заранее строит кэш индексов действий — до того, как
-    // прочитаны анимации пони. Итог (10.10.2026): все персонажи в окнах, включая редактор внешности,
-    // лежали горизонтально. См. память bannerlord-harmony-patch-timing.
+    // NOTE: it is applied NOT by an attribute (PatchAll when the mod loads) but from Apply() at game start
+    // (SubModule.OnGameStart). The method accesses ActionIndexCache.act_inventory_idle; when the
+    // patch is applied Harmony compiles the original, and the engine builds the action index cache early, before
+    // the pony animations are read. Result (10.10.2026): all characters in screens, including the appearance editor,
+    // lay horizontally. See the bannerlord-harmony-patch-timing memory.
     internal static class EquestriaScrollSaveVisualFix
     {
         private static bool _patched;
@@ -127,10 +127,10 @@ namespace EquestriaMod
         }
     }
 
-    // Сценка-уведомление с персонажем верхом (единственная — присяга державе,
+    // A notification scene with a mounted character (the only one is pledging allegiance to a realm,
     // PledgeAllegianceSceneNotificationItem, useHorse: true): GauntletSceneNotification.OpenScene
-    // берёт item.HorseComponent.Monster из слота коня — со свитком краш при вступлении в державу.
-    // Персонаж со свитком в такой сценке стоит пешим.
+    // takes item.HorseComponent.Monster from the horse slot, so with a scroll it crashes when joining a realm.
+    // A character with a scroll stands on foot in such a scene.
     [HarmonyPatch(typeof(SceneNotificationData.SceneNotificationCharacter), MethodType.Constructor,
         new[] { typeof(BasicCharacterObject), typeof(Equipment), typeof(BodyProperties), typeof(bool),
                 typeof(uint), typeof(uint), typeof(bool) })]

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Только чтение: ищет вершины с "битым" весом костей (сумма далеко от 1.0, или привязка не к
-соседним костям шеи/головы/позвоночника) у частей пони, где может быть шов на шее —
-eq_pony_head и eq_pony_body. Помогает найти новые полигоны, которым забыли назначить веса при
-зашивании дыры на шее.
+"""Read-only: finds vertices with "broken" bone weights (sum far from 1.0, or bound not to the
+neighbouring neck/head/spine bones) in the pony parts where there can be a seam at the neck —
+eq_pony_head and eq_pony_body. Helps find new polygons that were not assigned weights when the
+hole at the neck was stitched.
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\diag_pony_neck_weights.py
 """

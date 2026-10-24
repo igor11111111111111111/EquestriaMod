@@ -1,37 +1,37 @@
-﻿# Быстрый тест мода: проверка XML -> сборка -> запуск игры сразу в последнее сохранение.
-#   .\run.ps1              собрать, проверить и запустить
-#   .\run.ps1 -NoLaunch    только собрать и проверить
-#   .\run.ps1 -NewGame     запустить в главное меню, а не в сохранение
-#   .\run.ps1 -QuickStart  новая песочница без единого клика (мод сам жмёт "Эквестрия: быстрый тест")
-#   .\run.ps1 -Helmets     примерочная шлемов: 16 штук в инвентарь, один надет, окно открыто
-#   .\run.ps1 -Helmets -HelmetKind open   то же, но надеть открытый шлем (по умолчанию закрытый)
-#   .\run.ps1 -Helmets -Battle            надеть шлем и сразу в бой с разбойниками
-#   .\run.ps1 -Helmets -BigBattle         бой 500 на 500 драконов в полном доспехе (то же: -Battle2)
-#   .\run.ps1 -Battle      проверка магии: в бою удерживать Q — колесо заклинаний, отпустить — каст
-#   .\run.ps1 -Races       смотр рас: новая песочница, в отряде по 3 спутника каждой расы
-#   .\run.ps1 -Races -PerRace 5           то же, но по пять на расу
-#   .\run.ps1 -Prisoners   новая песочница, в плену по 5 бойцов каждой расы (проверка переработки
-#                          в мясо, equestria.butcher_prisoners)
-#   .\run.ps1 -Prisoners -PerPrisoner 10  то же, но по десять пленных на расу
-#   .\run.ps1 -DismemberTest              новая песочница, сразу бой: 100 на 100 Ветеранов Золотой
-#                          Подковы (пони) с двуручными мечами — проверка отрубания конечностей
-#   .\run.ps1 -DismemberTest -DismemberCount 100   то же, но по сто на сторону
-#   .\run.ps1 -DismemberTest -DismemberRace yak    то же, но расой яков вместо пони (см. список
-#                          рас в DismemberRace ниже — нужны разрезанные на _l/_r руки/ноги)
-#   .\run.ps1 -DefaultStart                новая игра с НАСТОЯЩИМ мастером создания персонажа
-#                          (не пропускается — на этапе «Внешность» выбор расы, как у игрока);
-#                          после мастера свой попап: нищий старт / наёмник / вассал / правитель
-#                          выбранной державы (EquestriaDefaultStart)
-#   .\run.ps1 -Days 200    новая песочница, время сразу крутится на x32 до 200-го дня, сводка
-#                          в eq_exceptions.log каждые 10 дней, в конце сохранение eq_longrun
-#   .\run.ps1 -Hideout     новая песочница: отряд сразу ставится у ближайшего логова разбойников
-#                          (оно помечено обнаруженным) и идёт к нему
-#   .\run.ps1 -MixedBirths новая песочница: пары героев разных рас женятся, сразу рожают по ребёнку,
-#                          потом жёны беременеют и время крутится 45 дней на x32 — обычные роды.
-#                          Итог в eq_exceptions.log, строки «смешанные роды: …»
-#   .\run.ps1 -MixedBirths -MixedPairs 30   то же, но 30 пар (по умолчанию 20)
-#   .\run.ps1 -Flight      новая песочница, свиток полёта надет в слот коня, сразу бой 100 на 100
-#                          Wonderbolt'ов на свитках (вся конница летает — EquestriaFlightArmy)
+﻿# Quick mod test: XML check -> build -> launch the game straight into the last save.
+#   .\run.ps1              build, check and launch
+#   .\run.ps1 -NoLaunch    only build and check
+#   .\run.ps1 -NewGame     launch into the main menu instead of the save
+#   .\run.ps1 -QuickStart  a new sandbox without a single click (the mod presses "Equestria: quick test" itself)
+#   .\run.ps1 -Helmets     helmet fitting room: 16 into the inventory, one worn, the window open
+#   .\run.ps1 -Helmets -HelmetKind open   the same, but wear an open helmet (closed by default)
+#   .\run.ps1 -Helmets -Battle            wear a helmet and go straight into battle with bandits
+#   .\run.ps1 -Helmets -BigBattle         a 500 vs 500 battle of dragons in full armour (also: -Battle2)
+#   .\run.ps1 -Battle      magic test: in battle hold Q — the spell wheel, release — cast
+#   .\run.ps1 -Races       race review: a new sandbox, 3 companions of each race in the party
+#   .\run.ps1 -Races -PerRace 5           the same, but five per race
+#   .\run.ps1 -Prisoners   a new sandbox, 5 soldiers of each race as prisoners (test of butchering
+#                          into meat, equestria.butcher_prisoners)
+#   .\run.ps1 -Prisoners -PerPrisoner 10  the same, but ten prisoners per race
+#   .\run.ps1 -DismemberTest              a new sandbox, straight into battle: 100 vs 100 Golden Horseshoe
+#                          Veterans (ponies) with two-handed swords — dismemberment test
+#   .\run.ps1 -DismemberTest -DismemberCount 100   the same, but a hundred per side
+#   .\run.ps1 -DismemberTest -DismemberRace yak    the same, but with yaks instead of ponies (see the list
+#                          of races in DismemberRace below — arms/legs cut into _l/_r are required)
+#   .\run.ps1 -DefaultStart                a new game with the REAL character creation wizard
+#                          (not skipped — race choice at the "Appearance" stage, as for the player);
+#                          after the wizard our own popup: beggar start / mercenary / vassal / ruler
+#                          of the chosen kingdom (EquestriaDefaultStart)
+#   .\run.ps1 -Days 200    a new sandbox, time runs at x32 right away up to day 200, a summary
+#                          in eq_exceptions.log every 10 days, at the end the save eq_longrun
+#   .\run.ps1 -Hideout     a new sandbox: the party is placed right next to the nearest bandit hideout
+#                          (it is marked as discovered) and walks to it
+#   .\run.ps1 -MixedBirths a new sandbox: pairs of heroes of different races marry, each has a child at once,
+#                          then the wives get pregnant and time runs 45 days at x32 — normal births.
+#                          Result in eq_exceptions.log, lines "mixed births"
+#   .\run.ps1 -MixedBirths -MixedPairs 30   the same, but 30 pairs (20 by default)
+#   .\run.ps1 -Flight      a new sandbox, the flight scroll worn in the horse slot, straight into a 100 vs 100
+#                          battle of Wonderbolts on scrolls (all cavalry flies — EquestriaFlightArmy)
 param([switch]$NoLaunch, [switch]$NewGame, [switch]$QuickStart, [switch]$DefaultStart, [switch]$Helmets, [switch]$Battle,
       [Alias("Battle2")][switch]$BigBattle, [switch]$Races, [ValidateRange(1, 20)][int]$PerRace = 3,
       [switch]$Prisoners, [ValidateRange(1, 50)][int]$PerPrisoner = 5,
@@ -45,12 +45,12 @@ $ErrorActionPreference = "Stop"
 $Game = "D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord"
 $ModRoot = $PSScriptRoot
 
-# Официальные модули + наш мод. Список должен совпадать с модулями сохранения,
-# иначе игра предупредит о несовпадении.
+# Official modules + our mod. The list must match the save's modules,
+# otherwise the game warns about a mismatch.
 $Modules = @("Native", "SandBoxCore", "BirthAndDeath", "CustomBattle", "Sandbox", "StoryMode", "EquestriaMod")
 
-# 1. Проверка XML: каждый Item.xxx должен существовать в игре или в моде.
-#    Закомментированные предметы не считаются: игра молча пропускает несуществующие id.
+# 1. XML check: every Item.xxx must exist in the game or in the mod.
+#    Commented-out items do not count: the game silently skips nonexistent ids.
 Write-Host "== Проверка XML" -ForegroundColor Cyan
 function Read-ActiveXml($path) {
     $text = [IO.File]::ReadAllText($path) -replace '(?s)<!--.*?-->', ''
@@ -79,25 +79,25 @@ foreach ($f in Get-ChildItem "$ModRoot\Module" -Recurse -Filter *.xml) {
 if ($errors -gt 0) { throw "Найдено ошибок: $errors" }
 Write-Host "  OK" -ForegroundColor Green
 
-# 2. Игру закрываем ДО сборки: запущенная держит EquestriaMod.dll, копия в папку игры молча не
-#    проходит (в сборке только предупреждение MSB3021), и тест идёт на старом коде.
+# 2. Close the game BEFORE building: a running one holds EquestriaMod.dll, the copy into the game
+#    folder silently fails (only warning MSB3021 in the build), and the test runs on old code.
 if (-not $NoLaunch) {
     Get-Process Bannerlord -ErrorAction SilentlyContinue | Stop-Process -Force
 }
 
-# 3. Сборка (заодно копирует мод в папку игры) — только если XML без ошибок
+# 3. Build (also copies the mod into the game folder) — only if the XML has no errors
 Write-Host "== Сборка" -ForegroundColor Cyan
 dotnet build "$ModRoot\src\EquestriaMod.csproj" -c Release -nologo -v q
 if ($LASTEXITCODE -ne 0) { throw "Сборка не удалась" }
 
 if ($NoLaunch) { return }
 
-# 4. Запуск в обход лаунчера
+# 4. Launch bypassing the launcher
 Write-Host "== Запуск игры" -ForegroundColor Cyan
 
-# Игра ставит safely_exited = 0 при старте и возвращает 1 при нормальном выходе. Мы её убиваем
-# процессом, поэтому флаг остаётся нулевым, и при следующем запуске вылезает окно
-# "Game shut down unexpectedly. Enable safe mode?" — приходится жать "Нет". Ставим флаг сами.
+# The game sets safely_exited = 0 at startup and puts back 1 on a normal exit. We kill its
+# process, so the flag stays zero, and on the next launch the window
+# "Game shut down unexpectedly. Enable safe mode?" pops up — you have to press "No". We set the flag ourselves.
 $engineConfig = "$env:USERPROFILE\Documents\Mount and Blade II Bannerlord\Configs\engine_config.txt"
 if (Test-Path $engineConfig) {
     $text = [IO.File]::ReadAllText($engineConfig)
@@ -108,54 +108,54 @@ if (Test-Path $engineConfig) {
     }
 }
 $gameArgs = "/singleplayer _MODULES_*" + ($Modules -join "*") + "*_"
-# Подробный журнал мода (EquestriaCrashLog.Verbose): обычные строки и перехват всех исключений.
-# У игрока из лаунчера этого ключа нет — в eq_exceptions.log только этапы, предупреждения и ошибки.
+# Verbose mod log (EquestriaCrashLog.Verbose): regular lines and catching all exceptions.
+# A player launching from the launcher has no such switch — eq_exceptions.log has only stages, warnings and errors.
 $gameArgs += " /eqverbose"
-# /eqhelmets читает сам мод (EquestriaHelmetTest): дождавшись карты, он выдаёт шлемы, надевает
-# один и открывает инвентарь — консоль в игре не нужна.
+# /eqhelmets is read by the mod itself (EquestriaHelmetTest): once the map is up, it hands out helmets,
+# puts one on and opens the inventory — no in-game console needed.
 if ($Helmets) { $gameArgs += " /eqhelmets:$HelmetKind" }
-# /eqbattle читает EquestriaShowcase: дождавшись карты, натравливает три отряда разбойников.
-# Вместе с -Helmets шлем сначала надевается, а инвентарь не открывается — иначе бой не начнётся.
+# /eqbattle is read by EquestriaShowcase: once the map is up, it sets three bandit parties on you.
+# Together with -Helmets the helmet is put on first, and the inventory is not opened — otherwise the battle won't start.
 if ($Battle) { $gameArgs += " /eqbattle" }
-# /eqbigbattle читает EquestriaHelmetTest: 500 на 500 стургийских ветеранов (у мода эта культура —
-# драконы), обе стороны в полном доспехе. Инвентарь при этом не открывается.
+# /eqbigbattle is read by EquestriaHelmetTest: 500 vs 500 Sturgian veterans (in the mod this culture is
+# dragons), both sides in full armour. The inventory is not opened in this case.
 if ($BigBattle) { $gameArgs += " /eqbigbattle" }
-# /eqraces читает EquestriaRaceParty: дождавшись карты, набирает в отряд по столько спутников
-# каждой расы, каждого в случайной броне, и открывает экран отряда. Кампания нужна новая —
-# поэтому ключ идёт вместе с быстрым стартом.
+# /eqraces is read by EquestriaRaceParty: once the map is up, it recruits that many companions of
+# each race into the party, each in random armour, and opens the party screen. It needs a new
+# campaign — so the switch goes together with the quick start.
 if ($Races) { $gameArgs += " /eqraces:$PerRace" }
-# /eqprisoners читает EquestriaPrisonerButchery: дождавшись карты, сажает в плен своего отряда
-# по столько бойцов каждой расы — готовый материал для equestria.butcher_prisoners без похода
-# в бой за живыми пленными.
+# /eqprisoners is read by EquestriaPrisonerButchery: once the map is up, it puts that many soldiers
+# of each race into your party's prisoners — ready material for equestria.butcher_prisoners without
+# going to battle for live prisoners.
 if ($Prisoners) { $gameArgs += " /eqprisoners:$PerPrisoner" }
-# /eqdismember читает EquestriaShowcase: дождавшись карты, набирает в свой отряд и создаёт
-# вражеский отряд — по столько бойцов выбранной расы (DismemberRace, см.
-# EquestriaDebugCommands.DismemberTestTroopByRace) на сторону, всем раздаёт двуручный меч и сразу
-# начинает бой (EquestriaDebugCommands.DismembermentTestBattle) — проверка EquestriaDismemberment.cs.
+# /eqdismember is read by EquestriaShowcase: once the map is up, it recruits into your party and creates
+# an enemy party — that many soldiers of the chosen race (DismemberRace, see
+# EquestriaDebugCommands.DismemberTestTroopByRace) per side, gives everyone a two-handed sword and starts
+# the battle right away (EquestriaDebugCommands.DismembermentTestBattle) — a test of EquestriaDismemberment.cs.
 if ($DismemberTest) { $gameArgs += " /eqdismember:${DismemberCount}:${DismemberRace}" }
-# /eqdefaultstart читает сам мод (EquestriaQuickStart + EquestriaDefaultStart): дождавшись
-# главного меню, запускает новую кампанию БЕЗ пропуска мастера создания персонажа — в отличие
-# от /eqautostart ниже, который мастер целиком пропускает.
+# /eqdefaultstart is read by the mod itself (EquestriaQuickStart + EquestriaDefaultStart): once the
+# main menu is up, it starts a new campaign WITHOUT skipping the character creation wizard — unlike
+# /eqautostart below, which skips the wizard entirely.
 if ($DefaultStart) { $gameArgs += " /eqdefaultstart" }
-# /eqflight читает EquestriaFlightTest: дождавшись карты, выдаёт и надевает свиток полёта в слот
-# коня и сам начинает бой 100 на 100 Wonderbolt'ов (вся конница кампании летает на свитках —
-# EquestriaFlightArmy). /eqbattle тут уже не нужен: бой запускает сам тест.
+# /eqflight is read by EquestriaFlightTest: once the map is up, it gives and equips the flight scroll in
+# the horse slot and starts a 100 vs 100 battle of Wonderbolts by itself (all campaign cavalry flies on
+# scrolls — EquestriaFlightArmy). /eqbattle is not needed here: the test starts the battle itself.
 if ($Flight) { $gameArgs += " /eqflight" }
-# /eqmixedbirths читает EquestriaMixedBirthTest: свадьбы пар героев разных рас (по паре на
-# сочетание рас), каждая сразу рожает ребёнка, затем жёны беременеют; /eqlongrun:45
-# (EquestriaLongRun) крутит время на x32, чтобы дети родились и обычным путём. В конце прогон
-# сохраняет игру как eq_longrun. В eq_exceptions.log — строки «смешанные роды: …».
-# /eqhideout читает EquestriaHideoutTest: ближайшее логово разбойников делается обнаруженным,
-# отряд ставится в 15 м от него и идёт туда (смотр моделей логов на карте).
+# /eqmixedbirths is read by EquestriaMixedBirthTest: weddings of pairs of heroes of different races (one
+# pair per race combination), each has a child at once, then the wives get pregnant; /eqlongrun:45
+# (EquestriaLongRun) runs time at x32 so children are also born the normal way. At the end the run
+# saves the game as eq_longrun. In eq_exceptions.log — lines "mixed births".
+# /eqhideout is read by EquestriaHideoutTest: the nearest bandit hideout is made discovered,
+# the party is placed 15 m from it and walks there (a review of hideout models on the map).
 if ($Hideout) { $gameArgs += " /eqhideout" }
-# /eqlongrun читает EquestriaLongRun: время на x32 до указанного дня, сводка в журнал каждые 10 дней,
-# в конце сохранение eq_longrun. Свои экраны (инвентарь, энциклопедия, сохранение) открывать можно.
+# /eqlongrun is read by EquestriaLongRun: time at x32 up to the given day, a summary to the log every 10
+# days, at the end the save eq_longrun. You may open your own screens (inventory, encyclopedia, save).
 if ($Days -gt 0) { $gameArgs += " /eqlongrun:$Days" }
 if ($MixedBirths) { $gameArgs += " /eqmixedbirths:$MixedPairs /eqlongrun:45" }
-# /eqautostart читает сам мод (EquestriaQuickStart): дождавшись главного меню, он запускает
-# быстрый тест. Продолжение сохранения при этом не нужно — начинается новая кампания.
+# /eqautostart is read by the mod itself (EquestriaQuickStart): once the main menu is up, it starts
+# the quick test. Continuing a save is not needed then — a new campaign begins.
 if ($QuickStart -or $Races -or $Prisoners -or $DismemberTest -or $Flight -or $MixedBirths -or $Hideout -or $Days -gt 0) { $gameArgs += " /eqautostart" }
 elseif (-not $NewGame -and -not $DefaultStart) { $gameArgs += " /continuegame" }
-# Дополнительные ключи для самопроверки, например /eqset:2 (показ комплекта брони)
+# Extra switches for self-checks, e.g. /eqset:2 (showing an armour set)
 if ($ExtraArgs) { $gameArgs += " " + $ExtraArgs }
 Start-Process -FilePath "$Game\bin\Win64_Shipping_Client\Bannerlord.exe" -ArgumentList $gameArgs -WorkingDirectory "$Game\bin\Win64_Shipping_Client"

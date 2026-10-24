@@ -15,16 +15,16 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Настройка ассимиляции расы (см. EquestriaRaceAssimilation.cs) консольными командами — тот
-    // же приём, что equestria.helmet_scale/helmet_offset у EquestriaHelmetTest: подбираем вживую,
-    // финальные числа вписываем в дефолты EquestriaRaceAssimilation руками, без персистентной
-    // настройки.
+    // Tuning of race assimilation (see EquestriaRaceAssimilation.cs) via console commands - the
+    // same trick as equestria.helmet_scale/helmet_offset in EquestriaHelmetTest: tune live,
+    // then write the final numbers into the EquestriaRaceAssimilation defaults by hand, with no persistent
+    // setting.
     public static class EquestriaRaceAssimilationCommands
     {
-        // equestria.race_assim_range <km> — радиус, в котором соседние поселения давят своей расой.
-        // Ответ на английском — кириллицу консоль Bannerlord не рендерит (только "?", замечено в
-        // игре 07.10.2026), русские строки остаются только в логе (EquestriaCrashLog, файл) и в
-        // родной подсказке карты (та рисуется шрифтом игры, не консоли).
+        // equestria.race_assim_range <km> - radius within which neighbouring settlements push their race.
+        // The reply is in English - the Bannerlord console does not render Cyrillic (only "?", seen in
+        // game 07.10.2026); Russian strings stay only in the log (EquestriaCrashLog, file) and in the
+        // native map tooltip (that one is drawn with the game font, not the console's).
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_range", "equestria")]
         public static string SetRange(List<string> args)
         {
@@ -39,8 +39,8 @@ namespace EquestriaMod
             return $"Assimilation influence radius: {km:0.#} km.";
         }
 
-        // equestria.race_assim_delay <days> — за сколько дней доля расы проходит путь до цели
-        // (экспоненциально, не линейно — см. комментарий в RaceAssimilationStatus.OnDailyTick)
+        // equestria.race_assim_delay <days> - how many days it takes a race share to travel to its target
+        // (exponentially, not linearly - see the comment in RaceAssimilationStatus.OnDailyTick)
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_delay", "equestria")]
         public static string SetDelay(List<string> args)
         {
@@ -54,8 +54,8 @@ namespace EquestriaMod
             return $"Assimilation delay: {days} days.";
         }
 
-        // equestria.race_assim_owner <weight> — во сколько раз сильнее давит текущий владелец
-        // поселения (его раса/культура) относительно базового веса соседней деревни
+        // equestria.race_assim_owner <weight> - how many times stronger the current settlement owner
+        // (their race/culture) pushes relative to the base weight of a neighbouring village
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_owner", "equestria")]
         public static string SetOwnerWeight(List<string> args)
         {
@@ -69,8 +69,8 @@ namespace EquestriaMod
             return $"Owner influence weight: {weight}.";
         }
 
-        // equestria.race_assim_trade on|off — учитывать ли деревни города/замка как его соседей
-        // независимо от расстояния (торговая связь)
+        // equestria.race_assim_trade on|off - whether a town's/castle's villages count as its neighbours
+        // regardless of distance (trade link)
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_trade", "equestria")]
         public static string SetTradeLinked(List<string> args)
         {
@@ -84,8 +84,8 @@ namespace EquestriaMod
             return "Trade link: " + (EquestriaRaceAssimilation.TradeLinkedInfluence ? "on" : "off") + ".";
         }
 
-        // equestria.race_assim_cap <percent> — потолок доли доминирующей расы (1-99), остаток
-        // размазывается поровну по всем остальным играбельным расам (см. RecalculateInfluencers)
+        // equestria.race_assim_cap <percent> - cap on the dominant race's share (1-99), the remainder
+        // is spread evenly over all other playable races (see RecalculateInfluencers)
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_cap", "equestria")]
         public static string SetCap(List<string> args)
         {
@@ -100,10 +100,10 @@ namespace EquestriaMod
             return $"Dominant race cap: {pct:0.#}%.";
         }
 
-        // equestria.race_assim_report [settlement StringId] — без аргумента берёт то, где сейчас
-        // стоит игрок (или ближайшее к нему); иначе ищет по подстроке StringId (англ. — его и
-        // нужно вводить, см. race_assim_near) или по русскому имени (не наберёшь в консоли, но
-        // работает, если скопировано из другого источника).
+        // equestria.race_assim_report [settlement StringId] - with no argument takes the settlement where
+        // the player stands now (or the nearest one); otherwise searches by a StringId substring (English - that
+        // is what should be typed, see race_assim_near) or by the Russian name (cannot be typed in the console, but
+        // works if copied from another source).
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_report", "equestria")]
         public static string Report(List<string> args)
         {
@@ -160,11 +160,11 @@ namespace EquestriaMod
             return report;
         }
 
-        // equestria.race_assim_set <settlement StringId> <race>=<percent> [...] — тестовая подмена
-        // ТЕКУЩЕЙ доли расы поселения (для проверки подсказки/таблицы), race — английское имя
-        // (Pony/Changeling/Griffon/Hippogriff/Dragon/Yak/Deer), не id культуры. Target не трогает —
-        // на ближайшем дневном тике (или equestria.race_assim_report дёрнет Initialize, но не
-        // пересчёт) Current снова поедет к настоящей цели как обычно, подмена разовая.
+        // equestria.race_assim_set <settlement StringId> <race>=<percent> [...] - test override of the
+        // CURRENT race share of a settlement (to check the tooltip/table), race is the English name
+        // (Pony/Changeling/Griffon/Hippogriff/Dragon/Yak/Deer), not a culture id. Target is not touched -
+        // on the next daily tick (or equestria.race_assim_report will call Initialize, but not a
+        // recalculation) Current moves towards the real target again as usual, the override is one-off.
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_set", "equestria")]
         public static string SetInfluences(List<string> args)
         {
@@ -220,12 +220,12 @@ namespace EquestriaMod
                 }
                 parsed[cultureId] = pct / 100m;
             }
-            // Доли всегда должны складываться в 100% — так же, как и настоящую Target нормирует
-            // RecalculateInfluencers делением на сумму влияния (EquestriaRaceAssimilation.cs).
-            // Введённые числа — это ОТНОСИТЕЛЬНЫЕ веса, не обязаны сами по себе давать 100 (замечено
-            // пользователем 07.10.2026: Pony=25 Yak=25 Changeling=25 давало в сумме только 75%,
-            // остаток нигде не отображался и не существовал — состояние, недостижимое в реальной
-            // игре). Нормируем к сумме 1 перед записью.
+            // Shares must always sum to 100% - the same way RecalculateInfluencers normalises the real
+            // Target by dividing by the total influence (EquestriaRaceAssimilation.cs).
+            // The entered numbers are RELATIVE weights, they need not add up to 100 by themselves (noticed
+            // by the user 07.10.2026: Pony=25 Yak=25 Changeling=25 summed to only 75%,
+            // the remainder was shown nowhere and did not exist - a state unreachable in a real
+            // game). Normalise to a sum of 1 before writing.
             decimal total = parsed.Values.Sum();
             if (total <= 0m)
             {
@@ -252,10 +252,10 @@ namespace EquestriaMod
             return null;
         }
 
-        // equestria.race_assim_near [км] — список ближайших к партии поселений: англ. StringId (его
-        // безопасно набирать — консоль Bannerlord плохо принимает кириллицу) + русское имя для
-        // опознания + текущая раса. Дальше StringId можно передать в race_assim_report/_delay и
-        // т.п. без единой русской буквы. По умолчанию радиус 20 км, без параметра.
+        // equestria.race_assim_near [km] - list of settlements nearest to the party: English StringId (it
+        // is safe to type - the Bannerlord console handles Cyrillic badly) + Russian name for
+        // identification + current race. The StringId can then be passed to race_assim_report/_delay and
+        // so on without a single Russian letter. Default radius is 20 km, with no parameter.
         [CommandLineFunctionality.CommandLineArgumentFunction("race_assim_near", "equestria")]
         public static string Near(List<string> args)
         {
@@ -295,18 +295,18 @@ namespace EquestriaMod
             foreach (var (settlement, dist) in near)
             {
                 lines.Add($"  {settlement.StringId}  ({dist:0.#} km, {RaceLabel(settlement.Culture.StringId)})");
-                // Русское имя — только в лог (консоль его не отрисует, см. комментарий выше), для
-                // сверки с тем, что видно на карте.
+                // Russian name - only to the log (the console will not draw it, see the comment above), for
+                // matching against what is visible on the map.
                 EquestriaCrashLog.Log("ассимиляция расы (near): " + settlement.StringId + " = " + settlement.Name);
             }
             return string.Join("\n", lines);
         }
 
-        // Culture id в этом моде — ванильные английские id (empire/aserai/vlandia/battania/sturgia/
-        // khuzait/nord), а раса рекрута жёстко запечена на культуру при сборке войск (tools/
-        // make_troops.py, CULTURE_RACE) — тот же маппинг здесь, только английскими словами (консоль
-        // не рендерит кириллицу, см. комментарии выше). Неизвестный id — отдаём как есть, тоже
-        // латиницей.
+        // Culture ids in this mod are the vanilla English ids (empire/aserai/vlandia/battania/sturgia/
+        // khuzait/nord), and the recruit race is hard-baked per culture when troops are built (tools/
+        // make_troops.py, CULTURE_RACE) - the same mapping here, only in English words (the console
+        // does not render Cyrillic, see the comments above). An unknown id is returned as is, also
+        // in Latin letters.
         private static readonly Dictionary<string, string> RaceByCulture =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -341,33 +341,33 @@ namespace EquestriaMod
         }
     }
 
-    // Подсказка поселения: строка «Раса» + разбивка по расам с дневной динамикой — тот же приём,
-    // что у UpdateTooltipPatch в оригинале DynaCulture, но патчим актуальный для этой версии игры
-    // метод: в их коде был TooltipVM.OpenTooltip (устаревшее API), здесь подсказки строятся через
-    // TooltipRefresherCollection.RefreshSettlementTooltip(PropertyBasedTooltipVM, object[] args) —
-    // нашли через decompile SandBox.View.dll (SandBoxViewSubModule регистрирует этот рефрешер на
-    // Settlement через InformationManager.RegisterTooltip).
+    // Settlement tooltip: a "Race" line + a per-race breakdown with daily dynamics - the same trick
+    // as UpdateTooltipPatch in the original DynaCulture, but we patch the method current for this game version:
+    // their code used TooltipVM.OpenTooltip (obsolete API), here tooltips are built via
+    // TooltipRefresherCollection.RefreshSettlementTooltip(PropertyBasedTooltipVM, object[] args) -
+    // found by decompiling SandBox.View.dll (SandBoxViewSubModule registers this refresher for
+    // Settlement via InformationManager.RegisterTooltip).
     //
-    // НЕ атрибутом [HarmonyPatch] (бланкетный PatchAll подхватил бы его сразу при загрузке мода) и
-    // НЕ в EquestriaPatches.ApplyLate (там тоже рано — проверено на практике 06.10.2026, см. ниже).
-    // Причина: RefreshSettlementTooltip сам, в своём теле, напрямую зовёт
-    // CampaignUIHelper.IsSettlementInformationHidden(...) — а у CampaignUIHelper есть статическое
-    // поле-инициализатор (_partyMoraleStr = GameTexts.FindText("str_party_morale")), которое
-    // выполняется в статическом конструкторе типа РОВНО ТОГДА, когда Harmony впервые JIT-компилирует
-    // (pin) метод для патча — не важно, когда вызвать Apply: при загрузке мода, на главном меню
-    // (ApplyLate) — в обоих случаях таблица строк игры ещё не загружена, GameTexts.FindText
-    // возвращает null, внутри бросается NullReferenceException, и CampaignUIHelper НАВСЕГДА
-    // помечается неинициализированным (так работают статические конструкторы в .NET — не
-    // перезапускаются). Дальше любое обращение к этому типу (а его трогает родной MapBarVM.
-    // Initialize при каждом построении экрана карты) валит TypeInitializationException — экран
-    // карты не строится, QuickStart не может пропустить создание персонажа.
-    // Подтверждено экспериментально: с этим патчем, применённым в ApplyLate, — краш, без патча
-    // вовсе — быстрый старт доходит до карты и ассимиляция расы инициализируется на 410
-    // поселениях без единой ошибки (eq_exceptions.log, два тестовых запуска подряд).
-    // РЕШЕНИЕ: патчим не раньше, чем кампания реально затикала (EquestriaRaceAssimilation.
-    // OnDailyTickSettlement, лениво на первом тике) — к этому моменту движок уже сам успешно
-    // построил карту и тронул CampaignUIHelper родным путём, повторный Harmony-JIT ничего не
-    // триггерит заново.
+    // NOT via a [HarmonyPatch] attribute (a blanket PatchAll would pick it up right at mod load) and
+    // NOT in EquestriaPatches.ApplyLate (that is also too early - verified in practice 06.10.2026, see below).
+    // Reason: RefreshSettlementTooltip itself, in its own body, directly calls
+    // CampaignUIHelper.IsSettlementInformationHidden(...) - and CampaignUIHelper has a static
+    // field initialiser (_partyMoraleStr = GameTexts.FindText("str_party_morale")), which
+    // runs in the type's static constructor EXACTLY WHEN Harmony first JIT-compiles
+    // (pins) the method for the patch - no matter when Apply is called: at mod load or at the main menu
+    // (ApplyLate) - in both cases the game's string table is not loaded yet, GameTexts.FindText
+    // returns null, a NullReferenceException is thrown inside, and CampaignUIHelper is PERMANENTLY
+    // marked uninitialised (that is how static constructors work in .NET - they are not
+    // re-run). After that any access to this type (and the native MapBarVM.
+    // Initialize touches it every time the map screen is built) throws TypeInitializationException - the map
+    // screen is not built, and QuickStart cannot skip character creation.
+    // Confirmed experimentally: with this patch applied in ApplyLate - a crash; without the patch
+    // at all - quick start reaches the map and race assimilation initialises on 410
+    // settlements without a single error (eq_exceptions.log, two test runs in a row).
+    // SOLUTION: patch no earlier than the campaign has actually started ticking (EquestriaRaceAssimilation.
+    // OnDailyTickSettlement, lazily on the first tick) - by then the engine has already successfully
+    // built the map and touched CampaignUIHelper via the native path, so a repeated Harmony JIT does not
+    // trigger anything again.
     internal static class RaceAssimilationTooltipPatch
     {
         public static void Apply(Harmony harmony)
@@ -408,23 +408,23 @@ namespace EquestriaMod
                 propertyBasedTooltipVM.AddProperty(string.Empty, string.Empty, -1, TooltipProperty.TooltipPropertyFlags.RundownSeperator);
                 propertyBasedTooltipVM.AddProperty(new TextObject("{=eq_race_tooltip}Race").ToString(), " ", 0,
                     TooltipProperty.TooltipPropertyFlags.Title);
-                // Скрываем так же, как игра сама прячет "Отряды ???" — тем же CampaignUIHelper.
-                // IsSettlementInformationHidden, что и родные свойства поселения (по просьбе
-                // пользователя 07.10.2026: раса не должна быть видна игроку раньше, чем остальная
-                // подробная информация о чужом поселении). Метод тот самый, из-за которого раньше
-                // был краш преждевременной инициализации (см. комментарий у Apply выше) — здесь он
-                // уже безопасен: подсказка строится только после первого тика кампании.
+                // Hide it the same way the game itself hides "Troops ???" - with the same CampaignUIHelper.
+                // IsSettlementInformationHidden as the native settlement properties (at the user's
+                // request 07.10.2026: the race must not be visible to the player earlier than the rest of the
+                // detailed information about a foreign settlement). This is the very method that previously
+                // caused the premature-initialisation crash (see the comment at Apply above) - here it
+                // is already safe: the tooltip is built only after the first campaign tick.
                 if (CampaignUIHelper.IsSettlementInformationHidden(settlement, out TextObject _))
                 {
                     propertyBasedTooltipVM.AddProperty(" ", GameTexts.FindText("str_missing_info_indicator").ToString());
                     return;
                 }
-                // "сейчас -> цель" на каждую расу, а не крошечная дневная дельта — так сразу видно,
-                // куда и насколько далеко едет доля, не только что она чуть шевельнулась за день
-                // (по просьбе пользователя 07.10.2026: "будет понятно сколько имеем сейчас и к
-                // какому числу стремится"). Объединяем ключи обоих словарей — расы, которых пока
-                // совсем нет в Current, но уже наметились в Target (только начали давить соседи),
-                // тоже должны быть видны.
+                // "now -> target" for each race, not a tiny daily delta - so it is immediately clear
+                // where and how far the share is heading, not just that it moved a bit over the day
+                // (at the user's request 07.10.2026: "it will be clear how much we have now and
+                // what number it is heading towards"). Merge the keys of both dictionaries - races that are
+                // not in Current at all yet but already appear in Target (neighbours have just started pushing)
+                // must be visible too.
                 var cultureIds = status.CurrentInfluences.Keys.Union(status.TargetInfluences.Keys)
                     .OrderByDescending(id => status.CurrentInfluences.TryGetValue(id, out decimal c) ? c : 0m);
                 foreach (string cultureId in cultureIds)

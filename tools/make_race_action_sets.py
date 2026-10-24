@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Пересобирает ModuleData/pony_action_sets.xml на ВСЕ 7 рас разом (as_<раса>_* на основе
-всех as_human_* из ванильного Native/ModuleData/action_sets.xml), а не только на пони.
+"""Rebuilds ModuleData/pony_action_sets.xml for ALL 7 races at once (as_<race>_* based on
+all as_human_* from vanilla Native/ModuleData/action_sets.xml), not only for ponies.
 
-Зачем: в большинстве игровых контекстов (бой, карта) монстру ставят action_set="as_human_warrior"
-НАПРЯМУЮ, и свои as_<раса>_* никто не спрашивает (см. комментарий в tools/make_pony_race.py,
-строки 560-566, — там же изначально генерировался только as_pony_*). НО кое-где движок сам
-строит имя набора из ИМЕНИ РАСЫ, а не из атрибута монстра —
-ActionSetCode.GenerateActionSetNameWithSuffix(monster, isFemale, suffix) делает
-"as_" + monster.StringId + suffix (например suffix="_facegen" у портретов мастера создания
-персонажа, CharacterCreationNarrativeStageView.CreateAgentVisual, decompiled ilspycmd). Для
-пони набор as_pony_facegen уже существовал (88 алиасов, писал tools/make_pony_race.py), для
-остальных 6 рас — нет вовсе: движок не находит набор и проваливается в мусорную/зацикленную
-анимацию (замечено 08.10.2026 — атакующая поза и разворот тела у всех рас, кроме пони, в окнах
-"Семья"/"Детство"/"Юность" мастера создания персонажа при .\run.ps1 -DefaultStart, первом
-прогоне ПОЛНОГО мастера в принципе — раньше его никто целиком не проходил).
+Why: in most game contexts (battle, map) a monster is given action_set="as_human_warrior"
+DIRECTLY, and nobody asks for its own as_<race>_* (see the comment in tools/make_pony_race.py,
+lines 560-566 — that is also where only as_pony_* was originally generated). BUT in some places
+the engine builds the set name itself from the RACE NAME rather than from the monster attribute —
+ActionSetCode.GenerateActionSetNameWithSuffix(monster, isFemale, suffix) does
+"as_" + monster.StringId + suffix (e.g. suffix="_facegen" for the portraits of the character
+creation wizard, CharacterCreationNarrativeStageView.CreateAgentVisual, decompiled ilspycmd). For
+ponies the set as_pony_facegen already existed (88 aliases, written by tools/make_pony_race.py),
+for the other 6 races it did not exist at all: the engine cannot find the set and falls back to a
+garbage/looping animation (noticed 08.10.2026 — an attack pose and a turned body for all races
+except ponies in the "Family"/"Childhood"/"Youth" windows of the character
+creation wizard with .\run.ps1 -DefaultStart, the first run of the FULL wizard ever — nobody had
+gone through it completely before).
 
-Запись идёт в тот же файл, что tools/make_pony_race.py (зарегистрирован как id="soln_action_sets"
-в project.mbproj — на один стандартный id движок грузит только один файл, поэтому алиасы всех
-рас обязаны жить в ОДНОМ файле, как и алиас act_eq_flight_pose там же, см. память
-bannerlord-animation-pipeline). Этот скрипт ПОЛНОСТЬЮ перезаписывает файл (а не дописывает) —
-запускать ПОСЛЕДНИМ, после tools/make_pony_race.py, если тот тоже перезапускается.
+Output goes to the same file as tools/make_pony_race.py (registered as id="soln_action_sets"
+in project.mbproj — the engine loads only one file per standard id, so the aliases of all
+races must live in ONE file, as does the act_eq_flight_pose alias there, see memory
+bannerlord-animation-pipeline). This script FULLY overwrites the file (it does not append) —
+run it LAST, after tools/make_pony_race.py, if that one is rerun too.
 
-Запуск: py tools/make_race_action_sets.py <папка Modules игры> <папка Module мода>
+Usage: py tools/make_race_action_sets.py <game Modules folder> <mod Module folder>
 """
 import os
 import sys
@@ -38,13 +39,13 @@ human_sets = sorted(i for i in native_sets if i.startswith("as_human_"))
 
 action_sets = ET.Element("action_sets")
 
-# act_eq_flight_pose: свиток полёта (src/EquestriaFlightScroll.cs). ЧАСТИЧНЫЙ as_human_warrior
-# (не override, не полная копия — движок МЕРЖИТ такой блок в глобальный набор) — так же, как у
-# warg/spider в TAOM (docs/features/spider.md: "the FIRST set in action_sets_warg.xml is a
-# partial as_human_warrior!"). Монстры всех рас используют action_set="as_human_warrior" НАПРЯМУЮ
-# (не as_<раса>_warrior — те пустые алиасы, монстрам их не подсовываем, см. tools/make_pony_race.py
-# строки 540-548), поэтому связку нужно класть именно сюда. См. bannerlord-animation-pipeline.md
-# раздел 9. Блок первый в файле — тот же порядок, что у TAOM.
+# act_eq_flight_pose: the flight scroll (src/EquestriaFlightScroll.cs). A PARTIAL as_human_warrior
+# (not an override, not a full copy — the engine MERGES such a block into the global set) — the same
+# as warg/spider in TAOM (docs/features/spider.md: "the FIRST set in action_sets_warg.xml is a
+# partial as_human_warrior!"). Monsters of all races use action_set="as_human_warrior" DIRECTLY
+# (not as_<race>_warrior — those are empty aliases that we do not give to monsters, see
+# tools/make_pony_race.py lines 540-548), so the binding has to go exactly here. See
+# bannerlord-animation-pipeline.md section 9. The block is first in the file — same order as TAOM.
 flight_pose_set = ET.SubElement(action_sets, "action_set", id="as_human_warrior")
 ET.SubElement(flight_pose_set, "action", type="act_eq_flight_pose", animation="anim_eq_flight_pose")
 

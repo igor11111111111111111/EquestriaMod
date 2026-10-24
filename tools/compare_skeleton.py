@@ -1,4 +1,4 @@
-# Сравнение модели пони со скелетом человека Bannerlord + превью-рендеры.
+# Comparing the pony model with the Bannerlord human skeleton + preview renders.
 # blender --background --factory-startup --python compare_skeleton.py -- <model.gltf> <human_skeleton.fbx> <out_dir>
 import os
 import sys
@@ -29,7 +29,7 @@ def print_bones(arm, limit=None):
         print(f"  {b.name:32} parent={b.parent.name if b.parent else '-':24} head=({head.x:.3f},{head.y:.3f},{head.z:.3f})")
 
 
-# --- Пони
+# --- Pony
 bpy.ops.import_scene.gltf(filepath=model_path)
 pony_objs = list(bpy.context.scene.objects)
 for ob in pony_objs:
@@ -46,7 +46,7 @@ print(f"armature world scale={tuple(round(v, 4) for v in pony_arm.matrix_world.t
 print("bones:")
 print_bones(pony_arm)
 
-# --- Скелет человека Bannerlord (отдельно, чтобы не мешал рендеру пони)
+# --- Bannerlord human skeleton (separately, so it does not get in the way of the pony render)
 before = set(bpy.context.scene.objects)
 bpy.ops.import_scene.fbx(filepath=skel_path)
 bpy.context.view_layer.update()
@@ -61,7 +61,7 @@ print_bones(human_arm)
 for o in human:
     o.hide_render = True
 
-# --- Превью пони: спереди и сбоку
+# --- Pony preview: front and side
 os.makedirs(out_dir, exist_ok=True)
 scene = bpy.context.scene
 scene.render.engine = "BLENDER_WORKBENCH"

@@ -1,37 +1,37 @@
 # -*- coding: utf-8 -*-
-"""Умножает "количество крови" у ванильных эффектов частиц крови (psys_game_blood_*) —
-запрос пользователя "выдать в 2 раза больше крови по всем параметрам" (08.10.2026), затем ещё раз
-"увеличь в 2 раза частицы брызгов крови и крови на теле юнитов" (08.10.2026) — FACTOR считается от
-ПЕРВОНАЧАЛЬНОГО (ванильного) значения каждый раз, поэтому 4.0 ниже и есть "удвоить второй раз" (не
-компаундится от уже удвоенного, перезапуск читает чистый исходник заново).
+"""Multiplies the "amount of blood" of the vanilla blood particle effects (psys_game_blood_*) -
+the user's request "give 2 times more blood in all parameters" (08.10.2026), then once more
+"double the blood splatter particles and the blood on units' bodies" (08.10.2026) - FACTOR is computed from
+the ORIGINAL (vanilla) value every time, so the 4.0 below is exactly "double a second time" (it does not
+compound on the already doubled value; a rerun reads the clean source again).
 
-Откуда кровь на обычных ударах: TaleWorlds.MountAndBlade.DefaultDamageParticleModel (decompiled
-ilspycmd) берёт имена эффектов "psys_game_blood_sword_enter/_inside/_exit" через
-ParticleSystemManager.GetRuntimeIdByName — сами эффекты определены текстовым XML
+Where the blood on normal hits comes from: TaleWorlds.MountAndBlade.DefaultDamageParticleModel (decompiled
+with ilspycmd) takes the effect names "psys_game_blood_sword_enter/_inside/_exit" via
+ParticleSystemManager.GetRuntimeIdByName - the effects themselves are defined in text XML
 (Native/ModuleData/particle_systems_hardcoded_misc1.xml, <particle_effects><effect name="psys_
-game_blood_...">), НЕ в бинарнике. project.mbproj регистрирует несколько файлов под одним и тем
-же id="soln_particle_systems" — в отличие от action_types (где побеждает только файл со
-стандартным id, см. память bannerlord-animation-pipeline), здесь движок грузит/мёржит их все,
-значит свой файл-довесок с теми же ИМЕНАМИ effect — рабочий путь переопределения.
+game_blood_...">), NOT in the binary. project.mbproj registers several files under the same
+id="soln_particle_systems" - unlike action_types (where only the file with the standard id wins,
+see the bannerlord-animation-pipeline memory), here the engine loads/merges all of them,
+so an add-on file of our own with the same effect NAMES is a working way to override.
 
-Какие параметры и почему трогаем именно их ("количество крови", не форма/физика брызг):
-  - emission_rate (base/bias)      — сколько частиц в секунду вылетает
-  - max_alive_particle_count       — сколько частиц одновременно на экране (0 = без лимита,
-                                      *2 не меняет)
-  - particle_size (base/bias)      — размер отдельной частицы/брызги
-  - decal_min_scale, decal_max_scale (пара чисел) — размер лужи-декали на земле/стенах
-Не трогаем: emission_rate/particle_size вложенные <curve> (кривые-множители по времени жизни
-эмиттера, 0..1 — умножение base уже масштабирует итог, трогать кривые незачем и рискованно),
-emitter_life/particle_life (длительность — не "количество"), gravity/velocity/damping (форма
-и траектория брызг — поменять это значило бы не "больше крови", а "кровь ведёт себя иначе").
+Which parameters, and why exactly these ("amount of blood", not the shape/physics of the splatter):
+  - emission_rate (base/bias)      - how many particles fly out per second
+  - max_alive_particle_count       - how many particles are on screen at once (0 = no limit,
+                                      *2 does not change it)
+  - particle_size (base/bias)      - size of a single particle/splash
+  - decal_min_scale, decal_max_scale (a pair of numbers) - size of the puddle decal on the ground/walls
+Not touched: the nested <curve> of emission_rate/particle_size (multiplier curves over the emitter's
+lifetime, 0..1 - multiplying base already scales the result, touching the curves is pointless and risky),
+emitter_life/particle_life (duration - not "amount"), gravity/velocity/damping (shape
+and trajectory of the splatter - changing them would mean not "more blood" but "blood behaves differently").
 
-Какие эффекты: psys_game_blood_sword_enter/_inside/_exit (меч на обычный удар, их и зовёт
-DefaultDamageParticleModel) + psys_game_blood_1..7 (та же "кровавая" группа имён в том же файле —
-решили не выяснять, где именно их зовут движок, и удвоить заодно, раз уж экспортируются).
-particle_systems2.xml (там те же blood_1..4 ещё раз) НЕ регистрирован в project.mbproj вообще —
-мёртвые данные, не грузится игрой, не трогаем.
+Which effects: psys_game_blood_sword_enter/_inside/_exit (sword on a normal hit, these are what
+DefaultDamageParticleModel calls) + psys_game_blood_1..7 (the same "blood" group of names in the same file -
+we decided not to find out where exactly the engine calls them, and doubled them too, since they are exported).
+particle_systems2.xml (it has the same blood_1..4 once more) is NOT registered in project.mbproj at all -
+dead data, not loaded by the game, not touched.
 
-Запуск: py tools/make_more_blood.py <папка Modules игры> <папка Module мода>
+Run: py tools/make_more_blood.py <game Modules folder> <mod Module folder>
 """
 import os
 import sys
@@ -43,17 +43,17 @@ OUT = os.path.join(MOD, "ModuleData")
 
 FACTOR = 4.0
 
-# Явный список — после "psys_game_blood_" только то, что реально нашли в файле (sword_enter/
-# _inside/_exit плюс blood_1..7), не маска "начинается с psys_game_blood", чтобы не зацепить
-# что-то незнакомое по имени при будущих обновлениях игры.
+# An explicit list - after "psys_game_blood_" only what was actually found in the file (sword_enter/
+# _inside/_exit plus blood_1..7), not a "starts with psys_game_blood" mask, so as not to catch
+# something unfamiliar by name in future game updates.
 BLOOD_EFFECTS = {
     "psys_game_blood_sword_enter", "psys_game_blood_sword_inside", "psys_game_blood_sword_exit",
     "psys_game_blood_1", "psys_game_blood_2", "psys_game_blood_3", "psys_game_blood_4",
     "psys_game_blood_5", "psys_game_blood_6", "psys_game_blood_7",
 }
 
-# Для base/bias-параметров (emission_rate, particle_size) — умножаем ОБА, чтобы разброс
-# (случайность) оставался пропорционален новому среднему, а не схлопывался в фиксированное число.
+# For base/bias parameters (emission_rate, particle_size) - multiply BOTH, so that the spread
+# (randomness) stays proportional to the new mean instead of collapsing into a fixed number.
 BASE_BIAS_PARAMS = {"emission_rate", "particle_size"}
 SCALE_PAIR_PARAMS = {"decal_min_scale", "decal_max_scale"}
 COUNT_PARAMS = {"max_alive_particle_count"}

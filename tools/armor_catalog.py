@@ -1,16 +1,16 @@
-# Каталог брони пони: какие ванильные вещи переделаны и в какой FBX-пакет они входят.
+# Pony armour catalogue: which vanilla items are reworked and which FBX pack they belong to.
 #
-# Им пользуются adapt_armor.py (какие меши подгонять) и make_items.py (какие предметы описать).
+# Used by adapt_armor.py (which meshes to fit) and make_items.py (which items to describe).
 #
-# Пакеты:
-#   armor      — первые 20 вещей: по пять лучших имперских в каждом слоте (tools/pick_armor.py).
+# Packs:
+#   armor      — the first 20 items: the five best imperial ones in each slot (tools/pick_armor.py).
 #                FBX assets/pony_armor/eq_pony_armor.fbx.
-#   empire     — вся остальная броня, которую носят войска Эквестрии (ванильное имперское дерево,
+#   empire     — all the other armour worn by Equestria's troops (the vanilla imperial tree,
 #                tools/make_troops.py). FBX assets/pony_armor_empire/eq_pony_armor_empire.fbx.
-#   bandits    — броня разбойников, которой нет в первых двух пакетах.
+#   bandits    — bandit armour that is not in the first two packs.
 #                FBX assets/pony_armor_bandits/eq_pony_armor_bandits.fbx.
 #
-# Слот накидки (наплечники, шарфы) не переделываем: у пони в нём хвост.
+# The cape slot (pauldrons, scarves) is not reworked: the pony has her tail in it.
 import os
 import re
 import xml.etree.ElementTree as ET
@@ -25,7 +25,7 @@ FILES = {
 }
 SLOT_MODE = {slot: mode for slot, mode in FILES.values()}
 
-# Первый набор с названиями, подобранными вручную.
+# The first set, with names chosen by hand.
 ARMOR = {
     "head_armors.xml": [
         ("imperial_goggled_helmet", "Шлем катафракта с окулярами"),
@@ -63,18 +63,18 @@ PACKS = {
     "bandits": "eq_pony_armor_bandits",
     "changeling": "eq_pony_armor_changeling",
 }
-# пакет -> группа войск из tools/make_troops.py, чью броню он переделывает
+# pack -> troop group from tools/make_troops.py whose armour it reworks
 PACK_GROUPS = {
     "empire": "Эквестрия",
     "bandits": "разбойники",
-    # рой носит асерайское дерево: свои силуэты (халаты, чешуя, тюрбаны) и свои текстуры,
-    # перекрашенные в хитин с бирюзой (tools/recolor_armor.py)
+    # the swarm wears the Aserai tree: its own silhouettes (robes, scales, turbans) and its own textures,
+    # recoloured into chitin with turquoise (tools/recolor_armor.py)
     "changeling": "Чейнджлинги",
 }
 
 _TAG = re.compile(r"\{[^}]*\}")
 
-# Названия, которые в локализации игры согласованы неверно.
+# Names that are declined incorrectly in the game's localisation.
 NAME_FIXES = {
     "wolfhead": "Волчья голова",
     "bearhead": "Медвежья голова",
@@ -90,10 +90,10 @@ def _paths(game):
 
 
 def _russian(game):
-    """id строки -> русский текст без служебных меток {.MI} и вариантов множественного числа.
+    """String id -> Russian text without the {.MI} service markers and plural variants.
 
-    Названия предметов разбросаны по нескольким файлам: часть в SandBoxCore (std_spitems),
-    часть в Native (std_common_strings). Читаем русские файлы всех модулей.
+    Item names are scattered across several files: some in SandBoxCore (std_spitems),
+    some in Native (std_common_strings). We read the Russian files of all modules.
     """
     modules = os.path.join(game or GAME, "Modules")
     result = {}
@@ -114,9 +114,9 @@ def _russian(game):
     return result
 
 
-# Русские названия в файлах игры размечены для склонения: {.FI}Кожаный{.aj} {.FI}шапка{.nn}.
-# Перед словом — род (M/F/N), после — часть речи: aj прилагательное, ajp прилагательное во
-# множественном числе. Склоняет их движок; мы пишем готовый текст, поэтому согласуем сами.
+# Russian names in the game files are marked up for declension: {.FI}Leather{.aj} {.FI}cap{.nn}.
+# Before the word is the gender (M/F/N), after it the part of speech: aj adjective, ajp plural
+# adjective. The engine declines them; we write finished text, so we make them agree ourselves.
 _WORD = re.compile(r"\{\.([MFN])\w*\}([^{\s]+)\{\.(ajp|aj|nnp|nn)\}")
 _HUSH = "гкхжшщч"
 
@@ -150,7 +150,7 @@ def _agree(text):
 
 
 def _vanilla_items(game):
-    """id предмета -> (файл, элемент)"""
+    """item id -> (file, element)"""
     items_dir = _paths(game)[0]
     result = {}
     for filename in FILES:
@@ -160,23 +160,23 @@ def _vanilla_items(game):
 
 
 def _troop_items(game, group):
-    """Броня войск группы (tools/make_troops.py) в порядке появления."""
-    import make_troops  # noqa: E402 — тот же список войск, что и при их сборке
+    """Armour of the group's troops (tools/make_troops.py) in order of appearance."""
+    import make_troops  # noqa: E402 — the same troop list as when they are built
     return make_troops.troop_armor(game)[group]
 
 
 def pieces(pack, game=None):
-    """Список вещей пакета: словари item, file, slot, mode, mesh, name, pony_item, pony_mesh."""
+    """List of the pack's items: dicts with item, file, slot, mode, mesh, name, pony_item, pony_mesh."""
     vanilla = _vanilla_items(game)
     russian = _russian(game)
     first = [(f, item, name) for f, rows in ARMOR.items() for item, name in rows]
     if pack == "armor":
         chosen = first
     elif pack in PACK_GROUPS:
-        # Вещи, уже вошедшие в предыдущие пакеты, не повторяем — но только среди пакетов пони.
-        # Их у мода больше нет (вся броня пони удалена, расы носят ванильную), поэтому у улья
-        # ничего не отнимаем: иначе 23 вещи из 66 оставались ванильными и трутни ходили в
-        # песочных халатах рядом с хитиновыми стрелками (видно в игре 25.09.2026).
+        # Items already included in earlier packs are not repeated, but only among the pony packs.
+        # The mod no longer has them (all pony armour was removed, the races wear vanilla), so nothing is
+        # taken away from the hive: otherwise 23 of 66 items stayed vanilla and drones walked in
+        # sandy robes next to chitin archers (seen in game 25.09.2026).
         taken = set() if pack == "changeling" else {item for _f, item, _n in first}
         for earlier in PACKS:
             if earlier == pack or pack == "changeling":
@@ -188,8 +188,8 @@ def pieces(pack, game=None):
             if item in taken or item not in vanilla:
                 continue
             filename, node = vanilla[item]
-            # Шлемы улью не нужны: чейнджлинги их не носят (no_helmet в tools/make_troops.py),
-            # а это два десятка лишних текстур по 4–11 МБ на импорт.
+            # The hive does not need helmets: changelings do not wear them (no_helmet in tools/make_troops.py),
+            # and that is a couple dozen extra textures of 4–11 MB per import.
             if pack == "changeling" and filename == "head_armors.xml":
                 continue
             key = (node.get("name") or "").split("}")[0].lstrip("{=")

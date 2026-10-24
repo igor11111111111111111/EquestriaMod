@@ -1,13 +1,13 @@
-# Собирает все XML кампании из таблицы world_data.py: культуры, королевства, кланы, лордов,
-# их семьи, поселения и шаблоны снаряжения. Плюс преобразования XSLT, которые вычищают ванильные
-# записи ДО того, как подмешаются наши.
+# Builds all the campaign XML from the world_data.py table: cultures, kingdoms, clans, lords,
+# their families, settlements and equipment templates. Plus XSLT transforms that strip vanilla
+# entries BEFORE ours are merged in.
 #
-#   python make_world.py <папка Module мода>
+#   python make_world.py <mod's Module folder>
 #
-# Про XSLT: игра применяет <имя нашего файла>.xslt к уже собранному документу этого типа прямо
-# перед тем, как добавить наш файл (MBObjectManager.CreateMergedXmlFile). Пустой шаблон означает
-# «удалить». Так The Old Realms убирает ванильные расы и культуры.
-# ПОСЛЕ этого скрипта запускать tools/replace_mounts.py: кони в слоте Horse → свитки полёта по уровню (10.10.2026).
+# About XSLT: the game applies <our file name>.xslt to the already assembled document of that type right
+# before adding our file (MBObjectManager.CreateMergedXmlFile). An empty template means
+# "delete". This is how The Old Realms removes the vanilla races and cultures.
+# Run tools/replace_mounts.py AFTER this script: horses in the Horse slot -> flight scrolls by tier (10.10.2026).
 import os
 import sys
 
@@ -27,22 +27,22 @@ GAME = sys.argv[2] if len(sys.argv) > 2 else \
     r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord"
 DATA = os.path.join(MOD, "ModuleData")
 VANILLA = os.path.join(GAME, "Modules", "SandBox", "ModuleData")
-# Ванильные «доноры» внешнего вида поселений: по ним ставим ворота (см. settlement_visuals.py)
+# Vanilla settlement look "donors": gates are placed from them (see settlement_visuals.py)
 DONORS = settlement_visuals.load_donors(GAME)
 
-# ---------------------------------------------------------------- знамёна
-# Ключ знамени — это два слоя по десять чисел: фон и эмблема.
-#   значок . цвет . цвет2 . ширина . высота . X . Y . обводка . зеркало . поворот
-# Свои значки рисовать пока нечем, поэтому берём ванильные эмблемы (у каждого королевства своя)
-# и перекрашиваем в цвета державы. Цвет задаётся НОМЕРОМ из палитры banner_icons.xml, а не
-# шестнадцатеричным кодом, — поэтому подбираем ближайший из 229 доступных.
-BANNER_PATTERN = 11          # фон-подложка, общая для всех
-KINGDOM_EMBLEMS = [163, 160, 462, 461, 463]   # по эмблеме на державу, в порядке KINGDOMS
-CLAN_PATTERNS = [3, 7, 22, 30, 17]            # клан отличается от королевства подложкой
+# ---------------------------------------------------------------- banners
+# A banner key is two layers of ten numbers: background and emblem.
+#   icon . color . color2 . width . height . X . Y . outline . mirror . rotation
+# We have nothing to draw our own icons with yet, so we take vanilla emblems (each kingdom its own)
+# and recolor them in the realm's colors. A color is given as an INDEX into the banner_icons.xml palette,
+# not a hex code, so we pick the nearest of the 229 available.
+BANNER_PATTERN = 11          # background backing, shared by all
+KINGDOM_EMBLEMS = [163, 160, 462, 461, 463]   # one emblem per realm, in KINGDOMS order
+CLAN_PATTERNS = [3, 7, 22, 30, 17]            # a clan differs from its kingdom by the backing
 
 _PALETTE = None
 
-# Культуры без своих сцен и моделей в игре берут их у ванильной (см. settlement_visuals.DONOR_CULTURE)
+# Cultures without their own scenes and models in the game borrow them from a vanilla one (see settlement_visuals.DONOR_CULTURE)
 DONOR_CULTURE = settlement_visuals.DONOR_CULTURE
 
 
@@ -51,7 +51,7 @@ def donor_culture(culture):
 
 
 def unique_cultures():
-    """Культуры держав без повторов, в порядке KINGDOMS (у четырёх Эквестрий она одна)."""
+    """Realm cultures without repeats, in KINGDOMS order (the four Equestrias share one)."""
     out = []
     for k in KINGDOMS:
         if k["culture"] not in out:
@@ -60,7 +60,7 @@ def unique_cultures():
 
 
 def palette():
-    """Номер цвета -> (r, g, b) из палитры знамён игры."""
+    """Color index -> (r, g, b) from the game's banner palette."""
     global _PALETTE
     if _PALETTE is None:
         path = os.path.join(GAME, "Modules", "Native", "ModuleData", "banner_icons.xml")
@@ -73,14 +73,14 @@ def palette():
 
 
 def nearest_color(hex_argb):
-    """Ближайший номер из палитры к нашему цвету вида FF9B59B6."""
+    """Nearest palette index to our color of the form FF9B59B6."""
     value = int(hex_argb[-6:], 16)
     want = (value >> 16, (value >> 8) & 255, value & 255)
     return min(palette(), key=lambda i: sum((a - b) ** 2 for a, b in zip(palette()[i], want)))
 
 
 def kingdom_emblem(kingdom):
-    """Значок державы: из таблицы, иначе ванильная эмблема по порядку."""
+    """Realm icon: from the table, otherwise a vanilla emblem in order."""
     return kingdom.get("emblem", KINGDOM_EMBLEMS[ALL_KINGDOMS.index(kingdom) % len(KINGDOM_EMBLEMS)])
 
 
@@ -90,11 +90,11 @@ def banner_key(color, color2, emblem, pattern=BANNER_PATTERN):
     return ("%d.%d.%d.4345.4345.764.764.1.0.0.%d.%d.%d.512.512.764.764.1.0.0"
             % (pattern, back, back, emblem, front, front))
 
-# Снаряжение по культурам пока общее — ванильная имперская броня. Разойдётся, когда у держав
-# появятся свои вещи. По пять вещей в слоте, каждой державе своя — так пять армий отличаются
-# на вид, пока у них нет собственных моделей.
-# Раньше здесь стояли пони-версии (eq_pony_*): броня шилась на тело пони. Теперь все расы
-# подогнаны под ванильного человека и носят обычные вещи игры (решено 24.09.2026).
+# Equipment per culture is shared for now: vanilla imperial armour. It will diverge once the realms
+# get their own items. Five items per slot, one for each realm, so the five armies look different
+# while they have no models of their own.
+# Pony versions (eq_pony_*) used to be here: armour was fitted to the pony body. Now all races
+# are fitted to the vanilla human and wear the game's regular items (decided 24.09.2026).
 ARMOR_SETS = {
     "helmet": ["empire_guarded_lord_helmet", "imperial_goggled_helmet",
                "heavy_nasalhelm_over_imperial_mail",
@@ -111,10 +111,10 @@ ARMOR_SETS = {
             "strapped_leather_boots"],
 }
 
-# Своя броня у культуры: улью — асерайские силуэты, остальным культурам достаётся имперский
-# набор из ARMOR_SETS. Слот шлема у чейнджлингов занят рогом (RACE_GEAR), поэтому здесь его
-# не трогаем. Перекраска в хитин (tools/recolor_armor.py) жила на пони-мешах и ушла вместе
-# с ними — остались ванильные асерайские вещи, силуэт тот же.
+# A culture's own armour: the hive gets Aserai silhouettes, the other cultures get the imperial
+# set from ARMOR_SETS. The changelings' helmet slot is taken by the horn (RACE_GEAR), so it is
+# not touched here. The chitin recolor (tools/recolor_armor.py) lived on the pony meshes and went away
+# with them; the vanilla Aserai items remain, same silhouette.
 CULTURE_GEAR = {
     "aserai": {
         "body": "Item.aserai_full_scale_armor_on_chain",
@@ -127,33 +127,33 @@ GEAR_COMMON = {
     "sword": "Item.empire_sword_4_t4",
     "shield": "Item.stronger_reinforced_kite_shield",
     "horse": "Item.empire_horse",
-    # у пони рог — часть причёски (tools/make_pony_manes.py), в слоте шлема ничего не нужно;
-    # строки со слотом None выбрасываются при записи файла
+    # for ponies the horn is part of the hairstyle (tools/make_pony_manes.py), nothing is needed in the helmet slot;
+    # lines with a None slot are dropped when the file is written
     "mane": None,
-    # хвост и крылья — части тела: их вешает код (src/EquestriaBodyParts.cs), а слот плаща
-    # остаётся свободным под настоящие плащи
+    # tail and wings are body parts: the code attaches them (src/EquestriaBodyParts.cs), and the cape slot
+    # stays free for real capes
     "tail": None,
 }
 
 
-# Раса по культуре; кто не указан — пони. Чейнджлинги — своя раса (tools/make_pony_race.py,
-# модель tools/make_changeling.py).
-# У остальных нелошадиных культур раса пока проверочная: меши пони со своим окрасом
-# (tools/make_pony_race.py). Своя раса есть у каждой культуры, кроме Эквестрии, — иначе в игре
-# грифон, дракон и олень неотличимы от пони.
+# Race by culture; anyone not listed is a pony. Changelings are their own race (tools/make_pony_race.py,
+# model tools/make_changeling.py).
+# The other non-equine cultures have a test race for now: pony meshes with their own coloring
+# (tools/make_pony_race.py). Every culture except Equestria has its own race, otherwise in the game
+# a griffon, a dragon and a deer are indistinguishable from a pony.
 RACE_BY_CULTURE = {"aserai": "changeling", "vlandia": "griffon", "khuzait": "yak",
                    "sturgia": "dragon", "battania": "hippogriff", "nord": "deer"}
-# Части тела-предметы расы. У чейнджлингов раньше в слоте шлема сидел предмет-рог
-# (eq_changeling_horn): на старой модели рога не было, его надевали. У новой модели
-# (tools/make_changeling_model.py) рог и уши — часть головы, а крылья с хвостом вешает на скелет
-# src/EquestriaBodyParts.cs. Предмета-рога больше нет, поэтому слот шлема пуст — и чейнджлинги,
-# включая Кризалис, носят обычный шлем своей державы.
+# Race body-part items. Changelings used to have a horn item in the helmet slot
+# (eq_changeling_horn): the old model had no horn, so it was worn. In the new model
+# (tools/make_changeling_model.py) the horn and ears are part of the head, and the wings and tail are attached
+# to the skeleton by src/EquestriaBodyParts.cs. There is no horn item anymore, so the helmet slot is empty, and changelings,
+# including Chrysalis, wear their realm's regular helmet.
 RACE_GEAR = {
     "changeling": {"tail": None},
 }
-# Теги причёсок для знати расы (style_tag в skins.xml, tools/make_pony_race.py)
+# Hairstyle tags for the race's nobility (style_tag in skins.xml, tools/make_pony_race.py)
 RACE_HAIR_TAGS = {"changeling": "ChangelingMane", "pony": "PonyMane"}
-# У грифонов и яков своих причёсок нет: гребень и косички — часть головы
+# Griffons and yaks have no hairstyles of their own: the crest and braids are part of the head
 
 
 def race_for(culture):
@@ -161,11 +161,11 @@ def race_for(culture):
 
 
 def face_xml(hero_id, age):
-    """Лицо героя: обычно шаблон, а у героев из FACE_KEYS — снятый в редакторе ключ.
+    """Hero face: usually a template, but heroes in FACE_KEYS get a key captured in the editor.
 
-    Вариант лица расы (face_textures в skins.xml — у чейнджлингов зелёные глаза королевы) тегом
-    в XML не задаётся, он лежит внутри ключа. Ключ снимается в редакторе внешности: мод пишет его
-    в журнал (EquestriaShowcase.WatchBodyProperties), оттуда — в world_data.FACE_KEYS.
+    The race's face variant (face_textures in skins.xml: the changelings' green queen eyes) cannot be set
+    by a tag in XML, it lives inside the key. The key is captured in the appearance editor: the mod writes it
+    to the log (EquestriaShowcase.WatchBodyProperties), and from there it goes to world_data.FACE_KEYS.
     """
     key = FACE_KEYS.get(hero_id)
     if not key:
@@ -182,7 +182,7 @@ def hair_tags_xml(culture):
 
 
 def gear_for(culture):
-    """Набор снаряжения державы: общее оружие плюс своя броня."""
+    """A realm's equipment set: shared weapons plus its own armour."""
     index = unique_cultures().index(culture)
     out = dict(GEAR_COMMON)
     for slot, ids in ARMOR_SETS.items():
@@ -202,7 +202,7 @@ def esc(text):
 
 
 def write(name, body, comment):
-    # слоты без предмета (например, свободная голова у пони) выпадают из файла
+    # slots without an item (e.g. a pony's free head) drop out of the file
     body = "\n".join(line for line in body.split("\n") if 'id="None"' not in line)
     path = os.path.join(DATA, name)
     with open(path, "w", encoding="utf-8") as f:
@@ -221,7 +221,7 @@ def write_file(name, text):
 
 
 def write_xslt(name, matches, comment):
-    """Преобразование, удаляющее перечисленные узлы из ванильных данных."""
+    """Transform that removes the listed nodes from the vanilla data."""
     lines = ['<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
              "  <!-- %s -->" % comment,
              "  <xsl:template match=\"@*|node()\">",
@@ -237,17 +237,17 @@ def write_xslt(name, matches, comment):
     log("записан", name)
 
 
-# ---------------------------------------------------------------- координаты
-# Где что стоит, считает tools/world_layout.py: он делит сушу между державами (примерно поровну,
-# с поправкой на силу — "power" в world_data.py) и расставляет поселения так, чтобы они не
-# кучковались и не оставляли пустых мест — как в оригинальной кампании.
+# ---------------------------------------------------------------- coordinates
+# What stands where is computed by tools/world_layout.py: it splits the land between the realms (roughly evenly,
+# adjusted for strength: "power" in world_data.py) and places settlements so that they do not
+# cluster and do not leave empty spots, as in the original campaign.
 #
-# Здесь остаётся только «человеческая» часть: имена, описания и идентификаторы. Точка берётся у
-# города Equestria at War, если он попал в эти земли; если город достался чужой державе — имя ему
-# даётся в её духе, а канонные названия (Кантерлот, Понивилль и прочие) не трогаются никогда.
+# Only the "human" part stays here: names, descriptions and ids. The point is taken from
+# an Equestria at War city if it fell into these lands; if the city went to another realm, it gets a name
+# in that realm's style, and canon names (Canterlot, Ponyville and others) are never touched.
 HIDEOUT_GAP = 12.0
 
-# Названия добавочных деревень: прилагательное + существительное мужского рода.
+# Names of extra villages: adjective + masculine noun.
 VILLAGE_WORDS = {
     "empire": ["Клеверный", "Медовый", "Солнечный", "Яблочный", "Росистый", "Радужный", "Тихий",
                "Ясный", "Звёздный", "Ромашковый", "Пряничный", "Лунный"],
@@ -266,7 +266,7 @@ VILLAGE_WORDS = {
 }
 VILLAGE_NOUNS = ["Луг", "Ручей", "Холм", "Брод", "Дол", "Бор", "Яр", "Хутор", "Родник", "Выселок"]
 
-# Описания известных городов; остальным пишется общее по области.
+# Descriptions of known cities; the rest get a generic one by region.
 TEXTS = {
     "Кантерлот": "Столица Солнечной Эквестрии, белокаменный город на склоне горы.",
     "Мейнхеттен": "Город, который не спит.",
@@ -310,7 +310,7 @@ def _group(kind):
 
 _LAYOUT = None
 
-# Канонные названия, которые не переименовываются, даже если город достался другой державе.
+# Canon names that are not renamed even if the city went to another realm.
 CANON_NAMES = set(TEXTS) | set(RENAMES.values())
 FORT_NOUNS = ["Кряж", "Утёс", "Застава", "Твердыня", "Перевал", "Оплот"]
 
@@ -324,7 +324,7 @@ def _pick_name(pool, used):
 
 
 def fort_name(culture, used):
-    """Имя для придуманной или переименованной крепости."""
+    """Name for an invented or renamed fortress."""
     name = _pick_name(FORT_NAMES.get(culture, []), used)
     if name:
         return name
@@ -341,8 +341,8 @@ def village_name(culture, used, rng):
 
 
 def layout():
-    """{id державы: {"town": [...], "castle": [...], "village": [...]}}, запись поселения —
-    словарь: name, text, x, y, eaw (страна EaW), value, sid, bound (у деревни — sid крепости)."""
+    """{realm id: {"town": [...], "castle": [...], "village": [...]}}, a settlement record is
+    a dict: name, text, x, y, eaw (EaW country), value, sid, bound (for a village, the fortress sid)."""
     global _LAYOUT
     if _LAYOUT is not None:
         return _LAYOUT
@@ -351,8 +351,8 @@ def layout():
     import world_layout
 
     rng = random.Random(20260918)
-    # Вес города решает, станет он городом, замком или деревней. У канонных мест MLP вес на карте
-    # EaW бывает случайно мал (Клаудсдейл — 10), поэтому поднимаем его по таблице CITY_VALUE.
+    # A city's weight decides whether it becomes a town, castle or village. On the EaW map canon MLP places
+    # sometimes have a randomly low weight (Cloudsdale is 10), so we raise it from the CITY_VALUE table.
     cities = []
     for c in equus_map.cities():
         x, y = CITY_MOVE.get(c["name"], (c["x"], c["y"]))
@@ -400,7 +400,7 @@ def layout():
                     if name in used_names:
                         name = None
                     elif city["owner"] not in k["eaw"] and name not in CANON_NAMES:
-                        name = None            # земля сменила хозяина — и название вместе с ней
+                        name = None            # the land changed owner, and the name with it
                         renamed += 1
                 if name is None:
                     name = (fort_name(culture, used_names) if kind != "village"
@@ -412,8 +412,8 @@ def layout():
                 text = TEXTS.get(name) or (TEXTS.get(city["name"]) if city else None)
                 text_en = None
                 if text is None:
-                    # Описание собирается шаблоном, поэтому английский складываем рядом:
-                    # переводить по словарю готовое предложение — гадание (tools/lang.py)
+                    # The description is built from a template, so the English is stored alongside:
+                    # translating a finished sentence by dictionary is guesswork (tools/lang.py)
                     if (state and city and name == RENAMES.get(city["name"], city["name"])):
                         text = "%s в области «%s»." % (KIND_TEXT[kind], state)
                         text_en = "%s in the %s region." % (KIND_TEXT_EN[kind], lang.en(state))
@@ -433,7 +433,7 @@ def layout():
             % (k["name"], len(out["town"]), len(out["castle"]), len(out["village"]),
                invented, renamed))
 
-    # деревню привязываем к её крепости уже по идентификаторам
+    # bind each village to its fortress, now by ids
     for k in KINGDOMS:
         out = result[k["kingdom"]]
         forts = {("town", i): t["sid"] for i, t in enumerate(out["town"])}
@@ -453,7 +453,7 @@ HIDEOUT_TERRAIN = {
     "mountain": (equus_map.MOUNTAIN, equus_map.STEPPE),
     "desert": (equus_map.DESERT,),
     "steppe": (equus_map.STEPPE, equus_map.PLAIN),
-    "seaside": None,  # у самой воды
+    "seaside": None,  # right by the water
 }
 
 
@@ -504,8 +504,8 @@ def place_hideouts(rng, taken):
 
 
 def fief_owners(kingdom):
-    """{id крепости: id клана}. Столица — правящему клану, крепости стран из eaw_clans — этим
-    кланам, остальные — всем кланам по кругу."""
+    """{fortress id: clan id}. The capital goes to the ruling clan, fortresses of countries from eaw_clans to those
+    clans, the rest to all clans in turn."""
     spots = layout()[kingdom["kingdom"]]
     clans = [c["id"] for c in kingdom["clans"]]
     ruling = next(c["id"] for c in kingdom["clans"] if c.get("ruling"))
@@ -533,58 +533,58 @@ def capital_id(kingdom):
 
 
 def clan_home(kingdom, clan_id):
-    """Дом клана — первое его владение; у безземельного — столица."""
+    """A clan's home is its first fief; for a landless clan, the capital."""
     for fid, owner in fief_owners(kingdom).items():
         if owner == clan_id:
             return fid
     return capital_id(kingdom)
 
 
-# ---------------------------------------------------------------- имена жителей
+# ---------------------------------------------------------------- inhabitant names
 def name_list(culture, sex):
     spec = NAMES.get(culture)
     if spec is None:
-        # У культуры без своей таблицы (Оления) берём эквестрийские имена.
+        # A culture without its own table (Deerland) takes Equestrian names.
         spec = NAMES["empire"]
     spec = spec[sex]
-    # четвёртый элемент, если есть, — лорные имена целиком, сверх составных
+    # the fourth element, if present, is whole lore names, on top of the composed ones
     extras = list(spec[3]) if len(spec) > 3 else []
     if spec[0] == "составное":
         return ["%s %s" % (first, second) for first in spec[1] for second in spec[2]] + extras
     return list(spec[1]) + extras
 
 
-# ---------------------------------------------------------------- спутники в тавернах
+# ---------------------------------------------------------------- companions in taverns
 def build_companions():
-    """Перекрывает ванильные шаблоны спутников: делает их пони и даёт русские прозвища.
+    """Overrides the vanilla companion templates: makes them ponies and gives Russian nicknames.
 
-    Игра сама расселяет спутников по тавернам городов, исходя из культуры поселения. Имя она
-    подставляет в {FIRSTNAME} из списков культуры, поэтому здесь задаём только прозвище и расу.
+    The game itself distributes companions over town taverns based on the settlement's culture. It puts
+    the name into {FIRSTNAME} from the culture's lists, so here we only set the nickname and the race.
     """
     body = ["<NPCCharacters>"]
     total = 0
-    templates = {}   # ванильные шаблоны по культуре — с них копируются канонные спутники
+    templates = {}   # vanilla templates by culture; canon companions are copied from them
     for node in ET.parse(os.path.join(VANILLA, "spspecialcharacters.xml")).getroot():
         if node.get("occupation") != "Wanderer":
             continue
         culture = (node.get("culture") or "").replace("Culture.", "")
         titles = COMPANION_TITLES.get(culture)
         if not titles:
-            continue  # культура не наша (Оления) — оставляем как есть
+            continue  # not our culture (Deerland): leave as is
         templates.setdefault(culture, []).append(node)
         cid = node.get("id")
         index = int(cid.rsplit("_", 1)[-1]) if cid.rsplit("_", 1)[-1].isdigit() else total
         title = titles[index % len(titles)]
-        # culture обязательна по схеме NPCCharacters.xsd («required attribute 'culture'» в
-        # rgl_log) — та же, что у ванильного шаблона
+        # culture is required by the NPCCharacters.xsd schema ("required attribute 'culture'" in
+        # rgl_log); the same as in the vanilla template
         body.append('\t<NPCCharacter id="%s" race="%s" culture="Culture.%s" name="%s" />'
                     % (cid, race_for(culture), culture,
                        lang.loc(cid + "_name", "{FIRSTNAME} — " + title)))
         total += 1
 
-    # Канонные спутники (world_data.CANON_COMPANIONS): копия ванильного шаблона своей культуры —
-    # навыки, снаряжение, черты и лицо остаются, — но имя фиксированное, без {FIRSTNAME}.
-    # Игра создаёт спутника из шаблона, и такой шаблон даёт героя ровно с этим именем.
+    # Canon companions (world_data.CANON_COMPANIONS): a copy of the vanilla template of their culture;
+    # skills, equipment, traits and face stay, but the name is fixed, without {FIRSTNAME}.
+    # The game creates a companion from a template, and such a template yields a hero with exactly this name.
     canon = 0
     body.append("\n\t<!-- канонные спутники: имя фиксированное, шаблон скопирован у ванильного -->")
     for culture, people in CANON_COMPANIONS.items():
@@ -608,8 +608,8 @@ def build_companions():
     log("спутников переделано в пони: %d, канонных добавлено: %d" % (total, canon))
 
 
-# ---------------------------------------------------------------- культуры
-# Названия и описания культур (одна культура может быть у нескольких держав)
+# ---------------------------------------------------------------- cultures
+# Culture names and descriptions (one culture can belong to several realms)
 CULTURES = {
     "empire": ("Эквестрия", "Пони Эквестрии: земные пони, пегасы и единороги под рукой принцесс-аликорнов."),
     "vlandia": ("Грифоны", "Грифоны Грифонстоуна: гордые, прижимистые, но верные своему слову."),
@@ -620,16 +620,16 @@ CULTURES = {
     "aserai": ("Чейнджлинги", "Чейнджлинги ульев: оборотни, питающиеся чужой любовью."),
 }
 
-# Культура, которой в игре почти нет (nord — заготовка без войск и горожан), собирается целиком
-# из ванильной культуры-донора: те же войска, горожане, шаблоны знати и турниров.
-# Обмен ветками (10.10.2026, tools/make_troops.py ROSTER_OF): культура берёт у донора ВСЕ ссылки —
-# войска, ополчение, горожан, шаблоны знати и снаряжения, — а сами записи донора получают нашу
-# культуру в make_troops (swap_cultures). Держава, города и лорды при этом остаются своими.
-# Летающие грифоны и драконы — конные хузаиты и вландийцы, пешие яки и олени — стургийцы и
-# баттанийцы, гиппогрифы — копии стургийской ветки (make_troops.COPY_CULTURE, ссылки
-# переводятся на копии).
-FULL_CULTURE_FROM = None   # заполняется из make_troops.ROSTER_OF в build_cultures()
-# color/color2 пишем свои (culture_colors), ванильные из донора не копируем — иначе задвоятся
+# A culture that barely exists in the game (nord is a stub without troops or townsfolk) is built entirely
+# from a vanilla donor culture: the same troops, townsfolk, noble and tournament templates.
+# Branch swap (10.10.2026, tools/make_troops.py ROSTER_OF): the culture takes ALL references from the donor,
+# troops, militia, townsfolk, noble and equipment templates, and the donor's records themselves get our
+# culture in make_troops (swap_cultures). The realm, towns and lords stay their own.
+# Flying griffons and dragons are mounted Khuzaits and Vlandians, the foot yaks and deer are Sturgians and
+# Battanians, hippogriffs are copies of the Sturgian branch (make_troops.COPY_CULTURE, references
+# are redirected to the copies).
+FULL_CULTURE_FROM = None   # filled from make_troops.ROSTER_OF in build_cultures()
+# color/color2 are written as our own (culture_colors), the vanilla ones are not copied from the donor, or they would double up
 CULTURE_SKIP_ATTRS = {"id", "name", "text", "is_main_culture", "faction_banner_key",
                       "color", "color2", "start_point_position_x", "start_point_position_y"}
 CULTURE_SKIP_CHILDREN = {"male_names", "female_names", "clan_names"}
@@ -638,10 +638,10 @@ CULTURE_SKIP_CHILDREN = {"male_names", "female_names", "clan_names"}
 def full_culture_parts(cid, donor):
     path = os.path.join(GAME, "Modules", "SandBoxCore", "ModuleData", "spcultures.xml")
     node = next(c for c in ET.parse(path).getroot() if c.get("id") == donor)
-    # У культуры, берущей КОПИИ ветки (гиппогрифы), ссылки на записи донора переводим на копии
-    # (tools/make_troops.py, copy_map): иначе гора Арис набирала бы ячьи войска и селила ячьих
-    # горожан — раса у записи своя, а культура на неё смотрит чужая.
-    import make_troops  # noqa: E402 — импорт здесь: модуль тяжёлый и нужен только тут
+    # For a culture that takes COPIES of a branch (hippogriffs), references to donor records are redirected to the copies
+    # (tools/make_troops.py, copy_map): otherwise Mount Aris would recruit yak troops and settle yak
+    # townsfolk; the record has its own race, but the culture points at someone else's.
+    import make_troops  # noqa: E402 - imported here: the module is heavy and only needed here
     swap = {"NPCCharacter." + old: "NPCCharacter." + new
             for old, new in make_troops.copy_map(GAME).items()} \
         if cid == make_troops.COPY_CULTURE else {}
@@ -661,10 +661,10 @@ def full_culture_parts(cid, donor):
 
 
 def culture_colors(cid):
-    """Цвета культуры: берём у её державы, иначе ванильные.
+    """Culture colors: taken from its realm, otherwise vanilla.
 
-    Ими движок красит ткань и канты брони (маска _c у ванильных текстур). Наши культуры заменяют
-    ванильные, и без этих двух чисел вся броня в игре выходит белой (проверено 18.09.2026).
+    The engine uses them to tint the cloth and trims of armour (the _c mask in vanilla textures). Our cultures replace
+    the vanilla ones, and without these two numbers all armour in the game comes out white (checked 18.09.2026).
     """
     for k in ALL_KINGDOMS:
         if k["culture"] == cid:
@@ -676,22 +676,22 @@ def culture_colors(cid):
     return (node.get("color", "0xffFFFFFF")[2:].upper(), node.get("color2", "0xffFFFFFF")[2:].upper())
 
 
-# Названия кланов культуры (<clan_names>). По ним движок называет НОВЫЕ кланы: клан игрока при
-# создании персонажа (FactionHelper.GenerateClanNameforPlayer), кланы спутников и мятежников.
-# Пустой список — NullReferenceException в NameGenerator.GenerateClanName (10.10.2026: культуры,
-# собранные из донора, теряли список, и мастер создания персонажа падал на выборе народности).
-# Стиль тот же, что у кланов держав (world_fill.CLAN_STYLE): «Дом …», «Род …», «Клан …», «Улей …».
+# Culture clan names (<clan_names>). The engine names NEW clans from them: the player's clan at
+# character creation (FactionHelper.GenerateClanNameforPlayer), companion and rebel clans.
+# An empty list means a NullReferenceException in NameGenerator.GenerateClanName (10.10.2026: cultures
+# built from a donor lost the list, and the character creation wizard crashed on choosing the culture).
+# Same style as the realms' clans (world_fill.CLAN_STYLE): "House …", "Line …", "Clan …", "Hive …".
 CLAN_NAMES_PER_CULTURE = 30
 
 
 def clan_name_list(cid):
-    import world_fill  # noqa: E402 — нужен только тут
+    import world_fill  # noqa: E402 - only needed here
     word, style = world_fill.CLAN_STYLE.get(cid, ("Дом", "pair"))
     spec = world_fill.NAMES.get(cid, world_fill.NAMES["empire"])["m"]
     if style == "surname":
         bodies = list(spec[2])
     elif style == "pair":
-        # по диагонали, чтобы первые имена не повторялись подряд: Санни Дэш, Мун Харт, …
+        # diagonally, so the first names do not repeat in a row: Sunny Dash, Moon Heart, …
         firsts, seconds = list(spec[1]), list(spec[2])
         bodies = ["%s %s" % (firsts[(i + j) % len(firsts)], seconds[i % len(seconds)])
                   for j in range(len(firsts)) for i in range(len(seconds))]
@@ -743,19 +743,19 @@ def build_cultures():
           "Культуры Equus. Занимают ванильные идентификаторы: на них есть жёстко прописанные\n"
           "     ссылки в коде игры (список из шести культур при создании персонажа и прочее).\n"
           "     Меняем названия, описания и списки имён — бойцы и горожане остаются ванильные.")
-    # Списки имён у культуры не заменяются слиянием, а дополняются: ванильные имена остались бы
-    # рядом с нашими. Поэтому сначала вырезаем их преобразованием, а потом подмешиваем свои.
+    # Name lists of a culture are not replaced by merging but appended to: vanilla names would stay
+    # next to ours. So we cut them out with a transform first, and then mix in our own.
     write_xslt("equestria_cultures.xslt",
                ["Culture[@id='%s']/%s" % (cid, tag)
                 for cid, _n, _t in rows if cid not in FULL_CULTURE_FROM
                 for tag in ("male_names", "female_names", "clan_names")]
-               # собранная целиком культура: вырезаем все её ванильные списки, иначе они задвоятся
+               # a culture built entirely: cut out all its vanilla lists, otherwise they double up
                + ["Culture[@id='%s']/*" % cid for cid in FULL_CULTURE_FROM if cid in unique_cultures()],
                "Вырезаем ванильные списки имён у наших культур — иначе рядом с пони "
                "остались бы кальрадийцы.")
 
 
-# ---------------------------------------------------------------- королевства
+# ---------------------------------------------------------------- kingdoms
 def build_kingdoms():
     body = ["<Kingdoms>"]
     for k in KINGDOMS:
@@ -794,13 +794,13 @@ def build_kingdoms():
           "     equestria_kingdoms.xslt.")
     write_xslt("equestria_kingdoms.xslt",
                ['Kingdom[@id=\'%s\']' % kid for kid in DROP_KINGDOMS]
-               # и у выключенных держав тоже: их культуры по-прежнему заняты нами
+               # and for disabled realms too: their cultures are still taken by us
                + ['Kingdom[@id=\'%s\']' % k["culture"] for k in ALL_KINGDOMS],
                "Убираем ванильные королевства: и лишние, и те, чьи культуры мы заняли "
                "(наши заведены под своими id).")
 
 
-# ---------------------------------------------------------------- кланы
+# ---------------------------------------------------------------- clans
 def build_clans():
     body = ["<Factions>"]
     for k in KINGDOMS:
@@ -827,16 +827,16 @@ def build_clans():
                               clan.get("emblem", kingdom_emblem(k)),
                               CLAN_PATTERNS[k["clans"].index(clan) % len(CLAN_PATTERNS)]),
                    clan.get("color", k["color"]), clan.get("color2", k["color2"]), k["culture"],
-                   # короткое имя у знатных кланов то же самое: у нас они и так названы коротко,
-                   # но без short_name подпись отряда осталась бы пустой
+                   # the short name of noble clans is the same: ours are named briefly anyway,
+                   # but without short_name the party label would stay empty
                    lang.loc(clan["id"], clan["name"]), lang.loc(clan["id"], clan["name"]),
                    clan["tier"]))
 
-    # Кланы, которые мы не трогаем (разбойники, наёмники, клан игрока), ссылаются на ванильные
-    # поселения — а те удалены. Повисшая ссылка роняет кампанию, поэтому переселяем их к себе:
-    # по тому же id слияние перезапишет только этот атрибут. Раздаём по всем городам по кругу —
-    # отряды клана появляются у его дома, и когда домом у всех был Кантерлот, у его ворот стояла
-    # толпа из двух десятков отрядов, которые тут же сцеплялись друг с другом.
+    # Clans we do not touch (bandits, mercenaries, the player's clan) reference vanilla
+    # settlements, and those are deleted. A dangling reference crashes the campaign, so we move them to us:
+    # with the same id the merge overwrites only this attribute. Hand them out over all towns in turn:
+    # a clan's parties spawn at its home, and when everyone's home was Canterlot, a crowd of two dozen
+    # parties stood at its gates and immediately got into fights with each other.
     import math
     capital = capital_id(KINGDOMS[0])
     all_towns = [t for k in KINGDOMS for t in layout()[k["kingdom"]]["town"]]
@@ -847,24 +847,24 @@ def build_clans():
     kept = 0
     for node in ET.parse(os.path.join(VANILLA, "spclans.xml")).getroot():
         if node.get("super_faction"):
-            continue  # знатный клан, он удаляется преобразованием
+            continue  # a noble clan, removed by the transform
         cid = node.get("id")
         home = capital if cid == "player_faction" else (
             home_near(MINOR_HOMES[cid]) if cid in MINOR_HOMES else towns[kept % len(towns)])
-        # Имя и описание перекрываем своими: иначе в энциклопедии остаётся кальрадийский текст
-        # про гулямов и Нахазу (замечено в игре 2026-09-22).
+        # Name and description are overridden with ours: otherwise the encyclopedia keeps the Calradian text
+        # about ghulams and Nahasa (noticed in game 2026-09-22).
         own = MINOR_CLANS.get(cid)
         rename = ""
         if own:
             name, ru, en = own
-            # short_name перекрываем обязательно: именно его игра ставит в подпись отряда
-            # ("Отряд ... из клана X"), и ванильное короткое имя пережило бы переименование.
+            # short_name must be overridden: it is what the game puts in the party label
+            # ("Party ... of clan X"), and the vanilla short name would survive the rename.
             rename = ' name="%s" short_name="%s" text="%s"' % (
                 lang.loc(cid + "_name", name),
                 lang.loc(cid + "_short", MINOR_SHORT.get(cid, name)),
                 lang.loc(cid + "_text", ru, en))
-        # tier (и name, если не перекрыто своим) обязательны по схеме Factions.xsd: без них
-        # rgl_log сыпал «required attribute 'tier' is missing». Значения ванильные, как и были.
+        # tier (and name, unless overridden by ours) are required by the Factions.xsd schema: without them
+        # rgl_log was spammed with "required attribute 'tier' is missing". The values are vanilla, as before.
         if " name=" not in rename and node.get("name"):
             rename = ' name="%s"' % esc(node.get("name")) + rename
         rename += ' tier="%s"' % node.get("tier", "1")
@@ -877,14 +877,14 @@ def build_clans():
     write("equestria_clans.xml", "\n".join(body),
           "Кланы пяти держав. Ванильные знатные кланы убираются преобразованием\n"
           "     equestria_clans.xslt; разбойничьи и наёмничьи остаются — на них завязаны логова.")
-    # Ванильные знатные кланы узнаются по ссылке на королевство. Разбойники её не имеют,
-    # поэтому остаются на месте вместе со своими логовами.
+    # Vanilla noble clans are recognized by their reference to a kingdom. Bandits do not have one,
+    # so they stay in place together with their hideouts.
     write_xslt("equestria_clans.xslt", ["Faction[@super_faction]"],
                "Удаляем все ванильные знатные кланы (у них есть super_faction). "
                "Разбойничьи и наёмничьи кланы сохраняются.")
 
 
-# ---------------------------------------------------------------- лорды и семьи
+# ---------------------------------------------------------------- lords and families
 def build_lords_and_heroes():
     lords = ["<NPCCharacters>"]
     heroes = ["<Heroes>"]
@@ -901,13 +901,13 @@ def build_lords_and_heroes():
             culture_gear = gear_for(k["culture"])
             for hid, name, sex, age, text in clan["heroes"]:
                 cid = "eq_" + hid
-                # Описания дописанных героев приходят парой (русский, английский): они собраны
-                # из шаблона с именами, словарю такое не перевести (tools/world_fill.py)
+                # Descriptions of generated heroes come as a pair (Russian, English): they are built
+                # from a template with names, a dictionary cannot translate them (tools/world_fill.py)
                 text_en = None
                 if isinstance(text, tuple):
                     text, text_en = text
                 count += 1
-                # у именованных героев бывает своя вещь (рог с короной у Кризалис)
+                # named heroes sometimes have their own item (the horn with a crown for Chrysalis)
                 gear = dict(culture_gear, **HERO_GEAR.get(hid, {}))
                 lords.append(
                     '\t<NPCCharacter\n'
@@ -975,12 +975,12 @@ def build_lords_and_heroes():
     write("equestria_lords.xml", "\n".join(lords),
           "Лорды пяти держав: раса pony, снаряжение боевое и гражданское (оба обязательны —\n"
           "     без гражданского игра падает при выдаче снаряжения).")
-    # В мире не должно остаться людей. Раса прописана у каждого персонажа отдельно, и ванильных
-    # записей сотни: бойцы, горожане, крестьяне, наёмники, разбойники, турнирные бойцы. Перебирать
-    # их по одной бессмысленно — преобразование проставляет расу всем разом.
+    # No humans should remain in the world. The race is set on each character separately, and there are hundreds
+    # of vanilla records: troops, townsfolk, peasants, mercenaries, bandits, tournament fighters. Going through
+    # them one by one is pointless; the transform sets the race on all of them at once.
     #
-    # Файл лордов в SubModule.xml идёт последним среди NPCCharacters, поэтому его преобразование
-    # видит уже собранный список: и ванильный, и наших спутников.
+    # The lords file comes last among NPCCharacters in SubModule.xml, so its transform
+    # sees the already assembled list: both the vanilla one and our companions.
     write_file("equestria_lords.xslt",
                '<?xml version="1.0" encoding="utf-8"?>\n'
                '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n'
@@ -1007,17 +1007,17 @@ def build_lords_and_heroes():
     write("equestria_heroes.xml", "\n".join(heroes),
           "Кто в каком клане и кто кому родня. Ванильные герои удаляются преобразованием:\n"
           "     их кланов больше нет, и ссылки повисли бы в пустоте.")
-    # main_hero трогать нельзя: это герой игрока. Он объявлен в том же ванильном heroes.xml,
-    # и без него Campaign.InitializeGamePlayReferences падает на пустой ссылке ещё до карты.
+    # main_hero must not be touched: it is the player's hero. It is declared in the same vanilla heroes.xml,
+    # and without it Campaign.InitializeGamePlayReferences crashes on a null reference before the map.
     write_xslt("equestria_heroes.xslt", ["Hero[@id!='main_hero']"],
                "Удаляем всех ванильных героев, кроме main_hero (герой игрока) — "
                "их знатные кланы тоже удалены.")
     return count
 
 
-# ---------------------------------------------------------------- дружба и вражда
-# Отношения между героями игра из XML не читает. Пишем свой файл, а при создании новой кампании
-# его применяет EquestriaRelationsBehavior (src/EquestriaRelations.cs).
+# ---------------------------------------------------------------- friendship and enmity
+# The game does not read relations between heroes from XML. We write our own file, and when a new campaign
+# is created it is applied by EquestriaRelationsBehavior (src/EquestriaRelations.cs).
 def build_relations():
     body = ['<?xml version="1.0" encoding="utf-8"?>',
             "<!-- Отношения между героями (-100..100). Собрано tools/make_world.py из world_data.py;",
@@ -1037,10 +1037,10 @@ def build_relations():
     return count
 
 
-# ---------------------------------------------------------------- сцены и кварталы
-# Внутренние сцены поселения (центр, арена, таверна, зал лорда, тюрьма, дома) перечислены в
-# <Locations>. Придумывать их имена нельзя — это реальные сцены игры, и у каждой культуры свои.
-# Поэтому берём готовый блок у ванильного поселения той же культуры и того же вида.
+# ---------------------------------------------------------------- scenes and quarters
+# A settlement's interior scenes (center, arena, tavern, lord's hall, prison, houses) are listed in
+# <Locations>. Their names cannot be invented: these are real game scenes, and each culture has its own.
+# So we take the ready block from a vanilla settlement of the same culture and kind.
 LOCATIONS = {}
 
 
@@ -1070,8 +1070,8 @@ def locations_xml(culture, kind):
     return "\n".join("\t\t" + line.strip() for line in body.splitlines() if line.strip())
 
 
-# Общие кварталы. У города это притоны (Alley) — без них AlleyCampaignBehavior делит на ноль,
-# раздавая их главарям банд. У деревни это угодья.
+# Common areas. For a town these are alleys (Alley); without them AlleyCampaignBehavior divides by zero
+# when handing them out to gang leaders. For a village these are lands.
 COMMON_AREAS = {
     "town": [("Backstreet", "Закоулок"), ("Clearing", "Пустырь"), ("Waterfront", "Набережная")],
     "village": [("Pasture", "Выгон"), ("Thicket", "Чаща"), ("Bog", "Топь")],
@@ -1088,7 +1088,7 @@ def common_areas_xml(sid, kind):
     return "\n\t\t<CommonAreas>\n%s\n\t\t</CommonAreas>" % rows
 
 
-# ---------------------------------------------------------------- поселения
+# ---------------------------------------------------------------- settlements
 def build_settlements():
     body = ["<Settlements>"]
     towns = castles = villages = 0
@@ -1111,17 +1111,17 @@ def build_settlements():
                                     village_type(v["x"], v["y"], i)))
             villages += 1
 
-    # Логова разбойников остаются ванильные (на них завязаны разбойничьи кланы), но лежат они
-    # в координатах Кальрадии. Переносим их к себе, задав новые координаты по тому же id:
-    # слияние XML перезапишет только эти атрибуты.
+    # Bandit hideouts stay vanilla (the bandit clans are tied to them), but they lie
+    # at Calradia's coordinates. We move them to us by setting new coordinates under the same id:
+    # the XML merge overwrites only these attributes.
     hideouts = layout()["hideouts"]
     for hid, (name, x, y) in hideouts.items():
-        # name обязателен по схеме игры, даже когда узел только переопределяет координаты
+        # name is required by the game's schema, even when the node only overrides coordinates
         body.append('\t<Settlement id="%s" name="%s" posX="%.3f" posY="%.3f" />' % (hid, name, x, y))
     log("логовищ перенесено на нашу карту:", len(hideouts))
 
-    # Скит отшельника (уход игрока на покой). RetirementCampaignBehavior ищет его по id каждый
-    # игровой час и без него падает — поэтому оставляем ванильный и переносим к себе.
+    # The hermit's retreat (player retirement). RetirementCampaignBehavior looks it up by id every
+    # game hour and crashes without it, so we keep the vanilla one and move it to us.
     rx, ry = retreat_position()
     body.append('\t<Settlement id="%s" name="%s" posX="%.3f" posY="%.3f" />'
                 % (RETREAT_ID, lang.loc("eq_retreat", "Обитель отшельника"), rx, ry))
@@ -1130,14 +1130,14 @@ def build_settlements():
     write("equestria_settlements.xml", "\n".join(body),
           "Города, замки и деревни держав Эквуса по карте Equestria at War. Ванильные поселения\n"
           "     удаляются преобразованием, кроме логовищ разбойников: на них завязаны разбойничьи кланы.")
-    # Логова оставляем: их дома прописаны у разбойничьих кланов, а на карте они не видны,
-    # пока игрок их не отыщет.
+    # Hideouts are kept: they are the homes of the bandit clans, and they are not visible on the map
+    # until the player finds them.
     write_xslt("equestria_settlements.xslt",
                ["Settlement[not(Components/Hideout) and @id!='%s']" % RETREAT_ID],
                "Удаляем все ванильные поселения, кроме логовищ разбойников и скита отшельника.")
-    # Редактор сцены при сохранении карты мира читает и переписывает ModuleData/settlements.xml
-    # (ищет его именно под этим именем и без него падает). Игра этот файл не грузит — его нет в
-    # SubModule.xml, — поэтому кладём копию только для редактора.
+    # When saving the world map, the scene editor reads and rewrites ModuleData/settlements.xml
+    # (it looks for it under exactly this name and crashes without it). The game does not load this file (it is not in
+    # SubModule.xml), so we put a copy for the editor only.
     import shutil
     shutil.copyfile(os.path.join(DATA, "equestria_settlements.xml"), os.path.join(DATA, "settlements.xml"))
     return towns, castles, villages
@@ -1147,7 +1147,7 @@ RETREAT_ID = "retirement_retreat"
 
 
 def retreat_position():
-    """Скит — в горах недалеко от Кантерлота, на твёрдой земле и не вплотную к поселениям."""
+    """The retreat: in the mountains near Canterlot, on solid ground and not right next to settlements."""
     capital = layout()[KINGDOMS[0]["kingdom"]]["town"][0]
     for r in range(25, 120, 5):
         for step in range(24):
@@ -1163,9 +1163,9 @@ def retreat_position():
     return capital["x"] + 20, capital["y"] + 20
 
 
-# Картинки меню поселений. Имена ванильные и неровные (у вландии «vlanda» — опечатка самой игры,
-# у империи и асераи города берут menu_*, у остальных — gui_bg_town_*), поэтому не угадываем их,
-# а берём самые частые у ванильных поселений той же культуры и вида.
+# Settlement menu pictures. Vanilla names are irregular (Vlandia has "vlanda", the game's own typo;
+# imperial and Aserai towns use menu_*, the rest gui_bg_town_*), so we do not guess them
+# but take the most common ones among vanilla settlements of the same culture and kind.
 MENU_MESHES = {}
 
 
@@ -1195,8 +1195,8 @@ def load_menu_meshes():
 
 
 def gate_of(sid, x, y):
-    # Ворота — там же, где у ванильного поселения-донора: его модель встанет на это место.
-    # К центру города отряд подойти не может, войти он может только через ворота.
+    # The gate is where the vanilla donor settlement has it: its model will stand in this spot.
+    # A party cannot approach the town center; it can enter only through the gate.
     return settlement_visuals.gate_position(settlement_visuals.pick(*DONORS, sid), x, y)
 
 
@@ -1232,9 +1232,9 @@ def settlement_xml(sid, name, text, text_en, x, y, culture, owner_clan, kind, in
            locations_xml(culture, kind), common_areas_xml(sid, kind)))
 
 
-# Промыслы деревень. Идентификаторы должны существовать в игре: если написать несуществующий,
-# VillageType у деревни окажется пустым и игра упадёт на первом же подсчёте производства
-# (Village.GetWarehouseCapacity). Список сверяется с ванильным ниже.
+# Village trades. The ids must exist in the game: if you write a nonexistent one,
+# the village's VillageType will be empty and the game will crash on the very first production count
+# (Village.GetWarehouseCapacity). The list is checked against the vanilla one below.
 VILLAGE_TYPES = [
     "VillageType.wheat_farm", "VillageType.cattle_farm", "VillageType.sheep_farm",
     "VillageType.lumberjack", "VillageType.iron_mine", "VillageType.clay_mine",
@@ -1255,7 +1255,7 @@ def check_village_types():
     log("промыслы деревень сверены с ванильными: %d видов" % len(VILLAGE_TYPES))
 
 
-# Промысел по местности вокруг деревни: у воды рыбаки, в лесу лесорубы, в горах рудники.
+# Trade by the terrain around the village: fishermen by water, lumberjacks in forest, mines in mountains.
 TERRAIN_TRADES = {
     "water": ["VillageType.fisherman"],
     equus_map.FOREST: ["VillageType.lumberjack", "VillageType.sheep_farm"],
@@ -1304,7 +1304,7 @@ def village_xml(sid, name, x, y, culture, bound, trade):
            locations_xml(culture, "village"), common_areas_xml(sid, "village")))
 
 
-# ---------------------------------------------------------------- снаряжение по культурам
+# ---------------------------------------------------------------- equipment per culture
 def build_equipment():
     combos = [
         ("king", "IsKingdomRulerTemplate", False, True),
@@ -1355,9 +1355,9 @@ def build_equipment():
           "     и кампания упадёт при одевании героя.")
 
 
-# ---------------------------------------------------------------- дипломатия на старте
-# Войны, союзы, торговля и дань между державами — из таблицы DIPLOMACY. Игра из XML такого не
-# читает, поэтому файл свой, а применяет его src/EquestriaDiplomacy.cs при создании кампании.
+# ---------------------------------------------------------------- diplomacy at start
+# Wars, alliances, trade and tribute between realms, from the DIPLOMACY table. The game does not read such
+# things from XML, so the file is our own, and src/EquestriaDiplomacy.cs applies it when the campaign is created.
 def build_diplomacy():
     known = set(k["kingdom"] for k in KINGDOMS)
     body = ['<?xml version="1.0" encoding="utf-8"?>',
@@ -1378,12 +1378,12 @@ def build_diplomacy():
     log("дипломатия: записей %d" % count)
 
 
-# ---------------------------------------------------------------- запуск
+# ---------------------------------------------------------------- startup
 os.makedirs(DATA, exist_ok=True)
 check_village_types()
 load_locations()
 load_menu_meshes()
-# Кланы и лорды сверх написанных руками — до ванильной плотности (по числу крепостей державы)
+# Clans and lords beyond the hand-written ones, up to vanilla density (by the realm's number of fortresses)
 import world_fill  # noqa: E402
 world_fill.fill(KINGDOMS, {k["kingdom"]: len(layout()[k["kingdom"]]["town"])
                            + len(layout()[k["kingdom"]]["castle"]) for k in KINGDOMS}, log)
@@ -1399,16 +1399,16 @@ build_diplomacy()
 log("держав %d, кланов %d, лордов %d" % (len(KINGDOMS), sum(len(k["clans"]) for k in KINGDOMS), lord_count))
 log("поселений: городов %d, замков %d, деревень %d" % (towns, castles, villages))
 log("отношений между героями: %d" % relation_count)
-# Строки, написанные руками, а не собранные скриптом: в самих файлах (equestria_strings.xml,
-# equestria_characters.xml) и в коде мода (src/*.cs) стоит английский текст, а русский нужно
-# донести до языковых файлов — иначе игрок увидит английский. Ключи те же, что в {=...}.
+# Strings written by hand, not assembled by the script: the files themselves (equestria_strings.xml,
+# equestria_characters.xml) and the mod code (src/*.cs) contain English text, and the Russian has to
+# reach the language files, otherwise the player sees English. The keys are the same as in {=...}.
 HAND_WRITTEN = {
     "eq_culture_rich_name": "Пони",
     "eq_culture_description":
         "Вы родились пони — единорогом, пегасом или земным пони. Судьба привела вашу семью в земли "
         "Империи, где вы и выросли: ваше детство и юность пройдут по имперскому укладу.",
     "eq_royal_guard": "Королевский гвардеец Эквестрии",
-    # народности в окне внешности (src/EquestriaRaceSelector.cs)
+    # cultures in the appearance window (src/EquestriaRaceSelector.cs)
     "eq_race_pony": "Пони",
     "eq_race_changeling": "Чейнджлинг",
     "eq_race_deer": "Олень",
@@ -1416,9 +1416,9 @@ HAND_WRITTEN = {
     "eq_race_yak": "Як",
     "eq_race_dragon": "Дракон",
     "eq_race_hippogriff": "Гиппогриф",
-    # главное меню (src/EquestriaStoryMode.cs): сюжетная кампания отключена
+    # main menu (src/EquestriaStoryMode.cs): the story campaign is disabled
     "eq_story_disabled": "Сюжетная кампания в Эквестрии недоступна — начните игру в песочнице.",
-    # главное меню и сообщения при старте (src/EquestriaQuickStart.cs, SubModule.cs, EquestriaShaderWarmup.cs)
+    # main menu and startup messages (src/EquestriaQuickStart.cs, SubModule.cs, EquestriaShaderWarmup.cs)
     "eq_menu_start": "Начать приключение",
     "eq_note_loaded": "Мод Equestria загружен!",
     "eq_note_quick_start": "Эквестрия: быстрый старт, персонаж по умолчанию",
@@ -1426,7 +1426,7 @@ HAND_WRITTEN = {
     "eq_load_preparing": "Эквестрия: готовим шейдеры — {NOTE}",
     "eq_load_compiling": "Эквестрия: сборка шейдеров — осталось {LEFT} из {PEAK}{NOTE}",
     "eq_load_hive": "броня улья",
-    # разбор скорости отряда (src/EquestriaPartySpeed.cs)
+    # party speed breakdown (src/EquestriaPartySpeed.cs)
     "eq_speed_rough": "Тяжёлая местность",
     "eq_speed_ford": "Переход реки вброд",
 }
@@ -1442,6 +1442,6 @@ HAND_WRITTEN_EN = {
 for _key, _text in HAND_WRITTEN.items():
     lang.loc(_key, _text, HAND_WRITTEN_EN.get(_key))
 
-# Языковые файлы: в XML выше ушёл английский, русский собрался здесь
+# Language files: English went into the XML above, the Russian is collected here
 lang.write(DATA, "eq_world", log)
 lang.report(log)

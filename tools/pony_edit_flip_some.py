@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Развернуть нормали только у указанных частей в assets/pony/eq_pony_edit.blend.
+"""Flip normals only on the given parts in assets/pony/eq_pony_edit.blend.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_some.py -- legs wings tail
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_some.py -- legs wings tail
 """
 import sys
 

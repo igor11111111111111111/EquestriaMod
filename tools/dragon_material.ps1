@@ -1,16 +1,16 @@
-﻿# Материал дракона и привязка его мешей — после того, как FBX и текстуры импортированы в редакторе.
+﻿# The dragon material and the binding of its meshes, after the FBX and textures have been imported in the editor.
 #
 #   .\tools\dragon_material.ps1
 #
-# Порядок работы:
+# Workflow:
 #   1. blender --background assets\twilight_anthro\export\eq_twilight.blend --python tools\make_dragon.py
-#      -- "<модель.fbx>" "<папка assets\dragon>"   — режет модель на части и пишет FBX;
-#   2. py -3 tools\make_dragon_textures.py         — делает eq_dragon_body_d/_n/_s.png;
-#   3. в Modding Kit: импорт assets\dragon\eq_dragon.fbx и трёх текстур (пакет twilight);
-#   4. этот скрипт — всё остальное кодом:
-#        материал eq_dragon_body — копия eq_twilight_body (шейдер кожи со скиннингом) со своими
-#        текстурами; меши eq_dragon_* получают этот материал; раса снимается с заглушки пони.
-# Хвост и крылья в слоты не кладём: их вешает на скелет src/EquestriaBodyParts.cs, как хвост пони.
+#      -- "<model.fbx>" "<assets\dragon folder>"   - cuts the model into parts and writes the FBX;
+#   2. py -3 tools\make_dragon_textures.py         - makes eq_dragon_body_d/_n/_s.png;
+#   3. in the Modding Kit: import assets\dragon\eq_dragon.fbx and the three textures (package twilight);
+#   4. this script does the rest in code:
+#        the eq_dragon_body material is a copy of eq_twilight_body (skin shader with skinning) with its own
+#        textures; the eq_dragon_* meshes get this material; the race is taken off the pony placeholder.
+# The tail and wings are not put into slots: src/EquestriaBodyParts.cs hangs them on the skeleton, like the pony tail.
 param([string]$Game = "D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord")
 
 $ErrorActionPreference = "Stop"
@@ -19,8 +19,8 @@ $Tool = Join-Path $Root "tools\tpac_export\bin\Release\tpac_export.exe"
 $Assets = Join-Path $Root "Module\Assets"
 
 Write-Host "== Текстуры в пакете" -ForegroundColor Cyan
-# Выгрузкой не проверить: у импортированных редактором текстур в пакете нет пикселей (только
-# ссылка на PNG), поэтому смотрим сами записи ассетов.
+# Cannot be checked by exporting: textures imported by the editor have no pixels in the package (only
+# a reference to the PNG), so we look at the asset records themselves.
 foreach ($name in "eq_dragon_body_d", "eq_dragon_body_n", "eq_dragon_body_s") {
     $found = & $Tool info $Assets $name 2>&1 | Select-String -Pattern "^== $name`: Texture"
     if (-not $found) {
@@ -35,9 +35,9 @@ Write-Host "== Материал eq_dragon_body" -ForegroundColor Cyan
 if ($LASTEXITCODE -ne 0) { throw "материал не создан" }
 
 Write-Host "== Материал рогов и гребня" -ForegroundColor Cyan
-# Цвет волос из окна внешности слушает только ванильный шейдер волос, поэтому гребню нужен свой
-# материал — копия female_hair_mat (bumpmap + skinning, две текстуры) с нашими текстурами.
-# Исходник лежит в ванильных пакетах, а текстуры в нашем, поэтому папок две через «;».
+# The hair colour from the appearance window is only listened to by the vanilla hair shader, so the crest needs its own
+# material: a copy of female_hair_mat (bumpmap + skinning, two textures) with our textures.
+# The source lies in the vanilla packages and the textures in ours, so there are two folders separated by ";".
 $Native = Join-Path $Game "Modules\Native\AssetPackages"
 & $Tool mat-clone "$Native;$Assets" female_hair_mat (Join-Path $Assets "twilight\eq_dragon_hair_mtl.tpac") `
     eq_dragon_hair 0=eq_dragon_body_d 1=eq_dragon_body_n
@@ -46,7 +46,7 @@ if ($LASTEXITCODE -ne 0) { throw "материал гребня не созда�
 Write-Host "== Привязка мешей" -ForegroundColor Cyan
 & $Tool mesh-setmat $Assets (Join-Path $Assets "twilight\eq_dragon_geo.tpac") eq_dragon_ eq_dragon_body
 if ($LASTEXITCODE -ne 0) { throw "меши не привязаны" }
-# гребню — свой материал, поверх общей привязки
+# the crest gets its own material, on top of the common binding
 & $Tool mesh-setmat $Assets (Join-Path $Assets "twilight\eq_dragon_geo.tpac") eq_dragon_hair eq_dragon_hair
 if ($LASTEXITCODE -ne 0) { throw "гребень не привязан" }
 

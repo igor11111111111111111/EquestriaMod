@@ -1,18 +1,18 @@
-# Разбор карты Equestria at War (мод Hearts of Iron IV) как референса для нашей карты мира.
+# Parsing the Equestria at War map (a Hearts of Iron IV mod) as a reference for our world map.
 #
-#   py -3 tools\eaw_reference.py [страна EQS] [папка вывода]
+#   py -3 tools\eaw_reference.py [country EQS] [output folder]
 #
-# Читает из мода:
-#   map/provinces.bmp + definition.csv — какая провинция где (цвет -> id);
-#   history/states/*.txt               — области: владелец, провинции, victory_points (города);
-#   localisation/russian/*.yml         — русские названия областей и городов;
-#   map/heightmap.bmp, terrain.bmp, rivers.bmp — рельеф, типы местности, реки.
-# Пишет:
-#   <вывод>/eaw_<страна>.json — рамка страны на карте HOI4, её области и города с координатами;
-#   <вывод>/eaw_<страна>_preview.png — рельеф и местность с границей страны и подписанными городами.
+# Reads from the mod:
+#   map/provinces.bmp + definition.csv — which province is where (color -> id);
+#   history/states/*.txt               — states: owner, provinces, victory_points (cities);
+#   localisation/russian/*.yml         — Russian names of states and cities;
+#   map/heightmap.bmp, terrain.bmp, rivers.bmp — relief, terrain types, rivers.
+# Writes:
+#   <output>/eaw_<country>.json — the country frame on the HOI4 map, its states and cities with coordinates;
+#   <output>/eaw_<country>_preview.png — relief and terrain with the country border and labelled cities.
 #
-# Звуки, картинки и данные Equestria at War принадлежат её авторам — используем только как
-# справочник для расстановки, в мод их не кладём.
+# The sounds, images and data of Equestria at War belong to its authors — we use them only as a
+# reference for placement and do not put them into the mod.
 import glob
 import json
 import os
@@ -26,7 +26,7 @@ EAW = r"C:\SteamLibrary\steamapps\workshop\content\394360\1826643372"
 TAG = sys.argv[1] if len(sys.argv) > 1 else "EQS"
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "reference")
-MARGIN = 60  # пикселей карты HOI4 вокруг страны
+MARGIN = 60  # HOI4 map pixels around the country
 
 
 def log(*a):
@@ -101,8 +101,8 @@ def main():
     y0, y1 = max(ys.min() - MARGIN, 0), min(ys.max() + MARGIN, ids.shape[0] - 1)
     log(f"рамка на карте HOI4: x {x0}..{x1}, y {y0}..{y1} ({x1 - x0}x{y1 - y0} пикс.)")
 
-    # Центр провинции — среднее её пикселей. Карта HOI4 хранится снизу вверх (y=0 — юг),
-    # а картинка сверху вниз: переворачиваем при записи «юг-север» координат.
+    # A province centre is the mean of its pixels. The HOI4 map is stored bottom-up (y=0 is south),
+    # and the image top-down: flip when writing "south-north" coordinates.
     def centre(pid):
         py, px = np.nonzero(ids == pid)
         return float(px.mean()), float(py.mean())
@@ -130,7 +130,7 @@ def main():
         json.dump(data, f, ensure_ascii=False, indent=1)
     log(f"городов: {len(cities)}; записан {json_path}")
 
-    # превью: местность, затемнённая по высоте, граница страны, реки, города
+    # preview: terrain shaded by height, the country border, rivers, cities
     box = (int(x0), int(y0), int(x1), int(y1))
     img = terrain.crop(box)
     h = height[y0:y1, x0:x1].astype(np.float32) / 255.0

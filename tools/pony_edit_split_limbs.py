@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Режет eq_pony_gloves/eq_pony_legs пополам по X=0 — отдельные левая/правая половины нужны для
-визуального отрубания конечностей (EquestriaDismemberment.cs): у ДismembermentPlus (образец,
-nexusmods.com/mountandblade2bannerlord/mods/2190) снятая конечность и культя на теле — отдельные
-меши, а не один кусок на обе стороны разом, как сейчас gloves/legs.
+"""Cuts eq_pony_gloves/eq_pony_legs in half at X=0 - separate left/right halves are needed for
+visual limb dismemberment (EquestriaDismemberment.cs): in DismembermentPlus (the reference,
+nexusmods.com/mountandblade2bannerlord/mods/2190) the severed limb and the stump on the body are separate
+meshes, not one piece for both sides at once as gloves/legs are now.
 
-Проверено диагностикой 07.10.2026: eq_pony_gloves — уже ДВЕ независимые герметичные половины в
-одном объекте (0 граничных рёбер и до, и после разреза — скрипту заделывать нечего). eq_pony_legs —
-одна общая поверхность, после разреза остаётся небольшая дыра на срезе (~40 вершин), заделывается
-автозаполнением (bmesh.ops.holes_fill) в один N-угольник.
+Verified by diagnostics on 07.10.2026: eq_pony_gloves is already TWO independent watertight halves in
+one object (0 boundary edges both before and after the cut - nothing for the script to patch). eq_pony_legs
+is one shared surface; after the cut a small hole remains at the cut (~40 vertices), which is filled
+automatically (bmesh.ops.holes_fill) with one N-gon.
 
-Результат — 4 новых объекта в коллекции «Пони - цельная»: eq_pony_gloves_l/_r, eq_pony_legs_l/_r.
-Старые eq_pony_gloves/eq_pony_legs НЕ трогаем и не удаляем — они по-прежнему нужны целиком для
-обычного (не отрубленного) персонажа.
+Result: 4 new objects in the "Pony - whole" collection: eq_pony_gloves_l/_r, eq_pony_legs_l/_r.
+The old eq_pony_gloves/eq_pony_legs are NOT touched or deleted - they are still needed whole for
+a normal (not dismembered) character.
 
-Запуск: blender --background --factory-startup assets/pony/eq_pony_edit.blend --python tools/pony_edit_split_limbs.py
+Run: blender --background --factory-startup assets/pony/eq_pony_edit.blend --python tools/pony_edit_split_limbs.py
 """
 import bmesh
 import bpy

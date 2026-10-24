@@ -1,10 +1,10 @@
-"""Рендер персонажей для заставки загрузочного экрана (прозрачный фон).
+"""Character render for the loading screen splash (transparent background).
 
   blender --background ../assets/changeling/eq_changeling.blend --python render_loading.py -- ../assets/loading
 
-Рисует две фигуры: пони в имперской броне (броня берётся из assets/pony_armor/eq_pony_armor.blend)
-и чейнджлинга с крыльями. Свет драматичный, фон прозрачный — его подставляет
-tools/make_loading_screen.py. Позы задаются поворотами костей: в исходнике персонаж стоит в T-позе.
+Draws two figures: a pony in imperial armour (the armour is taken from assets/pony_armor/eq_pony_armor.blend)
+and a changeling with wings. The lighting is dramatic, the background transparent — it is filled in by
+tools/make_loading_screen.py. Poses are set by bone rotations: in the source the character stands in a T-pose.
 """
 import math
 import os
@@ -24,7 +24,7 @@ PONY = {"eq_twilight_head", "eq_twilight_body", "eq_twilight_legs", "eq_twilight
 ARMOR = ["eq_pony_imperial_lamellar_a", "eq_pony_imperial_boots", "eq_pony_imperial_gauntlets"]
 CHANGELING = {"eq_changeling_head", "eq_changeling_body", "eq_changeling_legs", "eq_changeling_gloves",
               "eq_changeling_crest", "eq_changeling_wings"}
-POSE = {  # руки опускаем вдоль тела, голову чуть поворачиваем
+POSE = {  # lower the arms along the body, turn the head slightly
     "bip01_l_upperarm_twist_15": (0.0, 0.0, -1.15),
     "bip01_r_upperarm_twist_22": (0.0, 0.0, -1.15),
     "bip01_head_13": (0.05, 0.0, 0.10),
@@ -39,12 +39,12 @@ def log(*a):
 scene = bpy.context.scene
 skel = next(o for o in bpy.data.objects if o.type == "ARMATURE")
 
-# броня: подгружаем нужные меши из файла брони и привязываем к нашему скелету.
-# Файла может не быть: пони-броню из мода убрали 24.09.2026 (все расы носят ванильную,
-# см. шапку tools/make_items.py), а вместе с ней удалили и assets/pony_armor. Картинки
-# загрузочного экрана уже отрисованы и лежат в Module; если понадобится перерисовать,
-# броню придётся снова подогнать к скелету — например, выгрузив ванильные меши
-# tools/tpac_export obj и подложив их сюда.
+# armour: load the needed meshes from the armour file and bind them to our skeleton.
+# The file may be missing: pony armour was removed from the mod on 24.09.2026 (all races wear vanilla,
+# see the header of tools/make_items.py), and assets/pony_armor was deleted along with it. The loading
+# screen images are already rendered and lie in Module; if they need re-rendering, the armour will have
+# to be fitted to the skeleton again — e.g. by exporting the vanilla meshes with
+# tools/tpac_export obj and putting them here.
 if not os.path.exists(ARMOR_BLEND):
     raise SystemExit("нет " + ARMOR_BLEND + " — пони-броня удалена из мода, рисовать нечего")
 armor_objects = []
@@ -60,7 +60,7 @@ for ob in dst.objects:
         ob.modifiers.remove(mod)
     ob.modifiers.new("Armature", "ARMATURE").object = skel
     armor_objects.append(ob.name)
-# броня ссылается на ванильные материалы, которых в этом файле нет: даём ей простой серый металл
+# the armour refers to vanilla materials that are not in this file: give it a plain grey metal
 steel = bpy.data.materials.new("eq_loading_steel")
 steel.use_nodes = True
 bsdf = steel.node_tree.nodes["Principled BSDF"]

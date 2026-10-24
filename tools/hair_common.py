@@ -1,14 +1,14 @@
-"""Общее для причёсок (запускается внутри Blender на eq_twilight.blend): голова, уши, глаза, линии прядей,
-веса костей, вырез у ушей, локоны, экспорт и превью. Используют tools/make_changeling_hair.py,
+"""Shared hairstyle code (runs inside Blender on eq_twilight.blend): head, ears, eyes, strand lines,
+bone weights, the cutout at the ears, curls, export and preview. Used by tools/make_changeling_hair.py,
 tools/make_pony_manes.py.
 
-Как устроены волосы в Bannerlord (проверено 2026-09-17):
-  - причёска — обычный скиненный меш (кости head / neck / spine2, как у ванильных), перечисленный
-    в skins.xml расы (<hair_mesh name=...>); слайдера длины нет — длина = отдельные варианты,
-    зеркальный вариант даёт галочка «Отразить» в редакторе;
-  - цвет волос движок умножает на текстуру ванильного материала female_hair_mat (двусторонний, шейдер
-    волос) — в FBX только имя материала, редактор найдёт его;
-  - волосы следуют за слайдерами лица (deforms_hair), поэтому строятся прямо по голове нашей расы.
+How hair works in Bannerlord (verified 2026-09-17):
+  - a hairstyle is an ordinary skinned mesh (bones head / neck / spine2, as in vanilla), listed
+    in the race's skins.xml (<hair_mesh name=...>); there is no length slider - length = separate variants,
+    the mirrored variant comes from the "Mirror" checkbox in the editor;
+  - the engine multiplies the hair colour by the texture of the vanilla material female_hair_mat (two-sided, hair
+    shader) - the FBX only has the material name, the editor will find it;
+  - hair follows the face sliders (deforms_hair), so it is built directly on our race's head.
 """
 import math
 import os
@@ -20,13 +20,13 @@ from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
 
 HAIR_MAT = "female_hair_mat"
-HORN_MAT = "eq_twilight_body"  # рог красится своей текстурой, а не палитрой волос
-HORN_CELL = (1, 2)  # клетка атласа с текстурой рога (меш eq_twilight_mane)
+HORN_MAT = "eq_twilight_body"  # the horn is coloured by its own texture, not the hair palette
+HORN_CELL = (1, 2)  # atlas cell with the horn texture (mesh eq_twilight_mane)
 HEAD, NECK, SPINE2 = "bip01_head_13", "bip01_neck_12", "bip01_spine2_11"
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKIN_CELL = (3, 1)
-# По какой голове строить причёску. Расе со своей моделью можно подсунуть её голову через
-# EQ_HEAD_MESH — так делалось для оленьих рогов, пока они были отдельной причёской.
+# Which head to build the hairstyle on. A race with its own model can slip its head in via
+# EQ_HEAD_MESH - this was done for the deer antlers while they were a separate hairstyle.
 HEAD_MESH = os.environ.get("EQ_HEAD_MESH", "eq_twilight_head")
 BODY_MESH = os.environ.get("EQ_BODY_MESH", "eq_twilight_body")
 
@@ -38,7 +38,7 @@ def log(*a):
 skel = next(o for o in bpy.data.objects if o.type == "ARMATURE")
 pony = {o.name: o for o in bpy.data.objects if o.type == "MESH"}
 bones = {b.name: skel.matrix_world @ b.head_local for b in skel.data.bones}
-# в сохранённой пони все ключи мимики стоят на 1 — работаем с базовой формой
+# in the saved pony all facial keys are at 1 - we work with the basis shape
 for _ob in pony.values():
     if _ob.data.shape_keys:
         for _kb in _ob.data.shape_keys.key_blocks[1:]:
@@ -50,7 +50,7 @@ def cell(u, v):
 
 
 def world_mesh(ob, keep=None):
-    """Вершины и грани меша в мировых координатах; keep(center, uv_cell) -> bool отбирает грани."""
+    """Mesh vertices and faces in world coordinates; keep(center, uv_cell) -> bool selects faces."""
     me = ob.data
     uv = me.uv_layers.active.data
     verts = [ob.matrix_world @ v.co for v in me.vertices]
@@ -63,7 +63,7 @@ def world_mesh(ob, keep=None):
 
 
 def ear_polygons(ob, centre):
-    """Грани ушей: плоские лепестки, стоящие боком к центру головы, плюс всё, что далеко от центра."""
+    """Ear faces: flat petals standing sideways to the head centre, plus everything far from the centre."""
     me = ob.data
     uv = me.uv_layers.active.data
     mw = ob.matrix_world
@@ -102,10 +102,10 @@ def head_part(ears_only):
     return verts, polys
 
 
-# голова без ушей и без глаз — по ней идут корни и пряди
+# head without ears and eyes - roots and strands go along it
 hv, hp = head_part(False)
 scalp = BVHTree.FromPolygons(hv, hp)
-# руки в T-позе торчат в стороны — в игре они опущены, пряди об них не мнём
+# the arms in the T-pose stick out sideways - in game they are lowered, we do not crumple strands on them
 bv, bp = world_mesh(pony[BODY_MESH], lambda c, cl: not (abs(c.x) > 0.19 and c.z > 1.1))
 solid = BVHTree.FromPolygons(hv + bv, hp + [[i + len(hv) for i in p] for p in bp])
 ev, ep = head_part(True)
@@ -113,7 +113,7 @@ ears = BVHTree.FromPolygons(ev, ep)
 EAR_NEAR, EAR_GAP, EAR_SNAP = 0.025, 0.003, 0.02
 
 
-# ---------------------------------------------------------------- глаза: зона, куда волосам нельзя
+# ---------------------------------------------------------------- eyes: the zone hair may not enter
 class EyeZone:
     def __init__(self, side):
         me = head_ob.data
@@ -171,7 +171,7 @@ log(f"head centre {tuple(round(x, 3) for x in C)}")
 
 
 def direction(theta, phi):
-    """theta — азимут от затылка (0 = +Y, назад), 180 = морда; phi — возвышение."""
+    """theta - azimuth from the back of the head (0 = +Y, back), 180 = muzzle; phi - elevation."""
     t, p = math.radians(theta), math.radians(phi)
     return Vector((math.sin(t) * math.cos(p), math.cos(t) * math.cos(p), math.sin(p)))
 
@@ -180,7 +180,7 @@ _last_r = [0.12]
 
 
 def scalp_point(d, offset):
-    """Внешняя точка головы по направлению d от центра + зазор."""
+    """Outer point of the head in direction d from the centre + a gap."""
     d = d.normalized()
     hit = scalp.ray_cast(C + d * 0.6, -d)
     if hit[0] is not None:
@@ -193,7 +193,7 @@ def axis_of(p):
 
 
 def push_out(p, margin):
-    """Вытолкнуть точку из тела/головы (наружу от оси тела или центра головы) и из зоны глаз."""
+    """Push a point out of the body/head (outward from the body axis or head centre) and out of the eye zone."""
     loc, normal, _, _ = solid.find_nearest(p)
     if loc is not None:
         if normal.dot(loc - axis_of(loc)) < 0:
@@ -212,11 +212,11 @@ def slerp(a, b, t):
 
 
 def hair_line(root_dir, exit_dir, hang, offset, down, spread, n_scalp, n_hang, root_sink=0.006):
-    """Линия пряди: по голове от корня к точке схода, затем вниз; число точек у всех линий слоя одинаковое."""
+    """Strand line: over the head from the root to the exit point, then down; all lines in a layer have the same point count."""
     pts = []
     for i in range(n_scalp + 1):
         t = i / n_scalp
-        # у корня прядь уходит под кожу — край прячется в голове
+        # at the root the strand goes under the skin - the edge is hidden in the head
         off = offset - root_sink * max(0.0, 1.0 - t / 0.2)
         pts.append(avoid_eyes(scalp_point(slerp(root_dir, exit_dir, t), off)))
     tan = (pts[-1] - pts[-2]).normalized()
@@ -234,14 +234,14 @@ def hair_line(root_dir, exit_dir, hang, offset, down, spread, n_scalp, n_hang, r
 
 
 def hairline_dir(a, lift=0.0):
-    """Корень на линии роста волос: a=0 — лоб за рогом, |a|=1 — виски."""
+    """Root on the hairline: a=0 - the forehead behind the horn, |a|=1 - the temples."""
     sgn = 1.0 if a >= 0 else -1.0
     return direction(sgn * (180 - 85 * abs(a)), 60 - 40 * abs(a) + lift)
 
 
 def horn_source():
-    """Грани рога единорога из меша гривы: мировые координаты, UV. Рог входит в каждую причёску пони
-    вторым материалом — в слоте шлема он больше не нужен, и его видно вместе с причёской."""
+    """Unicorn horn faces from the mane mesh: world coordinates, UV. The horn goes into every pony hairstyle
+    as a second material - it is no longer needed in the helmet slot, and it is visible together with the hairstyle."""
     ob = pony["eq_twilight_mane"]
     me = ob.data
     uv = me.uv_layers.active.data
@@ -254,7 +254,7 @@ def horn_source():
 
 
 def bone_weights(p):
-    """Как у ванильных причёсок: голова, ниже — шея, ещё ниже — spine2; не больше двух костей."""
+    """As in vanilla hairstyles: head, lower - neck, lower still - spine2; no more than two bones."""
     z = p.z
     zh, zn, zs = bones[HEAD].z, bones[NECK].z, bones[SPINE2].z
     if z >= zh - 0.06:
@@ -297,7 +297,7 @@ class MeshBuilder:
         return f
 
     def add_horn(self):
-        """Рог второй частью меша (свой материал) — как у ванильных причёсок с двумя материалами."""
+        """Horn as a second part of the mesh (its own material) - as in vanilla hairstyles with two materials."""
         for verts, uvs in horn_source():
             self.face([self.vertex(p) for p in verts], uvs, material=1)
         self.horn = True
@@ -318,7 +318,7 @@ class MeshBuilder:
         hit |= {f for f in bm.faces if ears.find_nearest(f.calc_center_median(), EAR_GAP)[0] is not None}
         edge_verts = {v for f in hit for v in f.verts if any(g not in hit for g in v.link_faces)}
         bmesh.ops.delete(bm, geom=list(hit), context="FACES")
-        # край выреза притягивается к уху — без щели у основания уха
+        # the cutout edge is pulled toward the ear - no gap at the ear's base
         for v in edge_verts:
             if not v.is_valid:
                 continue
@@ -339,7 +339,7 @@ class MeshBuilder:
         for poly in me.polygons:
             poly.use_smooth = True
         if self.horn:
-            # у рога свои нормали (он не часть оболочки волос) — пересчитываем по геометрии
+            # the horn has its own normals (it is not part of the hair shell) - recompute from geometry
             radial_normals = False
         if radial_normals:
             me.normals_split_custom_set_from_vertices([(v.co - axis_of(v.co)).normalized()[:] for v in me.vertices])
@@ -355,11 +355,11 @@ class MeshBuilder:
         return ob
 
 
-# ---------------------------------------------------------------- локоны: трубки вдоль линии пряди
-# Материал волос — ванильный female_hair_mat, но весь локон лежит на крошечном однотонном непрозрачном
-# участке его текстуры: пряди текстуры не видны, локон выходит гладким, как нарисованный.
+# ---------------------------------------------------------------- curls: tubes along the strand line
+# The hair material is vanilla female_hair_mat, but the whole curl lies on a tiny solid-colour opaque
+# patch of its texture: the texture's strands are not visible, the curl comes out smooth, as if painted.
 TEX = 2048.0
-LIGHT, DARK = (192.0, 156.0), (744.0, 300.0)  # светлый и тёмный участки (пиксели, сверху вниз)
+LIGHT, DARK = (192.0, 156.0), (744.0, 300.0)  # light and dark patches (pixels, top to bottom)
 SPAN = 8.0
 SEGS = 10
 
@@ -389,7 +389,7 @@ def avoid_ears(p, r):
 
 def lock_path(root_dir, exit_dir, hang, down, thick, width, curl=0.0, curl_r=0.035, wave=0.0,
               waves=2.0, n_scalp=10):
-    """Осевая линия локона. curl > 0 — завиток внутрь (под себя), < 0 — кончик отгибается наружу."""
+    """Curl centre line. curl > 0 - curls inward (under itself), < 0 - the tip bends outward."""
     offset = thick * 0.5 + 0.004
     n_hang = int(round(hang / 0.015)) if hang > 0 else 0
     pts = hair_line(root_dir, exit_dir, hang, offset, down, 0.0, n_scalp, n_hang, root_sink=thick * 0.5)
@@ -421,11 +421,11 @@ def lock_path(root_dir, exit_dir, hang, down, thick, width, curl=0.0, curl_r=0.0
 
 
 class Mane(MeshBuilder):
-    """Причёска из локонов: сплошная шапочка + трубки-пряди."""
+    """A hairstyle made of curls: a solid cap + strand tubes."""
 
     def cap(self, hang=0.03, tone=LIGHT, lift=0.0):
-        """Сплошная «шапочка» волос под локонами: между ними не просвечивает голова. Вырез у ушей делается
-        только в ней (локоны уши обходят) — поэтому шапочку строят первой."""
+        """A solid hair "cap" under the curls: the head does not show through between them. The cutout at the ears
+        is made only in it (the curls go around the ears) - so the cap is built first."""
         lines = [hair_line(hairline_dir(a, lift), direction(95 * a, -18), hang, 0.004, V(0, 0.3, -1), 0.0, 14, 2)
                  for a in np.linspace(-1, 1, 27)]
         rows = min(len(l) for l in lines)
@@ -479,7 +479,7 @@ class Mane(MeshBuilder):
         for i in range(n - 1):
             ra, rb = rings[i], rings[i + 1]
             if len(ra) == 1 and len(rb) == 1:
-                continue  # две точки-кончика подряд (отрезок нулевой длины)
+                continue  # two tip points in a row (a zero-length segment)
             for k in range(SEGS):
                 k2 = (k + 1) % SEGS
                 a0, a1 = k / SEGS, (k + 1) / SEGS
@@ -511,7 +511,7 @@ class Mane(MeshBuilder):
 
 
 def export(objects, path):
-    """Скелет + причёски; материал — только имя (без картинки)."""
+    """Skeleton + hairstyles; material - name only (no image)."""
     bpy.ops.object.select_all(action="DESELECT")
     for ob in [skel, *objects]:
         ob.select_set(True)
@@ -523,7 +523,7 @@ def export(objects, path):
 
 
 def preview(objects, out_dir, tint, hide_coat=False):
-    """EEVEE-превью с ванильной текстурой волос, окрашенной в tint; по три вида на причёску."""
+    """EEVEE preview with the vanilla hair texture tinted with tint; three views per hairstyle."""
     os.makedirs(out_dir, exist_ok=True)
     tex_path = os.path.join(HERE, "..", "assets", "reference", "vanilla_hair", "textures", "female_hair.dds")
     mat = bpy.data.materials[HAIR_MAT]
@@ -567,7 +567,7 @@ def preview(objects, out_dir, tint, hide_coat=False):
     world.node_tree.nodes["Background"].inputs[1].default_value = 0.8
     scene.world = world
     hide = {"eq_twilight_mane", "eq_twilight_tail"}
-    if HEAD_MESH != "eq_twilight_head":  # в файле лежит и пони, и новая раса — показываем только её
+    if HEAD_MESH != "eq_twilight_head":  # the file holds both the pony and the new race - show only the latter
         hide |= {n for n in pony if n.startswith("eq_twilight_")}
     for name in hide:
         if name in pony:
@@ -584,7 +584,7 @@ def preview(objects, out_dir, tint, hide_coat=False):
             other.hide_render = other is not ob
         for view, d in (("front", (0.25, -1, 0.1)), ("side", (1, 0.15, 0.1)), ("back", (-0.3, 1, 0.25))):
             d = Vector(d).normalized()
-            cam.data.ortho_scale = float(os.environ.get("EQ_HAIR_PREVIEW_SCALE", 1.0))  # рога выше головы
+            cam.data.ortho_scale = float(os.environ.get("EQ_HAIR_PREVIEW_SCALE", 1.0))  # antlers are above the head
             cam.location = Vector((0, 0.02, 1.45)) + d * 6
             cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
             scene.render.filepath = os.path.join(out_dir, f"{ob.name}_{view}.png")

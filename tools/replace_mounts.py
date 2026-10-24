@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Кони → свитки полёта в XML войск, лордов и наборов снаряжения (10.10.2026).
+"""Horses → flight scrolls in the troop, lord and equipment set XML (10.10.2026).
 
-Ездовых зверей в моде нет (см. src/EquestriaFlightScroll.cs). В слоте коня у любого войска
-или героя вместо зверя лежит свиток полёта по уровню: 26+ (ранг 5+) — eq_flight_scroll_50,
-16–25 (ранги 3–4) — eq_flight_scroll_40, ниже — eq_flight_scroll_30; герои и шаблоны
-лордов/правителей — великий. Сбруя (HorseHarness) убирается. То же правило в коде
-(EquestriaFlightArmy) для ванильных войск и как страховка.
+The mod has no mounts (see src/EquestriaFlightScroll.cs). In the horse slot of any troop
+or hero, instead of an animal there is a flight scroll by level: 26+ (tier 5+) - eq_flight_scroll_50,
+16–25 (tiers 3–4) - eq_flight_scroll_40, lower - eq_flight_scroll_30; heroes and lord/ruler
+templates get the greater one. The harness (HorseHarness) is removed. The same rule is in code
+(EquestriaFlightArmy) for vanilla troops and as a safeguard.
 
-Пешие народы (FOOT_RACES: яки и олени, их культуры khuzait и nord) не летают и не ездят
-(просьба пользователя 10.10.2026): у их войск, лордов и шаблонов знати слот коня очищается,
-конница становится пехотой (Cavalry → Infantry, HorseArcher → Ranged), а требование коня для
-улучшения (upgrade_requires="ItemCategory.horse/war_horse") снимается.
+Foot peoples (FOOT_RACES: yaks and deer, their cultures khuzait and nord) neither fly nor ride
+(user's request 10.10.2026): for their troops, lords and noble templates the horse slot is cleared,
+cavalry becomes infantry (Cavalry → Infantry, HorseArcher → Ranged), and the horse requirement for
+upgrading (upgrade_requires="ItemCategory.horse/war_horse") is removed.
 
-Запускать ПОСЛЕДНИМ, после make_troops.py / make_world.py (они переписывают файлы заново).
-Идемпотентен: уже стоящие свитки пересчитывает по тому же правилу.
+Run it LAST, after make_troops.py / make_world.py (they rewrite the files from scratch).
+Idempotent: scrolls already in place are recalculated by the same rule.
 
-Запуск: py tools/replace_mounts.py <папка Module мода> [<папка игры>]
+Run: py tools/replace_mounts.py <mod Module folder> [<game folder>]
 """
 import glob
 import os
@@ -27,14 +27,14 @@ GAME = sys.argv[2] if len(sys.argv) > 2 else r"D:\Program Files (x86)\Steam\stea
 DATA = os.path.join(MODULE, "ModuleData")
 FILES = ["equestria_troops.xml", "equestria_lords.xml", "equestria_equipment_sets.xml"]
 SCROLLS = {"eq_flight_scroll_50", "eq_flight_scroll_40", "eq_flight_scroll_30"}
-# Пешие народы: раса записи и культура шаблона знати (equestria_equipment_sets.xml)
+# Foot peoples: the entry's race and the noble template's culture (equestria_equipment_sets.xml)
 FOOT_RACES = {"yak", "deer"}
 FOOT_CULTURES = {"khuzait", "nord"}
 FOOT_GROUP = {"Cavalry": "Infantry", "HorseArcher": "Ranged"}
 
 
 def dismount_head(head):
-    """Открывающий тег NPCCharacter пешего: группа без коня, улучшение без требования коня."""
+    """Opening NPCCharacter tag of a foot troop: a group without a horse, upgrade without a horse requirement."""
     for old, new in FOOT_GROUP.items():
         head = head.replace('default_group="%s"' % old, 'default_group="%s"' % new)
     return re.sub(r'\s+upgrade_requires="ItemCategory\.(?:war_)?horse"', "", head)
@@ -48,7 +48,7 @@ def scroll_for_level(level, hero):
     return "eq_flight_scroll_30"
 
 
-# Все ездовые звери ванили: предметы с компонентом <Horse ...> (кони, верблюды, мулы, турнирные).
+# All vanilla mounts: items with a <Horse ...> component (horses, camels, mules, tournament ones).
 mounts = set()
 for path in glob.glob(os.path.join(GAME, "Modules", "*", "ModuleData", "items", "*.xml")) \
         + glob.glob(os.path.join(GAME, "Modules", "*", "ModuleData", "*items*.xml")):
@@ -59,10 +59,10 @@ for path in glob.glob(os.path.join(GAME, "Modules", "*", "ModuleData", "items", 
 mounts -= SCROLLS
 print(f"[mounts] ездовых предметов в игре: {len(mounts)}")
 
-# Тег сохраняем как был: в войсках и лордах (схема NPCCharacters) он «equipment», а в шаблонах
-# знати (equestria_equipment_sets.xml, схема EquipmentRosters) — «Equipment». До 10.10.2026 тут
-# всегда писалось «equipment», и в шаблонах игра молча выкидывала строку: короли и лорды по шаблону
-# оставались без свитка, а rgl_log сыпал «invalid child element 'equipment'».
+# Keep the tag as it was: in troops and lords (NPCCharacters schema) it is "equipment", and in noble
+# templates (equestria_equipment_sets.xml, EquipmentRosters schema) it is "Equipment". Before 10.10.2026
+# "equipment" was always written here, and in templates the game silently dropped the line: kings and
+# template lords were left without a scroll, and rgl_log was flooded with "invalid child element 'equipment'".
 horse_re = re.compile(r'<([Ee]quipment)\s+slot="Horse"\s+id="Item\.([^"]+)"\s*/>')
 harness_re = re.compile(r'[ \t]*<[Ee]quipment\s+slot="HorseHarness"\s+id="Item\.[^"]+"\s*/>\r?\n')
 char_re = re.compile(r'(<NPCCharacter\b[^>]*>)(.*?)(</NPCCharacter>)', re.S)
@@ -84,13 +84,13 @@ for name in FILES:
             replaced[0] += 1
             if foot:
                 unmounted[0] += 1
-                return ""          # пеший народ: слот коня пуст
+                return ""          # foot people: the horse slot is empty
             return '<%s slot="Horse" id="Item.%s"/>' % (tag, scroll_for_level(level, hero))
         body = horse_re.sub(sub, body)
         return harness_re.sub("", body)
 
     if name == "equestria_equipment_sets.xml":
-        # Шаблоны культуры (лорды/правители/дети): уровня нет — всем великий
+        # Culture templates (lords/rulers/children): no level, so everyone gets the greater one
         def fix_roster(m):
             culture = re.search(r'culture="Culture\.([^"]+)"', m.group(1))
             foot = bool(culture) and culture.group(1) in FOOT_CULTURES
@@ -108,7 +108,7 @@ for name in FILES:
                 head = dismount_head(head)
             return head + fix_block(m.group(2), level, hero, foot) + m.group(3)
         text = char_re.sub(fix_char, text)
-    text = re.sub(r"\n[ \t]*\n(?=[ \t]*<)", "\n", text)   # пустые строки от убранных слотов
+    text = re.sub(r"\n[ \t]*\n(?=[ \t]*<)", "\n", text)   # blank lines left by removed slots
     open(path, "w", encoding="utf-8", newline="\n").write(text)
     left = len(horse_re.findall(text)) - sum(text.count('Item.%s"' % s) for s in SCROLLS)
     print(f"[mounts] {name}: слотов коня заменено {replaced[0]} (из них у пеших народов очищено "

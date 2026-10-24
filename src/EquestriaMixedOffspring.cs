@@ -10,18 +10,18 @@ using TaleWorlds.Library;
 
 namespace EquestriaMod
 {
-    // Дети родителей разных рас (10.10.2026). Ванильная модель браков расу не проверяет, и
-    // лорды разных народов женятся. При родах движок берёт расу сына от отца, дочери — от матери
-    // (DefaultHeroCreationModel.GetCharacterTemplateForOffspring), а лицо ребёнка ЛЮБОЙ расы
-    // строит по расе матери (GetStaticBodyProperties: GetRandomBodyProperties(Mother.Race, …)) —
-    // сын-олень от матери-пони получал ползунки и причёску пони. По просьбе пользователя:
-    //   - раса ребёнка любого пола — 50 на 50 от матери или от отца;
-    //   - лицо — случайное в пределах его расы и пола (диапазон берётся у любого шаблона этой
-    //     расы и пола, как у новых лордов), а не смесь лиц родителей.
-    // Родители одной расы — всё по-ванильному. Мягкое предупреждение движка «раса матери ≠ раса
-    // отца» (HeroCreator.DeliverOffSpring, строка 272) убрано ниже (EquestriaMixedOffspringAssertPatch):
-    // оно ни на что не влияет, но пишет отчёт о краше и открывает окно TWCrashUploader поверх
-    // работающей игры (замечено пользователем 10.10.2026) — у игроков это выглядело бы как краш.
+    // Children of parents of different races (10.10.2026). The vanilla marriage model does not check race, and
+    // lords of different peoples marry. At birth the engine takes a son's race from the father, a daughter's from
+    // the mother (DefaultHeroCreationModel.GetCharacterTemplateForOffspring), and builds the face of a child of ANY
+    // race from the mother's race (GetStaticBodyProperties: GetRandomBodyProperties(Mother.Race, ...)) -
+    // a deer son of a pony mother got pony sliders and a pony hairstyle. At the user's request:
+    //   - the race of a child of either sex is 50/50 from the mother or from the father;
+    //   - the face is random within its race and sex (the range is taken from any template of that
+    //     race and sex, as for new lords), not a mix of the parents' faces.
+    // Parents of the same race - everything as in vanilla. The engine's soft warning "mother's race != father's
+    // race" (HeroCreator.DeliverOffSpring, line 272) is removed below (EquestriaMixedOffspringAssertPatch):
+    // it affects nothing, but writes a crash report and opens the TWCrashUploader window on top of the
+    // running game (noticed by the user 10.10.2026) - for players it would look like a crash.
     internal static class EquestriaMixedOffspring
     {
         internal static bool MixedParents(Hero mother, Hero father)
@@ -30,12 +30,12 @@ namespace EquestriaMod
                 && mother.CharacterObject.Race != father.CharacterObject.Race;
         }
 
-        /// <summary>Шаблон с разбросом лица той же расы и пола: шаблоны лордов, спутников,
-        /// знати. Герои не годятся — у них диапазон схлопнут в одно лицо.</summary>
+        /// <summary>A template with face variation of the same race and sex: templates of lords, companions,
+        /// nobles. Heroes do not fit - their range is collapsed to a single face.</summary>
         internal static CharacterObject RandomFaceTemplate(int race, bool isFemale)
         {
             var pool = CharacterObject.All.Where(c => c != null && !c.IsHero && c.Race == race
-                    && c.IsFemale == isFemale && c.Age >= 18   // детские записи (village_woman_child_*) не берём
+                    && c.IsFemale == isFemale && c.Age >= 18   // child records (village_woman_child_*) are skipped
                     && !c.GetBodyPropertiesMin(true).StaticProperties.Equals(c.GetBodyPropertiesMax(true).StaticProperties))
                 .ToList();
             return pool.Count == 0 ? null : pool[MBRandom.RandomInt(pool.Count)];
@@ -85,13 +85,13 @@ namespace EquestriaMod
                 }
                 else
                 {
-                    // шаблона нет — как в ванили, между лицами родителей, но по расе ребёнка
+                    // no template - as in vanilla, between the parents' faces, but by the child's race
                     min = hero.Mother.BodyProperties;
                     max = hero.Father.BodyProperties;
                 }
                 BodyProperties body = BodyProperties.GetRandomBodyProperties(race, hero.IsFemale, min, max, 0,
                     MBRandom.RandomInt(), hairTags, beardTags, tattooTags);
-                // Причёска/борода/татуировка без тегов — по культуре и расе ребёнка, как в ванили
+                // Hairstyle/beard/tattoo without tags - by the child's culture and race, as in vanilla
                 var model = Campaign.Current.Models.BodyPropertiesModel;
                 int gender = hero.IsFemale ? 1 : 0;
                 int hair = -1, beard = -1, tattoo = -1;
@@ -116,7 +116,7 @@ namespace EquestriaMod
                 }
                 FaceGen.SetHair(ref body, hair, beard, tattoo);
                 __result = body.StaticProperties;
-                // имя ребёнку движок даёт позже — здесь hero.Name ещё имя шаблона-родителя
+                // the engine gives the child a name later - here hero.Name is still the parent template's name
                 EquestriaCrashLog.Log($"ребёнок разных рас ({hero.Mother.Name} + {hero.Father.Name}, "
                     + $"{(hero.IsFemale ? "дочь" : "сын")}): случайное лицо расы "
                     + $"{FaceGen.GetBaseMonsterFromRace(race)?.StringId ?? race.ToString()} по шаблону "
@@ -131,15 +131,15 @@ namespace EquestriaMod
         }
     }
 
-    // Убирает из HeroCreator.DeliverOffSpring вызов Debug.SilentAssert(мать.Race == отец.Race): для нас
-    // такие пары — норма. Патчить сам Debug.SilentAssert ненадёжно (маленький метод, JIT встраивает
-    // его в вызывающий код) — поэтому транспайлер на месте вызова: аргументы снимаются со стека.
+    // Removes from HeroCreator.DeliverOffSpring the call Debug.SilentAssert(mother.Race == father.Race): for us
+    // such pairs are normal. Patching Debug.SilentAssert itself is unreliable (a small method, the JIT inlines
+    // it into the caller) - hence a transpiler at the call site: the arguments are popped off the stack.
     [HarmonyPatch(typeof(HeroCreator), nameof(HeroCreator.DeliverOffSpring))]
     internal static class EquestriaMixedOffspringAssertPatch
     {
-        // Беременность без мужа (Pregnancy.Father == null: мать забеременела, будучи не замужем —
-        // так вышло в первом тесте -MixedBirths 10.10.2026, свадьба тогда молча не состоялась)
-        // роняла роды NullReferenceException. Тогда ребёнок рождается «по матери» вместо краша.
+        // A pregnancy without a husband (Pregnancy.Father == null: the mother got pregnant while unmarried -
+        // this happened in the first -MixedBirths test 10.10.2026, the wedding silently did not take place then)
+        // crashed the birth with a NullReferenceException. Now the child is born "after the mother" instead of a crash.
         private static void Prefix(Hero mother, ref Hero father)
         {
             if (father == null && mother != null)
@@ -157,7 +157,7 @@ namespace EquestriaMod
             {
                 if (silentAssert != null && code.Calls(silentAssert))
                 {
-                    // шесть аргументов: условие, сообщение, getDump, файл, метод, строка
+                    // six arguments: condition, message, getDump, file, method, line
                     for (int i = 0; i < 6; i++)
                     {
                         var pop = new CodeInstruction(OpCodes.Pop);

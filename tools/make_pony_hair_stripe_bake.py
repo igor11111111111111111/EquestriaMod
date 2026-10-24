@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
-"""Полосатая текстура гривы/хвоста пони — печёт полосы ВДОЛЬ роста волоса (как у Твайлайт: три
-широкие ленты бок о бок по всей длине пряди), а не поперёк.
+"""Striped texture of the pony mane/tail: bakes stripes ALONG the hair growth (like Twilight's: three
+wide ribbons side by side along the whole length of the strand), not across it.
 
-Первая версия (см. историю: bake_tail_stripes.py/bake_stripes_all.py, черновики) ставила полосы
-по локальной оси Z объекта (вдоль роста) в режиме Wave Texture BANDS — это даёт КОЛЬЦА, сложенные
-одно на другое от корня к кончику, поперёк роста волоса. Пользователь сверился с оригиналом
-(скриншот Твайлайт Спаркл, 30.09.2026): в шоу полосы — это отдельные пряди-ленты, бегущие ВДОЛЬ
-всей длины гривы/хвоста, а не поперечные кольца. Чтобы получить такое через Wave Texture
-(она умеет только линейную волну по одной декартовой оси, не угловую), нужна не встроенная BANDS,
-а свой угол вокруг оси роста (Z): ATAN2(Y, X) -> 0..1 -> * число_полос -> дробная часть ->
-резкая ступенька (ColorRamp CONSTANT). Печём, как и раньше, через реальную 3D-геометрию/UV
-(Cycles EMIT bake) — UV хвоста/гривы рваная россыпь мелких островов, нарисованное прямо в
-текстурное пространство рвётся на пятна (см. dump_tail_uv.py, история сессии 29.09.2026).
+The first version (see history: bake_tail_stripes.py/bake_stripes_all.py, drafts) placed the stripes
+along the object's local Z axis (along the growth) in Wave Texture BANDS mode; this gives RINGS stacked
+one on another from root to tip, across the hair growth. The user checked against the original
+(a screenshot of Twilight Sparkle, 30.09.2026): in the show the stripes are separate ribbon strands running ALONG
+the whole length of the mane/tail, not transverse rings. To get this via Wave Texture
+(it can only do a linear wave along one Cartesian axis, not an angular one), what is needed is not the built-in BANDS
+but our own angle around the growth axis (Z): ATAN2(Y, X) -> 0..1 -> * number_of_stripes -> fractional part ->
+a sharp step (ColorRamp CONSTANT). As before, we bake through the real 3D geometry/UV
+(Cycles EMIT bake): the tail/mane UV is a ragged scatter of small islands, and anything painted directly in
+texture space breaks into blotches (see dump_tail_uv.py, session history 29.09.2026).
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\make_pony_hair_stripe_bake.py
 
-Результат — assets/pony/textures/eq_pony_hair_stripe_d.png (хвост, имя историческое) и
-eq_pony_mane_stripe_d.png (сама грива). Дальше — tools/tpac_export (или редактор), чтобы
-перезалить текстуру в уже существующие материалы eq_pony_tail_stripe/eq_pony_mane_stripe.
+Result: assets/pony/textures/eq_pony_hair_stripe_d.png (the tail, the name is historical) and
+eq_pony_mane_stripe_d.png (the mane itself). Then tools/tpac_export (or the editor), to
+re-upload the texture into the already existing materials eq_pony_tail_stripe/eq_pony_mane_stripe.
 """
 import os
 
@@ -29,7 +29,7 @@ ROOT = r"C:\Users\New\EquestriaMod"
 TEX = os.path.join(ROOT, "assets", "pony", "textures")
 SIZE = 1024
 
-# (объект, файл текстуры, число полос по кругу вокруг оси роста)
+# (object, texture file, number of stripes around the growth axis)
 PARTS = [
     ("eq_pony_tail", "eq_pony_hair_stripe_d.png", 3),
     ("eq_pony_hair", "eq_pony_mane_stripe_d.png", 3),
@@ -38,11 +38,11 @@ PARTS = [
 bpy.context.scene.render.engine = "CYCLES"
 bpy.context.scene.cycles.samples = 4
 bpy.context.scene.cycles.bake_type = "EMIT"
-# UV хвоста/гривы — россыпь мелких островов (dump_tail_uv.py, 29.09.2026). Без запаса каждый
-# остров печётся впритык к чёрному фону атласа вокруг; в игре текстура идёт через мипмапы/
-# трилинейную фильтрацию, и на границе острова подмешивается этот чёрный — по всей модели
-# получается рябь "шашечками" (замечено 30.09.2026, скриншот в игре, хотя рендер в Blender
-# по живому узлу — без запекания через UV — выглядел ровно).
+# The tail/mane UV is a scatter of small islands (dump_tail_uv.py, 29.09.2026). Without padding each
+# island is baked right up against the black atlas background around it; in game the texture goes through mipmaps/
+# trilinear filtering, and at the island border this black gets mixed in: across the whole model
+# this gives a "checkerboard" ripple (noticed 30.09.2026, in-game screenshot, although the Blender render
+# from the live node, without baking through UV, looked even).
 bpy.context.scene.render.bake.margin = 32
 
 col = bpy.data.collections.get("Пони - цельная")
@@ -65,28 +65,28 @@ def bake_part(name, out_file, bands):
         nt.nodes.remove(n)
 
     coord = nt.nodes.new("ShaderNodeTexCoord")
-    # Object-координаты меряют угол от локального НУЛЯ объекта — а он не на осевой линии самой
-    # пряди (кость/пивот смещены в сторону), поэтому ATAN2(Y,X) прыгал как попало и полосы
-    # рассыпались в пятна (проверено 30.09.2026, первая попытка). Generated — координаты в
-    # рамке собственного bounding box меша (0..1 по каждой оси), центр (0.5, 0.5) уже близко
-    # к осевой линии пряди при любом смещении пивота.
+    # Object coordinates measure the angle from the object's local ZERO, and it is not on the centre line of the
+    # strand itself (the bone/pivot are offset to the side), so ATAN2(Y,X) jumped all over the place and the stripes
+    # scattered into blotches (verified 30.09.2026, first attempt). Generated: coordinates in
+    # the frame of the mesh's own bounding box (0..1 on each axis), the centre (0.5, 0.5) is already close
+    # to the strand's centre line at any pivot offset.
     center = nt.nodes.new("ShaderNodeVectorMath")
     center.operation = "SUBTRACT"
     center.inputs[1].default_value = (0.5, 0.5, 0.5)
 
     sep = nt.nodes.new("ShaderNodeSeparateXYZ")
 
-    # Угол вокруг оси роста волоса (Z) из X/Y поперечного сечения, относительно центра.
+    # The angle around the hair growth axis (Z) from the X/Y of the cross-section, relative to the centre.
     angle = nt.nodes.new("ShaderNodeMath")
     angle.operation = "ARCTAN2"
 
     norm = nt.nodes.new("ShaderNodeMath")
     norm.operation = "DIVIDE"
-    norm.inputs[1].default_value = 6.283185307  # 2*pi -> угол в 0..1 оборота
+    norm.inputs[1].default_value = 6.283185307  # 2*pi -> angle in 0..1 turns
 
     shift = nt.nodes.new("ShaderNodeMath")
     shift.operation = "ADD"
-    shift.inputs[1].default_value = 0.5  # ATAN2 даёт -0.5..0.5 оборота, сдвигаем в 0..1
+    shift.inputs[1].default_value = 0.5  # ATAN2 gives -0.5..0.5 turns, shift to 0..1
 
     scale = nt.nodes.new("ShaderNodeMath")
     scale.operation = "MULTIPLY"
@@ -94,14 +94,14 @@ def bake_part(name, out_file, bands):
 
     frac = nt.nodes.new("ShaderNodeMath")
     frac.operation = "MODULO"
-    frac.inputs[1].default_value = 1.0  # дробная часть -> одна полоса из bands, повторяется по кругу
+    frac.inputs[1].default_value = 1.0  # fractional part -> one stripe out of bands, repeated around the circle
 
     ramp = nt.nodes.new("ShaderNodeValToRGB")
     ramp.color_ramp.interpolation = "CONSTANT"
     ramp.color_ramp.elements[0].position = 0.0
-    ramp.color_ramp.elements[0].color = (0.47, 0.47, 0.47, 1.0)  # тёмная полоса
+    ramp.color_ramp.elements[0].color = (0.47, 0.47, 0.47, 1.0)  # dark stripe
     ramp.color_ramp.elements[1].position = 0.5
-    ramp.color_ramp.elements[1].color = (1.0, 1.0, 1.0, 1.0)     # светлая полоса
+    ramp.color_ramp.elements[1].color = (1.0, 1.0, 1.0, 1.0)     # light stripe
 
     emit = nt.nodes.new("ShaderNodeEmission")
     out = nt.nodes.new("ShaderNodeOutputMaterial")

@@ -1,18 +1,18 @@
-"""GUID эмиттеров ванильных эффектов частиц из Modules/Native/AssetPackages/particles.tpac.
+"""Emitter GUIDs of vanilla particle effects from Modules/Native/AssetPackages/particles.tpac.
 
-Нужны для <emitter_overrides> в прафабах (Module/Prefabs/eq_flight_fx.xml, eq_spell_fx.xml):
-эмиттер там выбирается только по guid, а в XML игры (ModuleData/particle_systems*.xml) GUID
-эмиттеров нет — только GUID эффекта. Выбор по name роняет игру при загрузке прафабов.
+Needed for <emitter_overrides> in prefabs (Module/Prefabs/eq_flight_fx.xml, eq_spell_fx.xml):
+an emitter there is selected only by guid, and the game's XML (ModuleData/particle_systems*.xml) has no emitter
+GUIDs, only the effect GUID. Selecting by name crashes the game when loading prefabs.
 
-Формат (выяснен 10.10.2026, проверен на psys_game_burning_agent — три GUID совпали с теми,
-что использует The Old Realms):
-  заголовок пакета: ... u32 len + имя эффекта, 8 нулей, маркер bb1bdbcacd6ac934, u32,
-  затем записи сегментов (u64 смещение, u64 размер распакованный, u64 размер сжатый).
-  У эффектов с текстурой первый сегмент — страница текстуры (1 МБ), данные эффекта идут
-  сразу за ней. Данные — один LZ4-блок: u32 len + sound_code, служебные байты, затем на
-  каждый эмиттер: 02 00 00 00, GUID эмиттера, 32 байта (GUID меша sample_mesh или нули),
-  GUID материала, u32 len + имя эмиттера, параметры. В одной странице может лежать несколько
-  эффектов — берём эмиттеры с начала блока, сколько их в XML.
+Format (figured out 10.10.2026, verified on psys_game_burning_agent: three GUIDs matched those
+used by The Old Realms):
+  package header: ... u32 len + effect name, 8 zeros, marker bb1bdbcacd6ac934, u32,
+  then segment records (u64 offset, u64 unpacked size, u64 compressed size).
+  For effects with a texture the first segment is a texture page (1 MB), the effect data follows
+  right after it. The data is one LZ4 block: u32 len + sound_code, service bytes, then for
+  each emitter: 02 00 00 00, emitter GUID, 32 bytes (sample_mesh mesh GUID or zeros),
+  material GUID, u32 len + emitter name, parameters. One page can hold several
+  effects: we take emitters from the start of the block, as many as there are in the XML.
 
     py -3 tools/tpac_emitter_guids.py psys_game_campfire falling_leaves psys_game_hoof_dust_on_default
 """
@@ -85,7 +85,7 @@ def main():
         off, usize, csize = struct.unpack_from("<QQQ", data, m + 12)
         dec = lz4_block(data[off:off + csize])
         if not EMITTER.search(dec[:20000]):
-            # первый сегмент — текстура, эффект лежит сразу за ней
+            # the first segment is the texture, the effect lies right after it
             dec = lz4_block(data[off + csize:off + csize + 300000])
         print("%s  эффект %s" % (name, effect))
         for em in EMITTER.finditer(dec[:40000]):

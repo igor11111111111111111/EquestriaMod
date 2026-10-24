@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Экспорт готовой ручной модели из assets/pony/eq_pony_edit.blend поверх assets/pony/eq_pony.fbx.
+"""Export of the finished hand-edited model from assets/pony/eq_pony_edit.blend over assets/pony/eq_pony.fbx.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_export.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_export.py
 
-Экспортируются скелет и девять частей из коллекции «Пони - цельная» (те же настройки экспорта,
-что и в основном конвейере tools/make_pony_model.py: оси X/-Y, без анимации, без лишних костей).
+Exported are the skeleton and nine parts from the "Pony - whole" collection (the same export
+settings as in the main pipeline tools/make_pony_model.py: axes X/-Y, no animation, no extra bones).
 """
 import os
 
 import bpy
 
-# ears — 07.10.2026, пользователь отделил уши от гривы (EquestriaBodyParts.cs PartByRace/EarMeshByRace)
-# gloves_l/r, legs_l/r — 07.10.2026, разрез пополам для визуального отрубания конечностей
-# (tools/pony_edit_split_limbs.py, EquestriaDismemberment.cs) — старые gloves/legs целиком всё ещё
-# нужны обычному (не отрубленному) персонажу, экспортируем и то, и то.
+# ears: 07.10.2026, the user separated the ears from the mane (EquestriaBodyParts.cs PartByRace/EarMeshByRace)
+# gloves_l/r, legs_l/r: 07.10.2026, cut in half for visual limb severing
+# (tools/pony_edit_split_limbs.py, EquestriaDismemberment.cs); the old whole gloves/legs are still
+# needed by an ordinary (not dismembered) character, so both are exported.
 PARTS = ("body", "gloves", "hair", "head", "horn", "legs", "tail", "wings", "ears",
          "gloves_l", "gloves_r", "legs_l", "legs_r")
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "pony", "eq_pony.fbx")
@@ -42,9 +42,9 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye turned off in the Outliner); for the yak
+    # the skeleton turned out to be exactly that, and the export quietly went out without bones (noticed
+    # by the A-pose in battle 07.10.2026, see yak_edit_export.py). Unhide before selecting, just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

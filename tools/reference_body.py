@@ -1,6 +1,6 @@
-# Эталонное тело Bannerlord (Skinned Body Base Meshes, Nexus 2286) в системе координат нашей модели.
-# Совмещение — по суставам: кости эталона (pelvis, l_thigh, ...) -> кости human_skeleton (bip01_pelvis_0, ...),
-# подбирается подобие (поворот + масштаб + сдвиг, при необходимости с отражением) методом Умеямы.
+# The Bannerlord reference body (Skinned Body Base Meshes, Nexus 2286) in our model's coordinate system.
+# Alignment is by joints: reference bones (pelvis, l_thigh, ...) -> human_skeleton bones (bip01_pelvis_0, ...),
+# a similarity transform (rotation + scale + shift, with reflection if needed) is fitted by Umeyama's method.
 import re
 
 import bpy
@@ -13,7 +13,7 @@ def _strip(name):
 
 
 def fit_matrix(ref_armature, target_armature, turn_around=True):
-    """4x4-матрица, переводящая мир ref_armature в мир target_armature (подобие по суставам [+ поворот 180°])."""
+    """4x4 matrix mapping the ref_armature world to the target_armature world (similarity by joints [+ 180° turn])."""
     target = {_strip(b.name): target_armature.matrix_world @ b.head_local for b in target_armature.data.bones}
     pairs = [(ref_armature.matrix_world @ b.head_local, target[_strip(b.name)])
              for b in ref_armature.data.bones if _strip(b.name) in target and "nub" not in b.name]
@@ -43,11 +43,11 @@ def bone_name_map(target_armature):
 
 
 def import_reference(fbx_path, target_armature, turn_around=True):
-    """Импортирует эталон и возвращает {имя меша: вершины в мире target_armature}, сведения о совмещении.
+    """Imports the reference and returns {mesh name: vertices in the target_armature world}, alignment info.
 
-    turn_around: по суставам эталон смотрит в +Y, а наши модели построены лицом к -Y (так они правильно
-    стоят в игре: движок поворачивает меш на 180° относительно FBX-скелета). Поворот на 180° вокруг Z
-    ставит эталон так же, как наша модель.
+    turn_around: by its joints the reference faces +Y, while our models are built facing -Y (that is how they
+    stand correctly in game: the engine rotates the mesh by 180° relative to the FBX skeleton). A 180° turn about Z
+    places the reference the same way as our model.
     """
     before = set(bpy.context.scene.objects)
     bpy.ops.import_scene.fbx(filepath=fbx_path, automatic_bone_orientation=False,
@@ -62,7 +62,7 @@ def import_reference(fbx_path, target_armature, turn_around=True):
     src = np.array([p[0] for p in pairs])
     dst = np.array([p[1] for p in pairs])
 
-    # Умеяма: dst ≈ s * R @ src + t
+    # Umeyama: dst ≈ s * R @ src + t
     mu_s, mu_d = src.mean(0), dst.mean(0)
     xs, xd = src - mu_s, dst - mu_d
     u, d, vt = np.linalg.svd(xd.T @ xs / len(src))

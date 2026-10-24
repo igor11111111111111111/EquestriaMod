@@ -7,18 +7,18 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Резерв найма (добровольцы нотаблей в деревне/городе) — ванильная DefaultVolunteerModel берёт
-    // расу СТРОГО с sellerHero.Culture: у нотабля она фиксируется один раз при его появлении и не
-    // следит за ассимиляцией расы поселения (EquestriaRaceAssimilation.cs). Это другая система, чем
-    // гарнизонное ополчение (RaceAssimilationMilitiaPatch, EquestriaRaceAssimilationMilitia.cs) — их
-    // пришлось чинить раздельно (замечено пользователем 07.10.2026: ополчение поправлено, резерв
-    // найма — нет, перепутал одно с другим).
+    // Recruit pool (notables' volunteers in a village/town): the vanilla DefaultVolunteerModel takes
+    // the race STRICTLY from sellerHero.Culture: for a notable it is fixed once when he appears and does not
+    // follow the settlement's race assimilation (EquestriaRaceAssimilation.cs). This is a different system from
+    // the garrison militia (RaceAssimilationMilitiaPatch, EquestriaRaceAssimilationMilitia.cs); they
+    // had to be fixed separately (noticed by the user 07.10.2026: the militia was fixed, the recruit
+    // pool was not, one was mixed up with the other).
     //
-    // GetBasicVolunteer зовётся из RecruitmentCampaignBehavior.UpdateVolunteersOfNotablesInSettlement
-    // РАЗ В ДЕНЬ на нотабля — результат уходит ТОЛЬКО в опустевшие слоты (уже занятые только
-    // повышаются в звании той же расы, см. decompile). Поэтому подмена расы здесь даёт смешанный
-    // резерв не мгновенно и не на ячейку, а постепенно, по мере найма/обновления — раз в день
-    // возможна новая раса у нотабля, пропорционально текущим долям CurrentInfluences поселения.
+    // GetBasicVolunteer is called from RecruitmentCampaignBehavior.UpdateVolunteersOfNotablesInSettlement
+    // ONCE A DAY per notable; the result goes ONLY into emptied slots (already occupied ones are only
+    // promoted in rank within the same race, see decompile). So swapping the race here gives a mixed
+    // pool not instantly and not per slot, but gradually, as recruiting/refreshing happens: once a day
+    // a notable may get a new race, in proportion to the settlement's current CurrentInfluences shares.
     public class EquestriaVolunteerModel : DefaultVolunteerModel
     {
         public override CharacterObject GetBasicVolunteer(Hero sellerHero)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Инвертировать нормали всех частей в assets/pony/eq_pony_edit.blend (откат неверного recalc).
+"""Flip the normals of all parts in assets/pony/eq_pony_edit.blend (undoes a wrong recalc).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_normals.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_normals.py
 """
 import bpy
 

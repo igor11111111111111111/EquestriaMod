@@ -9,27 +9,27 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Полная опись данных мода в момент старта кампании: что нашлось, что нет, что стоит не там.
+    // A full inventory of the mod's data at campaign start: what was found, what was not, what is misplaced.
     //
-    // Зачем: почти каждое падение до сих пор было «ссылка на пустоту» — игра берёт наш объект по
-    // имени и не проверяет, нашёлся ли он. В журнале игры этого не видно вообще. Здесь мы заранее
-    // называем всё, что мод обещает предоставить, и отмечаем пропажи до того, как на них наступят.
+    // Why: almost every crash so far has been a "reference to nothing" - the game takes our object by
+    // name and does not check whether it was found. The game log does not show this at all. Here we
+    // name in advance everything the mod promises to provide and flag what is missing before anyone trips on it.
     //
-    // Результат уходит в <мод>\eq_exceptions.log.
+    // The result goes to <mod>\eq_exceptions.log.
     public class EquestriaDiagnosticsBehavior : CampaignBehaviorBase
     {
-        // Границы нашей карты мира — те же, что прописаны в scene.xscene (border_min / border_max).
+        // Bounds of our world map - the same as set in scene.xscene (border_min / border_max).
         private const float MapSize = 400f;
 
         private static readonly string[] OurItems = { };
 
-        // Главные поселения Эквестрии — по ним видно, что мир собрался целиком (см. tools/world_data.py).
+        // Equestria's main settlements - they show that the world was assembled in full (see tools/world_data.py).
         private static readonly string[] OurSettlements =
         {
             "town_empire_0", "town_empire_1", "town_empire_2", "castle_empire_0",
         };
 
-        // Культуры Equus заняли ванильные идентификаторы: Эквестрия = empire и так далее.
+        // The Equus cultures took over vanilla ids: Equestria = empire and so on.
         private static readonly string[] OurCultures =
         {
             "empire", "vlandia", "sturgia", "khuzait", "aserai",
@@ -50,9 +50,9 @@ namespace EquestriaMod
             EquestriaCrashLog.Try("опись данных мода (" + moment + ")", () =>
             {
                 EquestriaCrashLog.Note("опись данных мода: " + moment);
-                // Сама опись (все поселения, кланы, герои) — только в подробном режиме: у игрока она
-                // перебирала бы весь мир при каждом запуске кампании ради строк, которых он не читает.
-                // Отметку выше оставляем: по ней tools\selftest.ps1 понимает, что карта готова.
+                // The inventory itself (all settlements, clans, heroes) is only in verbose mode: for a player
+                // it would walk the whole world on every campaign launch for lines they never read.
+                // The note above stays: tools\selftest.ps1 uses it to tell that the map is ready.
                 if (!EquestriaCrashLog.Verbose)
                 {
                     return;
@@ -110,8 +110,8 @@ namespace EquestriaMod
                     continue;
                 }
 
-                // Шаблоны снаряжения по культуре: игра ищет их по точному совпадению культуры и
-                // флагов и не проверяет результат на пустоту. Нужны все восемь сочетаний.
+                // Equipment templates per culture: the game looks them up by an exact match of culture and
+                // flags and does not check the result for null. All eight combinations are needed.
                 var mine = rosters.Where(r => r.EquipmentCulture == culture).ToList();
                 var present = new HashSet<string>(
                     mine.Select(r => Normalize(r.EquipmentCategories.ToString())));
@@ -125,9 +125,9 @@ namespace EquestriaMod
             }
         }
 
-        // Все сочетания, которые умеет запрашивать DefaultEquipmentSelectionModel: лорд, правитель,
-        // подросток, ребёнок — каждое ещё и в женском варианте. Отсутствие любого роняет игру в тот
-        // момент, когда она решит кого-то одеть.
+        // All combinations DefaultEquipmentSelectionModel can request: lord, ruler,
+        // teenager, child - each also in a female variant. Missing any of them crashes the game the
+        // moment it decides to dress someone.
         private static readonly string[] RequiredTemplates =
         {
             "IsLordTemplate",
@@ -140,7 +140,7 @@ namespace EquestriaMod
             "IsLordTemplate, IsTeenagerEquipmentTemplate, IsFemaleTemplate",
         };
 
-        // Порядок флагов в строке зависит от их числовых значений, поэтому сравниваем по составу.
+        // The flag order in the string depends on their numeric values, so we compare by content.
         private static string Normalize(string flags)
         {
             var parts = flags.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
@@ -178,9 +178,9 @@ namespace EquestriaMod
             ReportMidSettlements();
         }
 
-        // «Центральное поселение» фракции. DefaultSettlementValueModel обращается к нему без проверки
-        // (clan.MapFaction.FactionMidSettlement.HasPort), поэтому любая фракция с владениями, но с
-        // пустым центром, роняет расчёт родного поселения клана.
+        // The faction's "mid settlement". DefaultSettlementValueModel accesses it without a check
+        // (clan.MapFaction.FactionMidSettlement.HasPort), so any faction with holdings but an
+        // empty centre crashes the calculation of a clan's home settlement.
         private static void ReportMidSettlements()
         {
             var broken = new List<string>();
@@ -197,8 +197,8 @@ namespace EquestriaMod
                     broken.Add($"{clan.StringId} -> фракция {faction.StringId}, владений {faction.Settlements.Count}");
                 }
             }
-            // На этом этапе центры ещё не посчитаны и у ванильных фракций — это нормально, игра
-            // считает их позже. Тревожимся только за свои.
+            // At this stage the centres are not computed yet for vanilla factions either - that is normal,
+            // the game computes them later. We only worry about our own.
             var ours = broken.Where(s => s.StartsWith("clan_eq_") || s.StartsWith("clan_cr_")
                 || s.StartsWith("clan_st_") || s.StartsWith("clan_yk_")
                 || s.StartsWith("clan_ch_")).ToList();
@@ -212,12 +212,12 @@ namespace EquestriaMod
 
         private static void ReportHeroes()
         {
-            // Рас у нас теперь восемь (по расе на культуру), поэтому в журнале пишем имя расы,
-            // а тревожимся только за одно: герой не должен остаться ванильным человеком.
+            // We now have eight races (one per culture), so the log records the race name,
+            // and we worry about only one thing: a hero must not remain a vanilla human.
             string[] raceNames = FaceGen.GetRaceNames() ?? new string[0];
             var ours = Hero.AllAliveHeroes.Where(h => h.StringId.StartsWith("eq_")).ToList();
             EquestriaCrashLog.Log($"наших героев живо: {ours.Count} (всего в игре {Hero.AllAliveHeroes.Count})");
-            // Спутники в тавернах: канонные (шаблоны spc_eq_*) должны носить свои имена
+            // Companions in taverns: canon ones (spc_eq_* templates) must carry their own names
             var wanderers = Hero.AllAliveHeroes.Where(h => h.IsWanderer).ToList();
             var canon = wanderers.Where(h => h.CharacterObject?.OriginalCharacter?.StringId?.StartsWith("spc_eq_") == true
                 || h.Template?.StringId?.StartsWith("spc_eq_") == true).ToList();
@@ -237,7 +237,7 @@ namespace EquestriaMod
                 {
                     EquestriaCrashLog.Warn($"герой {hero.StringId} без клана — он не появится на карте");
                 }
-                // Боевой и гражданский наборы обязательны: EquipmentHelper берёт их без проверки.
+                // Battle and civilian sets are mandatory: EquipmentHelper takes them without a check.
                 if (character != null)
                 {
                     if (character.FirstBattleEquipment == null)
@@ -250,7 +250,7 @@ namespace EquestriaMod
                             + "(<EquipmentRoster civilian=\"true\">) — выдача снаряжения упадёт");
                     }
                 }
-                // Раса 0 — ванильный человек: значит, в XML расу не проставили или её не нашли
+                // Race 0 is the vanilla human: so the race was not set in XML or was not found
                 if (character != null && character.Race == 0)
                 {
                     EquestriaCrashLog.Warn($"герой {hero.StringId} остался человеком");
@@ -258,9 +258,9 @@ namespace EquestriaMod
             }
         }
 
-        // Размер погодной сетки задаёт объект MapSnowAndRainDefiner в сцене карты. Если его нет,
-        // размер остаётся нулевым, массив погоды пустой, и любое обращение к погоде по координатам
-        // вылетает за границы массива (DefaultMapWeatherModel.GetWeatherEventInPosition).
+        // The weather grid size is set by the MapSnowAndRainDefiner object in the map scene. Without it
+        // the size stays zero, the weather array is empty, and any weather lookup by coordinates
+        // goes out of the array bounds (DefaultMapWeatherModel.GetWeatherEventInPosition).
         private static void ReportWeather()
         {
             int dimension = Campaign.Current.DefaultWeatherNodeDimension;
@@ -283,7 +283,7 @@ namespace EquestriaMod
             var outside = new List<string>();
             foreach (var settlement in all)
             {
-                // Position — это CampaignVec2 (с гранью навигации); плоские координаты берутся так.
+                // Position is a CampaignVec2 (with a navmesh face); flat coordinates are taken like this.
                 var p = settlement.GetPosition2D;
                 if (p.x < 0f || p.y < 0f || p.x > MapSize || p.y > MapSize)
                 {
@@ -321,7 +321,7 @@ namespace EquestriaMod
             }
         }
 
-        // Консоль (Alt+~): equestria.report — перечитать опись в любой момент игры
+        // Console (Alt+~): equestria.report - redo the inventory at any point in the game
         [CommandLineFunctionality.CommandLineArgumentFunction("report", "equestria")]
         public static string ReportCommand(List<string> args)
         {

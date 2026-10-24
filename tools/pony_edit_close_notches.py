@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Зашить мелкие V-образные щели у корня крыла — bmesh triangle_fill их не берёт (не замкнутый контур).
+"""Stitch the small V-shaped gaps at the wing root — bmesh triangle_fill does not take them (not a closed loop).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_close_notches.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_close_notches.py
 """
 import bmesh
 import bpy
@@ -41,7 +41,7 @@ def boundary_loops():
 
 
 closed = 0
-for _round in range(3):          # закрытие одной щели может обнажить соседнюю
+for _round in range(3):          # closing one gap may expose a neighbouring one
     progress = False
     for loop_edges in boundary_loops():
         verts = {v for e in loop_edges for v in e.verts}
@@ -63,8 +63,8 @@ for _round in range(3):          # закрытие одной щели може
             if mid is not None:
                 f = bm.faces.new((a, mid, b))
             else:
-                # одиночное ребро без общей вершины со второй дырой — соединяем через ближайшую
-                # уже существующую вершину третьей стороны треугольника
+                # a single edge with no vertex shared with a second hole — connect through the nearest
+                # existing vertex as the third corner of the triangle
                 third = min((v for v in bm.verts if v not in (a, b)),
                             key=lambda v: (v.co - a.co).length + (v.co - b.co).length)
                 f = bm.faces.new((a, b, third))

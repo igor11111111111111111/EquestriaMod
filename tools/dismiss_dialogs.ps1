@@ -1,13 +1,13 @@
-﻿# Закрывает окна-вопросы, которые Bannerlord показывает до главного меню.
+﻿# Closes the question dialogs Bannerlord shows before the main menu.
 #
 #   .\dismiss_dialogs.ps1 -Seconds 90
 #
-# Зачем: при запуске из скрипта игра каждый раз спрашивает про смену модов и про безопасный режим,
-# и до тех пор ничего не грузит. Руками это терпимо, а для самопроверки — стоп-кран.
+# Why: when launched from a script, the game asks every time about the mod change and about safe mode,
+# and loads nothing until answered. By hand this is tolerable, but for self-checks it is a blocker.
 #
-# Что с чем делаем:
-#   "Mod change detected" — просто OK, это уведомление о сбросе кэша шейдеров;
-#   "Safe Mode"          — Esc, то есть "Нет": безопасный режим нам не нужен.
+# What we do with each:
+#   "Mod change detected" - just OK, it is a notice about the shader cache reset;
+#   "Safe Mode"          - Esc, i.e. "No": we do not need safe mode.
 param([int]$Seconds = 90)
 
 $ErrorActionPreference = "Stop"
@@ -24,7 +24,7 @@ public static class Win {
 }
 "@
 
-# заголовок окна -> какую клавишу отправить
+# window title -> which key to send
 $dialogs = @{
     "Mod change detected" = "{ENTER}"
     "Safe Mode"           = "{ESC}"

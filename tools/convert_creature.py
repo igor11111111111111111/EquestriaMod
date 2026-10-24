@@ -1,27 +1,27 @@
-# Переделка чужой четвероногой модели в антро-персонажа Bannerlord.
+# Converting a third-party quadruped model into an anthro Bannerlord character.
 #
-#   blender --background --factory-startup --python convert_creature.py -- <вид> <модель.glb>
-#           <скелет.fbx> <папка вывода> [--preview]
+#   blender --background --factory-startup --python convert_creature.py -- <kind> <model.glb>
+#           <skeleton.fbx> <output folder> [--preview]
 #
-# <вид> — ключ из tools/creature_data.py (griffon, yak); там же записаны координаты суставов,
-# снятые руками по видам модели с координатной сеткой (tools/preview_model.py). <скелет.fbx> —
-# любой наш экспорт с человеческим скелетом Bannerlord (assets/twilight_anthro/export/eq_twilight.fbx).
+# <kind> is a key from tools/creature_data.py (griffon, yak); the joint coordinates are recorded there,
+# taken by hand from views of the model with a coordinate grid (tools/preview_model.py). <skeleton.fbx> is
+# any of our exports with the human Bannerlord skeleton (assets/twilight_anthro/export/eq_twilight.fbx).
 #
-# Порядок работы:
-#   1. Модель разворачивается мордой в -Y и сшивается: генератор отдаёт «суп» из несвязанных
-#      треугольников, а такую сетку рвёт любая деформация.
-#   2. Тонкие части (крылья, хвост) отделяются сразу — их нельзя пересобирать по объёму, перья
-#      слипнутся в пластины. Они поедут отдельными предметами, целиком на одной кости.
-#   3. Туловище пересобирается по объёму (voxel remesh): получается одна замкнутая оболочка без
-#      внутреннего мусора. Развёртка переносится со старой модели, чтобы текстура осталась.
-#   4. Всё масштабируется так, чтобы позвоночник зверя стал человеческого размера.
-#   5. По анатомической карте строится «звериный» скелет — копия человеческого, у которой кости
-#      переставлены в суставы зверя. Меш привязывается к нему: каждая область тела только к своим
-#      костям (живот не цепляется за лапу), веса сглаживаются по соседям.
-#   6. Звериному скелету задаётся поза человеческого: корпус встаёт вертикально, передние лапы
-#      разводятся руками, задние выпрямляются. Поза запекается в геометрию.
-#   7. Веса считаются заново по человеческому скелету и ограничиваются тремя костями на вершину.
-#   8. Меш режется на предметы (голова, тело, ноги, кисти) и пишется в FBX, текстуры — в PNG.
+# Steps:
+#   1. The model is turned to face -Y and welded: the generator outputs a "soup" of disconnected
+#      triangles, and any deformation tears such a mesh apart.
+#   2. Thin parts (wings, tail) are separated right away - they cannot be remeshed by volume, the
+#      feathers would stick together into plates. They go as separate items, wholly on one bone.
+#   3. The torso is remeshed by volume (voxel remesh): the result is one closed shell without
+#      internal junk. The UVs are transferred from the old model so the texture stays.
+#   4. Everything is scaled so that the creature's spine becomes human-sized.
+#   5. From the anatomy map a "creature" skeleton is built - a copy of the human one with the bones
+#      moved to the creature's joints. The mesh is bound to it: each body region only to its own
+#      bones (the belly does not grab a leg), weights are smoothed over neighbours.
+#   6. The creature skeleton is given the human pose: the torso stands upright, the front legs
+#      spread out as arms, the hind legs straighten. The pose is baked into the geometry.
+#   7. Weights are recomputed for the human skeleton and limited to three bones per vertex.
+#   8. The mesh is cut into items (head, body, legs, hands) and written to FBX, textures to PNG.
 import math
 import os
 import sys
@@ -44,12 +44,12 @@ os.makedirs(OUT, exist_ok=True)
 TEX_DIR = os.path.join(OUT, "textures")
 os.makedirs(TEX_DIR, exist_ok=True)
 
-MAX_INFLUENCES = 3      # как у ванильных мешей Bannerlord
+MAX_INFLUENCES = 3      # as in vanilla Bannerlord meshes
 MIN_WEIGHT = 0.02
-# Кости, длину которых при переносе позы не меняем: голова, кисти и стопы должны остаться
-# своего размера, иначе клюв вытягивается вверх, а когти — в стороны.
+# Bones whose length is not changed when retargeting the pose: head, hands and feet must keep
+# their size, otherwise the beak stretches upward and the claws sideways.
 NO_STRETCH = {"head", "l_hand", "r_hand", "l_foot", "r_foot", "l_toe", "r_toe"}
-# какие кости обслуживают какую область тела
+# which bones serve which body region
 REGION_BONES = {
     "arms": ["l_clavicle", "l_upperarm", "l_forearm", "l_hand", "l_hand_end",
              "r_clavicle", "r_upperarm", "r_forearm", "r_hand", "r_hand_end"],
@@ -58,7 +58,7 @@ REGION_BONES = {
     "head": ["neck", "head", "head_end"],
     "torso": ["pelvis", "spine", "spine1", "spine2", "l_clavicle", "r_clavicle", "neck"],
 }
-# Области в уже человеческой позе — по ним считаются окончательные веса.
+# Regions in the already human pose - the final weights are computed from them.
 HUMAN_REGIONS = {
     "arms": {"min_abs_x": 0.22},
     "head": {"min_z": 1.46},
@@ -87,7 +87,7 @@ def tri_count(ob):
 
 
 def match(q, rule):
-    """Подходит ли точка (в координатах анатомической карты) под правило области."""
+    """Whether a point (in anatomy map coordinates) matches a region rule."""
     for cond, value in rule.items():
         if cond == "min_z" and q.z < value:
             return False
@@ -107,7 +107,7 @@ def match(q, rule):
 
 
 def separate(ob, indices, name):
-    """Отделяет вершины в новый объект (и возвращает его)."""
+    """Separates vertices into a new object (and returns it)."""
     if not indices:
         return None
     select_only([ob], ob)
@@ -118,8 +118,8 @@ def separate(ob, indices, name):
     chosen = set(indices)
     for i in indices:
         ob.data.vertices[i].select = True
-    # грань уезжает вместе с вершинами только если выбрана целиком — отмечаем такие грани сами,
-    # иначе в новом объекте остаётся облако точек без единой грани
+    # a face goes along with the vertices only if fully selected - mark such faces ourselves,
+    # otherwise the new object is left with a point cloud without a single face
     for f in ob.data.polygons:
         f.select = all(i in chosen for i in f.vertices)
     was = set(scene.objects)
@@ -133,7 +133,7 @@ def separate(ob, indices, name):
     return fresh[0]
 
 
-# ---------------------------------------------------------------- 1. скелет Bannerlord
+# ---------------------------------------------------------------- 1. Bannerlord skeleton
 before = set(scene.objects)
 bpy.ops.import_scene.fbx(filepath=SKEL_FBX, automatic_bone_orientation=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y")
@@ -142,8 +142,8 @@ skel = next(o for o in imported if o.type == "ARMATURE")
 for o in imported:
     if o is not skel:
         bpy.data.objects.remove(o, do_unlink=True)
-# В файле скелет записан в масштабе 0.01; поворот оставляем как есть (он и переводит кости
-# в привычные оси Z-вверх), меняем только масштаб — работаем в метрах.
+# In the file the skeleton is stored at scale 0.01; the rotation is kept as is (it is what brings the
+# bones into the usual Z-up axes), only the scale is changed - we work in metres.
 skel.scale = (1, 1, 1)
 vl.update()
 log("скелет: %d костей" % len(skel.data.bones))
@@ -155,7 +155,7 @@ if missing:
 H_PELVIS = skel.matrix_world @ skel.data.bones[BONES["pelvis"]].head_local
 H_NECK = skel.matrix_world @ skel.data.bones[BONES["neck"]].head_local
 
-# ---------------------------------------------------------------- 2. модель
+# ---------------------------------------------------------------- 2. model
 images_before = set(bpy.data.images.keys())
 before = set(scene.objects)
 bpy.ops.import_scene.gltf(filepath=GLB)
@@ -172,13 +172,13 @@ mesh.name = PREFIX
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 log("модель: %d вершин, %d треугольников" % (len(mesh.data.vertices), tri_count(mesh)))
 
-# поворот мордой в -Y
+# turn to face -Y
 turn = Matrix.Rotation(math.radians(CARD["yaw"]), 4, "Z")
 mesh.matrix_world = turn @ mesh.matrix_world
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 J = {k: turn @ Vector(v) for k, v in CARD["joints"].items()}
 
-# сшивка: у модели от генератора соседние треугольники не делят вершины
+# welding: in the generated model neighbouring triangles do not share vertices
 select_only([mesh], mesh)
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
@@ -186,7 +186,7 @@ bpy.ops.mesh.remove_doubles(threshold=0.0008)
 bpy.ops.object.mode_set(mode="OBJECT")
 log("после сшивки: %d вершин, %d треугольников" % (len(mesh.data.vertices), tri_count(mesh)))
 
-# крылья и хвост отделяем до пересборки: тонкие перья voxel remesh слепит в пластины
+# wings and tail are separated before remeshing: voxel remesh would glue thin feathers into plates
 to_card = turn.inverted()
 extras = {}
 for name, rule in CARD.get("extras", {}).items():
@@ -196,7 +196,7 @@ for name, rule in CARD.get("extras", {}).items():
         extras[name] = part
         log("отделено: %s, %d вершин" % (part.name, len(part.data.vertices)))
 
-# Пересборка туловища по объёму: одна замкнутая оболочка вместо супа из оболочек.
+# Volume remesh of the torso: one closed shell instead of a soup of shells.
 source = mesh.copy()
 source.data = mesh.data.copy()
 scene.collection.objects.link(source)
@@ -215,7 +215,7 @@ if tri_count(mesh) > target * 1.2:
     bpy.ops.object.modifier_apply(modifier=dec.name)
     log("упрощено до %d треугольников" % tri_count(mesh))
 
-# развёртка и материал — со старой модели
+# UVs and material come from the old model
 if not mesh.data.uv_layers:
     mesh.data.uv_layers.new(name="UVMap")
 mesh.data.materials.clear()
@@ -230,7 +230,7 @@ bpy.ops.object.modifier_apply(modifier=dt.name)
 bpy.data.objects.remove(source, do_unlink=True)
 log("развёртка перенесена со старой модели")
 
-# тонкие части упрощаем обычной децимацией
+# thin parts are simplified with ordinary decimation
 for part in extras.values():
     if tri_count(part) > 4000:
         select_only([part], part)
@@ -238,7 +238,7 @@ for part in extras.values():
         dec.ratio = 4000 / tri_count(part)
         bpy.ops.object.modifier_apply(modifier=dec.name)
 
-# масштаб: позвоночник зверя = позвоночник человека, таз в таз
+# scale: creature spine = human spine, pelvis to pelvis
 spine_len = (J["neck"] - J["pelvis"]).length
 k = (H_NECK - H_PELVIS).length / spine_len
 fit = Matrix.Translation(H_PELVIS) @ Matrix.Scale(k, 4) @ Matrix.Translation(-J["pelvis"])
@@ -250,7 +250,7 @@ for ob in [mesh] + list(extras.values()):
 J = {key: fit @ v for key, v in J.items()}
 to_card = turn.inverted() @ fit.inverted()
 
-# ---------------------------------------------------------------- 3. звериный скелет
+# ---------------------------------------------------------------- 3. creature skeleton
 qrig = skel.copy()
 qrig.data = skel.data.copy()
 qrig.name = "creature_rig"
@@ -268,9 +268,9 @@ for chain in CHAINS:
         bone.head = to_rig @ J[a]
         bone.tail = to_rig @ J[b]
         mapped.add(BONES[a])
-# Скрутка (roll) каждой кости — по одноимённой кости человека. Если оставить произвольную,
-# при переносе позы каждая кость доворачивается на свой угол вокруг себя, соседние вершины
-# закручиваются в разные стороны, и меш рассыпается на лоскуты.
+# The roll of each bone follows the human bone of the same name. If left arbitrary, each bone
+# turns by its own angle around itself when retargeting the pose, neighbouring vertices twist
+# in different directions, and the mesh falls apart into shreds.
 for name in mapped:
     z_human = skel.data.bones[name].matrix_local.to_3x3() @ Vector((0.0, 0.0, 1.0))
     eb[name].align_roll(z_human)
@@ -283,10 +283,10 @@ qbones = [(b.name, qrig.matrix_world @ b.head_local, qrig.matrix_world @ b.tail_
           for b in qrig.data.bones if b.use_deform]
 
 
-# ---------------------------------------------------------------- 4. привязка
+# ---------------------------------------------------------------- 4. binding
 def smooth_weights(ob, rounds=6, factor=0.5):
-    """Сглаживание весов по соседям: иначе на границах областей остаётся резкий шов и при
-    повороте костей меш рвёт на лоскуты."""
+    """Smoothing weights over neighbours: otherwise a sharp seam remains at region borders and
+    rotating the bones tears the mesh into shreds."""
     me = ob.data
     n = len(me.vertices)
     neigh = [[] for _ in range(n)]
@@ -316,7 +316,7 @@ def smooth_weights(ob, rounds=6, factor=0.5):
 
 
 def weight_by_bones(ob, bones, regions, to_space, count=2, power=2.0):
-    """Привязка по расстоянию до костей, но только к костям своей области тела."""
+    """Binding by distance to bones, but only to the bones of the vertex's own body region."""
     for vg in list(ob.vertex_groups):
         ob.vertex_groups.remove(vg)
     names = {name for name, _a, _b in bones}
@@ -345,16 +345,16 @@ def weight_by_bones(ob, bones, regions, to_space, count=2, power=2.0):
 
 
 def weight_rigid(ob, bone_name):
-    """Вся деталь на одной кости — так ездят крылья и хвост."""
+    """The whole part on one bone - that is how the wings and tail ride."""
     for vg in list(ob.vertex_groups):
         ob.vertex_groups.remove(vg)
     vg = ob.vertex_groups.new(name=bone_name)
     vg.add([v.index for v in ob.data.vertices], 1.0, "REPLACE")
 
 
-# По кости на вершину: кожа зверя делится на жёсткие куски. Мягкая привязка тут не работает —
-# при выпрямлении четвероногого соседние куски кожи расходятся на десятки сантиметров, и меш
-# превращается в лохмотья.
+# One bone per vertex: the creature's skin is split into rigid pieces. Soft binding does not work here -
+# when straightening a quadruped, neighbouring skin pieces drift apart by tens of centimetres, and the mesh
+# turns into rags.
 weight_by_bones(mesh, qbones, CARD.get("regions", {}), to_card, count=1)
 rigid = CARD.get("rigid", {})
 for name, part in extras.items():
@@ -368,13 +368,13 @@ for ob in [mesh] + list(extras.values()):
 if PREVIEW:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, PREFIX + "_prepose.blend"))
 
-# ---------------------------------------------------------------- 5. поза человека
-# ---------------------------------------------------------------- 5. поза человека
-# Перенос позы «по кускам». Мягкая привязка тут не работает: при выпрямлении четвероногого
-# соседние участки кожи разъезжаются на десятки сантиметров, и меш превращается в лохмотья.
-# Поэтому шкура режется на куски по костям, каждый кусок переносится целиком (поворот, сдвиг
-# и растяжение вдоль кости), грани между разными кусками удаляются, а потом всё сплавляется
-# в одну оболочку пересборкой по объёму — швы на суставах затягиваются.
+# ---------------------------------------------------------------- 5. human pose
+# ---------------------------------------------------------------- 5. human pose
+# Pose retargeting "piece by piece". Soft binding does not work here: when straightening a quadruped,
+# neighbouring skin areas drift apart by tens of centimetres, and the mesh turns into rags.
+# So the hide is cut into pieces by bone, each piece is moved as a whole (rotation, shift
+# and stretch along the bone), faces between different pieces are deleted, and then everything is fused
+# into one shell by a volume remesh - the seams at the joints close up.
 bone_index = {}
 names = {g.index: g.name for g in mesh.vertex_groups}
 for v in mesh.data.vertices:
@@ -404,8 +404,8 @@ for v in mesh.data.vertices:
     if move is not None:
         v.co = inv @ (move @ (mw @ v.co))
 
-# грани, натянутые между разными костями, выбрасываем — иначе при сплавлении из них
-# получаются перепонки поперёк тела
+# faces stretched between different bones are discarded - otherwise fusing turns them
+# into webbing across the body
 select_only([mesh], mesh)
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="DESELECT")
@@ -422,10 +422,10 @@ log("куски переставлены, выброшено граней меж
 
 bpy.data.objects.remove(qrig, do_unlink=True)
 
-# Второй проход пересборки. При выпрямлении зверя кожа между животом и лапой растягивается —
-# там, где у четвероногого был плавный переход, у стоящего получается разрыв в четверть метра.
-# Пересобираем оболочку ещё раз, уже в человеческой позе: остаётся чистая поверхность без
-# растянутых граней и самопересечений. Развёртку снова берём с предыдущего состояния.
+# Second remesh pass. When the creature is straightened, the skin between belly and leg stretches -
+# where the quadruped had a smooth transition, the standing one gets a gap of a quarter metre.
+# We remesh the shell once more, now in the human pose: what remains is a clean surface without
+# stretched faces and self-intersections. The UVs are again taken from the previous state.
 SKIP2 = False
 posed_source = mesh.copy()
 posed_source.data = mesh.data.copy()
@@ -462,7 +462,7 @@ log("поза применена, туловище: %s .. %s" % ([round(v, 2) fo
 if PREVIEW:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, PREFIX + "_posed.blend"))
 
-# ---------------------------------------------------------------- 6. веса по человеческому скелету
+# ---------------------------------------------------------------- 6. weights for the human skeleton
 wa = skel.copy()
 wa.data = skel.data.copy()
 wa.name = "weighting_rig"
@@ -501,7 +501,7 @@ def limit_weights(ob):
 limit_weights(mesh)
 log("веса пересчитаны по человеческому скелету, не больше %d костей на вершину" % MAX_INFLUENCES)
 
-# ---------------------------------------------------------------- 7. предметы
+# ---------------------------------------------------------------- 7. items
 PART_BONES = {
     "head": {BONES["head"], BONES["neck"], BONES["head_end"]},
     "gloves": {BONES["l_hand"], BONES["r_hand"], BONES["l_hand_end"], BONES["r_hand_end"]},
@@ -527,7 +527,7 @@ mesh.name = PREFIX + "_body"
 parts["body"] = mesh
 log("предмет %s: %d вершин" % (mesh.name, len(mesh.data.vertices)))
 
-# ---------------------------------------------------------------- 8. текстуры и экспорт
+# ---------------------------------------------------------------- 8. textures and export
 for img in bpy.data.images:
     if img.size[0] == 0 or img.name in images_before:
         continue
@@ -541,7 +541,7 @@ for img in bpy.data.images:
 
 for part in parts.values():
     part.parent = skel
-    part.matrix_parent_inverse = skel.matrix_world.inverted()   # иначе поворот скелета ляжет дважды
+    part.matrix_parent_inverse = skel.matrix_world.inverted()   # otherwise the skeleton rotation is applied twice
     mod = part.modifiers.new("Armature", "ARMATURE")
     mod.object = skel
 

@@ -1,5 +1,5 @@
-# Диагностика: Twilight (из eq_twilight.blend) + эталонное тело рядом/поверх, рендеры спереди и сбоку,
-# и статистика: насколько вершины пони выходят за поверхность эталона.
+# Diagnostics: Twilight (from eq_twilight.blend) + the reference body next to/over it, renders from the front and side,
+# and statistics: how far the pony's vertices stick out beyond the reference surface.
 # blender --background eq_twilight.blend --python overlay_reference.py -- <Male_BodyBase.fbx> <out_dir>
 import os
 import sys
@@ -24,7 +24,7 @@ for name, m in meshes.items():
     print(f"[ref] {name}: lo={np.round(lo, 3)} hi={np.round(hi, 3)}", flush=True)
 ref_objs = [build_object("REF_" + n, m["verts"], m["faces"], (0.2, 0.8, 0.3, 1.0)) for n, m in meshes.items()]
 
-# выход вершин пони за поверхность эталонного тела (без головы)
+# pony vertices sticking out beyond the reference body surface (without the head)
 body_ref = [m for n, m in meshes.items() if not n.startswith("head")]
 verts = np.vstack([m["verts"] for m in body_ref])
 faces, offset = [], 0
@@ -45,7 +45,7 @@ for name in ("eq_twilight_body", "eq_twilight_legs", "eq_twilight_gloves", "eq_t
     print(f"[ref] {name}: {len(outside)}/{len(ob.data.vertices)} verts outside reference body, "
           f"max {outside.max():.3f} m, 95% {np.percentile(outside, 95):.3f} m", flush=True)
 
-# рендер: пони текстурой, эталон зелёным цветом объекта
+# render: the pony with texture, the reference in the object's green color
 scene.render.engine = "BLENDER_WORKBENCH"
 scene.display.shading.light = "STUDIO"
 scene.display.shading.color_type = "OBJECT"

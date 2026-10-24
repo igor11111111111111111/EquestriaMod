@@ -1,4 +1,4 @@
-# Какие Monster и action_set определены для человека во всех модулях игры.
+# Which Monster and action_set are defined for the human in all game modules.
 import glob
 import os
 import sys

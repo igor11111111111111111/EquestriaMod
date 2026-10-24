@@ -10,34 +10,34 @@ using TaleWorlds.ModuleManager;
 
 namespace EquestriaMod
 {
-    // Своя картинка на загрузочном экране.
+    // Our own picture on the loading screen.
     //
-    // Картинки загрузки — спрайты категории: GauntletDefaultLoadingWindowManager берёт категорию и
-    // перед каждой загрузкой просит у себя же имя части (LoadImage). Дописать часть в ванильную
-    // категорию нельзя: число картинок игра берёт у ванильной категории и наша никогда не выпадает.
-    // Подменить имя категории тоже поздно: загрузочный экран создаётся раньше, чем грузится наш мод
-    // (проверено 2026-09-18: патч на GetSpriteCategoryName применяется, а картинка остаётся ванильной).
-    // Поэтому подменяем ИМЯ КАРТИНКИ в LoadImage, а свою категорию подгружаем сами.
+    // Loading pictures are sprites of a category: GauntletDefaultLoadingWindowManager takes a category and
+    // before each loading asks itself for a part name (LoadImage). Adding a part to the vanilla
+    // category is impossible: the game takes the picture count from the vanilla category and ours never comes up.
+    // Replacing the category name is too late as well: the loading screen is created before our mod loads
+    // (verified 2026-09-18: the patch on GetSpriteCategoryName is applied, but the picture stays vanilla).
+    // So we replace the PICTURE NAME in LoadImage, and load our category ourselves.
     //
-    // Второй подводный камень: листы спрайтов — это ТЕКСТУРЫ, а текстуры игра берёт только из
-    // упакованных .tpac. Наш PNG лежит россыпью, и в журнале было «Cannot find texture:
-    // ui_eq_loading_1», после чего окно загрузки откатывалось на ванильную картинку. Чтобы не гонять
-    // картинку через редактор при каждой замене, перехватываем саму загрузку текстуры и читаем PNG
-    // с диска.
+    // The second pitfall: sprite sheets are TEXTURES, and the game takes textures only from
+    // packed .tpac files. Our PNG lies loose, and the log had «Cannot find texture:
+    // ui_eq_loading_1», after which the loading window fell back to the vanilla picture. To avoid running
+    // the picture through the editor on every replacement, we intercept the texture loading itself and read the PNG
+    // from disk.
     public static class EquestriaLoadingScreen
     {
         public const string Category = "ui_eq_loading";
-        // Картинок может быть сколько угодно: каждая лежит своим листом и своей частью
-        // eq_loading_01, eq_loading_02, ... (tools/make_loading_screen.py). Список не прописан
-        // здесь, а берётся из загруженной категории — добавили картинку, перезапустили скрипт,
-        // и она сама попадёт в розыгрыш.
+        // There can be any number of pictures: each lies in its own sheet and as its own part
+        // eq_loading_01, eq_loading_02, ... (tools/make_loading_screen.py). The list is not hardcoded
+        // here but taken from the loaded category: add a picture, rerun the script,
+        // and it will enter the draw by itself.
         public const string PartPrefix = "eq_loading_";
         private const string ManagerType = "TaleWorlds.MountAndBlade.GauntletUI.GauntletDefaultLoadingWindowManager";
 
         private static bool _loaded;
         private static string[] _parts = new string[0];
         private static readonly Random _dice = new Random();
-        // Номер прошлой картинки: при двух и более подряд одна и та же не выпадает
+        // Number of the previous picture: with two or more, the same one does not come up twice in a row
         private static int _last = -1;
 
         public static void Apply(Harmony harmony)
@@ -65,19 +65,19 @@ namespace EquestriaMod
             EquestriaCrashLog.Log($"загрузочный экран: картинки мода {PartPrefix}* из категории {Category}");
         }
 
-        // Все наши категории спрайтов начинаются с ui_eq_ (загрузка, оформление народностей…) —
-        // их листы тоже лежат россыпью и читаются здесь же.
+        // All our sprite categories start with ui_eq_ (loading, culture decorations…);
+        // their sheets also lie loose and are read here too.
         public const string OurCategoryPrefix = "ui_eq_";
 
-        // Путь к листам категории: Module/GUI/SpriteSheets/<категория>/<категория>_1.png
+        // Path to the category sheets: Module/GUI/SpriteSheets/<category>/<category>_1.png
         private static string SheetFolder(string category)
         {
             return IOPath.Combine(ModuleHelper.GetModuleFullPath("EquestriaMod"), "GUI", "SpriteSheets", category);
         }
 
-        // Лист нашей категории движок не найдёт (он не в .tpac) — отдаём текстуру, прочитанную с
-        // диска. Какой именно лист нужен, движок говорит в имени: ui_eq_loading_1, _2 и так далее;
-        // категория — имя без номера.
+        // The engine will not find our category's sheet (it is not in a .tpac), so we hand over a texture read from
+        // disk. Which sheet is needed, the engine says in the name: ui_eq_loading_1, _2 and so on;
+        // the category is the name without the number.
         private static bool OurSheet(string name, ref TaleWorlds.TwoDimension.Texture __result)
         {
             if (string.IsNullOrEmpty(name))
@@ -95,7 +95,7 @@ namespace EquestriaMod
             string file = IOPath.Combine(folder, sheet + ".png");
             if (!File.Exists(file))
             {
-                // Неожиданное имя листа — отдаём первый, он есть всегда
+                // Unexpected sheet name: hand over the first one, it always exists
                 file = IOPath.Combine(folder, category + "_1.png");
             }
             Texture texture = FromFile(folder, file);
@@ -108,8 +108,8 @@ namespace EquestriaMod
             return false;
         }
 
-        // Способ загрузки PNG движком заранее не известен — пробуем по очереди и пишем в журнал,
-        // какой сработал.
+        // How the engine loads PNG is not known in advance: we try one by one and write to the log
+        // which one worked.
         private static Texture FromFile(string folder, string file)
         {
             if (!File.Exists(file))
@@ -183,8 +183,8 @@ namespace EquestriaMod
             }
         }
 
-        // Случайная картинка, но не та же, что в прошлый раз: на двух картинках повтор подряд
-        // сразу бросается в глаза.
+        // A random picture, but not the same as last time: with two pictures a repeat in a row
+        // is immediately noticeable.
         private static int Pick()
         {
             if (_parts.Length == 1)

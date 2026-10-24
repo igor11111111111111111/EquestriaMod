@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Залатать мелкие незашитые дыры у корня крыла (заглушка, что уходит внутрь тела).
+"""Patch small unstitched holes at the wing root (the plug that goes inside the body).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_patch_wing_root.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_patch_wing_root.py
 
-При последней перекройке крыла «юбка»-заглушка у корня осталась не до конца зашитой — видно
-сквозь неё в игре даже в позе покоя (замечено 27.09.2026, не связано с весами). Здесь ищем все
-мелкие незашитые контуры (не сам свободный край перепонки крыла — тот большой и его трогать
-нельзя) рядом с ключицей и зашиваем их полигонами.
+During the last re-cut of the wing, the "skirt" plug at the root was left not fully stitched; in game you can see
+through it even in the rest pose (noticed 27.09.2026, unrelated to weights). Here we look for all
+small unstitched loops (not the free edge of the wing membrane itself: that one is large and must not be
+touched) near the clavicle and stitch them with polygons.
 """
 import bmesh
 import bpy
 from mathutils import Vector
 
-MAX_EDGES = 20      # контур крупнее — уже свободный край перепонки, не трогаем
-MAX_DIST = 0.35      # дальше этого от ключицы — не корень крыла
+MAX_EDGES = 20      # a larger loop is already the free edge of the membrane, do not touch
+MAX_DIST = 0.35      # farther than this from the clavicle is not the wing root
 
 ob = bpy.data.collections["Пони - цельная"].objects["eq_pony_wings"]
 skel = bpy.data.objects["bip01_notused"]

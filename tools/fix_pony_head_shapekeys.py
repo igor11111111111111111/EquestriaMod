@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Обнуляет Value у всех шейп-ключей eq_pony_head кроме Basis — были все разом на 1.000,
-Object Mode считал Basis + сумму всех ~100 лицевых морфов и голову разносило (см.
-diag_pony_head_shapekeys.py). Сохраняет файл.
+"""Zeroes Value on all eq_pony_head shape keys except Basis: they were all at 1.000 at once,
+Object Mode computed Basis + the sum of all ~100 facial morphs and the head blew apart (see
+diag_pony_head_shapekeys.py). Saves the file.
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\fix_pony_head_shapekeys.py
 """

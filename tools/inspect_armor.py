@@ -1,8 +1,8 @@
-# Сравнение ванильных исходников брони с тем, что получилось у пони.
+# Comparing the vanilla armour sources with what the pony ended up with.
 #
-#   blender --background --factory-startup --python inspect_armor.py -- <assets\reference\vanilla_armor> <eq_pony_armor.fbx> меш1 меш2 ...
+#   blender --background --factory-startup --python inspect_armor.py -- <assets\reference\vanilla_armor> <eq_pony_armor.fbx> mesh1 mesh2 ...
 #
-# Печатает для каждого меша: сколько объектов, вершин и какие материалы в исходнике и в результате.
+# Prints for each mesh: how many objects and vertices and which materials are in the source and in the result.
 import os
 import sys
 

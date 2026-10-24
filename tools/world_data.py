@@ -1,31 +1,32 @@
-# Таблица мира: державы Equus, их кланы, лорды, семьи, отношения и поселения.
+# Table of the world: the Equus kingdoms, their clans, lords, families, relations and settlements.
 #
-# Отсюда генерируются все XML кампании (tools/make_world.py). Правим мир здесь, а не в XML —
-# иначе связи между файлами (клан -> королевство -> владения -> лорды -> семьи) разъезжаются.
+# All campaign XML is generated from here (tools/make_world.py). Edit the world here, not in the XML -
+# otherwise the links between files (clan -> kingdom -> holdings -> lords -> families) drift apart.
 #
-# Имена и правители взяты из docs/lore/equestria_at_war.md и docs/lore/mlp_lore.md.
+# Names and rulers are taken from docs/lore/equestria_at_war.md and docs/lore/mlp_lore.md.
 #
-# Культуры и королевства занимают ВАНИЛЬНЫЕ идентификаторы (empire, vlandia, ...) — так же делает
-# The Old Realms. Причина: на эти id есть жёстко прописанные ссылки в коде игры (например, список
-# из шести культур при создании персонажа). Своя культура с новым id их не заменит.
+# Cultures and kingdoms take over VANILLA ids (empire, vlandia, ...) - the same as
+# The Old Realms does. Reason: the game code has hard-coded references to these ids (for example, the list
+# of six cultures at character creation). A custom culture with a new id will not replace them.
 
-# Карта 1024x1024 м по референсу Equestria at War (tools/make_equus_map.py, tools/equus_map.py).
-# Поселения расставлены по городам EaW: у каждой державы свои страны EaW ("eaw"), столица — "capital".
+# The map is 1024x1024 m after the Equestria at War reference (tools/make_equus_map.py, tools/equus_map.py).
+# Settlements are placed at EaW cities: each kingdom has its own EaW countries ("eaw"),
+# the capital is "capital".
 MAP_SIZE = 1024.0
 
-# Какие города EaW каким поселением становятся: по «победным очкам» (victory_points) города.
-TOWN_VALUE = 15      # от 15 — город
-CASTLE_VALUE = 5     # от 5 до 15 — замок, меньше — деревня
+# Which EaW cities become which settlement: by the city's "victory points" (victory_points).
+TOWN_VALUE = 15      # from 15 - town
+CASTLE_VALUE = 5     # from 5 to 15 - castle, less - village
 
-# Пол: "f" — женский, "m" — мужской.
-# Уникальная внешность именованных героев: готовый ключ BodyProperties (снимается в редакторе
-# внешности — мод пишет его в журнал, см. EquestriaShowcase.WatchBodyProperties). В XML персонажа
-# нельзя задать тегом вариант лица (face_textures в skins.xml), а у Кризалис именно он даёт зелёные
-# глаза со щелевым зрачком («тип кожи» 4 у расы чейнджлингов).
-# Снаряжение отдельных героев поверх набора державы. У Кризалис тут был свой рог с короной
-# (eq_chrysalis_crown) — предмет от старой модели чейнджлинга. Новая модель пришла со своим рогом
-# в голове, а меша короны в пакетах нет вовсе, и ссылка на него давала «Unable to find mesh».
-# Пока корону не нарисуем заново, королева носит обычный шлем своей державы.
+# Gender: "f" - female, "m" - male.
+# Unique looks of named heroes: a ready BodyProperties key (taken in the appearance editor -
+# the mod writes it to the log, see EquestriaShowcase.WatchBodyProperties). A character's XML cannot
+# set the face variant by tag (face_textures in skins.xml), and for Chrysalis exactly that gives green
+# eyes with slit pupils ("skin type" 4 of the changeling race).
+# Per-hero equipment on top of the kingdom set. Chrysalis used to have her own horn with a crown here
+# (eq_chrysalis_crown) - an item from the old changeling model. The new model came with its own horn
+# in the head, and the packages have no crown mesh at all, so the reference gave "Unable to find mesh".
+# Until the crown is redrawn, the queen wears an ordinary helmet of her kingdom.
 HERO_GEAR = {}
 
 FACE_KEYS = {
@@ -35,9 +36,9 @@ FACE_KEYS = {
 
 
 ALL_KINGDOMS = [
-    # ---- Эквестрия, разделённая между четырьмя принцессами (как три Империи в ванили). Культура
-    # у всех одна — эквестрийская. Земли EaW-страны EQS делятся между ними по близости к "seat",
-    # столицы закреплены за своими принцессами.
+    # ---- Equestria, divided among four princesses (like the three Empires in vanilla). They all share
+    # one culture - Equestrian. The lands of the EaW country EQS are split among them by proximity to "seat",
+    # the capitals are assigned to their own princesses.
     {
         "culture": "empire",
         "ruler_title": "Принцесса",
@@ -47,20 +48,20 @@ ALL_KINGDOMS = [
         "title": "Солнечная Эквестрия",
         "color": "FFE8B53A",
         "color2": "FFFFF6E0",
-        # Знамя державы — солнце (номера значков — Native/ModuleData/banner_icons.xml)
+        # Kingdom banner - the sun (icon numbers are in Native/ModuleData/banner_icons.xml)
         "emblem": 411,
         "text": "Сердце Эквестрии под рукой принцессы Селестии, что поднимает солнце. Кантерлот, "
                 "старая знать и Королевская стража — самая древняя и гордая из четырёх Эквестрий.",
-        # Кланы. Первый герой клана — его глава (живой и взрослый).
-        #   heroes:    (id, имя, пол, возраст, описание)
-        #   dead:      герои, которых уже нет в живых (родители, предки) — нужны для родословной
-        #   marriages: (он/она, он/она)
-        #   children:  (ребёнок, отец, мать) — родители могут быть из другого клана
-        #   emblem:    значок знамени клана; color/color2 — фон и значок (ARGB)
+        # Clans. The first hero of a clan is its leader (alive and adult).
+        #   heroes:    (id, name, gender, age, description)
+        #   dead:      heroes who are no longer alive (parents, ancestors) - needed for the family tree
+        #   marriages: (he/she, he/she)
+        #   children:  (child, father, mother) - parents may be from another clan
+        #   emblem:    clan banner icon; color/color2 - background and icon (ARGB)
         "clans": [
             {
                 "id": "clan_eq_royal", "color": "FFFFF6E0", "color2": "FFE8B53A", "name": "Дом Солнца", "tier": 6, "ruling": True,
-                "emblem": 411,  # солнце
+                "emblem": 411,  # sun
                 "heroes": [
                     ("celestia", "Селестия", "f", 60, "Старшая сестра, поднимающая солнце. Правит Эквестрией тысячу лет."),
                     ("blueblood", "Принц Блюблад", "m", 30, "Дальний родственник принцесс, кантерлотский сноб."),
@@ -68,7 +69,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_wonderbolt", "color": "FF1F4E9A", "color2": "FFF4D03F", "name": "Вандерболты", "tier": 5,
-                "emblem": 115,  # летящая птица
+                "emblem": 115,  # flying bird
                 "heroes": [
                     ("spitfire", "Спитфайр", "f", 32, "Командир Вандерболтов, лучшая лётчица Эквестрии."),
                     ("soarin", "Сорин", "m", 31, "Ведомый Спитфайр."),
@@ -79,7 +80,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_pants", "color": "FF2C3E50", "color2": "FFD4AF37", "name": "Дом Фэнси Пэнтс", "tier": 4,
-                "emblem": 340,  # корона — кантерлотская знать
+                "emblem": 340,  # crown - Canterlot nobility
                 "heroes": [
                     ("fancy_pants", "Фэнси Пэнтс", "m", 40, "Кантерлотский аристократ, законодатель мод высшего света."),
                     ("fleur", "Флёр де Лис", "f", 34, "Модель, спутница Фэнси Пэнтса."),
@@ -88,7 +89,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_guard", "color": "FF2E4053", "color2": "FFE8B53A", "name": "Королевская стража", "tier": 4,
-                "emblem": 316,  # щит
+                "emblem": 316,  # shield
                 "heroes": [
                     ("flash_sentry", "Флэш Сентри", "m", 24, "Капитан дворцовой стражи Кантерлота."),
                     ("gleaming_shield", "Глиминг Шилд", "f", 30, "Офицер стражи, давняя сослуживица Шайнинг Армора."),
@@ -97,7 +98,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_rich", "color": "FF6D4C41", "color2": "FFE5C07B", "name": "Дом Рич", "tier": 3,
-                "emblem": 335,  # подкова
+                "emblem": 335,  # horseshoe
                 "heroes": [
                     ("filthy_rich", "Филти Рич", "m", 46, "Богатейший торговец Понивилля, владелец «Барнис энд Кобл»."),
                     ("spoiled_rich", "Спойлд Рич", "f", 42, "Жена Филти Рича, заносчивая и властная."),
@@ -108,10 +109,10 @@ ALL_KINGDOMS = [
                 "children": [("diamond_tiara", "filthy_rich", "spoiled_rich")],
             },
         ],
-        # Дружба и вражда: (герой, герой, отношение от -100 до 100). Отношения задаются для всего
-        # мира, неважно, в какой державе записаны.
+        # Friendship and enmity: (hero, hero, relation from -100 to 100). Relations apply to the whole
+        # world, no matter in which kingdom they are written.
         "relations": [
-            # Селестия и её семья, ученицы
+            # Celestia and her family, students
             ("celestia", "luna", 90),
             ("celestia", "twilight", 95),
             ("celestia", "cadance", 80),
@@ -125,7 +126,7 @@ ALL_KINGDOMS = [
             ("twilight", "shining_armor", 95),
             ("twilight", "cadance", 90),
             ("twilight", "spike", 100),
-            # Шестёрка элементов гармонии
+            # The Mane Six, Elements of Harmony
             ("twilight", "applejack", 90), ("twilight", "rainbow_dash", 85), ("twilight", "rarity", 90),
             ("twilight", "pinkie", 90), ("twilight", "fluttershy", 90),
             ("applejack", "rainbow_dash", 80), ("applejack", "rarity", 75), ("applejack", "pinkie", 85),
@@ -133,25 +134,25 @@ ALL_KINGDOMS = [
             ("rainbow_dash", "fluttershy", 90), ("rarity", "pinkie", 80), ("rarity", "fluttershy", 90),
             ("pinkie", "fluttershy", 85),
             ("rarity", "spike", 70),
-            # Меткоискатели
+            # Cutie Mark Crusaders
             ("apple_bloom", "sweetie_belle", 95), ("apple_bloom", "scootaloo", 95),
             ("sweetie_belle", "scootaloo", 95), ("rainbow_dash", "scootaloo", 90),
             ("diamond_tiara", "apple_bloom", -40), ("diamond_tiara", "sweetie_belle", -40),
             ("diamond_tiara", "scootaloo", -40), ("diamond_tiara", "silver_spoon", 70),
-            # Вандерболты
+            # Wonderbolts
             ("spitfire", "rainbow_dash", 70), ("spitfire", "soarin", 80), ("spitfire", "fleetfoot", 60),
             ("spitfire", "lightning_dust", -50), ("rainbow_dash", "lightning_dust", -60),
-            # Знать
+            # Nobility
             ("rarity", "fancy_pants", 60), ("rarity", "blueblood", -50), ("fancy_pants", "blueblood", -10),
             ("spoiled_rich", "applejack", -30), ("filthy_rich", "applejack", 20),
             ("granny_smith", "grand_pear", -30),
-            # Семьи и стража
+            # Families and guards
             ("pinkie", "maud", 95), ("maud", "limestone", 50), ("limestone", "pinkie", 30),
             ("fluttershy", "zephyr", 20), ("big_mac", "applejack", 90),
             ("shining_armor", "flash_sentry", 60), ("shining_armor", "gleaming_shield", 70),
             ("celestia", "flash_sentry", 40), ("luna", "flash_sentry", 30),
             ("rainbow_dash", "thunderlane", 30),
-            # сёстры и принцессы
+            # sisters and princesses
             ("luna", "starswirl", 60), ("luna", "somnambula", 50), ("cadance", "radiant_hope", 70),
             ("cadance", "sunburst", 75), ("sunburst", "stellar_flare", 60), ("luna", "nightshade", 80),
             ("stygian", "starswirl", -20), ("sombra", "cadance", -90), ("sombra", "shining_armor", -80),
@@ -232,7 +233,7 @@ ALL_KINGDOMS = [
         "clans": [
             {
                 "id": "clan_eq_sparkle", "color": "FF6B3FA0", "color2": "FFF26BB5", "name": "Дом Спаркл", "tier": 6, "ruling": True,
-                "emblem": 518,  # шестилучевая звезда — метка Твайлайт
+                "emblem": 518,  # six-pointed star - Twilight's cutie mark
                 "heroes": [
                     ("twilight", "Твайлайт Спаркл", "f", 26, "Принцесса дружбы, ученица Селестии и сильнейшая волшебница поколения."),
                     ("night_light", "Найт Лайт", "m", 56, "Отец Твайлайт и Шайнинг Армора, кантерлотский астроном."),
@@ -244,7 +245,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_apple", "color": "FFE0862F", "color2": "FFC0392B", "name": "Семья Эппл", "tier": 4,
-                "emblem": 211,  # яблоко
+                "emblem": 211,  # apple
                 "heroes": [
                     ("applejack", "Эпплджек", "f", 24, "Хозяйка Сладкого Яблока, честнейшая пони Эквестрии."),
                     ("big_mac", "Биг Макинтош", "m", 28, "Старший брат Эпплджек, тягловая сила фермы."),
@@ -268,7 +269,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_dash", "color": "FF7EC8F0", "color2": "FFE74C3C", "name": "Дом Дэш", "tier": 3,
-                "emblem": 524,  # молния — метка Рэйнбоу Дэш
+                "emblem": 524,  # lightning bolt - Rainbow Dash's cutie mark
                 "heroes": [
                     ("rainbow_dash", "Рэйнбоу Дэш", "f", 24, "Быстрейшая пегаска Эквестрии, воплощение верности."),
                     ("bow_hothoof", "Боу Хотхуф", "m", 50, "Отец Рэйнбоу Дэш, её самый громкий болельщик."),
@@ -280,7 +281,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_belle", "color": "FFF5F5F5", "color2": "FF3E6FD8", "name": "Дом Белль", "tier": 3,
-                "emblem": 512,  # ромб — метка Рарити
+                "emblem": 512,  # diamond - Rarity's cutie mark
                 "heroes": [
                     ("rarity", "Рарити", "f", 25, "Модельер из Понивилля, воплощение щедрости."),
                     ("sweetie_belle", "Свити Белль", "f", 13, "Младшая сестра Рарити, Меткоискательница."),
@@ -295,7 +296,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_pie", "color": "FFF48FB1", "color2": "FF4FC3F7", "name": "Семья Пай", "tier": 3,
-                "emblem": 516,  # звезда
+                "emblem": 516,  # star
                 "heroes": [
                     ("pinkie", "Пинки Пай", "f", 25, "Устроительница праздников, воплощение смеха."),
                     ("maud", "Мод Пай", "f", 27, "Старшая сестра Пинки, знаток камней."),
@@ -314,7 +315,7 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_shy", "color": "FFFBEA8C", "color2": "FFF28DB2", "name": "Дом Шай", "tier": 3,
-                "emblem": 157,  # лебедь
+                "emblem": 157,  # swan
                 "heroes": [
                     ("fluttershy", "Флаттершай", "f", 25, "Смотрительница зверей, воплощение доброты."),
                     ("zephyr", "Зефир Бриз", "m", 23, "Младший брат Флаттершай, вечный бездельник."),
@@ -329,14 +330,14 @@ ALL_KINGDOMS = [
             },
             {
                 "id": "clan_eq_glimmer", "color": "FF8E6BBF", "color2": "FF3AB0C8", "name": "Школа Дружбы", "tier": 3,
-                "emblem": 517,  # пентаграмма — магия
+                "emblem": 517,  # pentagram - magic
                 "heroes": [
                     ("starlight", "Старлайт Глиммер", "f", 26, "Бывшая предводительница «равных», ученица Твайлайт."),
                     ("trixie", "Трикси Луламун", "f", 25, "Великая и могущественная фокусница, подруга Старлайт."),
                 ],
             },
         ],
-        # STG делит с Кристальной Империей: его южная часть граничит с восточным побережьем
+        # STG is shared with the Crystal Empire: its southern part borders the east coast
         "eaw": ["EQS"],
         "capital": "Понивилль",
         "power": 1.02,
@@ -357,7 +358,7 @@ ALL_KINGDOMS = [
         "clans": [
             {
                 "id": "clan_eq_amore", "color": "FFF5A9C8", "color2": "FF7E4FB3", "name": "Дом Ми Аморе", "tier": 6, "ruling": True,
-                "emblem": 514,  # сердце — метка Кейденс
+                "emblem": 514,  # heart - Cadance's cutie mark
                 "heroes": [
                     ("cadance", "Кейденс", "f", 30, "Принцесса любви, правительница Кристальной Империи."),
                     ("shining_armor", "Шайнинг Армор", "m", 31, "Бывший капитан Королевской стражи, брат Твайлайт и супруг Кейденс."),
@@ -397,8 +398,8 @@ ALL_KINGDOMS = [
                 ],
             },
         ],
-        # CRY — сама Кристальная Империя, STG — фанатский Сталлионград EaW, в каноне его нет:
-        # эти северные земли отданы Империи (названия городов — в RENAMES)
+        # CRY is the Crystal Empire itself, STG is the fan-made Stalliongrad of EaW, absent in canon:
+        # these northern lands are given to the Empire (city names are in RENAMES)
         "eaw": ["CRY", "STG"],
         "capital": "Кристальный Город",
         "power": 0.98,
@@ -468,7 +469,7 @@ ALL_KINGDOMS = [
             ("gilda", "gabby", 30), ("grampa_gruff", "gilda", 40), ("gilda", "rainbow_dash", 40),
             ("gabby", "spike", 40),
         ],
-        # GRF, GFF, PNG — фанатские грифоны и пингвины EaW; в каноне здесь королевство Грифонстоун
+        # GRF, GFF, PNG - fan-made griffons and penguins of EaW; in canon this is the Griffonstone kingdom
         "eaw": ["GRF", "GFF", "PNG"],
         "capital": "Уэтер",
         "power": 1.02,
@@ -524,15 +525,15 @@ ALL_KINGDOMS = [
             ("queen_novo", "skystar", 90), ("silverstream", "terramar", 95), ("queen_novo", "seaspray", 70),
             ("silverstream", "yona", 80), ("silverstream", "smolder", 75), ("celestia", "queen_novo", 40),
         ],
-        # OLE — фанатская Оления EaW (олени), в каноне её нет: побережье делят гиппогрифы и олени
+        # OLE - the fan-made Olenia of EaW (deer), absent in canon: hippogriffs and deer share the coast
         "eaw": ["OLE"],
         "capital": "Хьёртланд",
         "power": 0.88,
         "anchors": ["Хьёртланд", "Цервус", "Сакара", "Эндрект", "Вейверфронт"],
     },
-    # Оления (EaW, держава OLE): северные оленьи леса. Раньше здесь стояли цилини на мешах пони —
-    # проверочная раса без своей модели. Олени у нас теперь свои (tools/make_deer_model.py),
-    # поэтому держава переехала к ним целиком, вместе с кланами и лордами (решено 24.09.2026).
+    # Olenia (EaW, kingdom OLE): northern deer forests. Previously qilins on pony meshes stood here -
+    # a test race without its own model. We now have our own deer (tools/make_deer_model.py),
+    # so the kingdom moved to them entirely, together with clans and lords (decided 24.09.2026).
     {
         "culture": "nord",
         "kingdom": "kingdom_olenia",
@@ -624,7 +625,7 @@ ALL_KINGDOMS = [
             ("ember", "torch", 70), ("ember", "spike", 90), ("garble", "smolder", 30),
             ("garble", "ember", -20), ("sludge", "spike", -40),
         ],
-        # DRG — Драконьи Земли EaW (одна гора); к ним добавлены юго-восточные джунгли Эквестрии
+        # DRG - the Dragon Lands of EaW (a single mountain); the south-eastern jungles of Equestria are added
         "eaw": ["DRG", "EQS"],
         "capital": "Теночтитлан",
         "power": 0.90,
@@ -666,7 +667,7 @@ ALL_KINGDOMS = [
                 ],
             },
         ],
-        # PLB — фанатская Полярия EaW (медведи), в каноне её нет: ледяной север отдан якам
+        # PLB - the fan-made Polaria of EaW (bears), absent in canon: the icy north is given to the yaks
         "eaw": ["YAK", "JAK", "PLB"],
         "capital": "Яктаун",
         "power": 0.96,
@@ -679,9 +680,9 @@ ALL_KINGDOMS = [
         "short": "Ульи",
         "title": "Улей чейнджлингов",
         "ruler_title": "Королева",
-        # Хитин улья: первый цвет — почти чёрный с зеленцой, второй — бирюза гривы Кризалис.
-        # Движок красит ими те места брони, которые помечены в маске _c (у асерайской брони это
-        # ткань и канты), поэтому от этих двух чисел зависит весь облик роя.
+        # Hive chitin: the first colour is almost black with a green tint, the second is the teal of Chrysalis's mane.
+        # The engine tints with them the armour areas marked in the _c mask (on Aserai armour these are
+        # cloth and trims), so the whole look of the swarm depends on these two numbers.
         "color": "FF101A16",
         "color2": "FF1FA9A0",
         "text": "Бесплодные земли на юго-востоке, изрытые ульями оборотней. Питаются чужой "
@@ -717,13 +718,13 @@ ALL_KINGDOMS = [
 ]
 
 
-# Сколько поселений полагается «средней» державе (сила 1.0). Сильные получают больше, слабые
-# меньше — пропорционально "power". В ванильной кампании у державы 5–8 городов, 8–9 замков
-# и 31–40 деревень; всего по карте выходит ~400 поселений, примерно по одному на 900 м² суши.
+# How many settlements an "average" kingdom (power 1.0) gets. Strong ones get more, weak ones
+# fewer - in proportion to "power". In the vanilla campaign a kingdom has 5–8 towns, 8–9 castles
+# and 31–40 villages; the whole map comes to ~400 settlements, roughly one per 900 m² of land.
 SETTLEMENT_BASE = {"town": 6.0, "castle": 7.0, "village": 28.0}
 
-# Названия для городов и замков, которые пришлось придумать: в землях, где у Equestria at War
-# городов не было (север яков, скалы грифонов, ульи), а поселения нужны, чтобы не было пустот.
+# Names for towns and castles we had to invent: in lands where Equestria at War had
+# no cities (the yak north, the griffon cliffs, the hives), yet settlements are needed to avoid empty areas.
 FORT_NAMES = {
     "empire": ["Сиэддл", "Уиннияполис", "Полые Тени", "Ниагра Фоллс", "Сильвер Шоалс",
                "Винсом Фоллс", "Сомнамбула", "Кантерхорн", "Сэддл Лейк", "Мэйнфорд", "Солнцепад"],
@@ -743,33 +744,33 @@ FORT_NAMES = {
 }
 
 
-# Канонные города MLP, которым карта Equestria at War дала маленький вес: в моде они должны быть
-# городами или хотя бы крепостями, а не деревнями. Ключ — название города на карте EaW.
+# Canon MLP cities that the Equestria at War map gave a low weight: in the mod they must be
+# towns or at least strongholds, not villages. The key is the city name on the EaW map.
 CITY_VALUE = {
-    "Клаудсдейл": 35.0,       # город пегасов, где делают погоду
-    "Эпплуза": 18.0,          # яблочный городок на юге
+    "Клаудсдейл": 35.0,       # the pegasus city where the weather is made
+    "Эпплуза": 18.0,          # apple town in the south
     "Додж-Сити": 18.0,
-    "Наш Городок": 18.0,      # деревня «равных» Старлайт
-    "Цервус": 30.0,           # Сиквестрия, подводный город
-    "Сольгуд": 18.0,          # Пики Опасности, оленья крепость
-    "Сайхан Толгод": 18.0,    # старая ставка горных яков
-    "Махарь-Фьяранн": 18.0,   # Ледяной Порт
+    "Наш Городок": 18.0,      # Starlight's village of "equals"
+    "Цервус": 30.0,           # Seaquestria, the underwater city
+    "Сольгуд": 18.0,          # the Peaks of Peril, a deer stronghold
+    "Сайхан Толгод": 18.0,    # the old seat of the mountain yaks
+    "Махарь-Фьяранн": 18.0,   # the Ice Port
 }
 
 
-# Города, которые мы переставили руками. На карте Equestria at War Кантерлот, Понивилль и
-# Клаудсдейл стоят в одной кучке (все три в 25 м друг от друга), и на карте мира это выглядит
-# тесно. Кантерлот переехал западнее — в проход между двумя горными хребтами (как ему и положено
-# по лору, город в горах), а Понивилль с Клаудсдейлом — юго-западнее, в открытую степь, где
-# места было в избытке. Ключ — название города на карте EaW, значение — новые координаты.
+# Cities we moved by hand. On the Equestria at War map Canterlot, Ponyville and
+# Cloudsdale stand in one cluster (all three within 25 m of each other), and on the world map this looks
+# cramped. Canterlot moved west - into the pass between two mountain ranges (as it should be
+# by the lore, a city in the mountains), and Ponyville with Cloudsdale south-west, into the open steppe, where
+# there was room to spare. The key is the city name on the EaW map, the value is the new coordinates.
 CITY_MOVE = {
-    "Кантерлот": (552.0, 512.0),     # проход между двумя хребтами
-    "Понивилль": (530.0, 446.0),     # южнее реки, посреди свободной степи
-    "Клаудсдейл": (570.0, 470.0),    # у самой реки, она проходит слева от города
+    "Кантерлот": (552.0, 512.0),     # the pass between two ranges
+    "Понивилль": (530.0, 446.0),     # south of the river, in the middle of the free steppe
+    "Клаудсдейл": (570.0, 470.0),    # right by the river, it runs to the left of the city
 }
 
-# Какие державы есть в мире. Остальные описаны выше, но в игру не попадают:
-# ни их кланы, ни лорды, ни поселения. Вернуть — дописать id сюда.
+# Which kingdoms exist in the world. The others are described above but do not get into the game:
+# neither their clans, nor lords, nor settlements. To bring one back, add its id here.
 ACTIVE_KINGDOMS = [
     "kingdom_equestria",
     "kingdom_lunar",
@@ -783,42 +784,42 @@ ACTIVE_KINGDOMS = [
     "kingdom_dragons",
 ]
 
-# Дипломатия на старте кампании — иначе все державы начинают в мире со всеми (пишется в
-# equestria_diplomacy.xml, применяет src/EquestriaDiplomacy.cs при создании новой кампании).
-#   ("war", a, b)            — война
-#   ("alliance", a, b)       — союз
-#   ("trade", a, b)          — торговое соглашение (на год)
-#   ("tribute", a, b, золото) — перемирие: a платит b столько золота в день (100 дней)
+# Diplomacy at campaign start - otherwise all kingdoms start at peace with everyone (written to
+# equestria_diplomacy.xml, applied by src/EquestriaDiplomacy.cs when a new campaign is created).
+#   ("war", a, b)            - war
+#   ("alliance", a, b)       - alliance
+#   ("trade", a, b)          - trade agreement (for a year)
+#   ("tribute", a, b, gold) - truce: a pays b that much gold per day (100 days)
 DIPLOMACY = [
-    # войны: чейнджлинги против обеих Эквестрий (вторжение Кризалис), драконы грабят грифонов,
-    # яки спорят с Кристальной Империей за северные перевалы
+    # wars: changelings against both Equestrias (Chrysalis's invasion), dragons raid the griffons,
+    # yaks argue with the Crystal Empire over the northern passes
     ("war", "kingdom_changeling", "kingdom_friendship"),
     ("war", "kingdom_changeling", "kingdom_equestria"),
     ("war", "kingdom_dragons", "kingdom_griffonia"),
     ("war", "kingdom_yakyakistan", "kingdom_crystal"),
-    # союзы: Селестия с Твайлайт и Кейденс, Твайлайт с гиппогрифами после Короля Шторма
+    # alliances: Celestia with Twilight and Cadance, Twilight with the hippogriffs after the Storm King
     ("alliance", "kingdom_equestria", "kingdom_friendship"),
     ("alliance", "kingdom_equestria", "kingdom_crystal"),
     ("alliance", "kingdom_friendship", "kingdom_hippogriffia"),
-    # торговля
+    # trade
     ("trade", "kingdom_equestria", "kingdom_griffonia"),
     ("trade", "kingdom_friendship", "kingdom_yakyakistan"),
     ("trade", "kingdom_lunar", "kingdom_olenia"),
     ("trade", "kingdom_crystal", "kingdom_griffonia"),
     ("trade", "kingdom_lunar", "kingdom_hippogriffia"),
-    # перемирия с данью: олени откупаются от драконов, ульи — от Луны, грифоны платят якам
+    # truces with tribute: the deer buy off the dragons, the hives buy off Luna, the griffons pay the yaks
     ("tribute", "kingdom_olenia", "kingdom_dragons", 150),
     ("tribute", "kingdom_changeling", "kingdom_lunar", 200),
     ("tribute", "kingdom_griffonia", "kingdom_yakyakistan", 100),
 ]
 
-# Земли EaW без своей державы (фанатские или слишком мелкие): их города достаются державе,
-# чьё поселение ближе всего. Их народы стали кланами наёмников (MINOR_CLANS).
+# EaW lands without a kingdom of their own (fan-made or too small): their cities go to the kingdom
+# whose settlement is nearest. Their peoples became mercenary clans (MINOR_CLANS).
 ORPHAN_EAW = ["BUF", "STL"]
 
-# Канонические или подходящие по духу названия вместо фанатских названий EaW.
+# Canon or fitting-in-spirit names instead of the fan-made EaW names.
 RENAMES = {
-    # Гиппогриффия (бывшая Оления)
+    # Hippogriffia (former Olenia)
     "Хьёртланд": "Гора Арис",
     "Цервус": "Сиквестрия",
     "Сакара": "Жемчужная Бухта",
@@ -827,13 +828,13 @@ RENAMES = {
     "Свенхольм": "Перьевой Утёс",
     "Голденшор": "Золотой Берег",
     "Яльгстад": "Ракушечный Причал",
-    # Оления
+    # Olenia
     "Хирвикаупунки": "Оленья Роща",
     "Сиддл": "Тихий Ручей",
     "Сольгуд": "Пики Опасности",
     "Вихерлааксо": "Долина Безмолвия",
     "Талвиваара": "Огненный Перевал",
-    # Кристальная Империя (бывший Сталлионград)
+    # Crystal Empire (former Stalliongrad)
     "Сталлионград": "Кристальный Пик",
     "Петерсхуф": "Северная Гавань",
     "Карамель Маркс": "Сапфировый Брод",
@@ -849,31 +850,31 @@ RENAMES = {
     "Черриабинск": "Вишнёвый Хутор",
     "Копытобойск": "Подкова Севера",
     "Лошадск": "Санный Путь",
-    # Драконьи Земли
+    # Dragon Lands
     "Теночтитлан": "Логово Лорда Драконов",
     "Гора": "Вулкан Состязания",
-    # Грифонстоун
+    # Griffonstone
     "Уэтер": "Грифонстоун",
-    # Якьякистан (бывшая Полярия)
+    # Yakyakistan (former Polaria)
     "Махарь-Фьяранн": "Ледяной Порт",
     "Гейрфугльвидда": "Гнездо Буревестника",
 }
 KINGDOMS = [k for k in ALL_KINGDOMS if k["kingdom"] in ACTIVE_KINGDOMS]
 
-# Имена жителей. Игра берёт их из списков культуры для ВСЕХ: горожан, крестьян, знати, детей,
-# спутников в тавернах. Пока списки ванильные, мир населён кальрадийцами с греческими именами.
+# Inhabitant names. The game takes them from the culture lists for EVERYONE: townsfolk, peasants, nobles,
+# children, tavern companions. While the lists are vanilla, the world is populated by Calradians with Greek names.
 #
-# Два вида списков:
-#   ("составное", [первые части], [вторые части]) — как настоящие имена пони: Санни Дэш, Стар Харт.
-#   ("простое", [имена])                          — там, где составные не к месту.
+# Two kinds of lists:
+#   ("compound", [first parts], [second parts]) - like real pony names: Sunny Dash, Star Heart.
+#   ("simple", [names])                          - where compound ones do not fit.
 NAMES = {
     "empire": {
         "m": ("составное",
               ["Санни", "Мун", "Стар", "Эппл", "Клауд", "Свифт", "Голден", "Брайт", "Сильвер", "Дасти",
-               "Коппер", "Айрон", "Ноубл", "Стил"],   # запас для дописанных кланов (tools/world_fill.py)
+               "Коппер", "Айрон", "Ноубл", "Стил"],   # reserve for added clans (tools/world_fill.py)
               ["Дэш", "Харт", "Мейн", "Лайт", "Сонг", "Хуф", "Брэйв", "Филд",
                "Винд", "Стоун", "Флейм", "Скай", "Ридж", "Гроув"],
-              # лорные имена второго плана — целиком, сверх составных
+              # second-tier lore names - whole, on top of the compound ones
               ["Кэррамел", "Дэвенпорт", "Лаки Кловер", "Ноутворти", "Мистер Кейк", "Хойти Тойти",
                "Джет Сет", "Бёрнт Оук", "Голден Харвест", "Шайнинг Стар", "Комет Тейл",
                "Стар Хантер", "Мидлайт", "Найт Глайдер", "Дабл Даймонд", "Парти Фейвор",
@@ -881,10 +882,10 @@ NAMES = {
                "Трендерхуф", "Тандер Клэп", "Рамбл", "Снипс", "Снейлс", "Файрболл", "Флим", "Флэм"]),
         "f": ("составное",
               ["Санни", "Мун", "Стар", "Эппл", "Хани", "Роуз", "Свит", "Лили", "Мисти", "Пинки",
-               "Лавендер", "Черри", "Дейзи", "Виолет"],   # запас для дописанных кланов
+               "Лавендер", "Черри", "Дейзи", "Виолет"],   # reserve for added clans
               ["Спаркл", "Блум", "Харт", "Свирл", "Дэш", "Белль", "Сонг", "Шайн",
                "Лиф", "Мист", "Глоу", "Флауэр", "Дью", "Винд"],
-              # лорные имена второго плана — целиком, сверх составных
+              # second-tier lore names - whole, on top of the compound ones
               ["Роузлак", "Лили Вэлли", "Берри Панч", "Миссис Кейк", "Эмбер Уэйвс", "Мэйн Гудолл",
                "Сапфир Шорс", "Колоратура", "Уайт Лайтнинг", "Клауд Кикер", "Блоссомфорт",
                "Флиттер", "Клаудчейзер", "Медли", "Черри Берри", "Голди Делишес",
@@ -892,7 +893,7 @@ NAMES = {
                "Бланкет", "Дитзи Ду", "Твист", "Даймонд Минт", "Лотус Блоссом", "Алоэ",
                "Сирена", "Тандер Флэш", "Мэй", "Рэйндропс", "Лайтнинг Болт", "Сасси Свит"]),
     },
-    # Грифоны: имена на «Г» и германский лад, как у Гильды, Гровера и Гюстава
+    # Griffons: names starting with "G" in a Germanic style, like Gilda, Grover and Gustave
     "vlandia": {
         "m": ("составное",
               ["Гровер", "Гюнтер", "Грифф", "Генрих", "Вильгельм", "Эрвин", "Гюстав", "Готфрид"],
@@ -901,7 +902,7 @@ NAMES = {
               ["Гильда", "Эрика", "Улла", "Грета", "Хельга", "Ильза", "Марта", "Лизель"],
               ["Роузталон", "Уайтфезер", "Сильвервинг", "Голдкрест", "Редтейл", "Брайтвинг", "Сноуфезер", "Эшклоу"]),
     },
-    # Гиппогрифы и морские пони: «морские» и «небесные» имена, как у Скайстар и Сильверстрим
+    # Hippogriffs and sea ponies: "sea" and "sky" names, like Skystar and Silverstream
     "battania": {
         "m": ("составное",
               ["Скай", "Оушен", "Тайд", "Корал", "Си", "Шторм", "Вейв", "Перл"],
@@ -910,12 +911,12 @@ NAMES = {
               ["Скай", "Оушен", "Сильвер", "Корал", "Перл", "Си", "Мист", "Шелл"],
               ["Стар", "Стрим", "Флоу", "Блум", "Вейв", "Фезер", "Глоу", "Лайт"]),
     },
-    # Драконы: короткие «огненные» имена, как у Эмбер, Гарбла и Смолдер
+    # Dragons: short "fiery" names, like Ember, Garble and Smolder
     "sturgia": {
         "m": ("простое",
               ["Торч", "Гарбл", "Кламп", "Фьюм", "Сладж", "Скорч", "Клинкер", "Флинт",
                "Бласт", "Гриммер", "Сажень", "Рокот", "Уголь", "Шлак", "Зольник", "Жар",
-               # запас для дописанных кланов (tools/world_fill.py)
+               # reserve for added clans (tools/world_fill.py)
                "Бэйзальт", "Игнис", "Крэг", "Молтен", "Обсидиан", "Пирит", "Смог", "Тиндер",
                "Фёрнас", "Чар", "Шейл", "Эмбер-Кло", "Брэйзер", "Кальдер", "Слэг", "Фьюри"]),
         "f": ("простое",
@@ -924,8 +925,8 @@ NAMES = {
                "Ашера", "Бласта", "Глоуин", "Дрейка", "Кальдера", "Кармина", "Пирра", "Сцинтилла",
                "Тефра", "Файра", "Хэйз", "Эмберли", "Ардора", "Вулкана", "Игнита", "Скарлет"]),
     },
-    # Олени: северные имена с родовым прозвищем, как у Йохана Йельцека и Бенджена Кудлинена.
-    # Второй список — фамилии: из них же берутся названия дописанных домов (CLAN_STYLE).
+    # Deer: northern names with a family nickname, like Johan Jeltsek and Benjen Kudlinen.
+    # The second list is surnames: the names of added houses (CLAN_STYLE) are taken from it too.
     "nord": {
         "m": ("составное",
               ["Йохан", "Бенджен", "Хьялмар", "Эйнар", "Торвин", "Свейн", "Ярве", "Алмо",
@@ -942,7 +943,7 @@ NAMES = {
         "m": ("простое",
               ["Йорд", "Гурт", "Торвальд", "Бьёрн", "Хрольф", "Свен", "Рагнар", "Магнус",
                "Одд", "Хакон", "Эйнар", "Гримм", "Снорри", "Ульф", "Хродгар", "Барди",
-               # запас для дописанных кланов (tools/world_fill.py)
+               # reserve for added clans (tools/world_fill.py)
                "Арвид", "Балдур", "Вигго", "Гуннар", "Дагфинн", "Ивар", "Кетиль", "Лейф",
                "Орм", "Ролло", "Сигурд", "Стейн", "Тормод", "Хальвар", "Эгиль", "Ярл"]),
         "f": ("простое",
@@ -955,7 +956,7 @@ NAMES = {
         "m": ("простое",
               ["Криксус", "Зуммер", "Хитин", "Вракс", "Сорит", "Ликтид", "Мимик", "Скарабей",
                "Дрон", "Пантер", "Молт", "Кокон", "Жужжа", "Стрёкот", "Прорезь", "Шелест",
-               # запас для дописанных кланов (tools/world_fill.py)
+               # reserve for added clans (tools/world_fill.py)
                "Апис", "Бомбус", "Веспа", "Глосс", "Карапакс", "Ларвус", "Мандибул", "Нектарис",
                "Оцеллус", "Прокрис", "Спиракл", "Тарсус", "Феромон", "Хиазм", "Цикад", "Элитрон"]),
         "f": ("простое",
@@ -966,12 +967,12 @@ NAMES = {
     },
 }
 
-# Спутники в тавернах. Игра сама расселяет их по городам; мы задаём прозвища, а имя она подставит
-# из списков культуры выше. Ванильные шаблоны (spc_wanderer_<культура>_<номер>) перекрываются по id.
-# Канонные спутники: персонажи MLP, которых нет среди лордов. Игра делает из шаблона спутника
-# героя с этим именем (без {FIRSTNAME} — имя фиксированное) и сажает в таверну города своей
-# культуры. Шаблон — копия ванильного spc_wanderer_<культура>_N (навыки, снаряжение, черты).
-#   (id, имя, пол, возраст)
+# Tavern companions. The game distributes them across towns itself; we set nicknames, and it fills in the name
+# from the culture lists above. Vanilla templates (spc_wanderer_<culture>_<number>) are overridden by id.
+# Canon companions: MLP characters who are not among the lords. From a companion template the game makes
+# a hero with this name (without {FIRSTNAME} - the name is fixed) and puts them in a tavern of a town of their
+# culture. The template is a copy of the vanilla spc_wanderer_<culture>_N (skills, equipment, traits).
+#   (id, name, gender, age)
 CANON_COMPANIONS = {
     "empire": [
         ("lyra", "Лира Хартстрингс", "f", 24), ("bon_bon", "Бон Бон", "f", 24),
@@ -1018,13 +1019,13 @@ COMPANION_TITLES = {
                "Копательница", "Страж Кокона"],
 }
 
-# Мелкие фракции — разбойники и наёмники. Мы их не удаляем: на них завязаны логова, отряды
-# бандитов и наём в тавернах. Но имена и описания у них кальрадийские, поэтому перекрываем по id:
-# (имя, описание для энциклопедии, тот же текст по-английски).
-# Многое ложится на лор прямо: лесные разбойники — тимбервульфы, горные — алмазные псы,
-# морские налётчики — воинство Короля Шторма, степные — бизоньи набеги.
+# Minor factions - bandits and mercenaries. We do not delete them: hideouts, bandit parties
+# and tavern hiring depend on them. But their names and descriptions are Calradian, so we override by id:
+# (name, encyclopedia description, the same text in English).
+# Much of it maps onto the lore directly: forest bandits are timberwolves, mountain ones are diamond dogs,
+# sea raiders are the Storm King's army, steppe ones are buffalo raids.
 MINOR_CLANS = {
-    # разбойники
+    # bandits
     "looters": (
         "Мародёры",
         "Сброд, что идёт следом за любой войной: разорённые торговцы, беглые батраки и просто "
@@ -1067,9 +1068,9 @@ MINOR_CLANS = {
         "разъезда и растворяются в траве раньше, чем подойдёт помощь.",
         "Mounted gangs of the plains who live by raiding herds and wagon trains. They know the "
         "steppe better than any patrol and melt into the grass before help arrives."),
-    # наёмники и изгои: имя и описание подобраны под РАСУ, которая у клана на деле — её задают
-    # ванильные шаблоны героев (spspecialcharacters.xml), а не культура самого клана. Иначе в
-    # энциклопедии выходит разнобой: «Зебры Зебрики», где всех зовут Кокон и Бомбус.
+    # mercenaries and outcasts: the name and description are chosen for the RACE the clan actually has - it is
+    # set by the vanilla hero templates (spspecialcharacters.xml), not by the clan's own culture. Otherwise the
+    # encyclopedia gets a mismatch: "Zebras of Zebrica", where everyone is called Kokon and Bombus.
     "jawwal": (
         "Верные Хризалиде",
         "Чейнджлинги, не принявшие мира между ульями и не простившие королеве поражения — но и "
@@ -1167,9 +1168,9 @@ MINOR_CLANS = {
         "keen wish to show off."),
 }
 
-# Короткое имя клана (short_name). Игра подписывает им отряды на карте — "Отряд ... из клана X",
-# — и это ОТДЕЛЬНАЯ строка от name: пока мы её не перекрывали, у наёмников на карте оставались
-# ванильные "Всполохи" при уже переименованном клане (замечено в игре 2026-09-23).
+# Clan short name (short_name). The game labels parties on the map with it - "Party ... of clan X",
+# - and it is a SEPARATE string from name: while we did not override it, mercenaries on the map still had
+# the vanilla Russian clan name with the clan already renamed (noticed in game 2026-09-23).
 MINOR_SHORT = {
     "sea_raiders": "Воинство Шторма",
     "desert_bandits": "Стервятники",
@@ -1183,29 +1184,29 @@ MINOR_SHORT = {
     "brotherhood_of_woods": "Братство Леса",
 }
 
-# Где живут кланы наёмников: у ближайшего к этой точке города (метры нашей карты).
-# Остальные малые кланы расходятся по городам по кругу.
+# Where mercenary clans live: at the town nearest to this point (metres of our map).
+# The other minor clans spread over towns in a round-robin.
 MINOR_HOMES = {
-    # Родина совпадает с тем, кто в клане на деле: чейнджлинги у ульев, драконы в Драконьих
-    # землях, грифоны в Грифонии, гиппогрифы у Горы Арис.
-    "ghilman": (316.0, 769.0),                 # Вракс, у ближних ульев
-    "beni_zilal": (282.0, 809.0),              # Весалиполис
-    "jawwal": (236.0, 855.0),                  # Дитрисиум, дальний улей
-    "eleftheroi": (798.0, 727.0),              # городок Старлайт
-    "hidden_hand": (802.0, 506.0),             # Флим и Флэм торгуют в Мейнхеттене
-    "embers_of_flame": (552.0, 512.0),         # Рота Золотой Подковы у Кантерлота
-    "legion_of_the_betrayed": (332.0, 628.0),  # Лунные Волки в Ванхувере
-    "lakepike": (588.0, 268.0),                # Драконье Пламя у Стейблсайда
-    "skolderbrotva": (528.0, 368.0),           # портовый сброд Додж-Сити
-    "company_of_the_boar": (925.0, 765.0),     # пираты Келено у Нуво Аквилы
-    "wolfskins": (185.0, 572.0),               # Гора Арис
-    "forest_people": (730.0, 304.0),           # ватага у Логова Лорда Драконов
-    "karakhuzaits": (707.0, 780.0),            # бывший Йаки-Клан
+    # Home matches who is actually in the clan: changelings at the hives, dragons in the Dragon
+    # Lands, griffons in Griffonia, hippogriffs at Mount Aris.
+    "ghilman": (316.0, 769.0),                 # Vraks, near the nearer hives
+    "beni_zilal": (282.0, 809.0),              # Vesalipolis
+    "jawwal": (236.0, 855.0),                  # Ditrisium, the far hive
+    "eleftheroi": (798.0, 727.0),              # Starlight's town
+    "hidden_hand": (802.0, 506.0),             # Flim and Flam trade in Manehattan
+    "embers_of_flame": (552.0, 512.0),         # the Golden Horseshoe Company near Canterlot
+    "legion_of_the_betrayed": (332.0, 628.0),  # the Lunar Wolves in Vanhoover
+    "lakepike": (588.0, 268.0),                # Dragon Flame near Stableside
+    "skolderbrotva": (528.0, 368.0),           # the port rabble of Dodge City
+    "company_of_the_boar": (925.0, 765.0),     # Celaeno's pirates near Nuevo Aquila
+    "wolfskins": (185.0, 572.0),               # Mount Aris
+    "forest_people": (730.0, 304.0),           # a band near the Dragon Lord's Lair
+    "karakhuzaits": (707.0, 780.0),            # the former Yaki Clan
 }
 
-# Ванильные королевства, которых в нашем мире нет. Удаляются преобразованием XSLT.
+# Vanilla kingdoms that do not exist in our world. Removed by an XSLT transform.
 DROP_KINGDOMS = ["empire_w", "empire_s", "battania"]
 
-# Ванильные культуры, оставшиеся без державы: переименовываем, чтобы на карте и в энциклопедии
-# не мелькали кальрадийские названия. Сейчас все шесть культур заняты державами.
+# Vanilla cultures left without a kingdom: rename them so that Calradian names do not show up
+# on the map and in the encyclopedia. Currently all six cultures are taken by kingdoms.
 SPARE_CULTURES = {}

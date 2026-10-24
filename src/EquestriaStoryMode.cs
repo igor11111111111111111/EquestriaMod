@@ -5,12 +5,12 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Главное меню Эквестрии: «Новая кампания» (сюжет) и «Песочница» прячем. Сюжетная кампания в
-    // Эквестрии не работает: StoryMode ведёт обучение и сюжетные квесты по ванильным героям и
-    // поселениям, которых у нас нет, и падает уже при создании мира
-    // (TutorialPhaseCampaignBehavior.CanHaveCampaignIssuesInfoIsRequested — NullReferenceException,
-    // 2026-09-22). А новую игру начинает кнопка «Начать приключение» (EquestriaQuickStart), поэтому
-    // ванильная «Песочница» рядом с ней лишняя.
+    // Equestria main menu: we hide "New Campaign, the story" and "Sandbox".
+    // The story campaign does not work in Equestria: StoryMode runs the tutorial and story quests on
+    // vanilla heroes and settlements that we do not have, and crashes as early as world creation
+    // (TutorialPhaseCampaignBehavior.CanHaveCampaignIssuesInfoIsRequested - NullReferenceException,
+    // 2026-09-22). A new game is started by the "Start Adventure" button
+    // (EquestriaQuickStart), so the vanilla "Sandbox" next to it is redundant.
     public static class EquestriaStoryMode
     {
         private static readonly string[] HiddenIds = { "StoryModeNewGame", "SandBoxNewGame" };

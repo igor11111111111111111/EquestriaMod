@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Разгладить смятый провал по центру груди (та же техника, что для подмышки).
+"""Smooth out the crumpled dip in the middle of the chest (same technique as for the armpit).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_chest.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_chest.py
 """
 import numpy as np
 import bpy
@@ -14,7 +14,7 @@ for e in me.edges:
     neighbours[e.vertices[0]].append(e.vertices[1])
     neighbours[e.vertices[1]].append(e.vertices[0])
 
-# только центр груди — armpit по бокам уже сглажен отдельно
+# only the middle of the chest; the armpit on the sides is already smoothed separately
 region = [i for i in range(len(P)) if -0.15 < P[i, 0] < 0.15 and 1.15 < P[i, 2] < 1.45]
 outliers = []
 for i in region:

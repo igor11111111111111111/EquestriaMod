@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Модели логов разбойников на карте мира — правка готовой сцены без полной перегенерации.
+"""Bandit hideout models on the world map: edits the finished scene without a full regeneration.
 
-Полная сборка сцены (make_map_entities.py) теперь сама ставит логовам модели их ванильных
-двойников (settlement_visuals.dress_hideout). Этот скрипт делает то же с уже собранной
-Module/SceneObj/Main_map/scene.xscene — чтобы не перегенерировать карту целиком — и дописывает
-меши логов в references.txt (без записи там сцена не подгружает модель).
+The full scene build (make_map_entities.py) now itself gives hideouts the models of their vanilla
+counterparts (settlement_visuals.dress_hideout). This script does the same to an already built
+Module/SceneObj/Main_map/scene.xscene, so the whole map need not be regenerated, and appends the
+hideout meshes to references.txt (without an entry there the scene does not load the model).
 
-Запуск: py tools/dress_hideouts.py [папка Module мода] [папка игры]
-Редактор при этом должен быть закрыт.
+Run: py tools/dress_hideouts.py [the mod's Module folder] [the game folder]
+The editor must be closed while it runs.
 """
 import os
 import shutil

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Мосты там, где дорога пересекает реку.
+"""Bridges where a road crosses a river.
 
-  Вызывается из make_map_entities.py: place(entities, log).
+  Called from make_map_entities.py: place(entities, log).
 
-Как устроен мост у ванили (Main_map/scene.xscene): это не один меш, а связка. Родительская
-сущность несёт поворот и масштаб (1.120, 0.735, 0.735), а внутри лежат несколько одинаковых
-`map_bridge_b` с мешем `mi_emp_bridge_wooden` в масштабе 3.74, сдвинутых друг за другом по
-локальной оси Y — так набирается нужная длина настила. Проверено по 32 ванильным мостам: поворот
-родителя по Z совпадает с направлением РЕКИ в этой точке (у ближних мостов расхождение 1..13
-градусов), то есть настил идёт вдоль локальной Y, поперёк воды. Мы повторяем ту же связку и
-ставим её поперёк реки — вдоль дороги.
+How a vanilla bridge is built (Main_map/scene.xscene): it is not one mesh but a group. The parent
+entity carries the rotation and scale (1.120, 0.735, 0.735), and inside lie several identical
+`map_bridge_b` with the mesh `mi_emp_bridge_wooden` at scale 3.74, shifted one after another along
+the local Y axis; that is how the needed deck length is built up. Checked on 32 vanilla bridges: the parent's
+Z rotation matches the direction of the RIVER at that point (for nearby bridges the difference is 1..13
+degrees), i.e. the deck runs along local Y, across the water. We repeat the same group and
+place it across the river, along the road.
 """
 import math
 import os
@@ -22,23 +22,23 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import equus_map  # noqa: E402
 import map_roads  # noqa: E402
 
-# Расстановка выключена: мосты ставятся вручную в редакторе (автоматические вставали криво —
-# отряд пересекает реку под своим углом, а настил повторяет направление дороги в точке,
-# и на извилистых руслах это заметно). Включить: EQ_BRIDGES=1. Старые eq_bridge_* при
-# перегенерации сцены убираются в любом случае, чтобы не мешали расставленным вручную.
+# Placement is disabled: bridges are placed by hand in the editor (automatic ones came out crooked:
+# a party crosses the river at its own angle, while the deck follows the road direction at the point,
+# and on winding river beds this is noticeable). To enable: EQ_BRIDGES=1. Old eq_bridge_* are removed
+# on scene regeneration in any case, so they do not get in the way of the hand-placed ones.
 ENABLED = os.environ.get("EQ_BRIDGES", "0") != "0"
-PREFIX = "eq_bridge_"          # по этому имени мосты удаляются при перегенерации
-SEGMENTS = 7                   # звеньев настила; ванильные мосты собраны из 3-5
-SEGMENT_STEP = 1.27            # шаг звена в локальных единицах родителя (как у ванили)
+PREFIX = "eq_bridge_"          # bridges are removed by this name on regeneration
+SEGMENTS = 7                   # deck segments; vanilla bridges are built from 3-5
+SEGMENT_STEP = 1.27            # segment step in the parent's local units (as in vanilla)
 PARENT_SCALE = (1.120, 0.735, 0.735)
 CHILD_SCALE = 3.740
 CHILD_X = 0.130
 CHILD_Z = -0.950
 MESH = "mi_emp_bridge_wooden"
 PHYSICS = "bo_mi_emp_bridge_wooden"
-SAMPLE = 0.5                   # шаг проверки вдоль дороги, м
-RIVER_REACH = 2.0              # насколько расширить русло при поиске пересечений, м
-APART = 8.0                    # ближе этого пересечения считаем одним мостом, м
+SAMPLE = 0.5                   # check step along the road, m
+RIVER_REACH = 2.0              # how much to widen the river bed when searching for crossings, m
+APART = 8.0                    # crossings closer than this count as one bridge, m
 
 
 def log_nothing(*a):
@@ -46,7 +46,7 @@ def log_nothing(*a):
 
 
 def crossings(mod, log=log_nothing):
-    """Точки, где дорога пересекает реку: (x, y, угол дороги)."""
+    """Points where a road crosses a river: (x, y, road angle)."""
     terrain = equus_map.terrain_map()
     size = terrain.shape[0]
     step = equus_map.MAP_SIZE / (size - 1)
@@ -90,7 +90,7 @@ def crossings(mod, log=log_nothing):
 
 
 def place(entities, log=log_nothing, mod="Module"):
-    """Вписывает мосты в раздел entities сцены."""
+    """Writes bridges into the scene's entities section."""
     for entity in list(entities):
         if (entity.get("name") or "").startswith(PREFIX):
             entities.remove(entity)
@@ -108,7 +108,7 @@ def place(entities, log=log_nothing, mod="Module"):
         transform = ET.SubElement(parent, "transform")
         transform.set("position", "%.3f, %.3f, %.3f"
                       % (x, y, height - CHILD_Z * PARENT_SCALE[2]))
-        # настил идёт вдоль локальной Y, поэтому поворачиваем родителя поперёк дороги
+        # the deck runs along local Y, so we turn the parent across the road
         transform.set("rotation_euler", "0.000, 0.000, %.3f" % (road_angle + math.pi / 2))
         transform.set("scale", "%.3f, %.3f, %.3f" % PARENT_SCALE)
         children = ET.SubElement(parent, "children")
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
     where = sys.argv[1] if len(sys.argv) > 1 else "Module"
     spots = crossings(where, show)
-    # список пересечений в файл — по нему удобно расставлять мосты вручную в редакторе
+    # the list of crossings to a file; it is handy for placing bridges by hand in the editor
     listing = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                            "assets", "map", "bridge_spots.txt")
     with open(listing, "w", encoding="utf-8") as f:

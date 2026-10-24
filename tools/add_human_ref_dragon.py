@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Добавляет в уже готовый assets/dragon/eq_dragon.blend коллекцию "Человек и броня" —
-тот же ванильный мужчина со скелетом и полным комплектом брони империи, что и в
-assets/pony/eq_pony_edit.blend (см. tools/make_pony_edit_scene.py). Дракон уже собран и
-сохраняется В ЭТОТ ЖЕ файл — ничего из его частей не трогаем, только добавляем референс.
+"""Adds the collection "Human and armour" to the finished
+assets/dragon/eq_dragon.blend: the same vanilla male with a skeleton and a full set of Empire armour as in
+assets/pony/eq_pony_edit.blend (see tools/make_pony_edit_scene.py). The dragon is already assembled and
+is saved INTO THIS SAME file; none of its parts are touched, we only add the reference.
 
-Запуск:
+Run:
   blender --background assets/dragon/eq_dragon.blend --python tools/add_human_ref_dragon.py
 """
 import math
@@ -12,7 +12,8 @@ import os
 
 import bpy
 
-# У ванильной головы сотня ключей мимики, и импортёр FBX на них падает (AssertionError в blen_read_shapes).
+# The vanilla head has a hundred facial shape keys, and the FBX importer crashes on them
+# (AssertionError in blen_read_shapes).
 import io_scene_fbx.import_fbx as _fbx_import  # noqa: E402
 
 _fbx_import.blen_read_shapes = lambda *args, **kwargs: {}
@@ -21,7 +22,7 @@ ROOT = r"C:\Users\New\EquestriaMod"
 REF = os.path.join(ROOT, "assets", "reference", "vanilla_armor")
 HUMAN = os.path.join(ROOT, "assets", "human_ref")
 OUT = os.path.join(ROOT, "assets", "dragon", "eq_dragon.blend")
-SIDE = 0.0  # смещение человека вбок от дракона (0 — стоит вплотную поверх, кость в кость)
+SIDE = 0.0  # sideways offset of the human from the dragon (0 = stands right on top, bone on bone)
 
 HUMAN_PARTS = [("body_male_a", os.path.join(HUMAN, "body_male_a.fbx", "body_male_a", "body_male_a.fbx")),
                ("feet_male_a", os.path.join(HUMAN, "feet_male_a.fbx", "feet_male_a", "feet_male_a.fbx")),
@@ -44,7 +45,7 @@ bpy.context.scene.collection.children.link(human_col)
 shift = bpy.data.objects.new("Человек (сдвиг)", None)
 shift.empty_display_type = "ARROWS"
 shift.location = (SIDE, 0, 0)
-shift.rotation_euler = (0, 0, math.pi)  # ванильные модели смотрят в +Y, наши — в -Y
+shift.rotation_euler = (0, 0, math.pi)  # vanilla models face +Y, ours face -Y
 human_col.objects.link(shift)
 
 human_skel = None

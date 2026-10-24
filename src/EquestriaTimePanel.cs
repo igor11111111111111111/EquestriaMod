@@ -6,25 +6,26 @@ using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Map.MapBar;
 
 namespace EquestriaMod
 {
-    // Своя кнопка x5 прямо в нативной панели паузы/игры/ускорения — перенос приёма мода Better Time
-    // (github.com/OrderWOPower/BetterTime, TimePanel.cs): он не трогает рендер самого числового
-    // множителя (тот не нашёлся ни в одном префабе декомпилом 07.10.2026 — видимо, целиком в
-    // движке, вне Gauntlet), а просто добавляет ВТОРУЮ кнопку ускорения рядом с первой внутри того
-    // же виджета, программно вешает на обе кнопки обработчик клика, который меняет
-    // Campaign.SpeedUpMultiplier, и подсвечивает нужную кнопку по текущему множителю.
+    // Our own x5 button right inside the native pause/play/fast-forward panel — a port of the trick from
+    // the Better Time mod (github.com/OrderWOPower/BetterTime, TimePanel.cs): it does not touch the
+    // rendering of the numeric multiplier itself (that was not found in any prefab by decompiling on
+    // 07.10.2026 — apparently it is entirely in the engine, outside Gauntlet), but simply adds a SECOND
+    // fast-forward button next to the first one inside the same widget, attaches a click handler to both
+    // buttons in code that changes Campaign.SpeedUpMultiplier, and highlights the right button by the
+    // current multiplier.
     //
-    // Раньше (EquestriaTimeSpeed.cs, до 07.10.2026) кнопка x5 была ОТДЕЛЬНЫМ плавающим GauntletLayer
-    // поверх экрана — считалось, что клик до дочерней кнопки внутри самого MapCurrentTimeVisualWidget
-    // не доходит. Better Time (установленный мод, с 1 млн загрузок) доказывает обратное — дочерняя
-    // ButtonWidget внутри наследника этого же класса клики принимает нормально. Следуем за
-    // проверенным рабочим способом, старый обходной путь убран.
+    // Previously (EquestriaTimeSpeed.cs, before 07.10.2026) the x5 button was a SEPARATE floating
+    // GauntletLayer over the screen — it was believed that clicks do not reach a child button inside
+    // MapCurrentTimeVisualWidget itself. Better Time (an installed mod with 1M downloads) proves
+    // otherwise — a child ButtonWidget inside a subclass of this same class receives clicks fine. We
+    // follow the proven working approach; the old workaround is removed.
     //
-    // Регистрация типа — без сторонних библиотек (UIExtenderEx и т.п.): WidgetInfo.CollectWidgetTypes
-    // (decompile TaleWorlds.GauntletUI.dll) при инициализации UI сканирует ВСЕ загруженные сборки,
-    // которые ссылаются на сборку TaleWorlds.GauntletUI (наша EquestriaMod.dll уже ссылается —
-    // GauntletLayer использовался и раньше в EquestriaHairStyleView), и регистрирует любой класс-
-    // наследник Widget по имени класса = имени XML-тега. В префабе (Module/GUI/Prefabs/Map/
-    // MapBar.xml) класс используется как тег <EquestriaTimePanel>.
+    // Type registration without third-party libraries (UIExtenderEx etc.): WidgetInfo.CollectWidgetTypes
+    // (decompile TaleWorlds.GauntletUI.dll) scans, on UI initialisation, ALL loaded assemblies that
+    // reference the TaleWorlds.GauntletUI assembly (our EquestriaMod.dll already does — GauntletLayer
+    // was used before in EquestriaHairStyleView), and registers any Widget subclass by class name =
+    // XML tag name. In the prefab (Module/GUI/Prefabs/Map/MapBar.xml) the class is used as the
+    // <EquestriaTimePanel> tag.
     public class EquestriaTimePanel : MapCurrentTimeVisualWidget
     {
         private ButtonWidget _fastFastForwardButton;

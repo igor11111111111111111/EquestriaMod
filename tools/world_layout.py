@@ -1,48 +1,48 @@
-# Геометрия мира: как поделить сушу между державами и где стоять городам, замкам и деревням.
+# World geometry: how to divide the land between the realms and where to put towns, castles and villages.
 #
-# Модуль ничего не знает про имена, кланы и XML — только точки на карте. Имена и владельцев
-# раздаёт make_world.py, сюда приходят города Equestria at War (assets/map/eq_map.json) и
-# список держав, обратно — раскладка: что где стоит и какая деревня к какой крепости приписана.
+# The module knows nothing about names, clans and XML, only points on the map. Names and owners
+# are handed out by make_world.py; in come the Equestria at War cities (assets/map/eq_map.json) and
+# the list of realms, out goes the layout: what stands where and which village is bound to which fortress.
 #
-# Ориентир — оригинальная кампания Bannerlord (замерено по SandBox/ModuleData/settlements.xml):
-#   крепость до крепости      минимум 16.9 м, медиана 30.9;
-#   деревня до деревни        минимум  8.6 м, медиана 19.0;
-#   деревня до крепости       минимум  8.3 м, медиана 19.6;
-#   деревень у крепости       1..4, медиана 2, без деревень нет ни одной;
-#   деревня до своей крепости медиана 21.7 м;
-#   на поселение приходится   ~875 м² суши (у нас выходит ~950).
+# Reference: the original Bannerlord campaign (measured from SandBox/ModuleData/settlements.xml):
+#   fortress to fortress      minimum 16.9 m, median 30.9;
+#   village to village        minimum  8.6 m, median 19.0;
+#   village to fortress       minimum  8.3 m, median 19.6;
+#   villages per fortress     1..4, median 2, none without villages;
+#   village to its fortress   median 21.7 m;
+#   per settlement            ~875 m² of land (we get ~950).
 #
-# Две задачи, которые решает модуль:
-#   1) земли держав примерно равны (сильные чуть больше, слабые чуть меньше) — аддитивно
-#      взвешенный Вороной от столиц: каждой клетке суши ищем ближайшую столицу с поправкой,
-#      поправки подгоняются, пока площади не сойдутся с целевыми долями;
-#   2) поселения не кучкуются и не оставляют пустот — крепости и деревни выбираются жадно
-#      «подальше от уже поставленных», а города EaW берутся как готовые точки, пока они этому
-#      не мешают; не хватило — придумываем новые, слишком много — лишние отбрасываются.
+# Two tasks the module solves:
+#   1) the realms' lands are roughly equal (strong ones slightly more, weak ones slightly less): an additively
+#      weighted Voronoi from the capitals: for each land cell we find the nearest capital with a correction,
+#      the corrections are tuned until the areas match the target shares;
+#   2) settlements do not cluster and do not leave gaps: fortresses and villages are picked greedily
+#      "farther from the already placed ones", and EaW cities are taken as ready points as long as they do not
+#      get in the way of this; if there are too few, we invent new ones, if too many, the extra ones are dropped.
 import math
 
 import numpy as np
 
 import equus_map
 
-GRID = 4.0                  # шаг сетки клеток суши, м
-MIN_HEIGHT = 0.5            # ниже — пляж, поселение туда не ставим
+GRID = 4.0                  # land cell grid step, m
+MIN_HEIGHT = 0.5            # below this is beach, no settlement is placed there
 
-# Минимальные зазоры между поселениями (как в ванили, с небольшим запасом)
+# Minimum gaps between settlements (as in vanilla, with a small margin)
 GAP = {("fort", "fort"): 17.0, ("fort", "village"): 8.5, ("village", "village"): 8.0}
-FORT_SPREAD = 26.0          # желаемый разбег крепостей; если не выходит, опускаемся до GAP
-MAJOR_VALUE = 30.0          # крупный город (в том числе канонный) ставится крепостью и впритык
-FILL_REACH = 45.0           # дальше этого от поселения земля считается пустой
-VILLAGE_SLACK = 1.35        # насколько можно превысить норму деревень ради заполнения пустот
+FORT_SPREAD = 26.0          # desired fortress spacing; if it does not work out, we go down to GAP
+MAJOR_VALUE = 30.0          # a major city (including a canon one) is placed as a fortress and at minimum gap
+FILL_REACH = 45.0           # land farther than this from a settlement counts as empty
+VILLAGE_SLACK = 1.35        # how much the village quota may be exceeded to fill gaps
 MIN_VILLAGES = {"town": 2, "castle": 1}
-MAX_VILLAGES = 4            # как в ванили
-VILLAGE_REACH = 26.0        # дальше этого «своей» деревню крепости уже не считаем
-BIND_REACH = 45.0           # на таком расстоянии деревню ещё можно приписать к крепости
-BORDER = 16.0               # отступ от края карты
+MAX_VILLAGES = 4            # as in vanilla
+VILLAGE_REACH = 26.0        # beyond this a village is no longer counted as the fortress's "own"
+BIND_REACH = 45.0           # at this distance a village can still be bound to a fortress
+BORDER = 16.0               # margin from the map edge
 
 
 def land_grid(step=GRID):
-    """Маска суши на сетке с шагом step: (маска, номера строк, номера столбцов)."""
+    """Land mask on a grid with step step: (mask, row numbers, column numbers)."""
     land = equus_map.land_map() & (equus_map.heights() > MIN_HEIGHT)
     n = land.shape[0]
     sub = max(1, int(round(step / (equus_map.MAP_SIZE / (n - 1)))))
@@ -53,13 +53,13 @@ def land_grid(step=GRID):
     return land
 
 
-MIN_ISLAND = 250            # клеток; островки мельче в расселении не участвуют
-OFFSHORE = 45.0             # дальше этого от заселяемой суши город считается островным
+MIN_ISLAND = 250            # cells; smaller islets do not take part in the settling
+OFFSHORE = 45.0             # farther than this from the settled land a city counts as an island one
 
 
 def land_cells(step=GRID):
-    """Клетки суши, куда можно ставить поселение. Мелкие острова выброшены: сухопутной дороги
-    туда нет, лорды и караваны до такого поселения не доберутся."""
+    """Land cells where a settlement can be placed. Small islands are discarded: there is no land road
+    there, lords and caravans will not reach such a settlement."""
     land = land_grid(step)
     big = np.zeros_like(land)
     for _kid, cells in _components(np.zeros(land.shape, np.int32), land):
@@ -71,7 +71,7 @@ def land_cells(step=GRID):
 
 
 def _components(owner2d, land):
-    """Связные куски земли одного владельца: [(владелец, [(строка, столбец), ...]), ...]."""
+    """Connected pieces of land of one owner: [(owner, [(row, column), ...]), ...]."""
     h, w = owner2d.shape
     seen = np.zeros_like(land)
     parts = []
@@ -97,17 +97,17 @@ def _components(owner2d, land):
     return parts
 
 
-# Клочок земли меньше этого (и меньше доли SMALL_SHARE от владений державы) считается
-# анклавом и отходит соседям.
+# A scrap of land smaller than this (and smaller than the SMALL_SHARE fraction of the realm's holdings) counts
+# as an enclave and goes to the neighbours.
 SMALL_PATCH = 150
 SMALL_SHARE = 0.15
 
 
 def _stitch(owner2d, land, capital_cells):
-    """Сшивка анклавов: небольшой кусок земли, оторванный от остальных владений державы и
-    окружённый чужой землёй, отходит соседу с самой длинной общей границей. Большие куски
-    (целые области за чужой землёй) и клетку столицы не трогаем, острова тоже: сухопутных
-    соседей у них нет, а морская держава как раз из островов и состоит."""
+    """Stitching enclaves: a small piece of land cut off from the rest of a realm's holdings and
+    surrounded by foreign land goes to the neighbour with the longest common border. Large pieces
+    (whole regions beyond foreign land) and the capital cell are not touched, nor are islands: they have no land
+    neighbours, and the sea realm consists precisely of islands."""
     h, w = owner2d.shape
     moved = 0
     parts = _components(owner2d, land)
@@ -127,7 +127,7 @@ def _stitch(owner2d, land, capital_cells):
                     if 0 <= nj < h and 0 <= ni < w and land[nj, ni] and owner2d[nj, ni] != kid:
                         neighbours[int(owner2d[nj, ni])] = neighbours.get(int(owner2d[nj, ni]), 0) + 1
         if not neighbours:
-            continue                     # остров — оставляем как есть
+            continue                     # an island: leave it as it is
         new_kid = max(neighbours, key=neighbours.get)
         for cj, ci in cells:
             owner2d[cj, ci] = new_kid
@@ -136,15 +136,15 @@ def _stitch(owner2d, land, capital_cells):
 
 
 def partition(anchors, weights, cells, log=print):
-    """Делит клетки суши между державами так, чтобы площади относились как weights.
+    """Divides the land cells between the realms so that the areas relate as weights.
 
-    Аддитивно взвешенный Вороной: клетка отходит той державе, до чьих опорных городов ближе
-    (с поправкой); поправки подбираются итерациями, пока площади не сойдутся с целевыми.
-    Опорных городов у державы несколько — это канонные города её земель, и они держат границы
-    там, где им положено по лору, а не там, где вышло по циркулю от столицы.
+    Additively weighted Voronoi: a cell goes to the realm whose anchor cities are closer
+    (with a correction); the corrections are tuned iteratively until the areas match the targets.
+    A realm has several anchor cities: these are the canon cities of its lands, and they hold the borders
+    where lore puts them, not where a compass from the capital would.
 
-    После каждого подгона анклавы сшиваются (см. _stitch), и подгон продолжается уже с ними:
-    так державы получают и свою долю земли, и целые владения без клочков за морем."""
+    After each tuning pass the enclaves are stitched (see _stitch), and the tuning continues with them:
+    this way the realms get both their share of land and whole holdings without scraps overseas."""
     x, y = cells
     w = np.asarray(weights, float)
     target = w / w.sum() * len(x)
@@ -153,14 +153,14 @@ def partition(anchors, weights, cells, log=print):
         P = np.asarray(points, float).reshape(-1, 2)
         d[:, i] = np.hypot(x[:, None] - P[None, :, 0], y[:, None] - P[None, :, 1]).min(1)
 
-    # сетка ровно из тех клеток, что нам дали (без выброшенных островков)
+    # a grid of exactly the cells we were given (without the discarded islets)
     ys_idx = np.rint(y / GRID).astype(int)
     xs_idx = np.rint(x / GRID).astype(int)
     land = np.zeros((ys_idx.max() + 2, xs_idx.max() + 2), bool)
     land[ys_idx, xs_idx] = True
-    # клетка столицы: кусок земли, где стоит столица, — коренные владения державы, их не
-    # отбирают. Всё остальное, что оказалось отрезанным, отходит соседям, чтобы держава
-    # не владела клочками за чужими землями (лорды до них просто не доберутся).
+    # the capital cell: the piece of land where the capital stands is the realm's core holdings, they are not
+    # taken away. Everything else that turned out cut off goes to the neighbours, so that a realm
+    # does not own scraps beyond foreign lands (lords simply will not reach them).
     keep_cells = {}
     for i, points in enumerate(anchors):
         ax, ay = np.asarray(points, float).reshape(-1, 2)[0]
@@ -170,7 +170,7 @@ def partition(anchors, weights, cells, log=print):
     bias = np.zeros(len(anchors))
     owner = d.argmin(1)
     err = np.ones(len(anchors))
-    for _step in range(200):            # грубый подгон без сшивки — он дешёвый
+    for _step in range(200):            # rough tuning without stitching: it is cheap
         owner = (d - bias).argmin(1)
         area = np.bincount(owner, minlength=len(anchors)).astype(float)
         err = (target - area) / target
@@ -178,7 +178,7 @@ def partition(anchors, weights, cells, log=print):
             break
         bias += err * 5.0
     moved = 0
-    for _round in range(12):            # подгон вместе со сшивкой анклавов
+    for _round in range(12):            # tuning together with enclave stitching
         owner = (d - bias).argmin(1)
         owner2d = np.full(land.shape, -1, np.int32)
         owner2d[ys_idx, xs_idx] = owner
@@ -195,7 +195,7 @@ def partition(anchors, weights, cells, log=print):
 
 
 def targets(weights, base):
-    """Сколько городов/замков/деревень полагается каждой державе (по её силе)."""
+    """How many towns/castles/villages each realm is due (by its strength)."""
     w = np.asarray(weights, float)
     share = w / w.mean()
     out = []
@@ -205,12 +205,12 @@ def targets(weights, base):
 
 
 class _Board:
-    """Уже поставленные поселения: проверка зазоров и расстояний до клеток суши."""
+    """Already placed settlements: checking gaps and distances to land cells."""
 
     def __init__(self, cells):
         self.x, self.y = cells
-        self.dist = np.full(len(self.x), np.inf)   # до ближайшего поселения любой державы
-        self.points = []                           # (x, y, группа)
+        self.dist = np.full(len(self.x), np.inf)   # to the nearest settlement of any realm
+        self.points = []                           # (x, y, group)
 
     def add(self, x, y, group):
         self.points.append((x, y, group))
@@ -224,7 +224,7 @@ class _Board:
         return True
 
     def ok(self, x, y, group, extra=0.0):
-        """Годится ли точка: твёрдая суша, внутри карты, зазоры соблюдены."""
+        """Whether a point is suitable: solid land, inside the map, gaps respected."""
         if not (BORDER < x < equus_map.MAP_SIZE - BORDER and BORDER < y < equus_map.MAP_SIZE - BORDER):
             return False
         if not self.free(x, y, group):
@@ -235,7 +235,7 @@ class _Board:
         return equus_map.solid_ground(x, y)
 
     def settle(self, x, y, group, limit=24.0):
-        """Ближайшая к (x, y) годная точка (по спирали), либо None."""
+        """The nearest suitable point to (x, y) (along a spiral), or None."""
         r = 0.0
         while r <= limit:
             steps = 1 if r == 0 else max(8, int(2 * math.pi * r / 1.5))
@@ -249,13 +249,13 @@ class _Board:
 
 
 def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
-    """Раскладка мира.
+    """World layout.
 
-    kingdoms — [{"kingdom": id, "capital_xy": (x, y)}], weights — сила держав,
-    cities — города EaW (name, x, y, value, owner), base — норма поселений средней державы.
+    kingdoms: [{"kingdom": id, "capital_xy": (x, y)}], weights: realm strength,
+    cities: EaW cities (name, x, y, value, owner), base: the settlement quota of an average realm.
 
-    Возвращает {id державы: {"town": [...], "castle": [...], "village": [...]}}, где запись —
-    {"x", "y", "city": исходный город EaW или None, "bound": (вид, номер) у деревни}."""
+    Returns {realm id: {"town": [...], "castle": [...], "village": [...]}}, where an entry is
+    {"x", "y", "city": the source EaW city or None, "bound": (kind, number) for a village}."""
     cells = land_cells()
     cx, cy = cells
     owner = partition([k.get("anchors") or [k["capital_xy"]] for k in kingdoms], weights, cells, log)
@@ -263,15 +263,15 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
     board = _Board(cells)
     result = {k["kingdom"]: {"town": [], "castle": [], "village": []} for k in kingdoms}
 
-    # Города Equestria at War стоят там, где их поставила та карта, а рельеф с тех пор
-    # переделан: часть точек оказалась под водой или на отмели. Такой город сдвигаем на
-    # ближайшую годную клетку суши. Если до неё далеко (город на островке, куда нет
-    # сухопутной дороги) — город в расселении не участвует, а его имя достанется новому
-    # поселению на большой земле.
+    # The Equestria at War cities stand where that map placed them, but the terrain has since
+    # been redone: some points ended up under water or on a shoal. Such a city is moved to
+    # the nearest suitable land cell. If it is far away (a city on an islet with no
+    # land road), the city does not take part in the settling, and its name goes to a new
+    # settlement on the mainland.
     moved = off = 0
     fixed = []
     for c in cities:
-        if c["name"] in pinned:      # город переставлен руками — его точку не трогаем
+        if c["name"] in pinned:      # the city was moved by hand: its point is not touched
             fixed.append(c)
             continue
         j = int(np.argmin((cx - c["x"]) ** 2 + (cy - c["y"]) ** 2))
@@ -287,19 +287,19 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
     log("города карты EaW: %d, из них сдвинуто на сушу %d, отброшено островных %d"
         % (len(cities), moved, off))
 
-    # какой державе достался каждый город EaW — по владельцу ближайшей клетки суши
+    # which realm got each EaW city: by the owner of the nearest land cell
     city_owner = {}
     for c in cities:
         j = int(np.argmin((cx - c["x"]) ** 2 + (cy - c["y"]) ** 2))
         city_owner[c["name"]] = int(owner[j])
-    # опорные города остаются за своей державой, даже если граница прошла рядом иначе:
-    # Кантерлот не может оказаться драконьим, а Кристальный Пик — эквестрийским
+    # anchor cities stay with their realm, even if the border passed nearby differently:
+    # Canterlot cannot turn out to be a dragon city, nor the Crystal Peak an Equestrian one
     for i, k in enumerate(kingdoms):
         for name in k.get("anchor_names", ()):
             if name in city_owner:
                 city_owner[name] = i
 
-    # столицы ставим первыми, чтобы они не сдвинулись из-за чужих зазоров
+    # capitals are placed first, so that they do not shift because of other gaps
     by_name = {c["name"]: c for c in cities}
     capitals = []
     for i, k in enumerate(kingdoms):
@@ -320,7 +320,7 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
         return cx[m], cy[m]
 
     def emptiest(i, group, need=0.0):
-        """Самая пустая точка области i, годная под поселение."""
+        """The emptiest point of region i suitable for a settlement."""
         m = owner == i
         if not m.any():
             return None
@@ -334,7 +334,7 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
                 return spot
         return None
 
-    # ---------------------------------------------------------------- крепости
+    # ---------------------------------------------------------------- fortresses
     for i, k in enumerate(kingdoms):
         kid = k["kingdom"]
         spots = result[kid]
@@ -342,15 +342,15 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
         mine = sorted((c for c in cities if city_owner.get(c["name"]) == i
                        and not any(e["city"] is c for e in spots["town"])),
                       key=lambda c: -c["value"])
-        forts = list(spots["town"])   # столица уже стоит
+        forts = list(spots["town"])   # the capital is already placed
         for spread in (FORT_SPREAD, GAP[("fort", "fort")]):
             for c in mine:
                 if len(forts) >= need_forts:
                     break
                 if any(e["city"] is c for e in forts):
                     continue
-                # крупному городу разбег не помеха: Клаудсдейл стоит в 21 м от Понивилля,
-                # и это по лору правильно — оба города настоящие
+                # spacing is no obstacle for a major city: Cloudsdale stands 21 m from Ponyville,
+                # and by lore that is right: both cities are real
                 need = GAP[("fort", "fort")] if c["value"] >= MAJOR_VALUE else spread
                 if not board.ok(c["x"], c["y"], "fort", extra=need):
                     continue
@@ -369,14 +369,14 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
             board.add(spot[0], spot[1], "fort")
             forts.append({"x": spot[0], "y": spot[1], "city": None})
             invented += 1
-        # столица — всегда первый город, дальше по значимости
+        # the capital is always the first town, then by importance
         rest = sorted(forts[1:], key=lambda e: -(e["city"]["value"] if e["city"] else 0))
         ordered = forts[:1] + rest
         spots["town"] = ordered[:want[i]["town"]]
         spots["castle"] = ordered[want[i]["town"]:]
         k["_invented_forts"] = invented
 
-    # ---------------------------------------------------------------- деревни
+    # ---------------------------------------------------------------- villages
     for i, k in enumerate(kingdoms):
         kid = k["kingdom"]
         spots = result[kid]
@@ -394,9 +394,9 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
             placed.append(entry)
             return entry
 
-        # У каждой крепости должна быть своя деревня, и непременно рядом: берём ближайший
-        # подходящий город, но не дальше VILLAGE_REACH, иначе ставим новую деревню в кольце
-        # вокруг крепости. Иначе у переставленного города «его» деревни остаются за сто метров.
+        # Every fortress must have its own village, and definitely nearby: we take the nearest
+        # suitable city, but no farther than VILLAGE_REACH, otherwise we place a new village in a ring
+        # around the fortress. Otherwise a moved city's "own" villages stay a hundred metres away.
         for kind, _n, fort in forts:
             for _ in range(MIN_VILLAGES[kind]):
                 near = sorted(pool, key=lambda c: (c["x"] - fort["x"]) ** 2 + (c["y"] - fort["y"]) ** 2)
@@ -408,8 +408,8 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
                         spot, chosen = (c["x"], c["y"]), c
                         break
                 if spot is None:
-                    # начальный угол свой у каждой крепости, иначе все деревни выстраиваются
-                    # с одной и той же стороны
+                    # each fortress has its own starting angle, otherwise all the villages line up
+                    # on one and the same side
                     start = (fort["x"] * 7.3 + fort["y"] * 3.1 + len(placed) * 2.0) % (2 * math.pi)
                     for r in (16.0, 20.0, 24.0):
                         a = 0.0
@@ -426,7 +426,7 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
                     pool.remove(chosen)
                 put(spot[0], spot[1], chosen)
 
-        # остальные деревни — жадно «подальше от уже поставленных», предпочитая города EaW
+        # the remaining villages: greedily "farther from the already placed ones", preferring EaW cities
         while len(placed) < want_v:
             best_city, best_d = None, -1.0
             for c in pool:
@@ -444,7 +444,7 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
                 break
             put(spot[0], spot[1], None)
 
-        # заполнение пустот: пока в области есть земля дальше FILL_REACH от всего живого
+        # filling gaps: while the region has land farther than FILL_REACH from anything alive
         while len(placed) < limit_v:
             m = owner == i
             if not m.any() or board.dist[m].max() <= FILL_REACH:
@@ -454,20 +454,20 @@ def plan(kingdoms, cities, weights, base, log=print, pinned=frozenset()):
                 break
             put(spot[0], spot[1], None)
 
-        # приписка к крепостям: ближайшая своя, но не больше MAX_VILLAGES на одну
+        # binding to fortresses: the nearest own one, but no more than MAX_VILLAGES per one
         counts = {(kind, n): 0 for kind, n, _e in forts}
         for entry in sorted(placed, key=lambda e: min(
                 (e["x"] - f["x"]) ** 2 + (e["y"] - f["y"]) ** 2 for _k, _n, f in forts)):
             order = sorted(forts, key=lambda f: (f[2]["x"] - entry["x"]) ** 2 + (f[2]["y"] - entry["y"]) ** 2)
-            # ближайшая крепость с местом, но только из ближних: лучше пятая деревня у соседа,
-            # чем деревня, приписанная к крепости за сто метров
+            # the nearest fortress with room, but only among close ones: better a fifth village at a neighbour
+            # than a village bound to a fortress a hundred metres away
             close = [f for f in order
                      if math.hypot(f[2]["x"] - entry["x"], f[2]["y"] - entry["y"]) <= BIND_REACH]
             pick = next((f for f in close if counts[(f[0], f[1])] < MAX_VILLAGES), order[0])
             entry["bound"] = (pick[0], pick[1])
             counts[(pick[0], pick[1])] += 1
-        # крепость без деревень в игре живёт впроголодь (в ванили таких нет), поэтому у соседа
-        # с запасом забираем ближайшую к ней деревню
+        # a fortress without villages lives half-starved in the game (vanilla has none like that), so from a neighbour
+        # with a surplus we take the village nearest to it
         for kind, n, fort in forts:
             if counts[(kind, n)]:
                 continue

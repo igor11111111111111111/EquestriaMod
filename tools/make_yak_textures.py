@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Текстуры яка в именах и раскладке мода — в AssetSources для импорта редактором.
+"""Yak textures with the mod's names and layout, in AssetSources for import by the editor.
 
   py tools/make_yak_textures.py
 
-Из запечённых текстур модели (assets/yak/textures, их пишет make_yak.py) делаются три файла по
-образцу пони (eq_twilight_body_d/_n/_s):
-  eq_yak_body_d.png — цвет (2048);
-  eq_yak_body_n.png — нормали (2048);
-  eq_yak_body_s.png — блеск: у glTF в канале G лежит шероховатость, блеск = 1 - шероховатость (2048).
-Остаются в assets/yak/textures — оттуда их импортируют в редакторе (Resource Browser → Import,
-пакет twilight), и редактор сам копирует файл в Module/AssetSources/twilight. Класть их туда
-заранее нельзя: при импорте редактор копирует файл в ту же папку и падает с «Unable to copy ...
-to Assets folder». Сам пакет хранит только ссылку на PNG и параметры, пиксели печёт редактор
-в RuntimeDataCache — поэтому кодом текстуру в мод не положить.
+From the baked model textures (assets/yak/textures, written by make_yak.py) three files are made following
+the pony pattern (eq_twilight_body_d/_n/_s):
+  eq_yak_body_d.png - colour (2048);
+  eq_yak_body_n.png - normals (2048);
+  eq_yak_body_s.png - gloss: glTF stores roughness in the G channel, gloss = 1 - roughness (2048).
+They stay in assets/yak/textures; from there they are imported in the editor (Resource Browser → Import,
+package twilight), and the editor itself copies the file to Module/AssetSources/twilight. Putting them there
+in advance is wrong: on import the editor copies the file into the same folder and crashes with "Unable to copy ...
+to Assets folder". The package itself stores only a reference to the PNG and parameters, the pixels are baked by the editor
+into RuntimeDataCache, so the texture cannot be put into the mod by code.
 """
 import os
 

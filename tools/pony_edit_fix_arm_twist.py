@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Пересчёт весов руки в assets/pony/eq_pony_edit.blend: кольцо вершин рвалось винтом при повороте.
+"""Recompute the arm weights in assets/pony/eq_pony_edit.blend: a ring of vertices tore in a twist on rotation.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_arm_twist.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_arm_twist.py
 
-Причина: старый вес считался по |X| — прямой координате, а рука висит не строго вдоль оси X,
-а под наклоном вниз. Одно и то же ПОПЕРЕЧНОЕ кольцо вершин вокруг руки (перёд и зад по кругу)
-из-за наклона оказывалось на разном |X| и получало вес РАЗНЫХ костей — при повороте плеча
-половина кольца ещё держалась за старую кость, половина уже перешла на соседнюю, и кольцо рвалось
-винтом (видно в редакторе 27.09.2026). Здесь вес вершин руки на eq_pony_body пересчитан по
-проекции на настоящую 3D-ось руки (от плеча до кисти) — одно и то же значение для всех вершин
-истинного среза, кольцо гнётся, а не рвётся.
+Cause: the old weight was computed from |X|, a straight coordinate, but the arm does not hang strictly along
+the X axis; it slopes down. Because of the slope, one and the same CROSS-SECTION ring of vertices around the
+arm (front and back around the circle) ended up at different |X| and got weights of DIFFERENT bones: when the
+shoulder rotated, half of the ring still held on to the old bone, half had already moved to the neighbour, and
+the ring tore in a twist (seen in the editor 27.09.2026). Here the arm vertex weights on eq_pony_body are
+recomputed from the projection onto the real 3D axis of the arm (shoulder to hand): the same value for all
+vertices of a true cross-section, so the ring bends instead of tearing.
 """
 import bpy
 from mathutils import Vector

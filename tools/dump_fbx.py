@@ -1,4 +1,4 @@
-# Точная структура FBX: объекты, трансформы, кости (локальные координаты), rest-поза.
+# Exact FBX structure: objects, transforms, bones (local coordinates), rest pose.
 # blender --background --factory-startup --python dump_fbx.py -- <file.fbx>
 import sys
 import bpy

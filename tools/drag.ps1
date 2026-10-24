@@ -1,7 +1,7 @@
-﻿# Перетаскивание мышью с зажатой левой кнопкой — например, чтобы повернуть модель на экране отряда.
+﻿# Mouse drag with the left button held, e.g. to rotate the model on the party screen.
 #
-#   .\tools\drag.ps1 -X 960 -Y 600 -DX 300              протянуть вправо на 300 пикселей
-#   .\tools\drag.ps1 -X 960 -Y 600 -DX 300 -Shot a.png  и снять экран
+#   .\tools\drag.ps1 -X 960 -Y 600 -DX 300              drag right by 300 pixels
+#   .\tools\drag.ps1 -X 960 -Y 600 -DX 300 -Shot a.png  and take a screenshot
 param(
     [Parameter(Mandatory)] [int]$X,
     [Parameter(Mandatory)] [int]$Y,

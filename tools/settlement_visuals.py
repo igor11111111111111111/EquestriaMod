@@ -1,17 +1,17 @@
-# Внешний вид поселений на карте мира: берём готовые модели у ванильных поселений.
+# Appearance of settlements on the world map: we take ready-made models from vanilla settlements.
 #
-# У каждого ванильного города, замка и деревни в Main_map есть сущность с дочерними объектами:
-# модели по уровням развития (l1..l3, разорённая деревня), физическое тело (bo_town, bo_castle,
-# bo_village), точка ворот (town_gate / gate_position) и осадные места. Скрипт Town Entity
-# Manager сам включает нужный уровень.
+# Every vanilla town, castle and village in Main_map has an entity with child objects:
+# models per development level (l1..l3, raided village), a physics body (bo_town, bo_castle,
+# bo_village), a gate point (town_gate / gate_position) and siege spots. The Town Entity
+# Manager script switches on the right level by itself.
 #
-# Нашему поселению подбираем «донора» — ванильное поселение того же вида и той же культуры
-# (id культур у нас ванильные: empire = Эквестрия и т.д.) — и копируем его дочерние объекты,
-# поворот и масштаб. Ворота ставим так же, как у донора: смещение ворот от центра в ванильном
-# settlements.xml записано в мировых координатах и совпадает с моделью при том же повороте.
+# For our settlement we pick a "donor": a vanilla settlement of the same kind and the same culture
+# (our culture ids are vanilla: empire = Equestria etc.), and copy its child objects,
+# rotation and scale. The gate is placed as at the donor: the gate offset from the centre in the vanilla
+# settlements.xml is written in world coordinates and matches the model at the same rotation.
 #
-# Выбор донора зависит только от вида, культуры и номера поселения, поэтому make_world.py
-# (ворота) и make_map_entities.py (модели) получают одного и того же донора.
+# The donor choice depends only on the kind, culture and settlement number, so make_world.py
+# (gates) and make_map_entities.py (models) get the same donor.
 import copy
 import os
 import re
@@ -20,12 +20,12 @@ import xml.etree.ElementTree as ET
 GAME = r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord"
 KINDS = ("town", "castle", "village")
 MAX_ROOT_CHILDREN = 30
-# Во сколько раз поселения крупнее ванильных. Модели те же, что на карте Кальрадии, но на нашей
-# карте они терялись на фоне леса. Смещение ворот умножается на тот же множитель, иначе отряды
-# входили бы в город не через ворота модели. На карте 1024 м города EaW стоят местами в 13-20 м
-# друг от друга, поэтому не ×2, как было на маленькой карте, а ×1,5.
+# How many times larger settlements are than vanilla ones. The models are the same as on the Calradia map, but on
+# our map they got lost against the forest. The gate offset is multiplied by the same factor, otherwise parties
+# would enter the town not through the model's gate. On the 1024 m map EaW towns are in places 13-20 m
+# apart, so not ×2, as on the small map, but ×1.5.
 SCALE = {"town": 1.5, "castle": 1.5, "village": 1.5}
-# Культуры без своих моделей поселений в игре берут их у ванильной
+# Cultures without their own settlement models in the game take them from a vanilla one
 DONOR_CULTURE = {"nord": "sturgia"}
 OUR_ID = re.compile(r"^(town|castle|village)_([a-z]+)_(\d+)$")
 
@@ -55,14 +55,14 @@ class Donor:
         self.id = sid
         self.kind = kind
         self.culture = culture
-        self.gate_offset = gate_offset      # (dx, dy) или None, если ворот нет
-        self.children = None                # элемент <children> из сцены
+        self.gate_offset = gate_offset      # (dx, dy) or None if there is no gate
+        self.children = None                # the <children> element from the scene
         self.rotation = "0.000, 0.000, 0.000"
         self.scale = None
 
 
 def load_donors(game=None, with_scene=True):
-    """Ванильные поселения: {(вид, культура): [Donor, ...]} в порядке id, плюс {id: Donor}."""
+    """Vanilla settlements: {(kind, culture): [Donor, ...]} in id order, plus {id: Donor}."""
     settlements_path, scene_path = _paths(game)
     by_key, by_id = {}, {}
     for s in ET.parse(settlements_path).getroot():
@@ -80,8 +80,8 @@ def load_donors(game=None, with_scene=True):
     for donors in by_key.values():
         donors.sort(key=lambda d: d.id)
 
-    # Доноров без годной модели выбрасываем из списков — make_world.py и make_map_entities.py
-    # должны видеть одинаковые списки, поэтому сцену читаем в обоих случаях.
+    # Donors without a usable model are dropped from the lists: make_world.py and make_map_entities.py
+    # must see identical lists, so the scene is read in both cases.
     if with_scene:
         for entity in ET.parse(scene_path).getroot().iter("game_entity"):
             donor = by_id.get(entity.get("name"))
@@ -90,10 +90,10 @@ def load_donors(game=None, with_scene=True):
             children = entity.find("children")
             if children is None or not len(children):
                 continue
-            # Берём только доноров обычного устройства: у города в корне есть тело bo_town, у
-            # замка — bo_castle, а модели собраны в группы по уровням (у town_EN2 в корне девять
-            # объектов). Встречаются сборные поселения — у town_EN1 в корне 334 отдельных дома,
-            # камня и декали, — у нас такая модель не видна вовсе.
+            # Only donors of the usual structure are taken: a town has a bo_town body at the root, a
+            # castle bo_castle, and the models are grouped by levels (town_EN2 has nine objects at the
+            # root). There are composite settlements: town_EN1 has 334 separate houses, stones and
+            # decals at the root; such a model is not visible at all in our game.
             body = {"town": "bo_town", "castle": "bo_castle"}.get(donor.kind)
             if body and not any(child.get("name") == body for child in children):
                 continue
@@ -110,7 +110,7 @@ def load_donors(game=None, with_scene=True):
 
 
 def pick(by_key, by_id, settlement_id):
-    """Донор для нашего поселения или None. Логова разбойников — ванильные, берут свою же сущность."""
+    """Donor for our settlement or None. Bandit hideouts are vanilla and take their own entity."""
     match = OUR_ID.match(settlement_id)
     if match is None:
         return by_id.get(settlement_id)
@@ -122,7 +122,7 @@ def pick(by_key, by_id, settlement_id):
 
 
 def gate_position(donor, x, y, fallback=(-1.5, -1.5)):
-    """Мировые координаты ворот для поселения в (x, y)."""
+    """World coordinates of the gate for a settlement at (x, y)."""
     if donor is None or not donor.gate_offset:
         return x + fallback[0], y + fallback[1]
     factor = SCALE.get(donor.kind, 1.0)
@@ -130,7 +130,7 @@ def gate_position(donor, x, y, fallback=(-1.5, -1.5)):
 
 
 def dress(entity, donor):
-    """Вставляет в нашу сущность модели донора, его поворот и масштаб."""
+    """Inserts the donor's models, rotation and scale into our entity."""
     if donor is None or donor.children is None:
         return False
     old = entity.find("children")
@@ -147,19 +147,19 @@ def dress(entity, donor):
     return True
 
 
-# ---------------------------------------------------------------- логова разбойников
-# Логова у нас — ванильные (те же id, другие координаты), но на карте их модели не было: доноры
-# выше — только города, замки и деревни, а у сущности логова оставались одно имя и надпись
-# (замечено пользователем 10.10.2026: «название есть, 3D-модели нет»). У ванили модель логова
-# висит прямо на его сущности в Main_map: меш (worldmap_hideout_a/b, map_icon_bandit_hideout_b/d),
-# тело для щелчка (bo_hideouts / bo_sphere_collider), масштаб ~0.6–0.8, у трёх — дочерние объекты.
-# Переносим всё это на нашу сущность с тем же id; наклон по рельефу Кальрадии не берём, только
-# поворот вокруг вертикали.
-HIDEOUT_SCALE = 1.5     # как у поселений (SCALE): ванильные логова на нашей карте теряются
+# ---------------------------------------------------------------- bandit hideouts
+# Our hideouts are vanilla ones (the same ids, other coordinates), but their model was missing on the map:
+# the donors above are only towns, castles and villages, and the hideout entity was left with only a name
+# and a label (noticed by the user 10.10.2026: "the name is there, no 3D
+# model"). In vanilla the hideout model hangs right on its entity in Main_map: a mesh (worldmap_hideout_a/b, map_icon_bandit_hideout_b/d),
+# a click body (bo_hideouts / bo_sphere_collider), scale ~0.6–0.8, three of them have child objects.
+# We move all this onto our entity with the same id; the tilt along the Calradia terrain is not taken, only
+# the rotation about the vertical.
+HIDEOUT_SCALE = 1.5     # as for settlements (SCALE): vanilla hideouts get lost on our map
 
 
 def load_hideouts(game=None):
-    """{id логова: его game_entity из ванильной Main_map}."""
+    """{hideout id: its game_entity from the vanilla Main_map}."""
     _settlements, scene_path = _paths(game)
     result = {}
     for entity in ET.parse(scene_path).getroot().iter("game_entity"):
@@ -170,7 +170,7 @@ def load_hideouts(game=None):
 
 
 def dress_hideout(entity, source):
-    """Модель ванильного логова source на нашу сущность entity. True, если что-то перенесено."""
+    """The model of the vanilla hideout source onto our entity. True if something was transferred."""
     if source is None:
         return False
     for tag in ("physics", "components", "children"):
@@ -178,7 +178,7 @@ def dress_hideout(entity, source):
         if old is not None:
             entity.remove(old)
     transform = entity.find("transform")
-    # порядок дочерних элементов как у ванили: tags, transform, physics, components, children, scripts
+    # child element order as in vanilla: tags, transform, physics, components, children, scripts
     index = list(entity).index(transform) + 1 if transform is not None else len(entity)
     for tag in ("physics", "components", "children"):
         node = source.find(tag)

@@ -8,16 +8,16 @@ using TaleWorlds.CampaignSystem.CampaignBehaviors;
 
 namespace EquestriaMod
 {
-    // Дипломатия на старте кампании: войны, союзы, торговые соглашения и перемирия с данью.
+    // Diplomacy at campaign start: wars, alliances, trade agreements and truces with tribute.
     //
-    // Без этого все державы начинают в мире со всеми, и первые войны игра придумывает сама через
-    // недели. Игра из XML стойки держав не читает, поэтому tools/make_world.py пишет свой файл
-    // ModuleData/equestria_diplomacy.xml (из world_data.DIPLOMACY), а это поведение применяет его
-    // один раз при создании новой кампании. Дальше всё живёт в сохранении, как и ванильные войны.
+    // Without this all kingdoms start at peace with everyone, and the game invents the first wars by itself
+    // weeks later. The game does not read kingdom stances from XML, so tools/make_world.py writes its own file
+    // ModuleData/equestria_diplomacy.xml (from world_data.DIPLOMACY), and this behavior applies it
+    // once when a new campaign is created. After that everything lives in the save, like vanilla wars.
     //
-    // Союзы и торговля — штатные механики War Sails: заключаются через поведения игры
-    // (AllianceCampaignBehavior, TradeAgreementsCampaignBehavior), отдельных действий у них нет.
-    // Дань — это мир после войны: объявляем войну и тут же заключаем мир с выплатой.
+    // Alliances and trade are standard War Sails mechanics: they are made through the game's behaviors
+    // (AllianceCampaignBehavior, TradeAgreementsCampaignBehavior), they have no separate actions.
+    // Tribute is peace after a war: we declare war and immediately make peace with payment.
     public class EquestriaDiplomacyBehavior : CampaignBehaviorBase
     {
         private const string FileName = "equestria_diplomacy.xml";
@@ -25,8 +25,8 @@ namespace EquestriaMod
 
         public override void RegisterEvents()
         {
-            // После того как игра доделала свой новый мир (в том числе завела списки союзов и
-            // соглашений): раньше поведения союзов ещё не готовы принимать записи.
+            // After the game has finished its new world (including setting up the lists of alliances and
+            // agreements): earlier the alliance behaviors are not ready to accept entries yet.
             CampaignEvents.OnNewGameCreatedPartialFollowUpEndEvent.AddNonSerializedListener(this, _ =>
                 EquestriaCrashLog.Try("дипломатия на старте", Apply));
         }
@@ -86,7 +86,7 @@ namespace EquestriaMod
                         break;
                     case "tribute":
                         int gold = int.TryParse(node.GetAttribute("gold"), out int g) ? g : 100;
-                        // перемирие с данью: a платит b — это мир после войны, поэтому сначала война
+                        // truce with tribute: a pays b - this is peace after a war, so first war
                         DeclareWarAction.ApplyByDefault(a, b);
                         MakePeaceAction.ApplyByKingdomDecision(a, b, gold, TributeDays);
                         tributes++;

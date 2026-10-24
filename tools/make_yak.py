@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Як из готовой антро-модели (А-поза, без скелета) — на скелет пони, по частям, в FBX.
+"""A yak from a ready anthro model (A-pose, no skeleton): onto the pony skeleton, in parts, to FBX.
 
-Запуск (headless Blender, открывает готовую пони — в ней скелет и образец привязки):
-  blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_yak.py -- <як.glb> <папка вывода>
+Run (headless Blender, opens the finished pony: it holds the skeleton and the skinning reference):
+  blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_yak.py -- <yak.glb> <output folder>
 
-Чем отличается от прежних попыток (tools/convert_*.py): модель уже стоит на двух ногах в А-позе,
-разворачивать ничего не надо. Остаётся привязать её к человеческому скелету Bannerlord и разрезать
-на предметы так же, как разрезана пони:
-  eq_yak_body   — туловище и руки (body_meta_mesh)
-  eq_yak_legs   — ноги (legs_mesh)
-  eq_yak_gloves — кисти (hands_mesh)
-  eq_yak_head   — голова с рогами и гривой (face_meta_mesh; ключей мимики нет — лицо жёсткое)
-  eq_yak_tail   — хвост (предмет в слот плаща, как хвост пони, целиком на кости таза)
+How it differs from the earlier attempts (tools/convert_*.py): the model already stands on two legs in an A-pose,
+nothing needs turning around. What remains is to bind it to the Bannerlord human skeleton and cut it
+into items the same way the pony is cut:
+  eq_yak_body   - torso and arms (body_meta_mesh)
+  eq_yak_legs   - legs (legs_mesh)
+  eq_yak_gloves - hands (hands_mesh)
+  eq_yak_head   - head with horns and mane (face_meta_mesh; no facial-expression keys, the face is rigid)
+  eq_yak_tail   - tail (an item in the cape slot, like the pony tail, entirely on the pelvis bone)
 
-Как делается:
-  1. Модель ставится копытами на пол, мордой в -Y (как пони) и масштабируется до роста HEIGHT.
-  2. Веса костей переносятся с пони: с ближайшей точки её поверхности (тело+ноги+кисти+голова,
-     сшитые в одну), поэтому як гнётся там же, где пони. Автопривязка по теплу для такой сетки
-     (пластины шерсти, несшитые куски) не годится.
-  3. Разрез на предметы — по главной кости каждой вершины: голова и шея → голова, кисти → перчатки,
-     бедро-голень-стопа → ноги, хвост — по положению (за спиной, на высоте таза), остальное — тело.
-  4. Материал eq_yak_body с запечёнными текстурами модели; сами текстуры пишутся в <вывод>/textures.
-     В редакторе материал надо создать заново на этих текстурах (материал из FBX идёт без скиннинга).
-Дальше — импорт FBX в Modding Kit руками, затем в tools/make_pony_race.py убрать "yak" из NOT_IMPORTED.
+How it is done:
+  1. The model is set with its hooves on the floor, muzzle toward -Y (like the pony), and scaled to height HEIGHT.
+  2. Bone weights are transferred from the pony: from the nearest point of its surface (body+legs+hands+head,
+     merged into one), so the yak bends in the same places as the pony. Heat-based automatic skinning does not
+     suit such a mesh (fur plates, unmerged pieces).
+  3. Cutting into items is by each vertex's main bone: head and neck → head, hands → gloves,
+     thigh-calf-foot → legs, tail by position (behind the back, at pelvis height), the rest is the body.
+  4. Material eq_yak_body with the model's baked textures; the textures themselves are written to <output>/textures.
+     In the editor the material has to be created anew on these textures (a material from FBX comes without skinning).
+Next: import the FBX into the Modding Kit by hand, then remove "yak" from NOT_IMPORTED in tools/make_pony_race.py.
 """
 import math
 import os
@@ -38,7 +38,7 @@ SRC, OUT = os.path.abspath(args[0]), os.path.abspath(args[1])
 os.makedirs(OUT, exist_ok=True)
 
 RACE = "yak"
-HEIGHT = 2.05          # рост яка в метрах (пони 1.86): яки крупнее пони
+HEIGHT = 2.05          # yak height in metres (pony 1.86): yaks are bigger than ponies
 MAT = "eq_yak_body"
 
 HEAD_BONES = ("bip01_head_13", "bip01_neck_12")
@@ -60,7 +60,7 @@ for ob in pony.values():
             kb.value = 0.0
 bones = {b.name: skel.matrix_world @ b.head_local for b in skel.data.bones}
 
-# ---------------------------------------------------------------- 1. импорт и посадка
+# ---------------------------------------------------------------- 1. import and placement
 before = set(bpy.data.objects)
 bpy.ops.import_scene.gltf(filepath=SRC)
 new = [o for o in bpy.data.objects if o not in before]
@@ -77,8 +77,8 @@ if len(meshes) > 1:
 yak = bpy.context.view_layer.objects.active
 yak.name = yak.data.name = "eq_yak_all"
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-# Генератор отдаёт «суп»: соседние треугольники не делят вершины (тысячи островов). Сшиваем —
-# иначе не найти связные куски (пряди гривы), а по швам при деформации могут разойтись щели.
+# The generator outputs a "soup": neighbouring triangles do not share vertices (thousands of islands). We merge them,
+# otherwise connected pieces (mane strands) cannot be found, and gaps may open along seams when deforming.
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
 bpy.ops.mesh.remove_doubles(threshold=0.0005)
@@ -93,7 +93,7 @@ def coords():
 P = coords()
 lo, hi = P.min(0), P.max(0)
 log("исходник: %d вершин, размер %.2f x %.2f x %.2f" % (len(P), *(hi - lo)))
-# Морда должна смотреть в -Y. Морда — самая выступающая по Y точка верхней трети модели.
+# The muzzle must face -Y. The muzzle is the point sticking out furthest in Y in the upper third of the model.
 top = P[P[:, 2] > lo[2] + 0.6 * (hi[2] - lo[2])]
 nose_y = top[np.argmax(np.abs(top[:, 1] - (lo[1] + hi[1]) / 2)), 1]
 if nose_y > (lo[1] + hi[1]) / 2:
@@ -108,9 +108,9 @@ yak.location = Vector((-(lo[0] + hi[0]) / 2 * scale, -(lo[1] + hi[1]) / 2 * scal
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 P = coords()
 lo, hi = P.min(0), P.max(0)
-# Наклон вперёд. В игре анимации прогибают позвоночник назад, и массивное туловище яка с горбом
-# на спине выглядит откинутым; компенсируем в самой модели: всё, что выше таза, поворачивается
-# вперёд вокруг оси X через таз, угол набирается плавно от таза до груди (LEAN_TO), выше — полный.
+# Forward lean. In game the animations arch the spine backward, and the yak's massive torso with the hump
+# on its back looks thrown back; we compensate in the model itself: everything above the pelvis rotates
+# forward around the X axis through the pelvis, the angle builds up smoothly from pelvis to chest (LEAN_TO), full above.
 LEAN_FORWARD = math.radians(12.0)
 LEAN_FROM, LEAN_TO = bones[PELVIS].z * HEIGHT / 1.86, 1.35
 if LEAN_FORWARD:
@@ -126,18 +126,18 @@ if LEAN_FORWARD:
     lo, hi = P.min(0), P.max(0)
     log("наклон вперёд %.0f°: верх груди сместился на %.2f м вперёд" % (math.degrees(LEAN_FORWARD),
                                                                        (1.35 - LEAN_FROM) * math.sin(LEAN_FORWARD)))
-# Руки вперёд. У модели руки отведены назад: кисти на y≈+0.20, а кости рук у пони идут по y≈0.03
-# (вперёд — это -Y). Привязка сохраняет это смещение в любой позе, и в игре руки торчат за
-# спиной. Сдвигаем руки вперёд поступательно: полностью от ARM_X1, плавно от ARM_X0 (плечо).
-# Два движения, ни одно не рвёт сетку:
-#   1) плечи вперёд — поступательно, но широкой зоной от самой оси (0 -> SHOULDER_X): бок корпуса
-#      уезжает вместе с плечом, и «косынки» у основания руки не образуется;
-#   2) рука поворачивается вокруг вертикали через плечевой сустав на ARM_SWING вперёд — форма руки
-#      остаётся, кисть выходит к середине корпуса.
-SHOULDER_X = 0.42          # плечевой сустав яка (у пони 0.19)
-SHOULDER_FORWARD = 0.12    # на сколько подать плечи вперёд
+# Arms forward. The model's arms are swept back: the hands at y≈+0.20, while the pony's arm bones run at y≈0.03
+# (forward is -Y). The skinning keeps this offset in any pose, and in game the arms stick out behind
+# the back. We move the arms forward by translation: fully from ARM_X1, smoothly from ARM_X0 (the shoulder).
+# Two motions, neither tears the mesh:
+#   1) shoulders forward: by translation, but with a wide zone from the axis itself (0 -> SHOULDER_X): the side of the
+#      torso moves with the shoulder, and no "web" forms at the base of the arm;
+#   2) the arm rotates around the vertical through the shoulder joint by ARM_SWING forward: the arm's shape
+#      stays, the hand comes toward the middle of the torso.
+SHOULDER_X = 0.42          # the yak's shoulder joint (pony 0.19)
+SHOULDER_FORWARD = 0.12    # how far to bring the shoulders forward
 ARM_SWING = math.radians(25.0)
-ARM_OUT = 0.05             # чуть наружу, тоже широкой зоной
+ARM_OUT = 0.05             # slightly outward, also with a wide zone
 root = P[(np.abs(P[:, 0]) > SHOULDER_X - 0.05) & (np.abs(P[:, 0]) < SHOULDER_X + 0.05) & (P[:, 2] > 1.0)]
 pivot_y, pivot_z = float(root[:, 1].mean()), float(root[:, 2].mean())
 for v in yak.data.vertices:
@@ -149,8 +149,8 @@ for v in yak.data.vertices:
     v.co.y -= SHOULDER_FORWARD * t
     v.co.x += ARM_OUT * t * sign
     if ax > SHOULDER_X - 0.08:
-        # поворот вокруг вертикали через (±SHOULDER_X, pivot_y): вперёд — это в -Y
-        k = min(1.0, (ax - (SHOULDER_X - 0.08)) / 0.16)   # плавный вход в поворот у сустава
+        # rotation around the vertical through (±SHOULDER_X, pivot_y): forward is -Y
+        k = min(1.0, (ax - (SHOULDER_X - 0.08)) / 0.16)   # smooth entry into the rotation at the joint
         a = ARM_SWING * k
         dx, dy = ax - SHOULDER_X, v.co.y - (pivot_y - SHOULDER_FORWARD)
         rx = dx * math.cos(a) + dy * math.sin(a)
@@ -162,18 +162,18 @@ lo, hi = P.min(0), P.max(0)
 hands = P[np.abs(P[:, 0]) > 0.9 * hi[0]]
 log("руки: плечи вперёд на %.2f м, поворот %.0f°, кисти теперь на y=%.2f (кость %.2f), x=%.2f"
     % (SHOULDER_FORWARD, math.degrees(ARM_SWING), hands[:, 1].mean(), bones["bip01_l_hand_19"].y, hands[:, 0].mean()))
-# Где у яка кисти: самые дальние по X точки (у пони кисть на высоте 1.11, x 0.65)
+# Where the yak's hands are: the points furthest in X (the pony's hand is at height 1.11, x 0.65)
 hand = P[np.abs(P[:, 0]) > 0.9 * hi[0]]
 log("посажен: рост %.2f, размах %.2f, глубина %.2f; кисти на высоте %.2f (у пони 1.11), таз пони на %.2f"
     % (hi[2] - lo[2], hi[0] - lo[0], hi[1] - lo[1], hand[:, 2].mean(), bones[PELVIS].z))
 
-# ---------------------------------------------------------------- 2. веса с пони
+# ---------------------------------------------------------------- 2. weights from the pony
 ref_parts = []
 for name in ("eq_twilight_body", "eq_twilight_legs", "eq_twilight_gloves", "eq_twilight_head"):
     src = pony[name]
     ob = src.copy()
     ob.data = src.data.copy()
-    if ob.data.shape_keys:   # ключи мешают объединению; базовая форма уже стоит
+    if ob.data.shape_keys:   # the keys get in the way of joining; the base shape is already set
         ob.shape_key_clear()
     bpy.context.scene.collection.objects.link(ob)
     ref_parts.append(ob)
@@ -204,9 +204,9 @@ bpy.ops.object.vertex_group_limit_total(limit=4)
 bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 bpy.data.objects.remove(ref)
 
-# Кости кистей и предплечий — только руке. У пони в А-позе кисти висят на высоте живота, и бока
-# широкого торса яка оказались ближе к её кистям, чем к её телу: перенос дал им веса кистей,
-# в предпросмотре перчаток появилось «кольцо» из живота, а в игре живот дёргался бы за руками.
+# Hand and forearm bones only for the arm. In the pony's A-pose the hands hang at belly height, and the sides
+# of the yak's wide torso were closer to its hands than to its body: the transfer gave them hand weights,
+# a "ring" from the belly appeared in the gloves preview, and in game the belly would jerk along with the arms.
 P = coords()
 HAND_MIN_X, FOREARM_MIN_X = 0.62, 0.45
 stripped = 0
@@ -220,23 +220,23 @@ for i, p in enumerate(P):
         if name in HAND_BONES or (ax < FOREARM_MIN_X and "foretwist" in name):
             yak.vertex_groups[g.group].remove([i])
             stripped += 1
-    if not v.groups:   # держалась только на кистях — отдаём позвоночнику
+    if not v.groups:   # it was held only by the hands; give it to the spine
         yak.vertex_groups["bip01_spine_9" if p[2] > 0.95 else PELVIS].add([i], 1.0, "REPLACE")
 bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 log("снято весов кистей и предплечий с корпуса: %d" % stripped)
 
-# Голова — жёстко на кости головы. Морда яка сидит низко и далеко впереди того места, где голова
-# у пони, и перенос весов даёт ей кости шеи и груди: верх и низ морды вели разные кости, и она
-# рвалась на стыке. Граница головы — линия челюсти: над шеей (NECK_Z), а впереди опускается
-# вслед за мордой (JAW_SLOPE м вниз на метр вперёд).
-# Скелет не масштабируется вместе с моделью: кость шеи стоит на 1.47 м при любом росте яка,
-# а самое узкое место его шеи — на 1.56 м; режем между ними.
+# The head is rigid on the head bone. The yak's muzzle sits low and far in front of where the pony's head
+# is, and the weight transfer gives it neck and chest bones: the top and bottom of the muzzle were driven by
+# different bones, and it tore at the junction. The head boundary is the jaw line: above the neck (NECK_Z),
+# and in front it drops following the muzzle (JAW_SLOPE m down per metre forward).
+# The skeleton does not scale together with the model: the neck bone stands at 1.47 m at any yak height,
+# and the narrowest point of its neck is at 1.56 m; we cut between them.
 NECK_Z = bones["bip01_neck_12"].z + 0.03
 JAW_SLOPE, JAW_FROM = 0.55, -0.15
 
 
 def is_head(p):
-    front = max(0.0, -p[1] + JAW_FROM)   # насколько точка впереди линии шеи
+    front = max(0.0, -p[1] + JAW_FROM)   # how far the point is in front of the neck line
     return p[2] > NECK_Z - JAW_SLOPE * front
 
 
@@ -247,8 +247,8 @@ for g in yak.vertex_groups:
     if g.name != "bip01_head_13":
         g.remove(head_idx)
 head_group.add(head_idx, 1.0, "REPLACE")
-# Под линией челюсти — плавная зона: тело сразу под головой ведут кости шеи и груди, и без
-# перехода кожа на стыке (пряди гривы, горло) растягивается между жёсткой головой и шеей.
+# Below the jaw line, a smooth zone: the body right under the head is driven by neck and chest bones, and without
+# a transition the skin at the junction (mane strands, throat) stretches between the rigid head and the neck.
 BLEND = 0.15
 blended = 0
 for i in range(len(P)):
@@ -256,7 +256,7 @@ for i in range(len(P)):
     if is_head(p):
         continue
     front = max(0.0, -p[1] + JAW_FROM)
-    d = (NECK_Z - JAW_SLOPE * front) - p[2]      # насколько ниже линии челюсти
+    d = (NECK_Z - JAW_SLOPE * front) - p[2]      # how far below the jaw line
     if d >= BLEND:
         continue
     w = 1.0 - d / BLEND
@@ -267,7 +267,7 @@ for i in range(len(P)):
     blended += 1
 log("голова жёстко на кости головы: %d вершин, плавная зона под челюстью: %d" % (len(head_idx), blended))
 
-# ---------------------------------------------------------------- 3. разрез на предметы
+# ---------------------------------------------------------------- 3. cutting into items
 group_names = {g.index: g.name for g in yak.vertex_groups}
 dominant = []
 for v in yak.data.vertices:
@@ -278,10 +278,10 @@ back = P[(np.abs(P[:, 0]) < 0.08) & (np.abs(P[:, 2] - bones[PELVIS].z * HEIGHT /
 tail_z = bones[PELVIS].z * HEIGHT / 1.86
 
 
-LEG_TOP = 0.44 * HEIGHT / 1.86   # у пони «ноги» — это голени и копыта (до 0.44 м), бёдра в теле
-# Голова режется по той же линии челюсти, что и веса (is_head выше): голова и её кость — вместе.
+LEG_TOP = 0.44 * HEIGHT / 1.86   # for the pony "legs" are the calves and hooves (up to 0.44 m), thighs are in the body
+# The head is cut along the same jaw line as the weights (is_head above): the head and its bone go together.
 
-# острова сетки (связные куски)
+# mesh islands (connected pieces)
 parent = list(range(len(P)))
 
 
@@ -310,7 +310,7 @@ def part_of(i):
     p = P[i]
     if p[1] > back + 0.05 and abs(p[2] - tail_z) < 0.45 and abs(p[0]) < 0.25:
         return "tail"
-    if is_head(p):        # та же линия челюсти, что и у весов: голова и её кость режутся вместе
+    if is_head(p):        # the same jaw line as for the weights: the head and its bone are cut together
         return "head"
     b = dominant[i]
     if b in HAND_BONES:
@@ -326,7 +326,7 @@ for name in labels:
     counts[name] = counts.get(name, 0) + 1
 log("части по вершинам:", counts)
 
-# материал с запечёнными текстурами
+# material with baked textures
 src_mat = yak.data.materials[0] if yak.data.materials else None
 mat = bpy.data.materials.new(MAT)
 mat.use_nodes = True
@@ -366,7 +366,7 @@ for name in ("body", "legs", "gloves", "head", "tail"):
     bm.from_mesh(ob.data)
     bm.verts.ensure_lookup_table()
     keep_set = set(keep)
-    # грань остаётся в части, если в ней большинство вершин этой части
+    # a face stays in the part if most of its vertices belong to this part
     drop = [f for f in bm.faces if sum(1 for v in f.verts if v.index in keep_set) * 2 <= len(f.verts)]
     bmesh.ops.delete(bm, geom=drop, context="FACES")
     loose = [v for v in bm.verts if not v.link_faces]
@@ -377,7 +377,7 @@ for name in ("body", "legs", "gloves", "head", "tail"):
     ob.data.materials.append(mat)
     for poly in ob.data.polygons:
         poly.use_smooth = True
-    if name == "tail":   # хвост — целиком на тазу, как хвост пони
+    if name == "tail":   # the tail is entirely on the pelvis, like the pony tail
         for g in list(ob.vertex_groups):
             ob.vertex_groups.remove(g)
         ob.vertex_groups.new(name=PELVIS).add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
@@ -388,7 +388,7 @@ for name in ("body", "legs", "gloves", "head", "tail"):
     log("%s: %d вершин, %d граней" % (ob.name, len(ob.data.vertices), len(ob.data.polygons)))
 bpy.data.objects.remove(yak)
 
-# ---------------------------------------------------------------- 4. экспорт
+# ---------------------------------------------------------------- 4. export
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts.values()]:
     ob.select_set(True)
@@ -399,13 +399,13 @@ bpy.ops.export_scene.fbx(filepath=path, use_selection=True, add_leaf_bones=False
 log("экспорт", path)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "eq_%s.blend" % RACE))
 
-# ---------------------------------------------------------------- 5. превью: як рядом с пони
+# ---------------------------------------------------------------- 5. preview: the yak next to the pony
 prev = os.path.join(OUT, "preview")
 os.makedirs(prev, exist_ok=True)
 scene = bpy.context.scene
 for ob in pony.values():
     ob.hide_render = ob.name in ("eq_twilight_mane", "eq_twilight_tail") or False
-    ob.location.x -= 1.4   # пони сдвигается влево — для сравнения роста
+    ob.location.x -= 1.4   # the pony is moved left, to compare heights
 scene.render.engine = "BLENDER_WORKBENCH"
 scene.display.shading.light = "STUDIO"
 scene.display.shading.color_type = "TEXTURE"

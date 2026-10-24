@@ -1,23 +1,23 @@
-# Предметы окружения на карте мира: валуны, скалы, одиночные деревья, рощицы, поваленные стволы.
+# Environment props on the world map: boulders, rocks, single trees, groves, fallen trunks.
 #
-# На карте у нас были только поселения: земля между городами выглядела пустой, особенно на
-# равнинах. Деревья на карте растут из слоёв растительности рельефа (см. paint_terrain.py) и
-# покрывают только лес; всё остальное — голая текстура. Здесь мы досыпаем обычные сущности сцены
-# с мешами карты мира (map_rock_*, map_tree_*, log_*), как это сделано у ванили.
+# Our map had only settlements: the land between towns looked empty, especially on the
+# plains. Trees on the map grow from the terrain's vegetation layers (see paint_terrain.py) and
+# cover only the forest; everything else is a bare texture. Here we add ordinary scene entities
+# with world-map meshes (map_rock_*, map_tree_*, log_*), the way vanilla does.
 #
-# ВАЖНО: меши worldmap_tree_* сюда не годятся, хотя и выглядят как деревья карты. Это флора
-# слоёв рельефа: внутри лежат ДВА объекта на одном уровне детализации (worldmap_tree_beech_01.0.lod0
-# и .1.lod0), их сеет движок сам, размером 0.19..0.27 (см. <meshes> в слоях ванильной Main_map).
-# Поставленные отдельными сущностями и в масштабе около 1.0, они выходили вчетверо крупнее
-# нормального дерева и мерцали: листовые плоскости обоих объектов спорят за глубину
-# (замечено в игре 2026-09-22). У обычных предметов уровни идут по порядку: lod0, lod1.
+# IMPORTANT: worldmap_tree_* meshes do not fit here, even though they look like map trees. They are
+# terrain-layer flora: inside are TWO objects at one level of detail (worldmap_tree_beech_01.0.lod0
+# and .1.lod0), the engine sows them itself at size 0.19..0.27 (see <meshes> in the layers of vanilla Main_map).
+# Placed as separate entities at a scale of about 1.0, they came out four times larger than
+# a normal tree and flickered: the leaf planes of both objects fight for depth
+# (seen in game 2026-09-22). Ordinary props have their levels in order: lod0, lod1.
 #
-# Раскладка привязана к типу местности из assets/map/eq_map_terrain.png и к крутизне склона:
-# в горах — скалы и глыбы, в лесу — валежник и камни, на равнине — рощицы и одинокие деревья,
-# в степи — редкие камни и акации, в пустыне — пальмы, на болоте — коряги, у рек — ивы и камни.
-# Выше линии снега (SNOW_LINE) камни подменяются заснеженными вариантами, деревья не ставятся.
+# The layout is tied to the terrain type from assets/map/eq_map_terrain.png and to the slope steepness:
+# in the mountains rocks and blocks, in the forest deadwood and stones, on the plain groves and lone trees,
+# in the steppe sparse stones and acacias, in the desert palms, in the swamp snags, by rivers willows and stones.
+# Above the snow line (SNOW_LINE) stones are replaced by snowy variants, trees are not placed.
 #
-# Модуль вызывается из make_map_entities.py: place(entities, settlements, log).
+# The module is called from make_map_entities.py: place(entities, settlements, log).
 import math
 import os
 import random
@@ -27,48 +27,48 @@ import numpy as np
 
 import equus_map
 
-# Плотность целиком: 1.0 — как настроено ниже, 2.0 — вдвое больше предметов.
+# Overall density: 1.0 is as configured below, 2.0 is twice as many props.
 DENSITY = float(os.environ.get("EQ_PROPS", "1.0"))
 SEED = int(os.environ.get("EQ_PROP_SEED", "20260918"))
 
-SNOW_LINE = 22.0          # выше этой высоты лежит снег (как в paint_terrain.py)
-TREE_LINE = 20.0          # выше деревья не растут
-MIN_HEIGHT = 0.6          # ниже — пляж и мелководье, там ничего не ставим
-# Не ближе этого к поселению, иначе предметы лезут в его модель. Поселений много (медиана до
-# ближайшего соседа ~19 м), поэтому радиус небольшой и зависит от вида.
+SNOW_LINE = 22.0          # snow lies above this height (as in paint_terrain.py)
+TREE_LINE = 20.0          # trees do not grow above this
+MIN_HEIGHT = 0.6          # below is beach and shallows, nothing is placed there
+# Not closer than this to a settlement, otherwise props get into its model. There are many settlements (median
+# distance to the nearest neighbour ~19 m), so the radius is small and depends on the kind.
 SETTLEMENT_CLEAR = {"town": 13.0, "castle": 10.0, "village": 8.0, "hideout": 7.0}
-BORDER = 12.0             # отступ от края карты
+BORDER = 12.0             # margin from the map edge
 
-# Имя сущностей: по нему же они и удаляются при повторном запуске.
+# Entity name: it is also used to remove them on a rerun.
 PREFIX = "eq_prop_"
 
-# Откуда брать дороги: их считает map_roads.py по equestria_settlements.xml той же папки Module.
+# Where to take the roads from: map_roads.py computes them from equestria_settlements.xml of the same Module folder.
 MOD_FOR_ROADS = os.environ.get("EQ_MOD", "Module")
-# На сколько метров от русла отодвигать предметы: нарисованная река шире линии на карте местности
+# How many metres to move props away from a riverbed: the drawn river is wider than the line on the terrain map
 RIVER_CLEAR = 4.0
 
 
 def item(mesh, lo, hi, snow=None, weight=1.0, tilt=0.18, tree=False, sink=0.1):
-    """Один вид предмета: меш, диапазон масштаба, заснеженный вариант, наклон и утопание в землю."""
+    """One prop kind: mesh, scale range, snowy variant, tilt and sinking into the ground."""
     return dict(mesh=mesh, lo=lo, hi=hi, snow=snow, weight=weight, tilt=tilt, tree=tree, sink=sink)
 
 
-# Стоянки наёмников у столиц держав. Сами лагеря — отряды на карте (CampSpots в
-# src/EquestriaMercCamp.cs), здесь только палатки, которые дают им вид стоянки. Точки обязаны
-# совпадать с теми, что в коде, иначе отряд встанет в стороне от своих палаток.
+# Mercenary camps near the realm capitals. The camps themselves are parties on the map (CampSpots in
+# src/EquestriaMercCamp.cs); here are only the tents that make them look like a camp. The points must
+# match those in the code, otherwise the party stands away from its tents.
 MERC_CAMPS = [
-    (543.5, 502.5),    # Кантерлот
-    (426.8, 448.0),    # Лас-Пегасус
-    (533.7, 454.1),    # Понивилль
-    (666.5, 642.7),    # Кристальный Город
-    (986.8, 812.9),    # Грифонстоун
-    (182.7, 564.5),    # Гора Арис
-    (101.9, 648.2),    # Оленья Роща
-    (721.1, 297.6),    # Логово Лорда Драконов
-    (555.7, 772.2),    # Яктаун
-    (285.3, 800.8),    # Весалиполис
+    (543.5, 502.5),    # Canterlot
+    (426.8, 448.0),    # Las Pegasus
+    (533.7, 454.1),    # Ponyville
+    (666.5, 642.7),    # Crystal City
+    (986.8, 812.9),    # Griffonstone
+    (182.7, 564.5),    # Mount Aris
+    (101.9, 648.2),    # Deer Grove
+    (721.1, 297.6),    # Dragon Lord's Lair
+    (555.7, 772.2),    # Yaktown
+    (285.3, 800.8),    # Vesalipolis
 ]
-# Что стоит вокруг точки: три палатки и навес. Радиус меша палатки 0.36 м, поэтому масштаб крупный.
+# What stands around the point: three tents and an awning. The tent mesh radius is 0.36 m, so the scale is large.
 CAMP_PROPS = [
     ("map_icon_siege_camp_tent", -0.4, 0.4, 6.0, 0.4),
     ("map_icon_siege_camp_tent", 0.7, -0.4, 5.4, 2.1),
@@ -76,22 +76,23 @@ CAMP_PROPS = [
     ("map_icon_siege_camp_a", -0.9, -0.5, 5.0, 1.2),
 ]
 
-# Предметы, поставленные руками в одну точку, а не рассыпкой.
+# Props placed by hand at one point, not scattered.
 FIXED = [(mesh, x + dx, y + dy, scale, turn)
          for x, y in MERC_CAMPS
          for mesh, dx, dy, scale, turn in CAMP_PROPS]
 
 
-# Радиусы мешей (из tpac_export info) для понимания масштаба: map_rock_* ~0.3 м,
-# map_rock_big_* ~1.3 м, map_mountain_rock_c..f 1.5..3.4 м, mainmap_cliff_* 4.7..8.5 м,
-# map_tree_* ~1.1..1.6 м, log_* 0.8..3 м.
+# Mesh radii (from tpac_export info) to get a sense of scale: map_rock_* ~0.3 m,
+# map_rock_big_* ~1.3 m, map_mountain_rock_c..f 1.5..3.4 m, mainmap_cliff_* 4.7..8.5 m,
+# map_tree_* ~1.1..1.6 m, log_* 0.8..3 m.
 #
-# ГРАБЛИ (07.10.2026, замечено в игре): map_tree_a/b/c/d — только lod0 (tpac_export list
-# map_tree: meshes=1), без запасного уровня движку нечем заменить модель за порогом дальности —
-# дерево просто пропадает при отдалении камеры, а не теряет детализацию. У map_tree_new_a/b/c/d
-# meshes=2 (lod0 + lod1-билборд) — используем только их. map_tree_small_a/b и map_tree_palm_a/b
-# тоже только lod0 (своей "new"-версии у них в ванили нет) — тот же риск мигания остаётся,
-# но без замены пока не нашлось.
+# PITFALL (07.10.2026, seen in game): map_tree_a/b/c/d have only lod0 (tpac_export list
+# map_tree: meshes=1); without a fallback level the engine has nothing to replace the model with beyond the
+# distance threshold:
+# the tree simply disappears as the camera moves away instead of losing detail. map_tree_new_a/b/c/d have
+# meshes=2 (lod0 + lod1 billboard), so only those are used. map_tree_small_a/b and map_tree_palm_a/b
+# also have only lod0 (vanilla has no "new" version of them), so the same blinking risk remains,
+# but no replacement has been found yet.
 ROCKS_SMALL = [
     item("map_rock_a", 2.5, 5.0, "map_rock_a_snow"),
     item("map_rock_b", 2.5, 5.5, "map_rock_b_snow"),
@@ -102,7 +103,7 @@ ROCKS_SMALL = [
 ]
 
 GROUPS = [
-    # Горы и любые крутые склоны: скалы, останцы, глыбы.
+    # Mountains and any steep slopes: rocks, outcrops, blocks.
     dict(
         name="горы и склоны",
         kinds=(equus_map.MOUNTAIN,),
@@ -120,7 +121,7 @@ GROUPS = [
             item("map_rock_big_c", 0.80, 1.60, "map_rock_big_c_snow", weight=2),
         ],
     ),
-    # Лес: валежник, камни под деревьями, редкий подлесок.
+    # Forest: deadwood, stones under the trees, sparse undergrowth.
     dict(
         name="лес",
         kinds=(equus_map.FOREST,),
@@ -135,7 +136,7 @@ GROUPS = [
             item("map_tree_small_b", 2.4, 4.5, tree=True, weight=2),
         ] + ROCKS_SMALL,
     ),
-    # Равнина: рощицы и одинокие деревья, изредка валуны и россыпи камней.
+    # Plain: groves and lone trees, occasionally boulders and stone scatters.
     dict(
         name="равнины",
         kinds=(equus_map.PLAIN,),
@@ -152,7 +153,7 @@ GROUPS = [
             item("map_rock_groups_b", 2.0, 4.5),
         ],
     ),
-    # Степь: голее равнины — камни да редкие акации.
+    # Steppe: barer than the plain, just stones and sparse acacias.
     dict(
         name="степь",
         kinds=(equus_map.STEPPE,),
@@ -166,7 +167,7 @@ GROUPS = [
             item("map_rock_big_b", 1.20, 2.40, "map_rock_big_b_snow"),
         ] + ROCKS_SMALL,
     ),
-    # Пустыня: пальмы и выветренные камни.
+    # Desert: palms and weathered stones.
     dict(
         name="пустыня",
         kinds=(equus_map.DESERT,),
@@ -181,7 +182,7 @@ GROUPS = [
             item("map_rock_new_c", 0.25, 0.55, tilt=0.10),
         ] + ROCKS_SMALL,
     ),
-    # Болото: коряги и кочки.
+    # Swamp: snags and tussocks.
     dict(
         name="болота",
         kinds=(equus_map.SWAMP,),
@@ -195,7 +196,7 @@ GROUPS = [
             item("map_rock_d", 2.5, 5.5),
         ],
     ),
-    # Берега рек и озёр: приречные деревья и окатанные камни.
+    # River and lake shores: riverside trees and rounded stones.
     dict(
         name="берега рек",
         near_water=5,
@@ -215,7 +216,7 @@ GROUPS = [
 
 
 def _dilate(mask, radius):
-    """Расширение маски на radius клеток (без scipy — максимумом по сдвигам)."""
+    """Dilate the mask by radius cells (without scipy: a maximum over shifts)."""
     out = mask.copy()
     for dy in range(-radius, radius + 1):
         for dx in range(-radius, radius + 1):
@@ -226,12 +227,12 @@ def _dilate(mask, radius):
 
 
 def _masks():
-    """Маски местности в разрешении карты высот (1 м на отсчёт), строка 0 — юг."""
+    """Terrain masks at heightmap resolution (1 m per sample), row 0 is the south."""
     heights = equus_map.heights()
     kind = equus_map.terrain_map()
     land = equus_map.land_map()
     size = heights.shape[0]
-    # Карты могут быть разного разрешения — приводим к сетке высот ближайшим соседом.
+    # Maps may have different resolutions: bring them to the height grid by nearest neighbour.
     def fit(a):
         if a.shape[0] == size:
             return a
@@ -242,17 +243,18 @@ def _masks():
     ground = land & ~water & (heights > MIN_HEIGHT)
     gy, gx = np.gradient(heights)
     slope = np.hypot(gx, gy)
-    # Дороги: на них ничего не ставим, иначе посреди тракта лежит валун. Маску берём у того же
-    # модуля, что и покраска рельефа, — дороги в обоих местах одни и те же.
+    # Roads: nothing is placed on them, otherwise a boulder lies in the middle of the road. The mask comes
+    # from the same module as the terrain painting, so the roads are the same in both places.
     try:
         import map_roads
         road = map_roads.mask(size, MOD_FOR_ROADS) > 0.25
     except Exception:
         road = np.zeros_like(ground)
     ground = ground & ~road
-    # Река: русло на карте местности — линия в метр, а нарисована она лентой около 3 м плюс берега.
-    # Поэтому у самой воды не ставим ничего: иначе крупные map_tree_* стоят прямо в реке (замечено
-    # в игре 2026-09-22, 99 предметов было в четырёх метрах от русла).
+    # River: the riverbed on the terrain map is a one-metre line, but it is drawn as a ribbon of about 3 m
+    # plus banks.
+    # So nothing is placed right by the water: otherwise big map_tree_* stand right in the river (seen
+    # in game 2026-09-22, 99 props were within four metres of the riverbed).
     river = np.isin(kind, (equus_map.RIVER,))
     if RIVER_CLEAR > 0:
         step = equus_map.MAP_SIZE / (size - 1)
@@ -277,7 +279,7 @@ def _pick(rng, items, total):
 
 
 def place(entities, settlements, log=print):
-    """Добавляет предметы окружения в раздел entities сцены. settlements — {id: (вид, x, y)}."""
+    """Adds environment props to the scene's entities section. settlements is {id: (kind, x, y)}."""
     for e in list(entities):
         if (e.get("name") or "").startswith(PREFIX):
             entities.remove(e)

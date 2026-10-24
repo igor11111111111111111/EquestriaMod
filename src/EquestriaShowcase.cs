@@ -13,16 +13,16 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Показ брони пони: надеть на героя один из пяти комплектов и открыть инвентарь, где видна модель.
+    // Pony armour showcase: put one of five sets on the hero and open the inventory, where the model is visible.
     //
-    // Для самопроверки: запуск с ключом /eqset:N (N = 0..4) после быстрого старта одевает героя
-    // в комплект N и сам открывает инвентарь — остаётся снять экран. Вручную то же делает
-    // консольная команда equestria.wear_set N.
+    // For self-checking: launching with the /eqset:N switch (N = 0..4) after a quick start dresses the hero
+    // in set N and opens the inventory by itself; all that is left is to take a screenshot. Manually the
+    // console command equestria.wear_set N does the same.
     public static class EquestriaShowcase
     {
         private const string ArgPrefix = "/eqset:";
 
-        // Пять комплектов — по вещи из каждого слота (порядок как в tools/make_world.py ARMOR_SETS)
+        // Five sets, one item from each slot (order as in tools/make_world.py ARMOR_SETS)
         private static readonly string[] Helmets =
         {
             "empire_guarded_lord_helmet", "imperial_goggled_helmet",
@@ -48,9 +48,9 @@ namespace EquestriaMod
         private static int _requestedSet = -1;
         private static bool _done;
 
-        // Показ войск: /eqtroops кладёт в отряд игрока по одному бойцу каждого войска Эквестрии и
-        // открывает экран отряда. Заодно пишет в журнал имя, расу и броню каждого — сразу видно,
-        // подхватилась ли наша переписанная запись (tools/make_troops.py).
+        // Troop showcase: /eqtroops puts one fighter of every Equestria troop into the player's party and
+        // opens the party screen. It also writes each one's name, race and armour to the log, so you see at once
+        // whether our rewritten entry was picked up (tools/make_troops.py).
         private const string TroopsArg = "/eqtroops";
         private const string BanditsArg = "/eqbandits";
         private const string ChangelingsArg = "/eqchangelings";
@@ -76,7 +76,7 @@ namespace EquestriaMod
             "imperial_militia_spearman", "imperial_militia_archer",
             "imperial_militia_veteran_spearman", "imperial_militia_veteran_archer",
         };
-        // Рой чейнджлингов (дерево асераев, tools/make_troops.py); первым — рекрут, у него из брони только сапоги.
+        // The changeling swarm (Aserai tree, tools/make_troops.py); the recruit first, his only armour is boots.
         private static readonly string[] ChangelingTroops =
         {
             "aserai_recruit", "aserai_tribesman", "aserai_skirmisher", "aserai_archer", "aserai_master_archer",
@@ -87,32 +87,32 @@ namespace EquestriaMod
             "aserai_militia_spearman", "aserai_militia_archer",
             "aserai_militia_veteran_spearman", "aserai_militia_veteran_archer",
         };
-        // Проверка причёсок: /eqbarber:changeling делает героя игрока этой расой и открывает
-        // редактор внешности (как у цирюльника, со всеми разделами) — там видно волосы и их цвет.
+        // Hairstyle check: /eqbarber:changeling makes the player's hero this race and opens the
+        // appearance editor (like the barber's, with all sections): the hair and its colour are visible there.
         private const string BarberPrefix = "/eqbarber:";
-        // Примерка внешности лорда: /eqhero:chrysalis переносит на игрока расу, лицо и причёску
-        // названного героя и открывает редактор внешности — так видно уникальных персонажей
-        // (у Кризалис это зелёные глаза королевы, вариант лица из pony_skins.xml), не ища их на карте.
+        // Trying on a lord's look: /eqhero:chrysalis transfers the race, face and hairstyle of the named
+        // hero onto the player and opens the appearance editor; this shows unique characters
+        // (Chrysalis has the queen's green eyes, a face variant from pony_skins.xml) without finding them on the map.
         private const string HeroPrefix = "/eqhero:";
         private static string _heroLook;
-        // Разговор с лордом: /eqmeet:chrysalis заводит беседу с названным героем — в разговоре
-        // персонаж показан целиком, со снаряжением (в редакторе внешности головной убор не рисуется).
+        // Talking to a lord: /eqmeet:chrysalis starts a conversation with the named hero; in a conversation
+        // the character is shown in full, with equipment (the appearance editor does not draw headgear).
         private const string MeetPrefix = "/eqmeet:";
         private static string _meetHero;
-        // Бой с разбойниками одной командой: нужен, чтобы проверить, как выглядят персонажи
-        // в миссии (части тела вешаются на скелет только там, см. EquestriaBodyParts).
+        // A battle with bandits in one command: needed to check how characters look
+        // in a mission (body parts are attached to the skeleton only there, see EquestriaBodyParts).
         private const string BattleArg = "/eqbattle";
-        // Бой "по пояс в крови" для проверки отрубания конечностей (EquestriaDismemberment.cs):
-        // equestria.dismember_test через EquestriaDebugCommands, числом в [N] на сторону.
+        // A "knee-deep in blood" battle for testing limb severing (EquestriaDismemberment.cs):
+        // equestria.dismember_test via EquestriaDebugCommands, [N] per side.
         private const string DismemberArgPrefix = "/eqdismember";
         private static bool _dismemberRequested;
         private static int _dismemberPerSide = 50;
-        // Раса бойцов теста — суффикс после количества (/eqdismember:100:yak), по умолчанию пони.
-        // См. EquestriaDebugCommands.DismemberTestTroopByRace за списком поддержанных рас.
+        // The race of the test fighters is a suffix after the count (/eqdismember:100:yak), pony by default.
+        // See EquestriaDebugCommands.DismemberTestTroopByRace for the list of supported races.
         private static string _dismemberRace = "pony";
-        // Проверка частей тела: /eqnude снимает с героя всё снаряжение (в том числе хвост, который
-        // до сих пор лежит в слоте плаща у наборов из equestria_equipment_sets.xml) и открывает
-        // инвентарь. Если хвост виден — значит, его вешает наш код, а не предмет.
+        // Body part check: /eqnude strips all equipment from the hero (including the tail, which
+        // still lies in the cape slot in the sets from equestria_equipment_sets.xml) and opens the
+        // inventory. If the tail is visible, it is attached by our code, not by an item.
         private const string NudeArg = "/eqnude";
         private static bool _nudeRequested;
         private static bool _battleRequested;
@@ -155,7 +155,7 @@ namespace EquestriaMod
                 {
                     _dismemberRequested = true;
                     string tail = arg.Substring(DismemberArgPrefix.Length).TrimStart(':');
-                    // Формат /eqdismember:<количество>:<раса> — раса необязательна.
+                    // Format /eqdismember:<count>:<race>; the race is optional.
                     string[] parts = tail.Split(':');
                     _dismemberPerSide = int.TryParse(parts[0], out int n) ? Math.Max(1, Math.Min(200, n)) : 50;
                     if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
@@ -188,7 +188,7 @@ namespace EquestriaMod
             }
         }
 
-        // Вызывается каждый кадр. Ждём, пока карта постоит пару секунд, затем одеваем и открываем инвентарь.
+        // Called every frame. Wait until the map has been up for a couple of seconds, then dress and open the inventory.
         public static void Tick()
         {
             EquestriaCrashLog.Try("ключ внешности", WatchBodyProperties);
@@ -197,8 +197,8 @@ namespace EquestriaMod
             {
                 return;
             }
-            // Сначала состояние, и только потом герой: пока кампания грузится, само обращение
-            // к Hero.MainHero бросает исключение (у игрока ещё нет персонажа).
+            // The state first, and only then the hero: while the campaign is loading, merely accessing
+            // Hero.MainHero throws an exception (the player has no character yet).
             if (!(GameStateManager.Current?.ActiveState is MapState) || Campaign.Current == null)
             {
                 return;
@@ -271,7 +271,7 @@ namespace EquestriaMod
             });
         }
 
-        // Заводит разговор с названным героем: видно его модель целиком, со снаряжением.
+        // Starts a conversation with the named hero: his model is visible in full, with equipment.
         private static void MeetHero()
         {
             var hero = FindHero(_meetHero);
@@ -294,7 +294,7 @@ namespace EquestriaMod
                 .FirstOrDefault(h => h.StringId == id || h.StringId == "eq_" + id);
         }
 
-        // Переносит на игрока внешность названного героя и открывает редактор внешности.
+        // Transfers the named hero's appearance onto the player and opens the appearance editor.
         private static void WearHeroLook()
         {
             var hero = FindHero(_heroLook);
@@ -310,8 +310,8 @@ namespace EquestriaMod
             EquestriaCrashLog.Log("примерка внешности: " + hero.Name + " (раса " + hero.CharacterObject.Race
                 + "), ключ " + hero.BodyProperties);
             _barberRace = FaceGen.GetRaceNames()[hero.CharacterObject.Race];
-            // шлем героя надеваем ДО открытия экрана (у Кризалис в этом слоте её рог с короной):
-            // модель на экране собирается в момент открытия, позже надетое туда уже не попадает
+            // the hero's helmet is put on BEFORE opening the screen (for Chrysalis this slot holds her horn with a crown):
+            // the model on the screen is assembled at the moment of opening, anything put on later does not get there
             var head = hero.BattleEquipment[EquipmentIndex.Head];
             Hero.MainHero.BattleEquipment[EquipmentIndex.Head] = head;
             Hero.MainHero.CivilianEquipment[EquipmentIndex.Head] = head;
@@ -330,7 +330,7 @@ namespace EquestriaMod
             EquestriaRaceSaveBehavior.SetRace(Hero.MainHero, FaceGen.GetRaceOrDefault(_barberRace));
             if (!keepHead)
             {
-                // слот шлема освобождаем: причёску должно быть видно целиком
+                // free the helmet slot: the hairstyle must be visible in full
                 Hero.MainHero.BattleEquipment[EquipmentIndex.Head] = EquipmentElement.Invalid;
                 Hero.MainHero.CivilianEquipment[EquipmentIndex.Head] = EquipmentElement.Invalid;
             }
@@ -342,10 +342,10 @@ namespace EquestriaMod
             _watchBodyProperties = true;
         }
 
-        // Ключ внешности героя в журнал. Индекс варианта лица (face_textures в skins.xml — у
-        // чейнджлингов это зелёные глаза королевы) в XML персонажа не задаётся: он лежит внутри
-        // ключа BodyProperties. Поэтому внешность набирается в редакторе, а готовый ключ мы
-        // забираем отсюда и вписываем герою (tools/world_data.py).
+        // The hero's appearance key to the log. The face variant index (face_textures in skins.xml; for
+        // changelings this is the queen's green eyes) is not set in the character XML: it lies inside the
+        // BodyProperties key. So the appearance is put together in the editor, and we take the finished key
+        // from here and write it into the hero (tools/world_data.py).
         private static bool _watchBodyProperties;
         private static string _lastKey;
 
@@ -363,8 +363,8 @@ namespace EquestriaMod
             }
         }
 
-        // Снимает с героя всё и открывает инвентарь: чистая проверка, кто рисует хвост — предмет
-        // в слоте плаща или наш код (EquestriaBodyParts).
+        // Strips everything from the hero and opens the inventory: a clean check of who draws the tail, an item
+        // in the cape slot or our code (EquestriaBodyParts).
         private static void ShowNude()
         {
             if (Hero.MainHero == null)
@@ -412,8 +412,8 @@ namespace EquestriaMod
             EquestriaCrashLog.Note("показ войск: экран отряда открыт");
         }
 
-        // Надевает комплект на героя (боевой и гражданский наборы — чтобы модель в инвентаре
-        // показала броню, какой бы набор ни был выбран). Возвращает строку для журнала.
+        // Puts a set on the hero (battle and civilian sets, so that the model in the inventory
+        // shows the armour whichever set is selected). Returns a string for the log.
         public static string Wear(Hero hero, int set)
         {
             var slots = new List<(EquipmentIndex Slot, string Id)>
@@ -454,7 +454,7 @@ namespace EquestriaMod
             return ((set % Helmets.Length) + Helmets.Length) % Helmets.Length;
         }
 
-        // Консоль (Alt+~): equestria.wear_set 0..4
+        // Console (Alt+~): equestria.wear_set 0..4
         [CommandLineFunctionality.CommandLineArgumentFunction("wear_set", "equestria")]
         public static string WearSetCommand(List<string> args)
         {

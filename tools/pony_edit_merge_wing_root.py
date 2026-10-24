@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Слить близкие/дублирующие вершины у корня крыла (Merge by Distance) — источник тонких шипов.
+"""Merge close/duplicate vertices at the wing root (Merge by Distance) - the source of thin spikes.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_merge_wing_root.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_merge_wing_root.py
 
-Не хватающих полигонов там нет: найденные «дыры» — это тонкие треугольники-шипы на одной висящей
-вершине, дублирующие уже существующую геометрию (мусор от Bridge/Merge при ручной перекройке).
-Правильный способ убрать — слить в этой зоне близкие вершины, как обычный Merge by Distance.
+There are no missing polygons there: the "holes" found are thin spike triangles on a single dangling
+vertex, duplicating already existing geometry (junk from Bridge/Merge during manual re-cutting).
+The right way to remove them is to merge close vertices in this zone, like a regular Merge by Distance.
 """
 import bmesh
 import bpy

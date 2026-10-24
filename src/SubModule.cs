@@ -5,30 +5,30 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-// System.Reflection тоже объявляет тип Module, поэтому для игрового нужен свой псевдоним.
+// System.Reflection also declares a Module type, so the game's one needs its own alias.
 using MBModule = TaleWorlds.MountAndBlade.Module;
 
 namespace EquestriaMod
 {
-    // Точка входа мода. Имя класса указано в SubModule.xml (SubModuleClassType).
+    // The mod's entry point. The class name is given in SubModule.xml (SubModuleClassType).
     public class SubModule : MBSubModuleBase
     {
-        // Самый ранний вызов мода: здесь ставим запись исключений, чтобы поймать всё дальнейшее.
+        // The mod's earliest call: here we install exception logging to catch everything that follows.
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
             EquestriaCrashLog.Install();
-            // Наш override Module/GUI/Prefabs/FaceGen/FaceGenHair.xml (полосы у пони — переключатель
-            // рядом с причёской) игра сама не читает: по умолчанию она берёт уже вкомпилированную
-            // «сгенерированную» версию родных префабов вместо живого XML (проверено в игре 29.09.2026:
-            // правка файла не действовала даже после полного перезапуска, помогла только консольная
-            // команда ui.use_generated_prefabs 0). Это глобальный переключатель на ВЕСЬ интерфейс
-            // игры, не только на наш файл — жаль, точечно выключить для одного префаба нельзя.
+            // Our override Module/GUI/Prefabs/FaceGen/FaceGenHair.xml (stripes on ponies: a toggle
+            // next to the hairstyle) is not read by the game on its own: by default it takes the already compiled
+            // "generated" version of the native prefabs instead of the live XML (checked in game 29.09.2026:
+            // editing the file had no effect even after a full restart; only the console
+            // command ui.use_generated_prefabs 0 helped). This is a global switch for the WHOLE game
+            // UI, not just our file; sadly it cannot be turned off selectively for one prefab.
             TaleWorlds.Engine.GauntletUI.UIConfig.DoNotUseGeneratedPrefabs = true;
             EquestriaPatches.Apply();
         }
 
-        // Вызывается один раз, когда показывается главное меню.
+        // Called once, when the main menu is shown.
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
@@ -50,8 +50,8 @@ namespace EquestriaMod
             EquestriaLongRun.CheckRequest();
         }
 
-        // Каждый кадр; нужен быстрому тесту: он ждёт нужных состояний игры — сначала главного меню,
-        // затем экрана создания персонажа, чтобы пропустить его целиком.
+        // Every frame; needed by the quick test: it waits for the right game states, first the main menu,
+        // then the character creation screen, to skip it entirely.
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
@@ -71,10 +71,10 @@ namespace EquestriaMod
             EquestriaTimeSpeed.Tick();
         }
 
-        // Пропуск заставки TaleWorlds при запуске игры — она только тратит время при каждом тесте.
-        // Module.SetInitialModuleScreenAsRoot вызывает наш OnBeforeInitialModuleScreenSetAsRoot,
-        // а сразу после него проверяет приватное поле _splashScreenPlayed. Ставим его заранее,
-        // и ролик не запускается. Файлы игры при этом не трогаем.
+        // Skip the TaleWorlds splash video at game start; it only wastes time on every test.
+        // Module.SetInitialModuleScreenAsRoot calls our OnBeforeInitialModuleScreenSetAsRoot,
+        // and right after it checks the private field _splashScreenPlayed. We set it in advance,
+        // and the video does not start. The game files are not touched.
         private static void SkipSplashVideo()
         {
             try
@@ -88,39 +88,39 @@ namespace EquestriaMod
             }
             catch (Exception)
             {
-                // Если в новой версии игры поле переименуют — просто посмотрим заставку.
+                // If a new game version renames the field, we simply watch the splash video.
             }
         }
 
-        // Каждая сцена (бой, город, турнир): подключаем свои поведения миссии.
+        // Every scene (battle, town, tournament): attach our mission behaviours.
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
             mission.AddMissionBehavior(new EquestriaOrderVoice());
-            // Женский голос в бою всем народам, кроме грифонов и гиппогрифов (см. сам класс)
+            // Female voice in battle for all peoples except griffons and hippogriffs (see the class itself)
             mission.AddMissionBehavior(new EquestriaBattleVoice());
             mission.AddMissionBehavior(new EquestriaBodyParts());
-            // Магия: ввод (удержание Q), полёт снарядов и урон. Колесо рисует EquestriaSpellWheelView,
-            // он подключается сам по метке [DefaultView].
+            // Magic: input (holding Q), projectile flight and damage. The wheel is drawn by EquestriaSpellWheelView,
+            // which attaches itself via the [DefaultView] attribute.
             mission.AddMissionBehavior(new EquestriaSpellMission());
-            // Отрубание конечностей/головы — перенос механики DismembermentPlus (см. сам класс)
+            // Severing limbs/head: a port of the DismembermentPlus mechanics (see the class itself)
             mission.AddMissionBehavior(new EquestriaDismemberment());
-            // Свиток полёта в слоте коня: держит нижнюю часть тела в позе покоя (см. сам класс)
+            // Flight scroll in the horse slot: keeps the lower body in the idle pose (see the class itself)
             mission.AddMissionBehavior(new EquestriaFlightScroll());
             mission.AddMissionBehavior(new EquestriaWingsTest());
         }
 
-        // Вызывается при запуске кампании (новой или загруженной): здесь подключаются поведения кампании.
+        // Called when a campaign starts (new or loaded): campaign behaviours are attached here.
         protected override void OnGameStart(Game game, IGameStarter gameStarter)
         {
             base.OnGameStart(game, gameStarter);
             EquestriaCrashLog.Note("OnGameStart: тип игры " + game.GameType.GetType().Name);
-            // UI-патчи свитка (рынок/инвентарь) — только здесь, когда GameTexts уже есть (см. метод)
+            // Scroll UI patches (market/inventory): only here, when GameTexts already exist (see the method)
             EquestriaCrashLog.Try("патчи UI свитка", () => EquestriaFlightScroll.ApplyCampaignUi(EquestriaPatches.Instance));
-            // Снимок героя для сохранения со свитком — только здесь, не при загрузке мода: иначе
-            // кэш действий строится раньше анимаций пони и все лежат (см. EquestriaScrollSaveVisualFix)
+            // Hero snapshot for saving with the scroll: only here, not at mod load, otherwise
+            // the action cache is built before the pony animations and everyone lies down (see EquestriaScrollSaveVisualFix)
             EquestriaCrashLog.Try("патч сохранения со свитком", () => EquestriaScrollSaveVisualFix.Apply(EquestriaPatches.Instance));
-            // Фильтр «Народность» в энциклопедии: Оления (nord, is_main_culture=false) иначе не видна
+            // The "Culture" filter in the encyclopedia: otherwise Olenia (nord, is_main_culture=false) is not visible
             EquestriaCrashLog.Try("фильтр народностей энциклопедии", () => EquestriaEncyclopediaCultures.Apply(EquestriaPatches.Instance));
             if (game.GameType is Campaign && gameStarter is CampaignGameStarter campaignStarter)
             {
@@ -131,27 +131,27 @@ namespace EquestriaMod
                 campaignStarter.AddBehavior(new EquestriaRelationsBehavior());
                 campaignStarter.AddBehavior(new EquestriaDiplomacyBehavior());
                 campaignStarter.AddBehavior(new EquestriaGreetingsBehavior());
-                // Мана: копится по часам в пути по карте, тратится в бою
+                // Mana: accumulates by the hour while travelling on the map, spent in battle
                 campaignStarter.AddBehavior(new EquestriaManaBehavior());
-                // Лагеря наёмников у столиц: поштучная покупка войск наёмных рот
+                // Mercenary camps near capitals: buying mercenary company troops one at a time
                 campaignStarter.AddBehavior(new EquestriaMercCampBehavior());
-                // Полосатая/сплошная грива у пони — выбор игрока, хранится в сейве
+                // Striped/solid mane on ponies: the player's choice, stored in the save
                 campaignStarter.AddBehavior(new EquestriaHairStyle());
-                // Крылья вкл/выкл — временный переключатель, хранится в сейве
+                // Wings on/off: a temporary toggle, stored in the save
                 campaignStarter.AddBehavior(new EquestriaPonyBody());
-                // Ассимиляция расы захваченных поселений (перенос мода DynaCulture)
+                // Race assimilation of captured settlements (a port of the DynaCulture mod)
                 campaignStarter.AddBehavior(new EquestriaRaceAssimilation());
-                // Конница без коней: любой зверь в слоте коня у войск и героев → свиток полёта
+                // Cavalry without horses: any beast in the horse slot of troops and heroes → flight scroll
                 campaignStarter.AddBehavior(new EquestriaFlightArmy());
-                // …и они не голодают: припасы им никто не возит (см. сам класс)
+                // …and they do not starve: nobody carries supplies for them (see the class itself)
                 campaignStarter.AddModel(new EquestriaCampFoodModel());
-                // Своя модель проходимости: у граней нашей сетки тип местности 0 (см. сам класс).
+                // Our own navigation model: the faces of our mesh have terrain type 0 (see the class itself).
                 campaignStarter.AddModel(new EquestriaPartyNavigationModel());
-                // Скорость по местности: горы, холмы, болота и снег. Лес и пустыню штрафует
-                // сама игра, второй раз не наказываем (см. сам класс).
+                // Speed by terrain: mountains, hills, swamps and snow. Forest and desert are penalised
+                // by the game itself; we do not punish a second time (see the class itself).
                 campaignStarter.AddModel(new EquestriaPartySpeedModel());
-                // Резерв найма нотаблей — раса добровольца по текущим долям ассимиляции поселения,
-                // не по фиксированной культуре нотабля (см. сам класс).
+                // Notable recruitment pool: the volunteer's race follows the settlement's current assimilation shares,
+                // not the notable's fixed culture (see the class itself).
                 campaignStarter.AddModel(new EquestriaVolunteerModel());
                 EquestriaCrashLog.Log("поведения кампании подключены: создание персонажа, раса, опись, долгий прогон, отношения");
             }

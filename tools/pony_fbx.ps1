@@ -1,11 +1,11 @@
-﻿# Экспорт FBX пони из ручной модели — перед tools\pony_material.ps1.
+﻿# Export the pony FBX from the hand-made model, before tools\pony_material.ps1.
 #
 #   .\tools\pony_fbx.ps1
 #
-# Зовёт tools\pony_edit_export.py в assets\pony\eq_pony_edit.blend: экспортирует скелет и восемь
-# частей (body/gloves/hair/head/horn/legs/tail/wings) из коллекции «Пони - цельная» в
-# assets\pony\eq_pony.fbx — теми же настройками, что и основной конвейер (оси X/-Y, без анимации).
-# Дальше руками: импорт этого FBX в Modding Kit (Resource Browser -> Import), затем
+# Calls tools\pony_edit_export.py in assets\pony\eq_pony_edit.blend: exports the skeleton and eight
+# parts (body/gloves/hair/head/horn/legs/tail/wings) from the "Pony - whole" collection to
+# assets\pony\eq_pony.fbx with the same settings as the main pipeline (axes X/-Y, no animation).
+# Then by hand: import this FBX into the Modding Kit (Resource Browser -> Import), then
 # .\tools\pony_material.ps1.
 param([string]$Blender = "D:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe")
 

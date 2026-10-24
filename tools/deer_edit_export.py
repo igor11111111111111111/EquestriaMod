@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели оленихи из assets/deer/eq_deer.blend в assets/deer/eq_deer.fbx.
+"""Export of the fixed doe model from assets/deer/eq_deer.blend to assets/deer/eq_deer.fbx.
 
-Запуск: blender --background assets/deer/eq_deer.blend --python tools/deer_edit_export.py
+Run: blender --background assets/deer/eq_deer.blend --python tools/deer_edit_export.py
 
-Экспортируются скелет (bip01_notused) и части из коллекции «Meshy Braided Fawn» — имена объектов
-там уже в финальном виде (eq_deer_*). Те же настройки экспорта, что и в основном конвейере
-tools/make_deer_model.py (оси X/-Y, без анимации).
+Exported are the skeleton (bip01_notused) and the parts from the "Meshy Braided Fawn" collection: the object
+names there are already final (eq_deer_*). The same export settings as in the main pipeline
+tools/make_deer_model.py (axes X/-Y, no animation).
 
-Четыре варианта рогов (10.10.2026): в файле они лежат как eq_deer_horn_1..4. Наружу уходят как
-eq_deer_horn (вариант 1 — прежнее имя, на него смотрят EquestriaBodyParts/EquestriaDismemberment)
-и eq_deer_horn_2..4. Выбор варианта — через список причёсок в редакторе: у оленя там четыре меша
-кос eq_deer_hair, eq_deer_hair_2..4 (одна и та же коса под разными именами — копии делаются здесь),
-и код показывает рога с тем же номером, что у надетой косы (src/EquestriaBodyParts.cs).
-Всё переименование, привязка рогов к скелету и копии кос — только в памяти, .blend не сохраняется.
+Four antler variants (10.10.2026): in the file they are eq_deer_horn_1..4. They are exported as
+eq_deer_horn (variant 1, the old name that EquestriaBodyParts/EquestriaDismemberment look for)
+and eq_deer_horn_2..4. The variant is chosen through the hairstyle list in the editor: the deer has four
+braid meshes there, eq_deer_hair, eq_deer_hair_2..4 (one braid under different names, the copies are made here),
+and the code shows the antlers with the same number as the worn braid (src/EquestriaBodyParts.cs).
+All the renaming, binding of the antlers to the skeleton and braid copies happen only in memory, the .blend is not saved.
 """
 import os
 
@@ -36,7 +36,7 @@ def describe(ob, label):
 
 
 def bind_to_skeleton(ob, skel):
-    """Родитель и модификатор скелета — без них FBX уйдёт без скиннинга (рога 2–4 были без них)."""
+    """Parent and skeleton modifier: without them the FBX goes out without skinning (antlers 2–4 lacked them)."""
     world = ob.matrix_world.copy()
     ob.parent = skel
     ob.matrix_world = world
@@ -60,7 +60,7 @@ for name in PARTS:
     parts.append(ob)
     describe(ob, name)
 
-# Рога: вариант 1 — материал-образец для остальных (у всех четырёх та же текстура оленя)
+# Antlers: variant 1 is the reference material for the rest (all four have the same deer texture)
 horn_material = None
 for i in range(1, HORNS + 1):
     ob = col.objects.get("eq_deer_horn_%d" % i)
@@ -76,7 +76,7 @@ for i in range(1, HORNS + 1):
     parts.append(ob)
     describe(ob, out_name[len("eq_deer_"):])
 
-# Косы: копии под именами eq_deer_hair_2..4 — по одной на вариант рогов
+# Braids: copies named eq_deer_hair_2..4, one per antler variant
 hair = col.objects["eq_deer_hair"]
 for i in range(2, HORNS + 1):
     copy = hair.copy()
@@ -91,9 +91,9 @@ for i in range(2, HORNS + 1):
 
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye turned off in the Outliner); for the yak
+    # the skeleton turned out to be exactly that, and the export quietly went out without bones (noticed
+    # by the A-pose in battle 07.10.2026, see yak_edit_export.py). Unhide before selecting, just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

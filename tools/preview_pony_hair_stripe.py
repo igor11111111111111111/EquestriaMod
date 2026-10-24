@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Рендер хвоста/гривы с живым процедурным узором полос (тем же узлом, что печёт
-make_pony_hair_stripe_bake.py) прямо на поверхности — чтобы проверить направление и ширину полос
-на самой 3D-модели, а не по плоскому атласу (тот выглядит рвано всегда, даже когда на модели всё
-ровно — россыпь UV-островов, см. make_pony_hair_stripe_bake.py).
+"""Render of the tail/mane with a live procedural stripe pattern (the same node that
+make_pony_hair_stripe_bake.py bakes) right on the surface - to check the direction and width of the stripes
+on the 3D model itself, not on the flat atlas (that one always looks ragged, even when everything on the model
+is even - a scatter of UV islands, see make_pony_hair_stripe_bake.py).
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\preview_pony_hair_stripe.py
 
-Результат — tools/../_preview_stripe.png (рядом с .blend, там же куда смотрит камера).
+Result - tools/../_preview_stripe.png (next to the .blend, the same place the camera looks at).
 """
 import math
 import os
@@ -53,9 +53,9 @@ frac.inputs[1].default_value = 1.0
 ramp = nt.nodes.new("ShaderNodeValToRGB")
 ramp.color_ramp.interpolation = "CONSTANT"
 ramp.color_ramp.elements[0].position = 0.0
-ramp.color_ramp.elements[0].color = (0.05, 0.05, 0.4, 1.0)   # тёмно-синяя полоса (для контраста на превью)
+ramp.color_ramp.elements[0].color = (0.05, 0.05, 0.4, 1.0)   # dark blue stripe (for contrast in the preview)
 ramp.color_ramp.elements[1].position = 0.5
-ramp.color_ramp.elements[1].color = (1.0, 0.3, 0.6, 1.0)     # розовая полоса
+ramp.color_ramp.elements[1].color = (1.0, 0.3, 0.6, 1.0)     # pink stripe
 
 bsdf = nt.nodes.new("ShaderNodeBsdfDiffuse")
 out = nt.nodes.new("ShaderNodeOutputMaterial")
@@ -75,7 +75,7 @@ nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
 ob.data.materials.clear()
 ob.data.materials.append(mat)
 
-# Камера + свет, направленные на bounding box объекта в мировых координатах.
+# Camera + light aimed at the object's bounding box in world coordinates.
 bbox = [ob.matrix_world @ __import__("mathutils").Vector(c) for c in ob.bound_box]
 cx = sum(v.x for v in bbox) / 8
 cy = sum(v.y for v in bbox) / 8

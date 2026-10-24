@@ -17,20 +17,22 @@ using Path = System.IO.Path;
 
 namespace EquestriaMod
 {
-    // Приветствия при встрече на карте: голос и слова.
+    // Greetings when meeting on the map: voice and words.
     //
-    // Голос. Первая реплика разбойника или лорда в разговоре звучит нашим временным клипом:
-    //   разбойники — Module\Sounds\bandit_greeting, лорды — Module\Sounds\lord_greeting.
-    // Перехватываем сам запуск звука реплики, а не
-    // VoiceOverModel: модель спрашивают только про реплики с ванильной озвучкой, а у наших новых
-    // текстов её нет. Разговор на карте идёт через MapConversationView.MapConversationMission, разговор в
-    // сцене (город, замок) — через CampaignMissionComponent; перехвачены оба. Рядом с клипами лежат файлы губ <имя>.xml (tools\make_lipsync.py).
+    // Voice. A bandit's or lord's first line in a conversation plays our temporary clip:
+    //   bandits - Module\Sounds\bandit_greeting, lords - Module\Sounds\lord_greeting.
+    // We intercept the launch of the line's sound itself, not
+    // VoiceOverModel: the model is only asked about lines with vanilla voice-over, and our new
+    // texts have none. A conversation on the map goes through MapConversationView.MapConversationMission, a
+    // conversation in a scene (town, castle) - through CampaignMissionComponent; both are intercepted. Next to the
+    // clips lie lip files <name>.xml (tools\make_lipsync.py).
     //
-    // Слова. Приветствия и угрозы разбойников игра выбирает в условиях диалога
-    // BanditInteractionsCampaignBehavior и кладёт в переменные BANDIT_NEUTRAL_GREETING и ROBBERY_*.
-    // После ванильного условия подменяем их своими — шутки о вселенной пони с угрозой. Постоянные реплики
-    // (сдача, отказ, уход) перекрыты по id в ModuleData\Languages\<язык>\eq_bandits_rus.xml.
-    // Приветствия лордов — так же, варианты в ModuleData\Languages\<язык>\eq_lords_rus.xml.
+    // Words. The game picks bandit greetings and threats in the dialog conditions of
+    // BanditInteractionsCampaignBehavior and puts them in the variables BANDIT_NEUTRAL_GREETING and ROBBERY_*.
+    // After the vanilla condition we replace them with our own - jokes about the pony universe plus a threat.
+    // Fixed lines (surrender, refusal, leaving) are overridden by id in
+    // ModuleData\Languages\<language>\eq_bandits_rus.xml.
+    // Lord greetings work the same way, variants in ModuleData\Languages\<language>\eq_lords_rus.xml.
     public static class EquestriaGreetings
     {
         private static readonly Random Random = new Random();
@@ -38,13 +40,13 @@ namespace EquestriaMod
         private static string[] _lordClips;
         private static object _lastSpeaker;
 
-        // Реплики разбойников при нападении игрока (eq_neutral_N) и при нападении на игрока
-        // (eq_robbery_threat_N, _pay_N, _done_N, _fight_N — четыре строки одного разговора) лежат
-        // в языковых файлах вместе с остальными: ModuleData\Languages\<язык>\eq_bandits_*.xml.
-        // Раньше они были зашиты здесь по-русски и не переводились.
+        // Bandit lines when the player attacks (eq_neutral_N) and when they attack the player
+        // (eq_robbery_threat_N, _pay_N, _done_N, _fight_N - four lines of one conversation) live
+        // in the language files together with the rest: ModuleData\Languages\<language>\eq_bandits_*.xml.
+        // They used to be hardcoded here in Russian and were not translated.
 
-        // Выбор реплики не должен меняться, пока длится разговор: условия диалога игра проверяет
-        // несколько раз. Поэтому выбираем по отряду и дню, а не случайно при каждом вызове.
+        // The chosen line must not change while the conversation lasts: the game checks dialog conditions
+        // several times. So we pick by party and day, not randomly on every call.
         private static int Pick(int count)
         {
             MobileParty party = MobileParty.ConversationParty;
@@ -52,9 +54,9 @@ namespace EquestriaMod
             return (seed & int.MaxValue) % count;
         }
 
-        // Реплики из XML. У ванильной строки в ModuleData\Languages\<язык>\*.xml вместо текста стоит
-        // переменная {EQV_ИМЯ}; её варианты — строки имя_1, имя_2, ... (имя строчными). Список
-        // переменных собираем из самих файлов, так что новые группы не требуют правки кода.
+        // Lines from XML. A vanilla string in ModuleData\Languages\<language>\*.xml has, instead of text,
+        // the variable {EQV_NAME}; its variants are strings name_1, name_2, ... (name in lowercase). The list
+        // of variables is collected from the files themselves, so new groups need no code changes.
         private static string[] _xmlVariables;
 
         private static string[] XmlVariables()
@@ -64,8 +66,8 @@ namespace EquestriaMod
                 return _xmlVariables;
             }
             var found = new System.Collections.Generic.SortedSet<string>();
-            // Переменные одни на все языки, но смотрим все папки: так не важно, какой файл первым
-            // попался и есть ли вообще русский.
+            // The variables are the same for all languages, but we look in all folders: that way it does not
+            // matter which file came first or whether Russian exists at all.
             string folder = Path.Combine(TaleWorlds.ModuleManager.ModuleHelper.GetModuleFullPath("EquestriaMod"),
                 "ModuleData", "Languages");
             if (Directory.Exists(folder))
@@ -84,8 +86,8 @@ namespace EquestriaMod
             return _xmlVariables;
         }
 
-        // Сколько вариантов в группе: по порядку номеров до первого отсутствующего, так что новые
-        // строки в XML подхватываются без пересборки.
+        // How many variants a group has: by number order up to the first missing one, so new
+        // strings in XML are picked up without a rebuild.
         private static int VariantCount(string group)
         {
             int count = 0;
@@ -96,8 +98,8 @@ namespace EquestriaMod
             return count;
         }
 
-        // Вариант группы: случайный, либо по «зерну» (чтобы реплика не менялась при повторных
-        // проверках условий диалога). null — если в группе нет строк.
+        // A variant of a group: random, or by a "seed" (so the line does not change on repeated
+        // checks of dialog conditions). null if the group has no strings.
         private static TextObject Variant(string group, int? seed = null)
         {
             int count = VariantCount(group);
@@ -109,7 +111,7 @@ namespace EquestriaMod
             return new TextObject("{=" + group + (index + 1) + "}");
         }
 
-        // Для каждой группы реплик из XML — случайный вариант (перед каждым разговором).
+        // For each group of XML lines - a random variant (before each conversation).
         internal static void RollFixedLines()
         {
             foreach (string variable in XmlVariables())
@@ -122,8 +124,8 @@ namespace EquestriaMod
             }
         }
 
-        // ---------------------------------------------------------------- лорды
-        // Приветствие лорда: ModuleData\Languages\<язык>\eq_lords_rus.xml, группы eq_lord_*.
+        // ---------------------------------------------------------------- lords
+        // Lord greeting: ModuleData\Languages\<language>\eq_lords_rus.xml, groups eq_lord_*.
         internal static void SetLordGreeting(string variable, string group)
         {
             Hero hero = Hero.OneToOneConversationHero;
@@ -151,7 +153,7 @@ namespace EquestriaMod
                 }
                 else
                 {
-                    // знатные горожане и спутники: ModuleData\Languages\<язык>\eq_npc_rus.xml
+                    // notables and companions: ModuleData\Languages\<language>\eq_npc_rus.xml
                     string kind = hero.IsWanderer ? "wanderer" : hero.IsHeadman ? "headman" : hero.IsMerchant ? "merchant"
                         : hero.IsArtisan ? "artisan" : hero.IsGangLeader ? "gangleader" : hero.IsPreacher ? "preacher"
                         : hero.IsRuralNotable ? "ruralnotable" : null;
@@ -188,8 +190,8 @@ namespace EquestriaMod
             }
         }
 
-        // Четыре реплики одного разговора берутся под одним номером — так угроза, согласие и прощание
-        // остаются одной историей. Если в языке нет ни одного набора, остаётся ванильный текст.
+        // The four lines of one conversation are taken under one number - so the threat, the agreement and
+        // the farewell stay one story. If the language has no set at all, the vanilla text remains.
         internal static void SetRobbery()
         {
             RollFixedLines();
@@ -205,14 +207,14 @@ namespace EquestriaMod
             MBTextManager.SetTextVariable("ROBBERY_START_FIGHT", new TextObject("{=eq_robbery_fight_" + number + "}"));
         }
 
-        // ---------------------------------------------------------------- голос
+        // ---------------------------------------------------------------- voice
         internal static void ApplyVoice(Harmony harmony)
         {
             var targets = new[]
             {
-                // Разговор на карте: подменяем, когда реплика ставится в очередь. Первая реплика ждёт,
-                // пока откроется окно разговора, и к моменту проигрывания говорящим уже числится
-                // игрок — перехват в самом окне (MapConversationTableau) её пропускал.
+                // Conversation on the map: replace when the line is queued. The first line waits
+                // until the conversation window opens, and by the time it plays the speaker is already
+                // the player - intercepting in the window itself (MapConversationTableau) missed it.
                 AccessTools.Method(typeof(MapConversationView.MapConversationMission),
                     "TaleWorlds.CampaignSystem.ICampaignMission.OnConversationPlay"),
                 AccessTools.Method(typeof(CampaignMissionComponent),
@@ -229,7 +231,7 @@ namespace EquestriaMod
             }
         }
 
-        // Конец разговора: следующая реплика снова будет «первой».
+        // End of conversation: the next line will again be the "first".
         internal static void ResetConversation()
         {
             _lastSpeaker = null;
@@ -245,14 +247,14 @@ namespace EquestriaMod
                 {
                     return;
                 }
-                // только первая реплика собеседника в разговоре
+                // only the interlocutor's first line in the conversation
                 if (ReferenceEquals(character, _lastSpeaker))
                 {
                     return;
                 }
                 _lastSpeaker = character;
-                // разбойники — свои клипы, все остальные собеседники (лорды, караванщики, старосты,
-                // торговцы, трактирщики, спутники) — общие
+                // bandits - their own clips, all other interlocutors (lords, caravan leaders, headmen,
+                // merchants, tavern keepers, companions) - shared ones
                 string[] clips = IsBandit(character) ? BanditClips() : LordClips();
                 if (clips == null || clips.Length == 0)
                 {
@@ -294,7 +296,7 @@ namespace EquestriaMod
         }
     }
 
-    // Слова разбойников: после ванильного условия диалога подменяем выбранный текст своим.
+    // Bandit words: after the vanilla dialog condition we replace the chosen text with our own.
     [HarmonyPatch(typeof(BanditInteractionsCampaignBehavior), "bandit_neutral_greet_on_condition")]
     public static class BanditNeutralGreetingText
     {
@@ -328,7 +330,7 @@ namespace EquestriaMod
                 EquestriaGreetings.ResetConversation();
                 EquestriaCrashLog.Try("реплики из XML", EquestriaGreetings.RollFixedLines);
             });
-            // переменные постоянных реплик должны быть заданы до первого разговора (логово и пр.)
+            // variables of fixed lines must be set before the first conversation (hideout etc.)
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, _ =>
                 EquestriaCrashLog.Try("реплики из XML", EquestriaGreetings.RollFixedLines));
         }
@@ -338,7 +340,7 @@ namespace EquestriaMod
         }
     }
 
-    // Приветствия лордов: после ванильного выбора подставляем свой текст.
+    // Lord greetings: after the vanilla choice we substitute our own text.
     [HarmonyPatch(typeof(LordConversationsCampaignBehavior), "conversations_set_voiced_line")]
     public static class LordVoicedLineText
     {

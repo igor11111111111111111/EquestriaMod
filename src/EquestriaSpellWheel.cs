@@ -10,7 +10,7 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquestriaMod
 {
-    // Данные для колеса. Gauntlet читает только эти свойства — вся логика в EquestriaSpellMission.
+    // Data for the wheel. Gauntlet reads only these properties - all the logic is in EquestriaSpellMission.
     public class EquestriaSpellWheelVM : ViewModel
     {
         private bool _isVisible;
@@ -112,9 +112,9 @@ namespace EquestriaMod
         }
     }
 
-    // Показ колеса. Выбранный пункт не приходит из виджета событием: мы сами смотрим, у какой кнопки
-    // ванильный CircleActionSelectorWidget поставил IsSelected. Так не нужен свой класс виджета
-    // (в TOR для этого сделан AbilityRadialSelectionItemWidget).
+    // Showing the wheel. The selected item does not come from the widget as an event: we check ourselves which
+    // button the vanilla CircleActionSelectorWidget has set IsSelected on. That way no custom widget class is
+    // needed (TOR made AbilityRadialSelectionItemWidget for this).
     [DefaultView]
     public class EquestriaSpellWheelView : MissionView
     {
@@ -222,7 +222,7 @@ namespace EquestriaMod
             {
                 _vm.Items.Add(new EquestriaSpellItemVM(spell.Name.ToString()));
             }
-            _wheel = null;   // виджеты пересоберутся, старая ссылка больше не годится
+            _wheel = null;   // the widgets will be rebuilt, the old reference is no longer valid
         }
 
         private void ReadSelection()
@@ -248,8 +248,8 @@ namespace EquestriaMod
             }
         }
 
-        // Пока колесо открыто, игра не должна крутить камеру движением мыши — этим же способом
-        // ванильные круговые меню и TOR отбирают мышь.
+        // While the wheel is open the game must not rotate the camera with mouse movement - vanilla radial
+        // menus and TOR take the mouse away the same way.
         private void RegisterRadialMenu(bool open)
         {
             if (open == _registered || MissionScreen == null)

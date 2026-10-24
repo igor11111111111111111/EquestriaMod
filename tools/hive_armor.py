@@ -1,29 +1,30 @@
 # -*- coding: utf-8 -*-
-r"""Броня улья: перекраска ванильной асерайской брони в хитин со светящимися прожилками.
+r"""Hive armour: recolouring vanilla Aserai armour into chitin with glowing veins.
 
   py -3 tools/hive_armor.py
 
-Откуда что берётся:
-  - меши и текстуры асерайского дерева выгружены в assets/reference/vanilla_armor/<меш>/
-    (утилитой tpac_export, см. tools/armor_catalog.py — там же список вещей);
-  - у ванильной брони четыре текстуры: цвет (_d), маска цвета клана (_c), нормали (_n) и
-    блики (_s). Нормали и блики остаются ванильными, их перекрашивать нечего.
+Where things come from:
+  - meshes and textures of the Aserai tree are exported to assets/reference/vanilla_armor/<mesh>/
+    (with the tpac_export utility, see tools/armor_catalog.py — the list of items is there too);
+  - vanilla armour has four textures: colour (_d), clan colour mask (_c), normals (_n) and
+    specular (_s). Normals and specular stay vanilla, there is nothing to recolour in them.
 
-Что делает скрипт: пишет eq_ch_<имя>_d.png — цвет брони улья. В нём сразу всё:
-  - почти чёрный хитин, к светам холодный бирюзовый отблеск;
-  - тёмная бирюза на ткани и кантах (места из маски _c);
-  - ЯРКИЕ бирюзовые линии узора: прожилки в щелях между пластинами и кольцами кольчуги, кромка
-    ткани и сота поверх неё.
+What the script does: writes eq_ch_<name>_d.png — the hive armour colour. It contains everything:
+  - almost black chitin with a cold turquoise sheen in the highlights;
+  - dark turquoise on cloth and trims (areas from the _c mask);
+  - BRIGHT turquoise pattern lines: veins in the gaps between plates and mail rings, the cloth
+    edge and a honeycomb on top of it.
 
-Почему узор впечён, а не светится. У шейдера брони pbr_shading есть флаг self_illumination, и
-карту свечения он берёт из слота 1 — того самого, где у ванили маска цвета клана. Сделать так
-можно, и мы сделали, но померили цену: ОДИН меш с таким сочетанием флагов ставит движку 1332
-сборки шейдера (примерно шесть в секунду — четыре минуты), а собранное нигде не сохраняется:
-файл Shaders\D3D11\compressed_shader_cache.sack игра только читает. То есть четыре минуты при
-КАЖДОМ запуске (замерено 24.09.2026). Поэтому свечение впекаем в цвет: днём разница почти не
-видна, а флаги остаются ванильными и всё собрано заранее.
+Why the pattern is baked in rather than glowing. The armour shader pbr_shading has a
+self_illumination flag, and it takes the glow map from slot 1 — the same slot where vanilla keeps
+the clan colour mask. It can be done, and we did it, but we measured the cost: ONE mesh with this
+flag combination makes the engine build 1332 shaders (about six per second — four minutes), and
+the result is not saved anywhere: the game only reads Shaders\D3D11\compressed_shader_cache.sack.
+That is four minutes on EVERY launch (measured 24.09.2026). So the glow is baked into the colour:
+in daylight the difference is barely visible, while the flags stay vanilla and everything is
+prebuilt.
 
-Дальше: импорт получившихся PNG в редакторе, потом материалы и привязка мешей кодом
+Next: import the resulting PNGs in the editor, then materials and mesh binding by code
 (tools/hive_material.ps1 -NoGlow).
 """
 import os
@@ -39,18 +40,18 @@ PACK = "changeling"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "assets", "reference", "vanilla_armor")
 OUT = os.path.join(ROOT, "assets", "hive_armor", "textures")
-PREFIX = "eq_ch_"      # наши текстуры и материалы: eq_ch_<ванильное имя>
+PREFIX = "eq_ch_"      # our textures and materials: eq_ch_<vanilla name>
 
-# Хитин: от почти чёрного к холодному бирюзовому отблеску (та же палитра, что у тела
-# чейнджлинга, tools/make_changeling_model.py).
+# Chitin: from almost black to a cold turquoise sheen (same palette as the changeling body,
+# tools/make_changeling_model.py).
 CHITIN = [
     (0.00, (0.012, 0.014, 0.018)),
     (0.35, (0.045, 0.060, 0.075)),
     (0.70, (0.090, 0.200, 0.215)),
     (1.00, (0.330, 0.720, 0.700)),
 ]
-# Ткань и канты (места из маски _c): почти чёрная с зеленоватым подсветом. Светлее делать нельзя —
-# поверх неё ложится свечение, и ткань превращалась в сплошную бирюзовую простыню.
+# Cloth and trims (areas from the _c mask): almost black with a greenish tint. It must not be
+# lighter — the glow is laid on top, and the cloth turned into a solid turquoise sheet.
 TRIM = [
     (0.00, (0.008, 0.020, 0.020)),
     (0.40, (0.014, 0.055, 0.052)),
@@ -58,20 +59,20 @@ TRIM = [
     (1.00, (0.080, 0.260, 0.210)),
 ]
 
-GLOW_COLOUR = (0.35, 1.00, 0.88)   # цвет линий: светлая бирюза улья
-GLOW_MIX = 0.95        # насколько линии перекрывают хитин под собой (1 — полностью)
-# Светиться должны ЛИНИИ, а не площади: заливка по маске превращала халат в бирюзовый фонарь
-# (видно на превью 24.09.2026). Поэтому три источника — щели между пластинами, кромка ткани
-# и сота поверх ткани; все три тонкие.
-VEIN_BLUR = 9         # радиус размытия, по которому ищутся щели (чем больше, тем шире прожилки)
-VEIN_LOW = 0.05       # темнее окружения на столько — прожилка уже зажигается
-VEIN_HIGH = 0.30      # и на столько — светится в полную силу
-VEIN_POWER = 0.85     # яркость прожилок
-EDGE_BLUR = 4         # на сколько пикселей размывается маска, чтобы найти её кромку
-EDGE_GLOW = 0.80      # яркость кромки ткани
-CELL = 110            # сторона соты узора в пикселях (узор поверх ткани)
-CELL_LINE = 0.055     # толщина линии соты, доля стороны
-CELL_GLOW = 0.70      # яркость сот
+GLOW_COLOUR = (0.35, 1.00, 0.88)   # line colour: light hive turquoise
+GLOW_MIX = 0.95        # how much the lines cover the chitin under them (1 — fully)
+# LINES must glow, not areas: filling by the mask turned the robe into a turquoise lantern
+# (seen in the preview 24.09.2026). Hence three sources — gaps between plates, the cloth edge
+# and the honeycomb over the cloth; all three are thin.
+VEIN_BLUR = 9         # blur radius used to find gaps (the larger, the wider the veins)
+VEIN_LOW = 0.05       # this much darker than the surroundings — the vein starts to light up
+VEIN_HIGH = 0.30      # and this much — it glows at full strength
+VEIN_POWER = 0.85     # vein brightness
+EDGE_BLUR = 4         # how many pixels the mask is blurred by to find its edge
+EDGE_GLOW = 0.80      # cloth edge brightness
+CELL = 110            # honeycomb cell side in pixels (pattern over the cloth)
+CELL_LINE = 0.055     # honeycomb line thickness, fraction of the side
+CELL_GLOW = 0.70      # honeycomb brightness
 
 
 def log(*a):
@@ -95,7 +96,7 @@ def smoothstep(x, low, high):
 
 
 def find_textures():
-    """{имя набора: (путь к diffuse, путь к маске или None)} — по всем вещам пакета."""
+    """{set name: (diffuse path, mask path or None)} — over all items of the pack."""
     found = {}
     for row in armor_catalog.pieces(PACK):
         folder = os.path.join(SRC, row["mesh"])
@@ -123,17 +124,17 @@ _cells = {}
 
 
 def honeycomb(shape):
-    """Сота: сетка ШЕСТИугольников, единица — линия, ноль — пустота.
+    """Honeycomb: a grid of HEXagons, one is a line, zero is empty.
 
-    Три набора наклонных линий дают треугольную решётку, а не соту (проверено на превью
-    24.09.2026). Настоящие шестиугольники — это границы ячеек Вороного гексагональной решётки:
-    считаем расстояния до двух ближайших центров, линия там, где они почти равны.
+    Three sets of slanted lines give a triangular lattice, not a honeycomb (checked in the
+    preview 24.09.2026). Real hexagons are the Voronoi cell borders of a hexagonal lattice:
+    we compute distances to the two nearest centres, the line is where they are nearly equal.
     """
     if shape in _cells:
         return _cells[shape]
     h, w = shape
     y, x = np.mgrid[0:h, 0:w].astype(np.float32)
-    step_x = CELL * 0.866                      # шаг решётки по горизонтали
+    step_x = CELL * 0.866                      # horizontal lattice step
     col = np.floor(x / step_x)
     row = np.floor((y - np.where(col % 2 == 0, 0.0, CELL / 2)) / CELL)
     best = np.full(shape, 1e9, np.float32)
@@ -159,23 +160,23 @@ def make(diffuse_path, mask_path):
     luma = img @ np.array([0.299, 0.587, 0.114], np.float32)
     mask = read(mask_path, size)[..., :2].max(-1) if mask_path else np.zeros(luma.shape, np.float32)
 
-    # ---- цвет
+    # ---- colour
     colour = ramp(luma, CHITIN) * (1 - mask[..., None]) + ramp(luma, TRIM) * mask[..., None]
 
-    # ---- свечение: щели между пластинами (там, где темнее окружения), кромка ткани и сота
+    # ---- glow: gaps between plates (where darker than the surroundings), cloth edge and honeycomb
     blurred = np.asarray(Image.fromarray((luma * 255).astype(np.uint8))
                          .filter(ImageFilter.GaussianBlur(VEIN_BLUR)), np.float32) / 255.0
     veins = smoothstep(blurred - luma, VEIN_LOW, VEIN_HIGH) * VEIN_POWER
-    # кромка: там, где размытая маска расходится с чёткой, то есть по её границе
+    # edge: where the blurred mask differs from the sharp one, i.e. along its border
     soft = np.asarray(Image.fromarray((mask * 255).astype(np.uint8))
                       .filter(ImageFilter.GaussianBlur(EDGE_BLUR)), np.float32) / 255.0
     edge = smoothstep(np.abs(soft - mask), 0.05, 0.25) * EDGE_GLOW
     cells = honeycomb(luma.shape) * (mask > 0.5) * CELL_GLOW
     glow = np.clip(np.maximum(np.maximum(veins, edge), cells), 0.0, 1.0)
 
-    # ---- линии впекаем в цвет: яркая бирюза поверх хитина, с сохранением его светотени
-    # Светотень исходника линиям оставляем, но не даём им темнеть вместе с кольчугой: без
-    # свечения слишком тёмный узор просто пропадает.
+    # ---- bake the lines into the colour: bright turquoise over chitin, keeping its shading
+    # The lines keep the source shading, but are not allowed to darken along with the mail:
+    # without glow a too-dark pattern simply disappears.
     line = np.array(GLOW_COLOUR, np.float32)[None, None, :] * (0.78 + 0.22 * luma[..., None])
     weight = (glow * GLOW_MIX)[..., None]
     colour = colour * (1.0 - weight) + line * weight

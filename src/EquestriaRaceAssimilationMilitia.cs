@@ -8,22 +8,22 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Ополчение деревень/городов набирается строго из Settlement.Culture — на % рас ассимиляции
-    // (EquestriaRaceAssimilation.cs) никак не смотрит (decompile TaleWorlds.CampaignSystem.dll,
-    // Settlement.AddMilitiasToParty/AddTroopToMilitiaParty — приватные методы, напрямую читают
-    // Culture.MeleeMilitiaTroop/RangedMilitiaTroop). По просьбе пользователя 07.10.2026 — раз уж
-    // мы и так считаем доли рас, пусть ополчение набирается смешанно, пропорционально им.
+    // Village/town militia is recruited strictly from Settlement.Culture and ignores the assimilation race %
+    // (EquestriaRaceAssimilation.cs) completely (decompile TaleWorlds.CampaignSystem.dll,
+    // Settlement.AddMilitiasToParty/AddTroopToMilitiaParty are private methods that read
+    // Culture.MeleeMilitiaTroop/RangedMilitiaTroop directly). At the user's request 07.10.2026: since
+    // we compute race shares anyway, let the militia be recruited mixed, in proportion to them.
     //
-    // Патчим AddMilitiasToParty (НЕ AddTroopToMilitiaParty — тот зовётся дважды за вызов, melee и
-    // ranged, терять которую из двух сложнее, чем перехватить на уровне выше): прогоняем ту же пару
-    // вызовов AddTroopToMilitiaParty (через рефлексию — метод private), что и оригинал, но по разу
-    // НА КАЖДУЮ расу с её долей, домножив ставку melee/ranged на долю расы. Внутренняя рандомизация
-    // количества и шанс ветерана (MBRandom.RoundRandomized, CalculateVeteranMilitiaSpawnChance)
-    // остаются ровно те же — переиспользуем исходный приватный метод, а не переписываем его логику.
+    // We patch AddMilitiasToParty (NOT AddTroopToMilitiaParty: that one is called twice per call, melee and
+    // ranged, and telling which of the two is harder than intercepting one level up): we run the same pair
+    // of AddTroopToMilitiaParty calls (via reflection, the method is private) as the original, but once
+    // FOR EACH race with its share, multiplying the melee/ranged rate by the race share. The internal randomisation
+    // of the count and the veteran chance (MBRandom.RoundRandomized, CalculateVeteranMilitiaSpawnChance)
+    // stay exactly the same: we reuse the original private method instead of rewriting its logic.
     //
-    // ОБЫЧНЫЙ [HarmonyPatch] (не лениво, как у RaceAssimilationTooltipPatch): этот метод не трогает
-    // CampaignUIHelper/GameTexts, его JIT-пин на загрузке мода ничего не ломает (в отличие от того
-    // краша — см. комментарий у RaceAssimilationTooltipPatch.Apply).
+    // A REGULAR [HarmonyPatch] (not lazy, unlike RaceAssimilationTooltipPatch): this method does not touch
+    // CampaignUIHelper/GameTexts, its JIT pinning at mod load breaks nothing (unlike that
+    // crash, see the comment at RaceAssimilationTooltipPatch.Apply).
     [HarmonyPatch(typeof(Settlement), "AddMilitiasToParty")]
     internal static class RaceAssimilationMilitiaPatch
     {
@@ -39,8 +39,8 @@ namespace EquestriaMod
             if (!RaceAssimilationManager.Instance.InfluenceMap.TryGetValue(__instance.StringId, out RaceAssimilationStatus status)
                 || status.CurrentInfluences.Count <= 1)
             {
-                // Нет данных (расселение ещё не инициализировано на этом поселении) или ровно одна
-                // раса (ещё не размыто) — обычное поведение движка, трогать нечего.
+                // No data (settlement population not initialised for this settlement yet) or exactly one
+                // race (not blended yet): normal engine behaviour, nothing to touch.
                 return true;
             }
             Campaign.Current.Models.SettlementMilitiaModel.CalculateMilitiaSpawnRate(

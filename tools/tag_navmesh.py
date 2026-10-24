@@ -1,21 +1,21 @@
-# Типы местности граней сетки проходимости карты мира — из кода, по карте Эквуса.
+# Terrain types of the world map navmesh faces, from code, using the Equus map.
 #
-#   py -3 tools\tag_navmesh.py <папка Module мода> [исходная сетка]
+#   py -3 tools\tag_navmesh.py <the mod's Module folder> [source mesh]
 #
-# Саму сетку строит редактор (Generate Grids, см. make_navmesh.py): 100x100 граней по ~10 м на
-# всю карту, включая море. Разметить в редакторе, где море, а где суша, надёжно не удаётся (его
-# выбор граней по «Terrain height» считает не абсолютную высоту). Поэтому редакторскую сетку
-# храним как есть в assets/map/navmesh_grid_editor.bin, а типы граней ставим здесь:
-#   вода и озёра (по assets/map/eq_map_terrain.png) — Water 10 / Lake 8, по ним не пройти;
-#   высокие горные гребни — Mountain 7, тоже непроходимы;
-#   остальная суша — её тип местности (равнина, лес, степь, снег, пустыня, болото);
-#   реки не размечаем: в сетке из граней по 10 м они перерезали бы всю карту без бродов.
-# Грани под поселениями, их воротами и логовищами всегда проходимы.
+# The mesh itself is built by the editor (Generate Grids, see make_navmesh.py): 100x100 faces of ~10 m over
+# the whole map, sea included. Marking in the editor where the sea is and where the land is cannot be done
+# reliably (its face selection by "Terrain height" does not use absolute height). So we keep the editor mesh
+# as is in assets/map/navmesh_grid_editor.bin and set the face types here:
+#   water and lakes (from assets/map/eq_map_terrain.png): Water 10 / Lake 8, impassable;
+#   high mountain ridges: Mountain 7, also impassable;
+#   the rest of the land: its terrain type (plain, forest, steppe, snow, desert, swamp);
+#   rivers are not marked: in a mesh of 10 m faces they would cut the whole map with no fords.
+# Faces under settlements, their gates and hideouts are always passable.
 #
-# Формат файла: "RNM1", длина остатка, затем 40 служебных байт (3, 0, длина без сжатия, 0,
-# длина остатка, 0 и 16 байт мусора из памяти редактора — ни на что не влияют) и блок LZ4.
-# Грань: число углов, углы, рёбра, 5 int32 (третье — тип местности), байт (у ванили 0,
-# редактор ставит 1 у выделенных граней).
+# File format: "RNM1", the length of the rest, then 40 service bytes (3, 0, uncompressed length, 0,
+# length of the rest, 0 and 16 bytes of garbage from the editor's memory; they affect nothing) and an LZ4 block.
+# Face: number of corners, corners, edges, 5 int32 (the third is the terrain type), a byte (0 in vanilla,
+# the editor sets 1 on selected faces).
 import os
 import struct
 import sys
@@ -33,10 +33,10 @@ SOURCE = sys.argv[2] if len(sys.argv) > 2 else os.path.join(equus_map.DIR, "navm
 TARGET = os.path.join(MOD, "SceneObj", "Main_map", "navmesh.bin")
 SETTLEMENTS = os.path.join(MOD, "ModuleData", "equestria_settlements.xml")
 
-# Проходимые для обычных отрядов типы (DefaultPartyNavigationModel.IsTerrainTypeValidForDefault)
+# Types passable for ordinary parties (DefaultPartyNavigationModel.IsTerrainTypeValidForDefault)
 PASSABLE = {1, 2, 3, 4, 5, 6, 15, 16, 17, 20}
-WATER_SHARE = 0.5        # грань — вода, если воды под ней больше этой доли
-RIDGE_HEIGHT = 20.0      # горы непроходимы, если грань целиком выше этого, м
+WATER_SHARE = 0.5        # a face is water if more than this share of it is water
+RIDGE_HEIGHT = 20.0      # mountains are impassable if the face is entirely above this, m
 
 
 def log(*a):
@@ -65,7 +65,7 @@ def faces(data):
         n = struct.unpack_from("<I", data, off)[0]
         corners = list(struct.unpack_from("<%dI" % n, data, off + 4))
         off += 4 + n * 8
-        out.append((off, vertices[corners]))   # off — начало пяти чисел грани
+        out.append((off, vertices[corners]))   # off is the start of the face's five numbers
         off += 21
     return out
 
@@ -83,8 +83,8 @@ FORDING = 6
 
 
 def connect_islands(data, face_list, boxes, must_pass):
-    """Острова с поселениями соединяем с большой землёй бродом — прямой цепочкой граней.
-    Сетка редактора — ровная решётка, поэтому соседей грани ищем по её клетке."""
+    """Islands with settlements are joined to the mainland by a ford, a straight chain of faces.
+    The editor mesh is a regular grid, so a face's neighbours are found by its cell."""
     cell = boxes[0][2] - boxes[0][0]
     origin = min(b[0] for b in boxes), min(b[1] for b in boxes)
     grid = {}
@@ -133,7 +133,7 @@ def connect_islands(data, face_list, boxes, must_pass):
             if best is None or d[k] < best[0]:
                 best = (d[k], (x, y), tuple(mainland[k]))
         _dist, (x, y), (tx, ty) = best
-        while (x, y) != (tx, ty):   # ступенями по решётке, чтобы брод был связным
+        while (x, y) != (tx, ty):   # in steps along the grid, so that the ford is connected
             if abs(tx - x) >= abs(ty - y):
                 x += 1 if tx > x else -1
             else:

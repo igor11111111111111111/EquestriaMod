@@ -1,19 +1,19 @@
-"""Глаза пони: подложка в глазницах, моргание без сломанных век, круглый глаз при любых слайдерах лица.
+"""Pony eyes: backing in the eye sockets, blinking without broken eyelids, a round eye with any face sliders.
 
-Запуск — после tools/convert_twilight.py, на его результате (файл перезаписывается, рядом копия .before_eyes):
+Run after tools/convert_twilight.py, on its result (the file is overwritten, a .before_eyes copy is kept):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python fix_pony_eyes.py
-Затем tools/make_changeling.py (голова чейнджлинга — копия этой).
+Then tools/make_changeling.py (the changeling head is a copy of this one).
 
-Что делается с мешем головы eq_twilight_head:
-  1. Веки (eq_lid) удаляются: в кадрах моргания они раскрывались по габаритам всего глазного яблока
-     (оно гораздо больше видимого глаза) и торчали огромным треугольником за пределы морды.
-  2. Подложка: за каждым глазом — эллиптическая «заглушка» цвета кожи чуть позади передней поверхности
-     (яблока или кожи). Она закрывает пустоту в глазнице у носа, а в кадрах моргания глазное яблоко
-     сжимается по высоте в линию и открывает её — это и есть сомкнутые веки. eq_eye = 2, UV — угол клетки
-     глаз (там цвет кожи у пони и хитин у чейнджлинга), ключи лица — как у ближайшей кожи.
-  3. Слайдеры лица (все ключи, кроме моргания 86–88) двигают глазное яблоко только целиком: сдвиг,
-     поворот и равномерный масштаб. Перенесённые с человека ключи тянули его вершины вразнобой — нарисованный
-     круглый глаз (make_changeling.py) расплывался.
+What is done to the head mesh eq_twilight_head:
+  1. The eyelids (eq_lid) are removed: in blink frames they opened to the bounds of the whole eyeball
+     (which is much bigger than the visible eye) and stuck out of the muzzle as a huge triangle.
+  2. Backing: behind each eye there is an elliptical skin-coloured "plug" slightly behind the front surface
+     (of the eyeball or the skin). It covers the void in the socket near the nose, and in blink frames the
+     eyeball squashes vertically into a line and reveals it — that is the closed eyelids. eq_eye = 2, UV is a
+     corner of the eye cell (skin colour on ponies, chitin on changelings), face keys follow the nearest skin.
+  3. Face sliders (all keys except blink 86–88) move the eyeball only as a whole: translation,
+     rotation and uniform scale. Keys transferred from the human pulled its vertices unevenly — the painted
+     round eye (make_changeling.py) got smeared.
 """
 import math
 import os
@@ -31,12 +31,12 @@ HEAD_BONE = "bip01_head_13"
 BLINK_KEYS = {"key_086", "key_087", "key_088"}
 EYE_CELL, LASH_CELL, SKIN_CELL = (3, 0), (2, 0), (3, 1)
 CELL, GRID = 1024, 4
-# однотонный участок кожи головы (клетка (3,1), найден по атласу): у пони подложка цвета шерсти,
-# у чейнджлинга make_changeling.py переводит всю кожу головы в хитин. Угол клетки глаз не годится —
-# в исходной текстуре глаз он чёрный, и при моргании была видна чернота.
+# a solid-colour patch of head skin (cell (3,1), found from the atlas): on ponies the backing is coat-coloured,
+# on changelings make_changeling.py turns all head skin into chitin. The eye cell corner does not work —
+# it is black in the source eye texture, and the blackness showed during blinks.
 BACKING_UV = (0.798828125, 0.482177734375)
-BACKING_SCALE = 1.5     # подложка шире видимого глаза — перекрывает всю глазницу
-BACKING_DEPTH = 0.02    # м позади передней поверхности: слайдеры лица утапливают глаз, подложка не должна его перекрыть
+BACKING_SCALE = 1.5     # the backing is wider than the visible eye — covers the whole socket
+BACKING_DEPTH = 0.02    # m behind the front surface: face sliders sink the eye, the backing must not cover it
 VIEW_SIDE = 0.15
 
 
@@ -49,7 +49,7 @@ ob = bpy.data.objects[HEAD]
 me = ob.data
 RECOLOR_ONLY = any(a.value == 2 for a in me.attributes["eq_eye"].data)
 if RECOLOR_ONLY:
-    # голова уже обработана: только обновить UV подложки и переэкспортировать
+    # the head is already processed: only update the backing UV and re-export
     _uv = me.uv_layers.active.data
     _eye = me.attributes["eq_eye"]
     for p in me.polygons:
@@ -70,7 +70,7 @@ if not RECOLOR_ONLY:
         return (min(int(u * GRID), GRID - 1), min(int(v * GRID), GRID - 1))
 
 
-    # ---------------------------------------------------------------- 1. веки прочь
+    # ---------------------------------------------------------------- 1. remove the eyelids
     bm = bmesh.new()
     bm.from_mesh(me)
     lid = bm.verts.layers.int.get("eq_lid")
@@ -81,7 +81,7 @@ if not RECOLOR_ONLY:
     me.update()
     log(f"eyelids removed: {len(dead)} verts")
 
-    # ---------------------------------------------------------------- 2. эллипс видимого глаза
+    # ---------------------------------------------------------------- 2. ellipse of the visible eye
     uvd = me.uv_layers.active.data
     eye_a = me.attributes["eq_eye"]
     world = [mw @ v.co for v in me.vertices]
@@ -117,7 +117,7 @@ if not RECOLOR_ONLY:
                           depth=float(np.median(pts @ np.array(d[:]))))
         log(f"eye {side:+d}: {len(vis)} visible verts, ellipse {radii[0] * 200:.1f} x {radii[1] * 200:.1f} cm")
 
-    # ---------------------------------------------------------------- 3. подложка
+    # ---------------------------------------------------------------- 3. backing
     RINGS, SEGS = 6, 32
     bm = bmesh.new()
     bm.from_mesh(me)
@@ -151,7 +151,7 @@ if not RECOLOR_ONLY:
                 a = inner[0] if r == 0 else inner[sgi]
                 b = inner[0] if r == 0 else inner[(sgi + 1) % SEGS]
                 quad = [a, outer[sgi], outer[(sgi + 1) % SEGS]] + ([] if r == 0 else [b])
-                for verts in (quad, quad[::-1]):  # двусторонняя
+                for verts in (quad, quad[::-1]):  # double-sided
                     try:
                         f = bm.faces.new(verts)
                     except ValueError:
@@ -167,7 +167,7 @@ if not RECOLOR_ONLY:
     eyeball = np.array([i for i in range(len(me.vertices)) if eye_a.data[i].value == 1])
     log(f"backing: {len(backing)} verts")
 
-    # ---------------------------------------------------------------- 4. ключи лица
+    # ---------------------------------------------------------------- 4. face keys
     keys = me.shape_keys.key_blocks
     basis = np.array([v.co[:] for v in keys[0].data])
     n = len(basis)
@@ -175,8 +175,8 @@ if not RECOLOR_ONLY:
     uvd = me.uv_layers.active.data
     skin_verts = sorted({me.loops[li].vertex_index for p in me.polygons for li in p.loop_indices
                          if cell_of(*uvd[p.loop_indices[0]].uv) == SKIN_CELL})
-    # Подложка двигается вместе с ближайшими вершинами ПЕРЕДНЕЙ части глазного яблока: тогда при любых
-    # слайдерах лица она остаётся позади глаза. Привязка к коже выталкивала её перед глазом.
+    # The backing moves with the nearest vertices of the FRONT part of the eyeball: then with any face
+    # sliders it stays behind the eye. Binding it to the skin pushed it in front of the eye.
     front_eye = []
     for s_ in (1, -1):
         idx = eyeball[world_basis[eyeball, 0] * s_ > 0]
@@ -188,8 +188,8 @@ if not RECOLOR_ONLY:
     kd.balance()
     near = {int(b): [h[1] for h in kd.find_n(Vector(basis[b]), 8)] for b in backing}
 
-    # EYES_RIGID: слайдеры двигают глазное яблоко только целиком (нужно для нарисованного круглого глаза,
-    # PONY_ROUND_EYES в make_changeling.py). С исходной текстурой глаз — выключено: мимика глаза как была.
+    # EYES_RIGID: sliders move the eyeball only as a whole (needed for the painted round eye,
+    # PONY_ROUND_EYES in make_changeling.py). With the source eye texture it is off: eye expressions as before.
     EYES_RIGID = False
 
 
@@ -216,12 +216,12 @@ if not RECOLOR_ONLY:
                 scale, rot, t = similarity(basis[idx], co[idx])
                 co[idx] = (scale * (rot @ basis[idx].T)).T + t
         for b_, nb in near.items():
-            # при моргании яблоко сплющивается — подложка (сомкнутые веки) стоит на месте
+            # when blinking the eyeball flattens — the backing (closed eyelids) stays in place
             co[b_] = basis[b_] if kb.name in BLINK_KEYS else basis[b_] + (co[nb] - basis[nb]).mean(0)
         kb.data.foreach_set("co", co.ravel())
     log(f"face keys: eyeballs {'rigid' if EYES_RIGID else 'as transferred'}, backing follows the front of the eyeball")
 
-    # нормали подложки — к зрителю (иначе новые углы получают нулевую пользовательскую нормаль)
+    # backing normals face the viewer (otherwise the new corners get a zero custom normal)
     normals = [cn.vector.copy() for cn in me.corner_normals]
     back_set = set(int(i) for i in backing)
     for poly in me.polygons:
@@ -230,7 +230,7 @@ if not RECOLOR_ONLY:
                 normals[li] = poly.normal.copy()
     me.normals_split_custom_set([n_[:] for n_ in normals])
 
-# ---------------------------------------------------------------- 5. экспорт как в convert_twilight.py
+# ---------------------------------------------------------------- 5. export as in convert_twilight.py
 skel = next(o for o in bpy.data.objects if o.type == "ARMATURE")
 items = [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("eq_twilight_")]
 bpy.ops.object.select_all(action="DESELECT")

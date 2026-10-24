@@ -1,12 +1,12 @@
-"""Мультяшные гривы пони — настоящие причёски (слот волос), как в мультике: гладкие объёмные локоны.
+"""Cartoon pony manes: real hairstyles (hair slot), as in the cartoon: smooth voluminous locks.
 
-Запуск (headless Blender, на готовой пони):
+Run (headless Blender, on the finished pony):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_pony_manes.py -- ../assets/pony_manes
 
-Каждый локон — трубка со сплюснутым сечением вдоль линии пряди (hair_common.lock_path/Mane.lock): от корня
-на голове через точку схода вниз, с волной, завитком или острым кончиком. Локоны обходят глаза и уши.
-Стили — по мотивам главной шестёрки; меши не копируют мультик, это свои формы.
-Сами локоны, шапочка и однотонные участки текстуры волос живут в hair_common (их же берут рога оленей).
+Each lock is a tube with a flattened cross-section along the strand line (hair_common.lock_path/Mane.lock): from
+the root on the head through a convergence point downward, with a wave, a curl or a sharp tip. Locks go around
+the eyes and ears. Styles are inspired by the Mane Six; the meshes do not copy the cartoon, they are our own shapes.
+The locks themselves, the cap and the solid-colour areas of the hair texture live in hair_common (deer antlers use them too).
 """
 import os
 import sys
@@ -21,9 +21,9 @@ from hair_common import (D, DARK, LIGHT, Mane, V, export, lock_path, log,  # noq
 OUT = os.path.abspath(sys.argv[sys.argv.index("--") + 1])
 
 
-# ---------------------------------------------------------------- стили
+# ---------------------------------------------------------------- styles
 def style_straight(m):
-    """Прямая чёлка и прямые пряди до плеч, полоса второго тона (мотив Твайлайт)."""
+    """Straight bangs and straight strands to the shoulders, a stripe of the second tone (Twilight motif)."""
     m.cap(hang=0.08)
     for k, x in enumerate(np.linspace(-1, 1, 6)):
         tone = DARK if k == 4 else LIGHT
@@ -39,7 +39,7 @@ def style_straight(m):
 
 
 def style_curly(m):
-    """Пышная чёлка набок и крупные завитки на концах (мотив Рарити)."""
+    """Full side-swept bangs and large curls at the ends (Rarity motif)."""
     m.cap(hang=0.06)
     m.lock(lock_path(D(-165, 86), D(118, 22), 0.12, V(0.1, -0.3, -1), 0.045, 0.11, curl=0.9, curl_r=0.04),
            0.11, 0.045, LIGHT, tip="round")
@@ -53,7 +53,7 @@ def style_curly(m):
 
 
 def style_wild(m):
-    """Растрёпанные острые пряди, торчащие назад и вверх (мотив Рейнбоу Дэш)."""
+    """Messy sharp strands sticking back and up (Rainbow Dash motif)."""
     m.cap(hang=0.03)
     for k, x in enumerate(np.linspace(-1, 1, 4)):
         m.lock(lock_path(D(180 - 20 * x, 82), D(180 - 38 * x, 48), 0.06, V(x * 0.3, -1, 0.5), 0.025, 0.06,
@@ -68,10 +68,10 @@ def style_wild(m):
 
 
 def style_puffy(m):
-    """Пышные кудряшки по всей голове (мотив Пинки Пай)."""
+    """Fluffy curls all over the head (Pinkie Pie motif)."""
     m.cap(hang=0.05)
     k = 0
-    # нижние ряды не заходят на морду: чем ниже ряд, тем уже он спереди
+    # the lower rows do not reach the face: the lower the row, the narrower it is at the front
     for phi, count, reach in ((-8, 8, 105), (12, 10, 118), (32, 10, 130), (52, 9, 145), (72, 6, 150), (86, 2, 150)):
         for th in np.linspace(-reach, reach, count) + (k % 2) * 6:
             m.lock(lock_path(D(th, phi + 12), D(th, phi - 4), 0.03, V(0, 0.3, -1), 0.06, 0.1, curl=1.3,
@@ -83,7 +83,7 @@ def style_puffy(m):
 
 
 def style_long(m):
-    """Длинная волнистая грива и чёлка, уходящая набок (мотив Флаттершай)."""
+    """Long wavy mane and bangs swept to the side (Fluttershy motif)."""
     m.cap(hang=0.1)
     m.lock(lock_path(D(-162, 86), D(116, 26), 0.26, V(0.05, -0.3, -1), 0.035, 0.1, wave=0.02, waves=2.0),
            0.1, 0.035, LIGHT, tip="point")
@@ -95,7 +95,7 @@ def style_long(m):
 
 
 def style_ponytail(m):
-    """Короткая чёлка, волосы убраны назад в хвост с резинкой (мотив Эпплджек)."""
+    """Short bangs, hair pulled back into a tail with a hair tie (Applejack motif)."""
     m.cap(hang=0.0)
     for x in np.linspace(-1, 1, 5):
         m.lock(lock_path(D(180 - 30 * x, 84), D(180 - 36 * x, 40), 0.0, V(0, -0.3, -1), 0.025, 0.07),
@@ -118,7 +118,7 @@ def style_ponytail(m):
 
 
 def style_short(m):
-    """Короткая мальчишеская стрижка с торчащими прядями (мотив Скуталу и жеребцов)."""
+    """Short boyish haircut with sticking-out strands (Scootaloo and stallions motif)."""
     m.cap(hang=0.02)
     for x in np.linspace(-1, 1, 3):
         m.lock(lock_path(D(180 - 25 * x, 84), D(180 - 35 * x, 52), 0.03, V(x * 0.3, -1, 0.3), 0.025, 0.07),

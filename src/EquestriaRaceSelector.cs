@@ -9,26 +9,26 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.FaceGenerator;
 
 namespace EquestriaMod
 {
-    // Список народностей в окне внешности (создание героя, цирюльник).
+    // The list of races in the appearance screen (hero creation, barber).
     //
-    // Движок берёт народности из skins: сначала ванильный Native\skins.xml, потом наш
-    // pony_skins.xml. Первой всегда идёт человеческая раса Native — убрать её из данных нельзя,
-    // файлы игры мы не трогаем. Поэтому прячем её в окне.
+    // The engine takes races from skins: first the vanilla Native\skins.xml, then our
+    // pony_skins.xml. The Native human race always comes first — it cannot be removed from the data,
+    // we do not touch the game files. So we hide it in the screen.
     //
-    // Тонкость: номер строки в списке — это и есть номер расы (FaceGenVM: _selectedRace =
-    // RaceSelector.SelectedIndex). Стоит выкинуть строку — и все номера съедут. Поэтому держим
-    // таблицу «строка → раса» (Shown) и переписываем те места игры, где номера встречаются:
-    // выбор в списке (OnSelectRace) и сброс (Reset/ResetAll, там номер лежит в _initialRace).
+    // Subtlety: the row number in the list IS the race number (FaceGenVM: _selectedRace =
+    // RaceSelector.SelectedIndex). Drop a row — and all the numbers shift. So we keep a
+    // "row -> race" table (Shown) and rewrite the places in the game where the numbers appear:
+    // selection in the list (OnSelectRace) and reset (Reset/ResetAll, the number is in _initialRace there).
     //
-    // Заодно даём народностям русские имена: в списке движок показывает сырые идентификаторы
-    // из skins (pony, changeling…), перевода для них нигде нет.
+    // At the same time we give the races Russian names: the engine shows raw ids from skins in the
+    // list (pony, changeling…), there is no translation for them anywhere.
     public static class EquestriaRaceSelector
     {
-        // Ванильная человеческая раса: в моде она не нужна, но остаётся расой номер 0
+        // The vanilla human race: not needed in the mod, but it stays race number 0
         private static readonly HashSet<string> Hidden = new HashSet<string> { "human" };
 
-        // Текст английский, как и везде в моде: перевод лежит языковыми файлами
-        // (ModuleData/Languages, собираются tools/make_world.py).
+        // The text is English, as everywhere in the mod: the translation lives in language files
+        // (ModuleData/Languages, built by tools/make_world.py).
         private static readonly Dictionary<string, string> Titles = new Dictionary<string, string>
         {
             { "pony", "{=eq_race_pony}Pony" },
@@ -40,9 +40,9 @@ namespace EquestriaMod
             { "hippogriff", "{=eq_race_hippogriff}Hippogriff" },
         };
 
-        // internal: EquestriaHairStyleView тоже читает текущую расу из FaceGenVM этим же полем —
-        // в экране внешности она может отличаться от Hero.MainHero.CharacterObject.Race, пока
-        // игрок просто крутит список «Народность», ещё не нажав «Готово».
+        // internal: EquestriaHairStyleView also reads the current race from FaceGenVM via this field —
+        // in the appearance screen it may differ from Hero.MainHero.CharacterObject.Race while the
+        // player is just scrolling the "Culture" list, not yet having pressed "Done".
         internal static readonly FieldInfo SelectedRaceField = AccessTools.Field(typeof(FaceGenVM), "_selectedRace");
         private static readonly FieldInfo InitialRaceField = AccessTools.Field(typeof(FaceGenVM), "_initialRace");
         private static readonly FieldInfo OnChangeField =
@@ -60,7 +60,7 @@ namespace EquestriaMod
         private static string[] _names;
         private static int[] _shown;
 
-        // Номера рас, которые показываем, по порядку строк списка
+        // Numbers of the races we show, in list row order
         private static int[] Shown()
         {
             var names = FaceGen.GetRaceNames();
@@ -80,7 +80,7 @@ namespace EquestriaMod
                     shown.Add(i);
                 }
             }
-            // Прятать всё нельзя: если наши расы почему-то не загрузились, оставляем список как есть
+            // Hiding everything is not allowed: if our races somehow did not load, leave the list as is
             if (shown.Count == 0)
             {
                 for (int i = 0; i < names.Length; i++)
@@ -101,7 +101,7 @@ namespace EquestriaMod
             return Titles.TryGetValue(race, out title) ? new TextObject(title) : new TextObject("{=!}" + race);
         }
 
-        // То же название расы, но для остальных: им зовёт спутников смотр рас (EquestriaRaceParty).
+        // The same race name, but for others: the race review (EquestriaRaceParty) names companions with it.
         internal static TextObject TitleOf(string race)
         {
             return Title(race);
@@ -112,11 +112,11 @@ namespace EquestriaMod
             return Array.IndexOf(Shown(), race);
         }
 
-        // Переписывает список: убирает спрятанные расы и подставляет русские названия.
+        // Rewrites the list: removes hidden races and substitutes Russian names.
         //
-        // Делается это до того, как список попадёт в окно (крючок на записи RaceSelector). Если
-        // править уже показанный список, окно успевает запомнить прежний номер строки и возвращает
-        // его обратно — расу сдвигало на одну вниз при каждом выборе.
+        // This is done before the list reaches the screen (a hook on the RaceSelector setter). If an
+        // already shown list is edited, the screen manages to remember the previous row number and
+        // puts it back — the race shifted one down on every selection.
         internal static void Rebuild(FaceGenVM vm, SelectorVM<SelectorItemVM> selector)
         {
             var shown = Shown();
@@ -128,13 +128,13 @@ namespace EquestriaMod
             int position = PositionOf((int)SelectedRaceField.GetValue(vm));
             if (position < 0)
             {
-                // Выбрана спрятанная раса (при первом заходе это человек) — переводим на первую нашу.
-                // Внешность под новую расу пересоберёт сама игра: сразу после записи списка она
-                // вызывает UpdateRaceAndGenderBasedResources.
+                // A hidden race is selected (on the first visit it is the human) — switch to our first one.
+                // The game itself rebuilds the appearance for the new race: right after the list is set
+                // it calls UpdateRaceAndGenderBasedResources.
                 position = 0;
                 SelectedRaceField.SetValue(vm, shown[0]);
             }
-            // Смена строки в списке дёргает обработчик выбора; на время пересборки его снимаем
+            // Changing the list row fires the selection handler; we remove it while rebuilding
             var onChange = OnChangeField.GetValue(selector);
             OnChangeField.SetValue(selector, null);
             try
@@ -154,8 +154,8 @@ namespace EquestriaMod
                 + " — " + names[shown[position]]);
         }
 
-        // Reset/ResetAll кладут в список номер расы из _initialRace, считая его номером строки.
-        // На время их работы держим в _initialRace номер строки, потом возвращаем номер расы.
+        // Reset/ResetAll put the race number from _initialRace into the list, treating it as a row number.
+        // While they run we keep the row number in _initialRace, then put the race number back.
         internal static void InitialRaceToPosition(FaceGenVM vm)
         {
             int race = (int)InitialRaceField.GetValue(vm);
@@ -173,8 +173,8 @@ namespace EquestriaMod
             }
         }
 
-        // Выбор строки в списке: номер строки переводим в номер расы. Дальше повторяем то, что
-        // делает игра в OnSelectRace.
+        // Selecting a row in the list: the row number is converted to the race number. Then we repeat
+        // what the game does in OnSelectRace.
         internal static bool Select(FaceGenVM vm, SelectorVM<SelectorItemVM> selector)
         {
             var shown = Shown();
@@ -183,10 +183,10 @@ namespace EquestriaMod
             {
                 return true;
             }
-            // Список ещё строится. Игра создаёт его на номере расы (SelectorVM(имена, _selectedRace,
-            // обработчик)), и объект списка сразу дёргает обработчик — с номером расы вместо номера
-            // строки. Узнаём этот вызов по тому, что список ещё не записан в окно, и пропускаем:
-            // выбирал не человек.
+            // The list is still being built. The game creates it on the race number (SelectorVM(names,
+            // _selectedRace, handler)), and the list object fires the handler right away — with the race
+            // number instead of the row number. We recognise this call by the list not yet being set
+            // in the screen, and skip it: it was not a person choosing.
             if (!ReferenceEquals(vm.RaceSelector, selector))
             {
                 return false;
@@ -218,7 +218,7 @@ namespace EquestriaMod
         }
     }
 
-    // Список правим в тот миг, когда игра его записывает, — раньше, чем он попадёт в окно
+    // The list is edited the moment the game sets it — before it reaches the screen
     [HarmonyPatch(typeof(FaceGenVM), "RaceSelector", MethodType.Setter)]
     public static class RaceListWithoutHumans
     {

@@ -1,12 +1,13 @@
-# Разбор текущего расклада мира: сколько у кого поселений, как они разбросаны и где пусто.
+# Analysis of the current world layout: who has how many settlements, how they are spread and where it
+# is empty.
 #
-#   py tools/analyze_world.py [папка Module мода]
+#   py tools/analyze_world.py [the mod's Module folder]
 #
-# Считает по сгенерированным XML (equestria_settlements.xml + equestria_clans.xml):
-#   - города/замки/деревни каждой державы и её «вес» (город 3, замок 2, деревня 1);
-#   - расстояния до ближайшего соседа (кучкование) и до ближайшего поселения из случайных точек
-#     суши (пустые места);
-#   - то же самое по ванильной карте Bannerlord — для сравнения «как в оригинальной игре».
+# Computes from the generated XML (equestria_settlements.xml + equestria_clans.xml):
+#   - towns/castles/villages of each realm and its "weight" (town 3, castle 2, village 1);
+#   - distances to the nearest neighbour (clustering) and to the nearest settlement from random land
+#     points (empty areas);
+#   - the same for the vanilla Bannerlord map — to compare with "how it is in the original game".
 import collections
 import math
 import os
@@ -38,8 +39,8 @@ def kind_of(s):
 
 
 def read(path, kingdom_of_clan=None):
-    """[(вид, x, y, держава)] из settlements.xml. У деревни владелец — крепость, к которой она
-    приписана (bound), поэтому владельцев разбираем в два прохода."""
+    """[(kind, x, y, realm)] from settlements.xml. A village's owner is the fortress it is
+    bound to (bound), so owners are resolved in two passes."""
     raw, bound = [], {}
     for s in ET.parse(path).getroot():
         kind = kind_of(s)
@@ -77,7 +78,7 @@ def spacing(points):
 
 
 def emptiness(points, land_mask, map_size, step=8.0):
-    """Распределение расстояния «от случайной точки суши до ближайшего поселения»."""
+    """Distribution of the distance "from a random land point to the nearest settlement"."""
     p = np.array([[x, y] for _k, x, y, _o in points], float)
     n = land_mask.shape[0]
     ys, xs = np.nonzero(land_mask[::max(1, int(n * step / map_size)), ::max(1, int(n * step / map_size))])
@@ -120,7 +121,7 @@ def report(title, points, land_mask, map_size):
 
 ours = read(os.path.join(MOD, "ModuleData", "equestria_settlements.xml"),
             clan_to_kingdom(os.path.join(MOD, "ModuleData", "equestria_clans.xml")))
-# ванильные записи, уведённые в угол, в наш расклад не входят
+# vanilla entries moved off into the corner are not part of our layout
 ours = [p for p in ours if p[3].startswith("kingdom_")]
 report("НАШ МИР (Эквус, карта %.0f м)" % equus_map.MAP_SIZE, ours,
        equus_map.land_map() & (equus_map.heights() > 0.4), equus_map.MAP_SIZE)

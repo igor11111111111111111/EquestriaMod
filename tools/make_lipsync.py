@@ -1,10 +1,10 @@
-# Файлы синхронизации губ (формат Rhubarb) для наших звуков реплик.
+# Lip-sync files (Rhubarb format) for our voice-line sounds.
 #
 #   py -3 tools\make_lipsync.py Module\Sounds\bandit_greeting Module\Sounds\lord_greeting
 #
-# Игра, проигрывая реплику в диалоге, ищет рядом со звуком файл <имя>.xml с «ртами» по времени
-# (CampaignMissionComponent.PlayConversationSoundEvent -> StartRhubarbRecord). Настоящий Rhubarb
-# разбирает фонемы; нам хватает громкости: тишина — рот закрыт (X), тихо — B, громче — C, D.
+# When the game plays a line in a dialogue, it looks next to the sound for a <name>.xml file with timed
+# "mouths" (CampaignMissionComponent.PlayConversationSoundEvent -> StartRhubarbRecord). Real Rhubarb
+# analyses phonemes; loudness is enough for us: silence - mouth closed (X), quiet - B, louder - C, D.
 import os
 import struct
 import sys
@@ -12,7 +12,7 @@ import wave
 
 import numpy as np
 
-STEP = 0.07   # длина одного «рта», с
+STEP = 0.07   # length of one "mouth", s
 
 
 def read_wav(path):

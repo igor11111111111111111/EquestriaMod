@@ -1,10 +1,10 @@
-# Обзор всей карты Equestria at War: чьи области где. Нужен, чтобы выбрать участок материка
-# для нашей карты мира.
+# Overview of the whole Equestria at War map: whose states are where. Needed to pick a part of the
+# continent for our world map.
 #
-#   py -3 tools\eaw_overview.py [папка вывода]
+#   py -3 tools\eaw_overview.py [output folder]
 #
-# Пишет docs/reference/eaw_owners.png (владельцы областей поверх рельефа, крупные страны
-# подписаны) и docs/reference/eaw_owners.json (страна -> рамка и число областей).
+# Writes docs/reference/eaw_owners.png (state owners over the terrain, large countries
+# labelled) and docs/reference/eaw_owners.json (country -> frame and number of states).
 import collections
 import glob
 import json
@@ -66,7 +66,7 @@ def main():
             cx, cy = xs.mean() * SCALE, ys.mean() * SCALE
             draw.text((cx, cy), f"{tag} {name(tag)}", fill=(255, 255, 255), font=font,
                       stroke_width=2, stroke_fill=(0, 0, 0), anchor="mm")
-    # сетка 256 пикселей HOI4 — для выбора рамки
+    # HOI4 256-pixel grid, for choosing the frame
     for x in range(0, ids.shape[1], 256):
         draw.line([(x * SCALE, 0), (x * SCALE, im.height)], fill=(90, 90, 90))
         draw.text((x * SCALE + 2, 2), str(x), fill=(200, 200, 200), font=font)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Печатает сырые свойства узлов-костей FBX: PreRotation, Lcl Rotation, Lcl Translation,
-RotationOrder — тем парсером, которым Blender сам читает FBX (io_scene_fbx.parse_fbx), без
-какой-либо конвертации осей. Нужно, чтобы увидеть, что реально лежит в файле TaleWorlds и в
-нашем экспорте (гипотеза 10.10.2026: движок накладывает PreRotation скелета-владельца поверх
-наших кривых, где pre-rotation уже вшит Blender'ом, и позвоночник получает двойной поворот).
+"""Prints the raw properties of FBX bone nodes: PreRotation, Lcl Rotation, Lcl Translation,
+RotationOrder, using the parser Blender itself reads FBX with (io_scene_fbx.parse_fbx), without
+any axis conversion. Needed to see what really lies in the TaleWorlds file and in
+our export (hypothesis of 10.10.2026: the engine applies the owner skeleton's PreRotation on top of
+our curves, where Blender has already baked the pre-rotation in, and the spine gets a double rotation).
 
-Запуск:
-    blender --background --factory-startup --python tools/dump_fbx_prerotation.py -- <файл.fbx>
+Run:
+    blender --background --factory-startup --python tools/dump_fbx_prerotation.py -- <file.fbx>
 """
 import sys
 

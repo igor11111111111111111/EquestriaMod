@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Моргание для перекроенной вручную головы в assets/pony/eq_pony_edit.blend.
+"""Blinking for the hand-reworked head in assets/pony/eq_pony_edit.blend.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_add_blink.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_add_blink.py
 
-Separate/Join, которыми голову резали и правили руками, ключи мимики не сохраняют (это
-подтверждено: у eq_pony_head в «Пони - цельная» 0 шейпкизов). Без 101 ключа (key_000..key_100,
-кадры 86/87/88 — левый/правый/оба глаза) движок не может моргать этой головой. Код поиска глаз и
-самого моргания — точная копия eye_spots()/add_blink() из tools/make_pony_model.py, только текстуру
-и развёртку берёт с уже готового материала объекта, а не из свежего импорта FBX.
+Separate/Join, used to cut and hand-edit the head, do not keep the facial keys (this is
+confirmed: eq_pony_head in "Pony - whole" has 0 shape keys). Without 101 keys (key_000..key_100,
+frames 86/87/88 - left/right/both eyes) the engine cannot blink with this head. The eye search and
+blink code is an exact copy of eye_spots()/add_blink() from tools/make_pony_model.py, except that the
+texture and UV map are taken from the object's existing material, not from a fresh FBX import.
 """
 import bpy
 import numpy as np
@@ -153,7 +153,7 @@ head = bpy.data.collections["Пони - цельная"].objects["eq_pony_head"]
 diffuse = find_diffuse(head)
 log("диффуз-текстура:", diffuse.name if diffuse else None)
 if diffuse:
-    diffuse.pixels[0]  # заставить Blender подгрузить пиксели с диска
+    diffuse.pixels[0]  # force Blender to load the pixels from disk
 add_blink(head, diffuse)
 bpy.ops.wm.save_mainfile()
 log("сохранено")

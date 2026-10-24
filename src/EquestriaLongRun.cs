@@ -16,26 +16,29 @@ using TaleWorlds.SaveSystem.Load;
 
 namespace EquestriaMod
 {
-    // Долгий прогон кампании без игрока: проверка, что мир живёт месяцами и не падает на войнах,
-    // осадах, свадьбах, рождениях и смертях.
+    // A long campaign run without the player: checks that the world lives for months and does not crash
+    // on wars, sieges, weddings, births and deaths.
     //
-    //   /eqlongrun:100   после быстрого старта крутить время до 100-го дня, затем сохранить игру
-    //                    под именем eq_longrun. В журнал — сводка каждые 10 дней и все крупные события.
-    //   /eqload:eq_longrun   из главного меню сразу загрузить это сохранение (проверка загрузки).
-    //   /eqgoto:651,660  в начале прогона перенести отряд игрока в эту точку карты и не двигать
-    //                    его (для снимков нужного места: камера смотрит на игрока).
-    //   /eqfightbandits  в начале прогона вступить в бой с мародёрами (проверка их озвучки)
-    //   /eqtalklord      в начале прогона открыть разговор с лидером нашего клана (проверка реплик
-    //                    на разных языках; в журнал — «язык текста: ...» с примером строки)
-    //   /eqcompanions:100  набрать в отряд столько случайных спутников (equestria.companions)
-    //   /eqkingdom:kingdom_friendship  вступить кланом игрока в державу вассалом — посмотреть её
-    //                    изнутри (экран державы: сила, войны, союзы). Id держав — в equestria_kingdoms.xml
-    //   /eqgoto:x,y;x,y;...  обход: переносить отряд по точкам каждые TourSeconds секунд,
-    //                    в журнал — «обход: точка N» (снимки делает tools	our.ps1).
+    //   /eqlongrun:100   after the quick start, run time up to day 100, then save the game
+    //                    as eq_longrun. The log gets a summary every 10 days and all major events.
+    //   /eqload:eq_longrun   load this save straight from the main menu (load check).
+    //   /eqgoto:651,660  at the start of the run move the player's party to this map point and do not
+    //                    move it (for screenshots of the right place: the camera looks at the player).
+    //   /eqfightbandits  at the start of the run engage looters in battle (check of their voice lines)
+    //   /eqtalklord      at the start of the run open a conversation with our clan leader (check of lines
+    //                    in different languages; the log gets "text language"
+    //                    with a sample string)
+    //   /eqcompanions:100  recruit that many random companions into the party (equestria.companions)
+    //   /eqkingdom:kingdom_friendship  join a kingdom as a vassal with the player's clan - to see it
+    //                    from the inside (kingdom screen: strength, wars, alliances). Kingdom ids are
+    //                    in equestria_kingdoms.xml
+    //   /eqgoto:x,y;x,y;...  tour: move the party through the points every TourSeconds seconds,
+    //                    the log gets "tour: point N" (screenshots are taken by
+    //                    tools	our.ps1).
     //
-    // Отметки для tools\selftest.ps1:
-    //   «долгий прогон: сохранено»   — прогон закончен и сохранение записано
-    //   «загрузка: карта открыта»    — сохранение загрузилось до карты
+    // Markers for tools\selftest.ps1:
+    //   "long run: saved"   - the run finished and the save was written
+    //   "load: map opened"    - the save loaded up to the map
     public static class EquestriaLongRun
     {
         private const string RunPrefix = "/eqlongrun:";
@@ -43,18 +46,18 @@ namespace EquestriaMod
         private const string GotoPrefix = "/eqgoto:";
         private static Vec2? _gotoPoint;
         private static bool _fightBandits;
-        // /eqtalklord — в начале прогона открыть разговор с лидером нашего клана (проверка реплик
-        // лордов на разных языках; какой язык включён, пишется в журнал вместе с примером строки)
+        // /eqtalklord - at the start of the run open a conversation with our clan leader (check of lord
+        // lines in different languages; which language is active is logged together with a sample string)
         private static bool _talkLord;
-        // /eqcompanions:N — в начале прогона выполнить equestria.companions N (проверка команды)
+        // /eqcompanions:N - at the start of the run execute equestria.companions N (command check)
         private static int _companions;
-        // /eqheroinfo:имя;имя — в начале прогона записать в журнал equestria.hero_info по каждому
+        // /eqheroinfo:name;name - at the start of the run log equestria.hero_info for each of them
         private static readonly List<string> _heroInfo = new List<string>();
-        // /eqnobanner — снять штандарты (предметы-знамёна) у всех героев: проверка, не они ли
-        // оставляют окно отряда пустым
+        // /eqnobanner - remove banners (banner items) from all heroes: checks whether they are what
+        // leaves the party screen empty
         private static bool _noBanner;
-        // /eqkingdom:id — в начале прогона вступить кланом игрока в державу вассалом (посмотреть
-        // державу изнутри: сила, войны, союзы). Id — kingdom_equestria, kingdom_friendship и т. д.
+        // /eqkingdom:id - at the start of the run join a kingdom as a vassal with the player's clan (to see
+        // the kingdom from the inside: strength, wars, alliances). Ids: kingdom_equestria, kingdom_friendship etc.
         private static string _kingdom;
         private static readonly List<Vec2> _tour = new List<Vec2>();
         private static int _tourIndex;
@@ -62,8 +65,8 @@ namespace EquestriaMod
         private const double TourSeconds = 14;
         public const string SaveName = "eq_longrun";
 
-        // Во сколько раз быстрее обычной перемотки (у игры по умолчанию 4). Слишком большой шаг
-        // времени за кадр заставляет отряды «перепрыгивать» цели, поэтому не больше 32.
+        // How many times faster than normal fast-forward (the game's default is 4). Too large a time step
+        // per frame makes parties "jump over" their targets, so no more than 32.
         private const float SpeedUp = 32f;
         private const int ReportEveryDays = 10;
 
@@ -83,8 +86,8 @@ namespace EquestriaMod
 
         private static bool _loadDone;
 
-        // Сколько боёв случилось за прогон и двигаются ли отряды: без сетки проходимости на карте
-        // отряды стоят на месте, войны идут только на бумаге.
+        // How many battles happened during the run and whether parties move: without a navmesh on the map
+        // parties stand still and wars happen only on paper.
         public static int Battles;
         private static readonly Dictionary<string, Vec2> LastSeen = new Dictionary<string, Vec2>();
 
@@ -111,7 +114,7 @@ namespace EquestriaMod
                 if (arg.StartsWith("/eqcompanions:", StringComparison.OrdinalIgnoreCase)
                     && int.TryParse(arg.Substring("/eqcompanions:".Length), out int companions))
                 {
-                    _companions = companions;   // самопроверка команды equestria.companions
+                    _companions = companions;   // self-check of the equestria.companions command
                 }
                 if (arg.StartsWith("/eqheroinfo:", StringComparison.OrdinalIgnoreCase))
                 {
@@ -172,7 +175,7 @@ namespace EquestriaMod
                 return;
             }
 
-            // Смена состояния во время прогона — главная подсказка, где он встал: бой, меню, диалог.
+            // A state change during the run is the main hint of where it stalled: battle, menu, dialogue.
             string stateName = state.GetType().Name;
             if (stateName != _lastState)
             {
@@ -229,13 +232,13 @@ namespace EquestriaMod
             _started = true;
             _startedAt = DateTime.Now;
             _startDay = CampaignTime.Now.ToDays;
-            // Отряд игрока никто не трогает: иначе первый же разбойник откроет окно боя, и время встанет.
+            // Nobody touches the player's party: otherwise the very first bandit opens the battle screen and time stops.
             MobileParty.MainParty.IgnoreByOtherPartiesTill(CampaignTime.Never);
             Campaign.Current.SpeedUpMultiplier = SpeedUp;
-            // Проверка самой карты: приказываем отряду игрока идти к чужой столице. Если он не
-            // сдвинется, дело не в решениях ИИ, а в том, что по карте вообще нельзя проложить путь.
-            // Идём к точке рядом с городом, а не в сам город: вход в город открывает меню, и пока
-            // оно открыто, карта перестаёт двигать отряды — весь прогон замирает.
+            // A check of the map itself: order the player's party to go to a foreign capital. If it does not
+            // move, the problem is not AI decisions but that no path can be built on the map at all.
+            // We go to a point next to the town, not into the town itself: entering a town opens a menu, and
+            // while it is open the map stops moving parties - the whole run freezes.
             var target = Settlement.Find("town_empire_3");
             if (_gotoPoint.HasValue)
             {
@@ -252,8 +255,8 @@ namespace EquestriaMod
             }
             if (_fightBandits || _talkLord)
             {
-                // Какой язык включён и что игра видит по нашим ключам: если файл языка не подхватился,
-                // вместо реплики здесь будет пусто — и по снимку экрана это тоже будет видно.
+                // Which language is active and what the game sees for our keys: if the language file was not
+                // picked up, this will be empty instead of a line - and that will show on a screenshot too.
                 EquestriaCrashLog.Log("язык текста: " + TaleWorlds.Localization.MBTextManager.ActiveTextLanguage
                     + "; eq_lord_meet_1 = «" + new TaleWorlds.Localization.TextObject("{=eq_lord_meet_1}").ToString()
                     + "»; eq_surrender_1 = «" + new TaleWorlds.Localization.TextObject("{=eq_surrender_1}").ToString()
@@ -262,7 +265,7 @@ namespace EquestriaMod
             if (_fightBandits)
             {
                 EquestriaCrashLog.Log("бой с разбойниками: " + EquestriaDebugCommands.FightBandits(new List<string>()));
-                _finished = true;   // дальше время не крутим: открыт диалог
+                _finished = true;   // do not run time any further: a dialogue is open
             }
             else if (_talkLord)
             {
@@ -331,15 +334,15 @@ namespace EquestriaMod
 
         private static void KeepTimeRunning()
         {
-            // Игрок сам открыл поверх карты другой экран (сохранение, инвентарь, энциклопедия…) —
-            // не мешаем: иначе ниже закрывалось окно ввода имени при «Сохранить как», и игра
-            // оставалась висеть на экране сохранений (замечено 10.10.2026 в -MixedBirths).
+            // The player opened another screen over the map themselves (save, inventory, encyclopedia…) -
+            // do not interfere: otherwise the code below closed the name input window on "Save as"
+            // ("Save as"), and the game stayed stuck on the save screen (noticed 10.10.2026 in -MixedBirths).
             var top = TaleWorlds.ScreenSystem.ScreenManager.TopScreen;
             if (top != null && top.GetType().Name != "MapScreen")
             {
                 return;
             }
-            // Окна с вопросами (предложения вступить, свадьбы и т.п.) ставят время на паузу — закрываем.
+            // Question windows (offers to join, weddings etc.) pause time - close them.
             if (InformationManager.IsAnyInquiryActive())
             {
                 EquestriaCrashLog.Log("долгий прогон: закрыто окно с вопросом");
@@ -399,7 +402,7 @@ namespace EquestriaMod
                 && h.CharacterObject.Race != TaleWorlds.Core.FaceGen.GetRaceOrDefault(EquestriaMane.RaceId));
             EquestriaCrashLog.Note($"долгий прогон: день {day}, {CampaignTime.Now}, "
                 + $"реальное время {(int)(DateTime.Now - _startedAt).TotalSeconds} с, кадров/с {_lastFps:0}");
-            // Движение: сравниваем положение отрядов лордов с прошлой сводкой.
+            // Movement: compare lord party positions with the previous summary.
             int moved = 0, stood = 0;
             float maxStep = 0f;
             foreach (var party in MobileParty.All.Where(p => p.LeaderHero != null))
@@ -420,8 +423,8 @@ namespace EquestriaMod
                 }
                 LastSeen[party.StringId] = now;
             }
-            // Чем заняты лорды: если все сидят в своих городах и никуда не идут, дело не в карте,
-            // а в решениях ИИ (нет целей, нет войск, нет денег).
+            // What lords are doing: if they all sit in their towns and go nowhere, the problem is not the map
+            // but AI decisions (no targets, no troops, no money).
             var lords = MobileParty.All.Where(p => p.LeaderHero != null).ToList();
             int inside = lords.Count(p => p.CurrentSettlement != null);
             int withTarget = lords.Count(p => p.TargetSettlement != null);
@@ -430,7 +433,7 @@ namespace EquestriaMod
                 .OrderByDescending(g => g.Count()).Select(g => g.Key + " " + g.Count());
             EquestriaCrashLog.Log($"  лорды: в поселениях {inside}, с целью {withTarget}, в движении {movingNow}; "
                 + $"занятия: {string.Join(", ", behaviours)}");
-            // Расстояния между поселениями: по ним ИИ выбирает, до кого дойдёт, а до кого нет.
+            // Distances between settlements: the AI uses them to choose whom it can reach and whom not.
             var kanterlot = Settlement.Find("town_empire_0");
             var yak = Settlement.Find("town_empire_3");
             if (kanterlot != null && yak != null)
@@ -444,8 +447,8 @@ namespace EquestriaMod
                     + $"{Campaign.Current.GetAverageDistanceBetweenClosestTwoTownsWithNavigationType(MobileParty.NavigationType.Default):0.0}, "
                     + $"предел связи {distances.GetMaximumDistanceBetweenTwoConnectedSettlements(MobileParty.NavigationType.Default):0.0}");
             }
-            // Сами спрашиваем у игры, что надумал первый лорд: так видно, есть ли у него варианты
-            // поведения вообще. Пустой список — значит ни одна цель не прошла отбор.
+            // Ask the game ourselves what the first lord has decided: that shows whether he has any behaviour
+            // options at all. An empty list means no target passed the selection.
             var thinker = MobileParty.All.FirstOrDefault(p => p.LeaderHero != null && p != MobileParty.MainParty);
             if (thinker != null)
             {
@@ -466,7 +469,7 @@ namespace EquestriaMod
                 + $"меню {Campaign.Current.CurrentMenuContext?.GameMenu?.StringId ?? "нет"}, "
                 + $"цель {player.TargetSettlement?.Name}, занятие {player.DefaultBehavior}, "
                 + $"идёт {player.IsMoving}, скорость {player.Speed:0.00}");
-            // Застрявшие у ворот: цель — поселение, стоят на месте. Печатаем условия входа.
+            // Stuck at the gates: the target is a settlement, they stand still. Print the entry conditions.
             foreach (var stuck in lords.Where(p => p.TargetSettlement != null && !p.IsMoving
                          && p.CurrentSettlement == null).Take(3))
             {
@@ -522,7 +525,7 @@ namespace EquestriaMod
             Campaign.Current.SaveHandler.SaveAs(SaveName);
         }
 
-        // Вызывается из поведения по событию окончания записи.
+        // Called from the behaviour on the save-finished event.
         public static void OnSaveOver(bool ok, string name)
         {
             if (_finished)
@@ -565,7 +568,7 @@ namespace EquestriaMod
         }
     }
 
-    // Подписка на события кампании: всё крупное, что случилось за прогон, попадает в журнал.
+    // Subscription to campaign events: everything major that happened during the run goes into the log.
     public class EquestriaLongRunBehavior : CampaignBehaviorBase
     {
         public override void RegisterEvents()

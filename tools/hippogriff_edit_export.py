@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели гиппогрифа из assets/hippogriff/hippogriff.blend в
+"""Export the fixed hippogriff model from assets/hippogriff/hippogriff.blend to
 assets/hippogriff/eq_hippogriff.fbx.
 
-Запуск: blender --background assets/hippogriff/hippogriff.blend --python tools/hippogriff_edit_export.py
+Run: blender --background assets/hippogriff/hippogriff.blend --python tools/hippogriff_edit_export.py
 
-Экспортируются скелет (bip01_notused) и шесть частей из коллекции «Meshy Skyclaw Guardian» — имена
-объектов там уже в финальном виде (eq_hippogriff_*), переименовывать не нужно. Те же настройки
-экспорта, что и в основном конвейере tools/make_hippogriff.py (оси X/-Y, без анимации).
+Exports the skeleton (bip01_notused) and six parts from the "Meshy Skyclaw Guardian" collection - the
+object names there are already final (eq_hippogriff_*), no renaming needed. Same export settings
+as in the main pipeline tools/make_hippogriff.py (axes X/-Y, no animation).
 """
 import os
 
@@ -41,9 +41,10 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye toggled off in the Outliner) - the
+    # yak's skeleton turned out to be exactly that, and the export quietly went out without bones
+    # (noticed from the A-pose in battle on 07.10.2026, see yak_edit_export.py). Unhide before
+    # selecting just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

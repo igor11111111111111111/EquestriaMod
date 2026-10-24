@@ -8,11 +8,11 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Конница без коней (10.10.2026): у ВСЕХ войск и героев кампании любой зверь в слоте коня
-    // (конь, верблюд — всё, у чего есть HorseComponent) заменяется свитком полёта eq_flight_scroll_50,
-    // сбруя снимается. Делается при старте сессии (новая игра и загрузка) прямо в наборах
-    // снаряжения CharacterObject — они общие на всех бойцов этого войска, поэтому хватает одного
-    // прохода. В бою такой боец — пеший с позой полёта (EquestriaFlightScroll).
+    // Cavalry without horses (10.10.2026): for ALL troops and heroes of the campaign any beast in the horse slot
+    // (horse, camel - anything with a HorseComponent) is replaced by the flight scroll eq_flight_scroll_50,
+    // the harness is removed. Done at session start (new game and load) right in the CharacterObject
+    // equipment sets - they are shared by all soldiers of that troop, so a single pass is enough.
+    // In battle such a soldier is on foot with the flight pose (EquestriaFlightScroll).
     public class EquestriaFlightArmy : CampaignBehaviorBase
     {
         public override void RegisterEvents()
@@ -31,10 +31,10 @@ namespace EquestriaMod
         {
         }
 
-        // Лавки городов (10.10.2026): рынок наполняется только тем, что производят деревни и
-        // мастерские, а коневоден в Эквусе нет — свитки полёта и повозки сами в продаже не появятся.
-        // Раз в день каждому городу докладываем до минимума: свитков 30/40/50 — 6/4/2, повозок
-        // (sumpter_horse, mule) по 4, у чейнджлингов (Culture.aserai) ещё 3 больших повозки.
+        // Town shops (10.10.2026): the market is filled only with what villages and workshops
+        // produce, and Equus has no horse breeders - flight scrolls and carts will not go on sale by themselves.
+        // Once a day every town is topped up to a minimum: scrolls 30/40/50 - 6/4/2, carts
+        // (sumpter_horse, mule) 4 each, changelings (Culture.aserai) also get 3 large carts.
         private static readonly (string Id, int Min)[] TownStock =
         {
             ("eq_flight_scroll_30", 6), ("eq_flight_scroll_40", 4), ("eq_flight_scroll_50", 2),
@@ -80,12 +80,12 @@ namespace EquestriaMod
             }
         }
 
-        // Пешие народы: ни коней, ни свитков (tools/replace_mounts.py FOOT_RACES)
+        // Foot races: neither horses nor scrolls (tools/replace_mounts.py FOOT_RACES)
         private static readonly HashSet<string> FootRaces = new HashSet<string> { "yak", "deer" };
 
-        /// <summary>Повозки не ездовые (equestria_items.xslt, is_mountable="false"), но мастер
-        /// создания персонажа (снаряжение предыстории) и старые сохранения кладут их герою в слот
-        /// коня — герой «ехал» на телеге. Убираем повозку из слота в обоз отряда, сбрую — тоже.</summary>
+        /// <summary>Carts are not rideable (equestria_items.xslt, is_mountable="false"), but the character
+        /// creation wizard (background equipment) and old saves put them into the hero's horse
+        /// slot - the hero "rode" a cart. We move the cart from the slot to the party's inventory, the harness too.</summary>
         public static void CartsToInventory(Hero hero)
         {
             if (hero?.CharacterObject == null)
@@ -93,12 +93,12 @@ namespace EquestriaMod
                 return;
             }
             var roster = hero.PartyBelongedTo?.ItemRoster;
-            bool stored = false;   // боевой и гражданский наборы — одна и та же повозка, в обоз одну
+            bool stored = false;   // battle and civilian sets hold the same cart, put only one into the inventory
             foreach (Equipment equipment in AllEquipmentsOf(hero.CharacterObject))
             {
                 EquipmentElement mount = equipment[EquipmentIndex.Horse];
-                // Повозка — только наши три (меш телеги); у ванили «вьючные» ещё ездовая лошадь и
-                // кляча — это кони, их StripPlayerHorseGear меняет на свиток
+                // A cart is only our three (cart mesh); in vanilla the "pack" ones also include a riding horse and
+                // a nag - those are horses, StripPlayerHorseGear turns them into a scroll
                 if (!EquestriaFlightScroll.IsCart(mount.Item))
                 {
                     continue;
@@ -120,11 +120,11 @@ namespace EquestriaMod
             }
         }
 
-        /// <summary>Конское снаряжение игрока — прочь: в Эквусе ездят только на свитках. Мастер
-        /// создания персонажа (снаряжение предыстории) выдаёт ездового коня, сбрую и конскую броню
-        /// (замечено 10.10.2026 при старте правителем). Повозки уходят в обоз (CartsToInventory),
-        /// ездовой конь в слоте становится свитком, а кони, сбруя и конская броня из обоза
-        /// убираются. Повозки в обозе остаются — они вьючные.</summary>
+        /// <summary>The player's horse gear goes away: in Equus people ride only scrolls. The character
+        /// creation wizard (background equipment) hands out a riding horse, harness and horse armor
+        /// (noticed 10.10.2026 when starting as a ruler). Carts go to the inventory (CartsToInventory),
+        /// a riding horse in the slot becomes a scroll, and horses, harness and horse armor are removed
+        /// from the inventory. Carts stay in the inventory - they are pack animals.</summary>
         public static void StripPlayerHorseGear()
         {
             Hero hero = Hero.MainHero;
@@ -175,11 +175,11 @@ namespace EquestriaMod
             }
         }
 
-        /// <summary>Улучшение в конницу требует предмет категории «конь» или «боевой конь»
-        /// (upgrade_requires), и движок сверяет категорию строго. Обычных коней в Эквусе нет, а свитки
-        /// полёта — категории «боевой конь» (tools/make_items.py). Поэтому требование «конь» у всех
-        /// войск заменяем на «боевой конь»: любой свиток в обозе годится для любой конницы, а движок
-        /// сверяет и тратит предмет как обычно (10.10.2026).</summary>
+        /// <summary>Upgrading to cavalry requires an item of category "horse" or "war horse"
+        /// (upgrade_requires), and the engine checks the category strictly. Equus has no ordinary horses, and flight
+        /// scrolls are of category "war horse" (tools/make_items.py). So the "horse" requirement of all
+        /// troops is replaced with "war horse": any scroll in the inventory works for any cavalry, and the engine
+        /// checks and consumes the item as usual (10.10.2026).</summary>
         public static void UpgradesNeedWarHorse()
         {
             var horse = MBObjectManager.Instance.GetObject<ItemCategory>("horse");
@@ -204,8 +204,8 @@ namespace EquestriaMod
 
         public static void ReplaceMounts()
         {
-            // Три свитка по рангу войска (10.10.2026): ранг 5+ — великий (+50%), 3–4 — обычный
-            // (+40%), ниже — малый (+30%); герои — великий.
+            // Three scrolls by troop tier (10.10.2026): tier 5+ - great (+50%), 3-4 - normal
+            // (+40%), lower - lesser (+30%); heroes - great.
             var great = MBObjectManager.Instance.GetObject<ItemObject>("eq_flight_scroll_50");
             var normal = MBObjectManager.Instance.GetObject<ItemObject>("eq_flight_scroll_40");
             var lesser = MBObjectManager.Instance.GetObject<ItemObject>("eq_flight_scroll_30");
@@ -214,11 +214,11 @@ namespace EquestriaMod
                 EquestriaCrashLog.Warn("конница на свитках: нет предметов eq_flight_scroll* — пересобери equestria_items.xml");
                 return;
             }
-            // Повозка в слоте коня у игрока — сначала в обоз, иначе цикл ниже сделал бы из неё свиток
+            // A cart in the player's horse slot goes to the inventory first, otherwise the loop below would turn it into a scroll
             CartsToInventory(Hero.MainHero);
             int troops = 0, sets = 0, unmounted = 0;
-            // Пешие народы — яки и олени (10.10.2026): слот коня очищается, свитка не дают.
-            // То же делает tools/replace_mounts.py в XML; здесь — страховка и старые сохранения.
+            // Foot races - yaks and deer (10.10.2026): the horse slot is cleared, no scroll is given.
+            // tools/replace_mounts.py does the same in XML; this is a safety net plus old saves.
             string[] raceNames = FaceGen.GetRaceNames();
             foreach (CharacterObject character in MBObjectManager.Instance.GetObjectTypeList<CharacterObject>())
             {
@@ -261,7 +261,7 @@ namespace EquestriaMod
             {
                 result.AddRange(character.CivilianEquipments.Where(e => e != null));
             }
-            // У героев боевой и гражданский наборы — свои объекты, не из ростера войска.
+            // Heroes have their own battle and civilian set objects, not from the troop roster.
             if (character.HeroObject != null)
             {
                 if (character.HeroObject.BattleEquipment != null) result.Add(character.HeroObject.BattleEquipment);

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели яка из assets/yak/eq_yak.blend в assets/yak/eq_yak.fbx.
+"""Export of the corrected yak model from assets/yak/eq_yak.blend to assets/yak/eq_yak.fbx.
 
-Запуск: blender --background assets/yak/eq_yak.blend --python tools/yak_edit_export.py
+Run: blender --background assets/yak/eq_yak.blend --python tools/yak_edit_export.py
 
-Экспортируются скелет (bip01_notused) и семь частей из коллекции «Meshy Highland Hugger» — имена
-объектов там уже в финальном виде (eq_yak_*), переименовывать не нужно (в файле рядом лежат и
-старые дубликаты eq_yak_*.001/.002 на той же арматуре — они не входят в эту коллекцию и в экспорт
-не попадают). Те же настройки экспорта, что и в основном конвейере tools/make_yak_model.py
-(оси X/-Y, без анимации).
+Exported are the skeleton (bip01_notused) and seven parts from the "Meshy Highland Hugger" collection; the object
+names there are already final (eq_yak_*), no renaming is needed (the file also contains
+old duplicates eq_yak_*.001/.002 on the same armature; they are not in this collection and do not get
+into the export). The same export settings as in the main pipeline tools/make_yak_model.py
+(axes X/-Y, no animation).
 """
 import os
 
@@ -41,9 +41,9 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner) — скелет у яка оказался
-    # именно таким, и экспорт тихо ушёл без костей (замечено пользователем 07.10.2026 по
-    # А-позе в бою, подтверждено: 0 LimbNode в eq_yak.fbx). Снимаем скрытие перед выделением.
+    # select_set() silently does not select a hidden object (the eye in the Outliner); the yak's skeleton turned out
+    # to be exactly that, and the export quietly went out without bones (noticed by the user 07.10.2026 from
+    # the A-pose in battle, confirmed: 0 LimbNode in eq_yak.fbx). We unhide before selecting.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

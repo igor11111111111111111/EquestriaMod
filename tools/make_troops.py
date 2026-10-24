@@ -1,21 +1,21 @@
-# Войска под пони: ванильное имперское дерево (армия Эквестрии), все разбойники
-# и дерево асераев — рой чейнджлингов (своя раса).
+# Troops for ponies: the vanilla imperial tree (the Equestrian army), all bandits
+# and the Aserai tree - the changeling swarm (its own race).
 #
-#   py -3 tools\make_troops.py [папка Module] [папка игры]
+#   py -3 tools\make_troops.py [Module folder] [game folder]
 #
-# Id войск остаются ванильными (imperial_recruit и т.д.): на них ссылаются шаблоны отрядов лордов,
-# ополчение, караваны и дерево улучшений. Каждая запись переписывается целиком — атрибут
-# _replaceWhileMerging="true" заставляет игру выбросить ванильную запись с тем же id
-# (MBObjectManager.MergeElementAttributes) и взять нашу.
+# Troop ids stay vanilla (imperial_recruit etc.): lord party templates, militia, caravans and the
+# upgrade tree refer to them. Each entry is rewritten in full - the attribute
+# _replaceWhileMerging="true" makes the game drop the vanilla entry with the same id
+# (MBObjectManager.MergeElementAttributes) and take ours.
 #
-# Что меняется:
-#   - имя по лору (Солнечная гвардия, единороги-стрелки, пегасы, Ночная стража Луны);
-#   - раса — пони;
-#   - броня: ванильная вещь остаётся своей; если слот пуст, подставляется вещь по ступени войска.
-#     Раньше тут подменялись пони-версии (eq_pony_<id>) — своей брони в моде больше нет, все расы
-#     подогнаны под ванильного человека и носят обычные вещи игры;
-#   - без шлема на голове грива, в слоте накидки хвост.
-# Оружие, кони, навыки и улучшения — ванильные.
+# What changes:
+#   - the name follows the lore (Solar Guard, unicorn archers, pegasi, Luna's Night Guard);
+#   - the race is pony;
+#   - armour: a vanilla item stays as is; if the slot is empty, an item by troop tier is filled in.
+#     Pony versions (eq_pony_<id>) used to be substituted here - the mod no longer has its own armour,
+#     all races are fitted to the vanilla human and wear the game's ordinary items;
+#   - without a helmet the head has the mane, the cape slot has the tail.
+# Weapons, horses, skills and upgrades are vanilla.
 import copy
 import os
 import sys
@@ -24,34 +24,35 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import lang  # noqa: E402
 
-# Аргументы читаем только при прямом запуске: модуль импортируют и из Blender
-# (adapt_armor.py -> armor_catalog.py), а там в sys.argv совсем другое.
+# Arguments are read only when run directly: the module is also imported from Blender
+# (adapt_armor.py -> armor_catalog.py), and there sys.argv holds something else entirely.
 ARGS = sys.argv[1:] if __name__ == "__main__" else []
 MODULE = ARGS[0] if ARGS else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Module")
 GAME = ARGS[1] if len(ARGS) > 1 else \
     r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord"
 VANILLA = os.path.join(GAME, "Modules", "SandBoxCore", "ModuleData")
-# ПОСЛЕ этого скрипта запускать tools/replace_mounts.py: кони в слоте Horse → свитки полёта по уровню (10.10.2026).
+# Run tools/replace_mounts.py AFTER this script: horses in the Horse slot → flight scrolls by level
+# (10.10.2026).
 OUT = os.path.join(MODULE, "ModuleData", "equestria_troops.xml")
 
 CULTURE = "empire"
-MANE = None  # грива и рог — причёска (make_pony_manes.py), слот шлема у пони свободен
-TAIL = None  # хвост — часть тела, его вешает код (src/EquestriaBodyParts.cs), слот плаща свободен
+MANE = None  # mane and horn are a hairstyle (make_pony_manes.py), the pony helmet slot is free
+TAIL = None  # the tail is a body part attached by code (src/EquestriaBodyParts.cs), the cape slot is free
 
-# Раса группы и её части тела-предметы (гребень — в слот шлема, крылья с хвостом — в слот плаща).
-# Чейнджлинги шлемов не носят: рог и гребень — их лицо. Группы без записи — пони.
-# bare_tier — до какой ступени войско ходит босиком (у чейнджлингов дыры на ногах — их видно).
-# hair_tag — какие причёски расы можно войску (Bald — лысые трутни: у них гребень-предмет).
-# Предмета-гребня (eq_changeling_crest) больше нет: он был у старой модели, а у новой
-# (tools/make_changeling_model.py) рог и уши — часть головы. Слот шлема остаётся пустым,
-# трутни ходят с непокрытой головой, как и раньше.
+# The group's race and its body-part items (crest in the helmet slot, wings with tail in the cape slot).
+# Changelings do not wear helmets: the horn and crest are their face. Groups without an entry are ponies.
+# bare_tier - up to which tier the troop goes barefoot (changelings have holes in their legs - they show).
+# hair_tag - which race hairstyles the troop may have (Bald - bald drones: they have a crest item).
+# The crest item (eq_changeling_crest) no longer exists: it belonged to the old model, and in the new one
+# (tools/make_changeling_model.py) the horn and ears are part of the head. The helmet slot stays empty,
+# drones go bare-headed, as before.
 RACES = {
     "Чейнджлинги": {"race": "changeling", "mane": None,
                     "tail": None, "no_helmet": True, "bare_tier": 1,
                     "hair_tag": "Bald"},
-    # Остальные державы: раса своя, причёска — своя же (гребень, рога, грива). Без записи войско
-    # получило бы гриву пони: в скинах такой причёски у чужой расы нет, и голова осталась бы голой.
+    # Other kingdoms: their own race and their own hairstyle (crest, antlers, mane). Without an entry the troop
+    # would get the pony mane: the skins have no such hairstyle for another race, and the head would stay bare.
     "Грифоны": {"race": "griffon", "mane": None, "tail": None, "no_helmet": False,
                 "bare_tier": 0, "hair_tag": "GriffonCrest"},
     "Гиппогрифы": {"race": "hippogriff", "mane": None, "tail": None, "no_helmet": False,
@@ -65,8 +66,8 @@ RACES = {
 }
 PONY = {"race": "pony", "mane": MANE, "tail": TAIL, "no_helmet": False, "bare_tier": 0, "hair_tag": "PonyMane"}
 
-# Имена по лору. Пехота — Королевская стража Селестии, стрелки — единороги, знатная ветка —
-# пегасы лётной академии и Вандерболты, конные лучники — Ночная стража Луны.
+# Names from the lore. Infantry - Celestia's Royal Guard, archers - unicorns, the noble branch -
+# flight academy pegasi and the Wonderbolts, horse archers - Luna's Night Guard.
 NAMES = {
     "imperial_recruit": "Эквестрийский новобранец",
     "imperial_infantryman": "Стражник Эквестрии",
@@ -93,9 +94,9 @@ NAMES = {
     "imperial_militia_veteran_archer": "Бывалый ополченец-стрелок",
 }
 
-# Разбойники — по бандам из world_data.MINOR_CLANS. Все пока пони: алмазные псы, яки и прочие
-# народы появятся вместе со своими расами.
-# Рой королевы Кризалис: трутни, охотники, стражи улья.
+# Bandits - by the gangs from world_data.MINOR_CLANS. All are ponies for now: diamond dogs, yaks and other
+# peoples will come along with their races.
+# Queen Chrysalis's swarm: drones, hunters, hive guards.
 CHANGELING_NAMES = {
     "aserai_recruit": "Молодой трутень",
     "aserai_tribesman": "Трутень роя",
@@ -123,9 +124,9 @@ CHANGELING_NAMES = {
     "aserai_militia_veteran_archer": "Опытный ополченец-плевун",
 }
 
-# Грифоны Грифонстоуна (ванильные ХУЗАИТЫ — ветка верховых стрелков и всадников: грифоны летают,
-# и конная держава им подходит больше пешей вландийской; поменялись с яками 10.10.2026, см.
-# ROSTER_OF): скалы, гнёзда и Идол Бориаса. Конные ветки — лётные.
+# Griffons of Griffonstone (vanilla KHUZAITS - the horse archer and cavalry branch: griffons fly,
+# and a mounted kingdom suits them better than the foot Vlandian one; swapped with the yaks 10.10.2026, see
+# ROSTER_OF): cliffs, nests and the Idol of Boreas. The mounted branches are flying.
 GRIFFON_NAMES = {
     "khuzait_nomad": "Птенец Грифонстоуна",
     "khuzait_tribal_warrior": "Грифон-боец",
@@ -153,9 +154,9 @@ GRIFFON_NAMES = {
     "khuzait_militia_veteran_archer": "Бывалый ополченец-лучник Грифонстоуна",
 }
 
-# Гиппогрифы горы Арис и морские пони Сиквестрии: КОПИИ стургийских записей (приставка COPY_PREFIX,
-# см. раздел «копии стургийской ветки» ниже) — пешая северная ветка; поменялись с оленями 10.10.2026
-# (ROSTER_OF). Гарпуны, рифы и Жемчужина; конная ветка — лётная.
+# Hippogriffs of Mount Aris and sea ponies of Seaquestria: COPIES of the Sturgian entries (COPY_PREFIX
+# prefix, see the "copies of the Sturgian branch" section below) - the foot northern branch; swapped with
+# the deer 10.10.2026 (ROSTER_OF). Harpoons, reefs and the Pearl; the mounted branch is flying.
 HIPPOGRIFF_NAMES = {
     "sturgian_recruit": "Доброволец горы Арис",
     "sturgian_warrior": "Воин горы Арис",
@@ -183,8 +184,9 @@ HIPPOGRIFF_NAMES = {
     "sturgian_militia_veteran_archer": "Бывалый ополченец-лучник горы Арис",
 }
 
-# Драконы вулканических земель (ванильная ВЛАНДИЯ — ветка с арбалетами и рыцарями; поменялись
-# с яками 10.10.2026, ROSTER_OF): Скипетр, Состязание и лорд драконов. Конные ветки — лётные.
+# Dragons of the volcanic lands (vanilla VLANDIA - the branch with crossbows and knights; swapped
+# with the yaks 10.10.2026, ROSTER_OF): the Sceptre, the Gauntlet and the Dragon Lord. The mounted
+# branches are flying.
 DRAGON_NAMES = {
     "vlandian_recruit": "Юный дракон",
     "vlandian_levy_crossbowman": "Дракон с арбалетом",
@@ -210,11 +212,11 @@ DRAGON_NAMES = {
     "vlandian_militia_archer": "Ополченец-арбалетчик Драконьих Земель",
     "vlandian_militia_veteran_spearman": "Бывалый ополченец Драконьих Земель",
     "vlandian_militia_veteran_archer": "Бывалый ополченец-арбалетчик Драконьих Земель",
-    "vlandian_infantry": "Пехотинец Драконьих Земель",   # в дерево улучшений не входит, но в игре есть
+    "vlandian_infantry": "Пехотинец Драконьих Земель",   # not part of the upgrade tree, but exists in the game
 }
 
-# Яки Якьякистана (ванильная СТУРГИЯ — пешая северная ветка; поменялись с драконами 10.10.2026,
-# ROSTER_OF): ледники, прямота и умение крушить.
+# Yaks of Yakyakistan (vanilla STURGIA - the foot northern branch; swapped with the dragons 10.10.2026,
+# ROSTER_OF): glaciers, bluntness and the knack for smashing.
 YAK_NAMES = {
     "sturgian_recruit": "Молодой як",
     "sturgian_warrior": "Як-боец",
@@ -227,7 +229,7 @@ YAK_NAMES = {
     "sturgian_woodsman": "Охотник ледника",
     "sturgian_brigand": "Як-налётчик",
     "sturgian_hardened_brigand": "Бывалый налётчик ледника",
-    "sturgian_horse_raider": "Налётчик тундры",     # яки пешие: бывший всадник
+    "sturgian_horse_raider": "Налётчик тундры",     # yaks are on foot: a former horseman
     "sturgian_hunter": "Следопыт тундры",
     "sturgian_archer": "Лучник Якьякистана",
     "sturgian_veteran_bowman": "Меткий лучник ледника",
@@ -242,9 +244,10 @@ YAK_NAMES = {
     "sturgian_militia_veteran_archer": "Бывалый ополченец-лучник Якьякистана",
 }
 
-# Олени Олении (ванильная БАТТАНИЯ — пешая лесная ветка; у нордов в ванили войск нет, раньше
-# Оления брала копии стургийских записей, с 10.10.2026 копии ушли гиппогрифам, см. ROSTER_OF).
-# Лес, лук и Совет Семи; конная ветка — верховая, олени не летают.
+# Deer of Olenia (vanilla BATTANIA - the foot forest branch; the Nords have no troops in vanilla,
+# previously Olenia took copies of the Sturgian entries, since 10.10.2026 the copies went to the
+# hippogriffs, see ROSTER_OF).
+# Forest, bow and the Council of Seven; the mounted branch rides, deer do not fly.
 DEER_NAMES = {
     "battanian_volunteer": "Молодой олень",
     "battanian_clanwarrior": "Лесной боец",
@@ -252,7 +255,7 @@ DEER_NAMES = {
     "battanian_picked_warrior": "Отборный воин Олении",
     "battanian_oathsworn": "Гвардеец Оленьей Рощи",
     "battanian_scout": "Оленийский разведчик",
-    "battanian_horseman": "Рогатый налётчик",          # олени пешие: бывший всадник
+    "battanian_horseman": "Рогатый налётчик",          # deer are on foot: a former horseman
     "battanian_woodrunner": "Лесовик",
     "battanian_raider": "Оленийский разбойник",
     "battanian_falxman": "Копейщик чащи",
@@ -260,7 +263,7 @@ DEER_NAMES = {
     "battanian_skirmisher": "Метатель дротиков Олении",
     "battanian_veteran_skirmisher": "Бывалый метатель дротиков Олении",
     "battanian_wildling": "Рогатый таран",
-    "battanian_mounted_skirmisher": "Застрельщик Олении",  # олени пешие: бывший верховой
+    "battanian_mounted_skirmisher": "Застрельщик Олении",  # deer are on foot: a former mounted troop
     "battanian_highborn_youth": "Сын оленьего дома",
     "battanian_highborn_warrior": "Знатный воин Олении",
     "battanian_hero": "Дружинник короля Олении",
@@ -272,30 +275,30 @@ DEER_NAMES = {
     "battanian_militia_veteran_archer": "Бывалый ополченец-лучник Олении",
 }
 
-# Раса банды. Ванильная игра уже связала каждую банду с державой: её разбойники улучшаются в
-# войска этой культуры (лесные — в баттанские, горные — во вландийские и так далее). Берём ту же
-# связку — иначе при улучшении разбойник менял бы народность прямо в отряде.
-# Мародёры и дезертиры (культура looters) — исключение: это сброд со всей карты, и они собраны
-# из всех народов сразу (см. LOOTER_RACES ниже).
-COPY_PREFIX = "eq_hg_"     # приставка id у копий стургийской ветки — они у гиппогрифов (см. ниже)
+# Gang race. The vanilla game already tied each gang to a kingdom: its bandits upgrade into
+# troops of that culture (forest ones into Battanian, mountain ones into Vlandian and so on). We take the same
+# link - otherwise on upgrade a bandit would change nationality right in the party.
+# Looters and deserters (culture looters) are the exception: they are riff-raff from all over the map, and are
+# drawn from all peoples at once (see LOOTER_RACES below).
+COPY_PREFIX = "eq_hg_"     # id prefix of the Sturgian branch copies - they belong to the hippogriffs (see below)
 
 BANDIT_RACE = {
-    "sea_raiders": "Драконы",        # улучшаются в стургийские войска
-    "mountain_bandits": "Грифоны",   # во вландийские
-    "forest_bandits": "Гиппогрифы",  # в баттанские
-    "desert_bandits": "Чейнджлинги",  # в асерайские
-    "steppe_bandits": "Яки",         # в хузаитские
+    "sea_raiders": "Драконы",        # upgrade into Sturgian troops
+    "mountain_bandits": "Грифоны",   # into Vlandian
+    "forest_bandits": "Гиппогрифы",  # into Battanian
+    "desert_bandits": "Чейнджлинги",  # into Aserai
+    "steppe_bandits": "Яки",         # into Khuzait
 }
 
-# Мародёры бывают всякие: на каждую расу своя копия записи, а в шаблоне отряда (equestria_party
-# _templates.xml) они стоят рядом — в одной ватаге встречаются пони, грифоны, яки и прочие.
-# Пони остаются на ванильных id, остальным даётся приставка.
-# Значение — во что разбойник улучшается: ванильный мародёр уходит в имперскую пехоту, и копия
-# должна уходить в такую же пехоту СВОЕЙ культуры, иначе раса сменится при улучшении.
+# Looters come in all kinds: each race has its own copy of the entry, and in the party template (equestria_party
+# _templates.xml) they stand side by side - one band can have ponies, griffons, yaks and others.
+# Ponies stay on the vanilla ids, the others get a prefix.
+# The value is what the bandit upgrades into: the vanilla looter goes into imperial infantry, and the copy
+# must go into the same infantry of ITS OWN culture, otherwise the race changes on upgrade.
 LOOTER_RACES = {
     "pony": {},
-    # ветки по ROSTER_OF: грифоны — хузаиты, драконы — вландийцы, яки — стургийцы,
-    # олени — баттанийцы, гиппогрифы — копии стургийцев
+    # branches by ROSTER_OF: griffons - Khuzaits, dragons - Vlandians, yaks - Sturgians,
+    # deer - Battanians, hippogriffs - copies of the Sturgians
     "griffon": {"imperial_infantryman": "khuzait_tribal_warrior",
                 "imperial_trained_infantryman": "khuzait_raider"},
     "hippogriff": {"imperial_infantryman": COPY_PREFIX + "sturgian_warrior",
@@ -315,32 +318,32 @@ LOOTER_HAIR = {"pony": "PonyMane", "griffon": "GriffonCrest", "hippogriff": "Hip
                "deer": "DeerAntlers"}
 
 BANDIT_NAMES = {
-    # Мародёры
+    # Looters
     "looter": "Мародёр",
     "deserter": "Дезертир",
     "mounted_pillager": "Конный грабитель",
     "mounted_ransacker": "Конный налётчик",
-    # Воинство Короля Шторма (морские налётчики)
+    # The Storm King's army (sea raiders)
     "sea_raiders_bandit": "Пират Короля Шторма",
     "sea_raiders_raider": "Абордажник Короля Шторма",
     "sea_raiders_chief": "Капитан Короля Шторма",
     "sea_raiders_boss": "Адмирал Короля Шторма",
-    # Алмазные Псы (горные разбойники)
+    # Diamond Dogs (mountain bandits)
     "mountain_bandits_bandit": "Горный старатель",
     "mountain_bandits_raider": "Громила Алмазных Псов",
     "mountain_bandits_chief": "Вожак Алмазных Псов",
     "mountain_bandits_boss": "Король Алмазных Псов",
-    # Тимбервульфы (лесные разбойники)
+    # Timberwolves (forest bandits)
     "forest_bandits_bandit": "Лесной бродяга",
     "forest_bandits_raider": "Вольный стрелок Вечнодикого леса",
     "forest_bandits_chief": "Атаман Тимбервульфов",
     "forest_bandits_boss": "Хозяин Вечнодикого леса",
-    # Стервятники Бесплодных Земель (пустынные разбойники)
+    # Vultures of the Badlands (desert bandits)
     "desert_bandits_bandit": "Бродяга Бесплодных Земель",
     "desert_bandits_raider": "Пустынный налётчик",
     "desert_bandits_chief": "Стервятник",
     "desert_bandits_boss": "Главарь Стервятников",
-    # Бизоньи Набеги (степные разбойники)
+    # Buffalo Raids (steppe bandits)
     "steppe_bandits_bandit": "Степной разбойник",
     "steppe_bandits_raider": "Бизоний налётчик",
     "steppe_bandits_chief": "Вожак набега",
@@ -348,9 +351,10 @@ BANDIT_NAMES = {
 }
 
 
-# Мирный люд: караванщики, торговцы и крестьяне. В деревьях войск их нет, но в энциклопедии и в
-# отрядах они видны — и до сих пор звались по-ванильному («Асерайский крестьянин»). Имя строим
-# из роли и державы, английский пишем рядом: по словарю такие связки не собрать.
+# Common folk: caravan masters, traders and peasants. They are not in the troop trees, but they show in
+# the encyclopedia and in parties - and were still called the vanilla way
+# ("Aserai Peasant"). The name is built from role and kingdom, the English is
+# written next to it: such pairs cannot be built from the dictionary.
 CIVIL_ROLES = {
     "caravan_master": ("Караванщик", "Caravan Master"),
     "armed_trader": ("Вооружённый торговец", "Armed Trader"),
@@ -360,7 +364,7 @@ CIVIL_ROLES = {
     "villager": ("Крестьянин", "Peasant"),
     "fighter": ("Деревенский боец", "Village Fighter"),
 }
-# Чья это держава — по культуре записи
+# Whose kingdom it is - by the entry's culture
 CIVIL_OF = {
     "empire": ("Эквестрии", "of Equestria"),
     "vlandia": ("Грифонстоуна", "of Griffonstone"),
@@ -370,15 +374,16 @@ CIVIL_OF = {
     "aserai": ("улья", "of the Hive"),
     "nord": ("Олении", "of Olenia"),
 }
-# Раса и причёска по культуре — для мирных, где группа общая на все державы
+# Race and hairstyle by culture - for civilians, where the group is shared by all kingdoms
 CULTURE_RACE = {"aserai": "Чейнджлинги", "vlandia": "Грифоны", "battania": "Гиппогрифы",
                 "sturgia": "Драконы", "khuzait": "Яки", "nord": "Олени"}
 
 
-# Знать поселений: заготовки внешности для торговцев, старост и главарей банд. В энциклопедии
-# они видны, а звались по ванильным фракциям («Осторожный имперский торговец»). Личность из
-# ванильного названия (осторожный, хитрый, мятежный) не переносим: в игре у нотабля своё имя,
-# а заготовок на одну роль по нескольку — различать их игроку незачем.
+# Settlement notables: appearance presets for merchants, headmen and gang leaders. They show in the
+# encyclopedia, and were named after vanilla factions
+# ("Cautious Imperial Merchant").
+# The personality from the vanilla name (cautious, sly, rebellious) is not carried over: in game a notable has
+# their own name, and there are several presets per role - the player has no reason to tell them apart.
 NOTABLE_ROLES = {
     "Merchant": ("Торговец", "Merchant"),
     "Preacher": ("Проповедник", "Preacher"),
@@ -390,7 +395,7 @@ NOTABLE_ROLES = {
 
 
 def notable_names(characters):
-    """{id: (русское, английское)} для знати поселений всех культур."""
+    """{id: (Russian, English)} for settlement notables of all cultures."""
     result = {}
     for cid, node in characters.items():
         role = NOTABLE_ROLES.get(node.get("occupation"))
@@ -401,10 +406,10 @@ def notable_names(characters):
     return result
 
 
-# Войска наёмных рот: у каждого мелкого клана своё деревце <клан>_tier_1..3. Вожаков мы
-# переименовали давно (leader_names), а войска остались кальрадийскими: рота, ставшая у нас
-# Небесными пиратами, набирала «Новичков „Кабанов“» (видно в игре 25.09.2026). Имена даём по лору
-# самой роты — он в world_data.MINOR_CLANS, — по три ступени на роту.
+# Mercenary company troops: each minor clan has its own little tree <clan>_tier_1..3. We renamed the leaders
+# long ago (leader_names), but the troops stayed Calradian: the company that became our
+# Sky Pirates recruited "Boar Novices" (seen in game 25.09.2026). Names follow the lore
+# of the company itself - it is in world_data.MINOR_CLANS - three tiers per company.
 MERC_NAMES = {
     "jawwal": (("Верный трутень", "Loyal Drone"),
                ("Мститель Хризалиды", "Chrysalis Avenger"),
@@ -452,7 +457,7 @@ MERC_NAMES = {
 
 
 def merc_clan(cid):
-    """Клан по id войска наёмников (skolderbrotva_tier_2 -> skolderbrotva); иначе None."""
+    """Clan by mercenary troop id (skolderbrotva_tier_2 -> skolderbrotva); otherwise None."""
     if "_tier_" not in cid:
         return None
     clan = cid[:cid.index("_tier_")]
@@ -460,7 +465,7 @@ def merc_clan(cid):
 
 
 def merc_names(characters):
-    """{id: (русское, английское)} для войск наёмных рот."""
+    """{id: (Russian, English)} for mercenary company troops."""
     result = {}
     for cid in characters:
         clan = merc_clan(cid)
@@ -477,11 +482,11 @@ def merc_names(characters):
 
 
 def merc_race(clan, leaders):
-    """Раса роты — та же, что у её вожака.
+    """The company's race is the same as its leader's.
 
-    У трети рот культура войск и культура вожака РАЗНЫЕ: вольные клинки Клюгтауна записаны на
-    нордскую культуру (у нас это Оления), а их вожак — стургийский, то есть дракон. Брать расу по
-    культуре самого войска нельзя: в роте драконов ходили бы олени.
+    In a third of the companies the troop culture and the leader culture DIFFER: the Klugetown free blades
+    are on the Nord culture (Olenia for us), while their leader is Sturgian, i.e. a dragon. Taking the race
+    from the troop's own culture is not an option: a dragon company would be full of deer.
     """
     for cid, node in leaders.items():
         if cid.startswith("spc_" + clan + "_leader_"):
@@ -491,8 +496,8 @@ def merc_race(clan, leaders):
 
 
 def leader_names(characters):
-    """{id: (русское, английское)} для вожаков наёмных отрядов и банд (spc_<клан>_leader_N)."""
-    import world_data  # noqa: E402 — таблица кланов наёмников, там же их названия в моде
+    """{id: (Russian, English)} for leaders of mercenary parties and gangs (spc_<clan>_leader_N)."""
+    import world_data  # noqa: E402 - the mercenary clan table, their names in the mod are there too
     result = {}
     for cid, node in characters.items():
         if node.get("occupation") != "Lord" or "_leader_" not in cid or not cid.startswith("spc_"):
@@ -505,20 +510,20 @@ def leader_names(characters):
 
 
 def civil_role(cid):
-    """(роль, культура) для записи вида villager_empire; иначе None.
+    """(role, culture) for an entry like villager_empire; otherwise None.
 
-    Хвост обязан быть именно названием культуры: id вроде villager_child_sturgia — это подросток
-    и ребёнок, у них своё ванильное имя («Villager child»), державу к нему приписывать незачем.
+    The suffix must be exactly a culture name: ids like villager_child_sturgia are a teenager
+    and a child, they have their own vanilla name ("Villager child"), no need to attach a kingdom to it.
     """
     for role in CIVIL_ROLES:
         if cid.startswith(role + "_") and cid[len(role) + 1:] in CIVIL_OF:
             culture = cid[len(role) + 1:]
-            return role, swapped_culture(cid, culture)   # villager_vlandia теперь у драконов
+            return role, swapped_culture(cid, culture)   # villager_vlandia now belongs to the dragons
     return None
 
 
 def civil_names(characters):
-    """{id: (русское имя, английское)} для мирных записей всех культур."""
+    """{id: (Russian name, English)} for civilian entries of all cultures."""
     result = {}
     for cid in characters:
         found = civil_role(cid)
@@ -531,26 +536,26 @@ def civil_names(characters):
     return result
 
 
-# ---------------------------------------------------------------- обмен ветками
-# Державы остаются при своих культурах (vlandia = Грифонстоун, khuzait = Якьякистан, sturgia =
-# Драконьи Земли, battania = гора Арис, nord = Оления; make_world.RACE_BY_CULTURE), а ванильную
-# ВЕТКУ — войска, ополчение, горожан, крестьян, знать и их одежду — каждая берёт у другой
-# (10.10.2026): летающим грифонам и драконам — конные хузаиты и вландийцы, пешим якам и оленям —
-# стургийцы и баттанийцы, гиппогрифам — копии стургийской ветки (у нордов в ванили войск нет,
-# поэтому копии нужны в любом случае). Для этого у ванильных записей ветки переписывается
-# культура (khuzait_nomad → Culture.vlandia), а make_world (FULL_CULTURE_FROM) даёт культуре
-# ссылки её донора. Наёмные роты (company_of_the_boar и прочие, не входящие в дерево культуры)
-# не трогаем: их раса — по вожаку.
+# ---------------------------------------------------------------- branch swap
+# Kingdoms keep their cultures (vlandia = Griffonstone, khuzait = Yakyakistan, sturgia =
+# Dragon Lands, battania = Mount Aris, nord = Olenia; make_world.RACE_BY_CULTURE), but each takes the vanilla
+# BRANCH - troops, militia, townsfolk, peasants, notables and their clothes - from another one
+# (10.10.2026): the flying griffons and dragons get the mounted Khuzaits and Vlandians, the foot yaks
+# and deer get the Sturgians and Battanians, the hippogriffs get copies of the Sturgian branch (the Nords
+# have no troops in vanilla, so copies are needed in any case). For this the culture of the branch's vanilla entries is rewritten
+# (khuzait_nomad → Culture.vlandia), and make_world (FULL_CULTURE_FROM) gives the culture
+# its donor's references. Mercenary companies (company_of_the_boar and others not in a culture tree)
+# are left alone: their race follows the leader.
 ROSTER_OF = {"vlandia": "khuzait", "khuzait": "sturgia", "sturgia": "vlandia",
              "nord": "battania", "battania": "sturgia"}
-# Культура, которая берёт КОПИИ ветки (COPY_PREFIX): у стургийской ветки два хозяина.
+# The culture that takes COPIES of the branch (COPY_PREFIX): the Sturgian branch has two owners.
 COPY_CULTURE = "battania"
-# Куда уходят ванильные записи ветки: {ванильная культура ветки: наша культура}
+# Where the vanilla branch entries go: {vanilla branch culture: our culture}
 RECORD_CULTURE = {roster: culture for culture, roster in ROSTER_OF.items() if culture != COPY_CULTURE}
 
 
 def swapped_culture(cid, culture, roster_ids=None):
-    """Культура записи после обмена (khuzait_nomad → vlandia); чужие записи не меняются."""
+    """The entry's culture after the swap (khuzait_nomad → vlandia); other entries do not change."""
     new = RECORD_CULTURE.get(culture)
     if not new:
         return culture
@@ -560,10 +565,10 @@ def swapped_culture(cid, culture, roster_ids=None):
 
 
 def swap_cultures(characters, game=None):
-    """Переписывает культуру у записей обмениваемых веток (на месте).
+    """Rewrites the culture of the entries of the swapped branches (in place).
 
-    Запись считается своей для ветки, если в id есть слово культуры (vlandian_*, villager_khuzait)
-    или она входит в дерево улучшений культуры (varyag, druzhinnik — без слова в id).
+    An entry belongs to a branch if its id contains the culture word (vlandian_*, villager_khuzait)
+    or it is part of the culture's upgrade tree (varyag, druzhinnik - without the word in the id).
     """
     base = os.path.join(game or GAME, "Modules")
     cultures = {c.get("id"): c for c in ET.parse(
@@ -577,17 +582,17 @@ def swap_cultures(characters, game=None):
             node.set("culture", "Culture." + new)
 
 
-# ---------------------------------------------------------------- копии стургийской ветки
-# Стургийская ветка нужна двум державам: якам (ванильные записи, культура khuzait) и гиппогрифам
-# (COPY_CULTURE). Поэтому для гиппогрифов делаются СВОИ копии всех записей, на которые смотрит
-# культура-донор: id с приставкой COPY_PREFIX, культура battania, раса hippogriff. Ссылки в
-# культуре переписывает make_world по этой же карте (copy_map). Раньше так жила Оления (у нордов
-# в ванили ни войск, ни горожан); с 10.10.2026 олени на баттанийской ветке.
+# ---------------------------------------------------------------- copies of the Sturgian branch
+# The Sturgian branch is needed by two kingdoms: the yaks (vanilla entries, culture khuzait) and the hippogriffs
+# (COPY_CULTURE). So for the hippogriffs their OWN copies are made of all entries the donor culture
+# looks at: ids with the COPY_PREFIX prefix, culture battania, race hippogriff. The references in the
+# culture are rewritten by make_world using the same map (copy_map). Olenia used to live like this (the Nords
+# have neither troops nor townsfolk in vanilla); since 10.10.2026 the deer are on the Battanian branch.
 DONOR_CULTURE = "sturgia"
 
 
-# Где лежат записи, на которые смотрит культура: войска и горожане в одном файле, шаблоны
-# крестьян и горожанок — во втором, стража — в третьем, знать и главы деревень — в четвёртом.
+# Where the entries the culture looks at are: troops and townsfolk in one file, peasant and
+# townswoman templates in the second, guards in the third, notables and village heads in the fourth.
 DONOR_FILES = [
     ("SandBoxCore", "spnpccharacters.xml"),
     ("SandBoxCore", "spnpccharactertemplates.xml"),
@@ -597,7 +602,7 @@ DONOR_FILES = [
 
 
 def donor_characters(game=None):
-    """{id: запись} из всех файлов, где игра держит персонажей культуры."""
+    """{id: entry} from all files where the game keeps the culture's characters."""
     base = os.path.join(game or GAME, "Modules")
     result = {}
     for module, filename in DONOR_FILES:
@@ -612,7 +617,7 @@ def donor_characters(game=None):
 
 
 def copy_map(game=None):
-    """{ванильный id: id копии} — все записи стургийской ветки, которые нужны гиппогрифам."""
+    """{vanilla id: copy id} - all Sturgian branch entries the hippogriffs need."""
     base = os.path.join(game or GAME, "Modules")
     characters = donor_characters(game)
     culture = next(c for c in ET.parse(
@@ -627,7 +632,7 @@ def copy_map(game=None):
         name = node.get("name") or ""
         if name.startswith("NPCCharacter."):
             wanted.add(name.replace("NPCCharacter.", ""))
-    # дерево улучшений: от рекрута ссылки уходят на остальные войска, их тоже дублируем
+    # upgrade tree: from the recruit the references lead to the other troops, duplicate them too
     queue = list(wanted)
     while queue:
         tid = queue.pop()
@@ -639,8 +644,8 @@ def copy_map(game=None):
             if nxt not in wanted:
                 wanted.add(nxt)
                 queue.append(nxt)
-    # Берём только записи самой культуры-донора: наёмники и прочие чужаки остаются общими.
-    # Культура у записей уже переписана обменом (swap_cultures), сверяемся с новой.
+    # Take only entries of the donor culture itself: mercenaries and other outsiders stay shared.
+    # The entries' culture has already been rewritten by the swap (swap_cultures), check against the new one.
     owner = "Culture." + RECORD_CULTURE.get(DONOR_CULTURE, DONOR_CULTURE)
     ours = [tid for tid in sorted(wanted)
             if tid in characters and (characters[tid].get("culture") or "") == owner]
@@ -648,13 +653,13 @@ def copy_map(game=None):
 
 
 def groups(game=None):
-    """Группы войск: (название, {id: ванильная запись}, [id по порядку], {id: имя})."""
+    """Troop groups: (title, {id: vanilla entry}, [ids in order], {id: name})."""
     base = os.path.join(game or GAME, "Modules")
     characters = {c.get("id"): c for c in ET.parse(
         os.path.join(base, "SandBoxCore", "ModuleData", "spnpccharacters.xml")).getroot() if c.get("id")}
     cultures = {c.get("id"): c for c in ET.parse(
         os.path.join(base, "SandBoxCore", "ModuleData", "spcultures.xml")).getroot()}
-    # разбойники описаны в модуле SandBox, отдельным файлом
+    # bandits are described in the SandBox module, in a separate file
     bandits = {c.get("id"): c for c in ET.parse(
         os.path.join(base, "SandBox", "ModuleData", "bandits.xml")).getroot()
         if c.tag == "NPCCharacter" and c.get("id")}
@@ -664,16 +669,17 @@ def groups(game=None):
         ("Эквестрия", characters, tree(characters, cultures[CULTURE]), NAMES),
         ("разбойники", bandits, list(bandits), BANDIT_NAMES),
         ("Чейнджлинги", characters, tree(characters, cultures["aserai"]), CHANGELING_NAMES),
-        # Ветки по ROSTER_OF: дерево берём у культуры-донора, культура у записей уже
-        # переписана при загрузке (swap_cultures).
+        # Branches by ROSTER_OF: the tree is taken from the donor culture, the entries' culture has already
+        # been rewritten at load time (swap_cultures).
         ("Грифоны", characters, tree(characters, cultures[ROSTER_OF["vlandia"]]), GRIFFON_NAMES),
         ("Олени", characters, tree(characters, cultures[ROSTER_OF["nord"]]), DEER_NAMES),
         ("Драконы", characters, tree(characters, cultures[ROSTER_OF["sturgia"]]) + ["vlandian_infantry"],
          DRAGON_NAMES),
         ("Яки", characters, tree(characters, cultures[ROSTER_OF["khuzait"]]), YAK_NAMES),
-        # гиппогрифы — копии стургийской ветки, собираются отдельно в main()
-        # Мирные ищем по ВСЕМ файлам игры: крестьяне и деревенские бойцы описаны не в
-        # spnpccharacters.xml, а в шаблонах, и до 24.09.2026 оставались «Асерайскими крестьянами».
+        # hippogriffs are copies of the Sturgian branch, built separately in main()
+        # Civilians are searched across ALL game files: peasants and village fighters are described not in
+        # spnpccharacters.xml but in templates, and until 24.09.2026 remained
+        # "Aserai Peasants".
         ("мирные", civilians, sorted(civil_names(civilians)), civil_names(civilians)),
         ("знать", civilians, sorted(notable_names(civilians)), notable_names(civilians)),
         ("вожаки", civilians, sorted(leader_names(civilians)), leader_names(civilians)),
@@ -681,14 +687,14 @@ def groups(game=None):
     ]
 
 
-# Этим группам броню по ступеням не выдаём: у торговца в пустом слоте оказался бы ламелляр.
-# Наёмники — отдельный случай: у рот свой ванильный облик (у каждой своя), и переодевать их по
-# нашим ступеням значит стереть эту разницу. Меняем только имя и расу.
+# These groups get no armour by tier: a trader would end up with lamellar in an empty slot.
+# Mercenaries are a separate case: companies have their own vanilla look (each its own), and re-dressing them by
+# our tiers would erase that difference. Only the name and race change.
 NO_ARMOR_GROUPS = {"мирные", "знать", "вожаки", "наёмники"}
 
 
 def troop_armor(game=None):
-    """Броня всех переделываемых войск по порядку появления: {группа: [id вещей]}."""
+    """Armour of all reworked troops in order of appearance: {group: [item ids]}."""
     result = {}
     for title, characters, ids, _names in groups(game):
         ordered = []
@@ -702,7 +708,7 @@ def troop_armor(game=None):
     return result
 
 
-# Ванильная имперская броня от слабой к сильной (по защите)
+# Vanilla imperial armour from weak to strong (by protection)
 ARMOR = {
     "Body": ["empire_legion_b", "empire_plate_vest_armor", "imperial_lamellar",
              "lamellar_with_scale_skirt", "imperial_scale_armor"],
@@ -715,7 +721,7 @@ ARMOR = {
              "heavy_nasalhelm_over_imperial_mail", "empire_guarded_lord_helmet",
              "imperial_goggled_helmet"],
 }
-# Ступень войска (уровень 6/11/16/21/26/31) -> номер вещи в ARMOR; None — слот пустой.
+# Troop tier (level 6/11/16/21/26/31) -> item index in ARMOR; None - the slot is empty.
 BY_TIER = {
     1: {"Body": None, "Leg": 0, "Gloves": None, "Head": None},
     2: {"Body": 0, "Leg": 1, "Gloves": 0, "Head": None},
@@ -733,12 +739,12 @@ def log(*a):
 
 def tier_of(character):
     level = int(character.get("level") or 1)
-    # уровни войск 6, 11, 16, 21, 26, 31 — ступени 1..6
+    # troop levels 6, 11, 16, 21, 26, 31 are tiers 1..6
     return max(1, min(6, level // 5))
 
 
 def tree(characters, culture):
-    """Все войска дерева культуры: от рекрутов вверх по улучшениям, плюс ополчение."""
+    """All troops of the culture tree: from recruits up through the upgrades, plus militia."""
     ids = []
 
     def walk(tid):
@@ -759,7 +765,7 @@ def tree(characters, culture):
 
 
 def set_hair_tag(node, tag):
-    """Оставить войску только причёски с тегом tag (<face><hair_tags>)."""
+    """Leave the troop only hairstyles with tag tag (<face><hair_tags>)."""
     face = node.find("face")
     if face is None:
         face = ET.SubElement(node, "face")
@@ -769,19 +775,19 @@ def set_hair_tag(node, tag):
     ET.SubElement(tags, "hair_tag", name=tag)
 
 
-# Своя броня у державы: приставка предмета. У улья это ванильные асерайские меши с хитиновыми
-# текстурами и свечением (tools/hive_armor.py); геометрия ванильная, меняются только материалы.
-# Если для ванильной вещи есть наша копия — надеваем её.
+# A kingdom's own armour: the item prefix. For the hive these are vanilla Aserai meshes with chitin
+# textures and glow (tools/hive_armor.py); the geometry is vanilla, only the materials change.
+# If there is our copy of a vanilla item, we put it on.
 OWN_ARMOR = {"Чейнджлинги": "eq_changeling_"}
-OWN_ITEMS = set()      # id наших вещей, читается из собранного equestria_items.xml
-# Проверка на одном войске (было: mamluke_palace_guard) показала, что броня улья рисуется —
-# беда была в пустом материале ванильных рукавиц, см. fallback в tools/hive_material.ps1.
-# Пустая строка — броню носят все, кому положено; имя войска — только оно (для новых проверок).
+OWN_ITEMS = set()      # ids of our items, read from the built equestria_items.xml
+# A test on a single troop (it was: mamluke_palace_guard) showed that the hive armour renders -
+# the trouble was the empty material of the vanilla mittens, see the fallback in tools/hive_material.ps1.
+# Empty string - everyone entitled wears the armour; a troop name - only that one (for new tests).
 OWN_ARMOR_ONLY = ""
 
 
 def dress(roster, tier, ranged, race=PONY, own=None):
-    """Меняет броню одного набора снаряжения. own — приставка своих вещей державы."""
+    """Changes the armour of one equipment set. own - the prefix of the kingdom's own items."""
     slots = {}
     for eq in list(roster.findall("equipment")):
         slot = eq.get("slot")
@@ -789,21 +795,21 @@ def dress(roster, tier, ranged, race=PONY, own=None):
             slots[slot] = eq.get("id", "").replace("Item.", "")
             roster.remove(eq)
 
-    # Стрелки легче пехоты на одну ступень: единорогам нужна свобода для магии.
+    # Archers are one tier lighter than infantry: unicorns need freedom for magic.
     plan = BY_TIER[max(1, tier - 1) if ranged else tier]
     for slot in ARMOR_SLOTS:
         vanilla = slots.get(slot)
         item = None
         if vanilla:
-            item = vanilla          # что ванильное войско носило, то и носит
+            item = vanilla          # whatever the vanilla troop wore, it still wears
             if own and own + vanilla in OWN_ITEMS:
-                item = own + vanilla    # …но если у державы есть своя версия вещи, надеваем её
+                item = own + vanilla    # …but if the kingdom has its own version of the item, put that on
         elif plan[slot] is not None:
             item = ARMOR[slot][plan[slot]]
         if slot == "Leg" and tier <= race["bare_tier"]:
             item = None
         if slot == "Head" and (item is None or race["no_helmet"]):
-            # mane = None: голова свободна (у пони грива и рог — причёска расы)
+            # mane = None: the head is free (for ponies the mane and horn are the race hairstyle)
             item = race["mane"].replace("Item.", "") if race["mane"] else None
         if item:
             ET.SubElement(roster, "equipment", {"slot": slot, "id": "Item." + item})
@@ -812,12 +818,12 @@ def dress(roster, tier, ranged, race=PONY, own=None):
 
 
 def looter_id(tid, race):
-    """id копии мародёра для расы; у пони — ванильный id."""
+    """Id of the looter copy for a race; for ponies, the vanilla id."""
     return tid if race == "pony" else "eq_%s_%s" % (race, tid)
 
 
-# Ванильные шаблоны отрядов мародёров: в каждом одна стопка ванильного «looter». Переписываем их
-# своими — по стопке на народ, поэтому в ватаге оказываются и пони, и грифоны, и яки разом.
+# Vanilla looter party templates: each has one stack of the vanilla "looter". We rewrite them with
+# our own - one stack per people, so a band has ponies, griffons and yaks at once.
 BANDIT_PARTY_TEMPLATES = {
     "looters_template": (4, 36),
     "looters_quest_template": (15, 15),
@@ -834,8 +840,8 @@ def write_bandit_party_templates():
         body.append('\t<MBPartyTemplate id="%s" _replaceWhileMerging="true">' % template)
         body.append("\t\t<stacks>")
         for number, race in enumerate(races):
-            # Предел на стопку делим на число народов, остаток отдаём первой: общий размер
-            # ватаги остаётся ванильным (у квестового шаблона он ровно 15 — там это важно).
+            # The per-stack limit is divided by the number of peoples, the remainder goes to the first: the
+            # total band size stays vanilla (for the quest template it is exactly 15 - that matters there).
             extra = 1 if number < low % len(races) else 0
             extra_high = 1 if number < high % len(races) else 0
             body.append('\t\t\t<PartyTemplateStack min_value="%d" max_value="%d" troop="NPCCharacter.%s" />'
@@ -852,8 +858,8 @@ def write_bandit_party_templates():
 
 
 def main():
-    # Свои вещи (броня улья) — из уже собранного equestria_items.xml: make_items.py запускается
-    # раньше, и по этому списку решается, есть ли у державы своя версия ванильной вещи.
+    # Our own items (hive armour) - from the already built equestria_items.xml: make_items.py runs
+    # earlier, and this list decides whether a kingdom has its own version of a vanilla item.
     items_path = os.path.join(MODULE, "ModuleData", "equestria_items.xml")
     if os.path.exists(items_path):
         OWN_ITEMS.update(i.get("id") for i in ET.parse(items_path).getroot() if i.get("id"))
@@ -861,29 +867,29 @@ def main():
     root = ET.Element("NPCCharacters")
     missing = []
     total = 0
-    civil_records = donor_characters()   # в них лежат вожаки рот: по ним берём расу наёмников
+    civil_records = donor_characters()   # the company leaders are in them: the mercenaries' race is taken from them
     for title, characters, ids, names in groups():
         group_race = RACES.get(title, PONY)
         log(f"== {title}: {len(ids)}, раса {group_race['race']}")
         for tid in ids:
             node = copy.deepcopy(characters[tid])
-            # У мирных, знати и вожаков группа общая на все державы, поэтому раса — по культуре
-            # самой записи.
+            # For civilians, notables and leaders the group is shared by all kingdoms, so the race follows
+            # the culture of the entry itself.
             culture = (node.get("culture") or "").replace("Culture.", "")
             race = RACES.get(CULTURE_RACE.get(culture, title), group_race) \
                 if title in NO_ARMOR_GROUPS else group_race
-            # Банда — своей расы (см. BANDIT_RACE); мародёры остаются пони, их разноплемённые
-            # копии делаются ниже.
+            # A gang is of its own race (see BANDIT_RACE); looters stay ponies, their mixed-race
+            # copies are made below.
             if title == "разбойники" and culture in BANDIT_RACE:
                 race = RACES[BANDIT_RACE[culture]]
-            # Наёмная рота — расы своего вожака, а не своей культуры (см. merc_race).
+            # A mercenary company is of its leader's race, not of its culture (see merc_race).
             if title == "наёмники":
                 race = merc_race(merc_clan(tid), civil_records) or race
             name = names.get(tid)
             if name is None:
                 missing.append(tid)
                 name = node.get("name", tid)
-            # _replaceWhileMerging сносит все атрибуты ванильной записи — переписываем их все.
+            # _replaceWhileMerging wipes all attributes of the vanilla entry - rewrite them all.
             attrs = dict(node.attrib)
             node.attrib.clear()
             node.set("id", tid)
@@ -891,7 +897,7 @@ def main():
             for key, value in attrs.items():
                 if key != "id":
                     node.set(key, value)
-            # имя бывает парой (русское, английское): у мирных английский собран рядом
+            # the name may be a pair (Russian, English): for civilians the English is built alongside
             node.set("name", lang.loc("eq_troop_" + tid, *name) if isinstance(name, tuple)
                      else lang.loc("eq_troop_" + tid, name))
             node.set("race", race["race"])
@@ -902,14 +908,14 @@ def main():
             if title not in NO_ARMOR_GROUPS:
                 own = OWN_ARMOR.get(title)
                 if own and OWN_ARMOR_ONLY and tid != OWN_ARMOR_ONLY:
-                    own = None          # на проверке своя броня только у одного войска
+                    own = None          # under test, only one troop gets its own armour
                 for roster in node.iter("EquipmentRoster"):
                     dress(roster, tier, ranged, race, own)
             root.append(node)
             total += 1
             log(f"  {tid}: {name} (ступень {tier}{', стрелок' if ranged else ''})")
 
-    # ---- Гиппогрифы: копии стургийских записей со своей расой и именами (см. copy_map)
+    # ---- Hippogriffs: copies of the Sturgian entries with their own race and names (see copy_map)
     characters = donor_characters()
     mapping = copy_map()
     deer = RACES[CULTURE_RACE[COPY_CULTURE]]
@@ -924,8 +930,8 @@ def main():
                 node.set(key, value)
         node.set("culture", "Culture." + COPY_CULTURE)
         node.set("race", deer["race"])
-        # Имя: войскам — лорное, мирным — по роли и державе, горожанам оставляем ванильное
-        # (оно общее для всех культур: «Горожанин», «Трактирщик»).
+        # Name: troops get a lore one, civilians - by role and kingdom, townsfolk keep the vanilla one
+        # (it is shared by all cultures: "Townsman", "Tavern Keeper").
         if tid in HIPPOGRIFF_NAMES:
             node.set("name", lang.loc("eq_troop_" + new_id, HIPPOGRIFF_NAMES[tid]))
             set_hair_tag(node, deer["hair_tag"])
@@ -940,7 +946,7 @@ def main():
                 node.set("name", lang.loc("eq_troop_" + new_id, "%s %s" % (role[0], ru_of),
                                           "%s %s" % (role[1], en_of)))
             set_hair_tag(node, deer["hair_tag"])
-        # ссылки на улучшения ведут на такие же копии, иначе дерево уходит к якам
+        # upgrade references lead to the same kind of copies, otherwise the tree goes off to the yaks
         for up in node.findall("upgrade_targets/upgrade_target"):
             target = up.get("id").replace("NPCCharacter.", "")
             if target in mapping:
@@ -948,14 +954,14 @@ def main():
         root.append(node)
         total += 1
 
-    # ---- Мародёры всех народов: на каждую расу своя копия записи
+    # ---- Looters of all peoples: each race has its own copy of the entry
     bandits = {c.get("id"): c for c in ET.parse(
         os.path.join(GAME, "Modules", "SandBox", "ModuleData", "bandits.xml")).getroot()
         if c.tag == "NPCCharacter" and c.get("id")}
     made = 0
     for race, upgrades in LOOTER_RACES.items():
         if race == "pony":
-            continue          # пони остаются на ванильных id, их записи уже собраны выше
+            continue          # ponies stay on the vanilla ids, their entries are already built above
         for tid in LOOTER_TROOPS:
             node = copy.deepcopy(bandits[tid])
             attrs = dict(node.attrib)
@@ -967,7 +973,7 @@ def main():
             node.set("race", race)
             node.set("name", lang.loc("eq_troop_" + looter_id(tid, race), BANDIT_NAMES[tid]))
             set_hair_tag(node, LOOTER_HAIR[race])
-            # улучшение — в пехоту своей же культуры, иначе разбойник сменит народность
+            # upgrade into infantry of the same culture, otherwise the bandit changes nationality
             for up in node.findall("upgrade_targets/upgrade_target"):
                 target = up.get("id").replace("NPCCharacter.", "")
                 if target in upgrades:

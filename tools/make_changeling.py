@@ -1,21 +1,21 @@
-"""Рядовой чейнджлинг на основе нашей антро-пони (своя модель, без чужих мешей).
+"""A rank-and-file changeling based on our anthro pony (our own model, no third-party meshes).
 
-Запуск (headless Blender, открывает готовую пони):
+Run (headless Blender, opens the finished pony):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_changeling.py -- ../assets/changeling
 
-Что строится (референсы — кадры мультика в assets/reference/changeling/images):
-  eq_changeling_head   — голова пони (лицо с 101 ключом мимики): без ресниц, фасеточные голубые глаза, два клыка;
-  eq_changeling_body / _legs / _gloves — тело пони в чёрном хитине, дыры на голенях и предплечьях;
-  eq_changeling_crest  — рог с зазубринами и колючий гребень (слот шлема, как грива пони), кость головы;
-  eq_changeling_horn   — только рог (слот шлема у тех, кто носит настоящую причёску, tools/make_changeling_hair.py);
-  eq_changeling_wings  — стрекозиные крылья с дырами (спина) и короткий колючий хвост (таз), слот плаща;
-  eq_chrysalis_crown   — рог королевы и корона с бирюзовыми шариками (слот шлема, только у Кризалис).
+What gets built (references - cartoon frames in assets/reference/changeling/images):
+  eq_changeling_head   - the pony head (a face with 101 facial keys): no eyelashes, faceted blue eyes, two fangs;
+  eq_changeling_body / _legs / _gloves - the pony body in black chitin, holes on the shins and forearms;
+  eq_changeling_crest  - a serrated horn and a spiky crest (helmet slot, like the pony mane), head bone;
+  eq_changeling_horn   - the horn only (helmet slot for those who wear a real hairstyle, tools/make_changeling_hair.py);
+  eq_changeling_wings  - dragonfly wings with holes (back) and a short spiky tail (pelvis), cape slot;
+  eq_chrysalis_crown   - the queen's horn and a crown with turquoise orbs (helmet slot, Chrysalis only).
 
-Всё на общем материале eq_twilight_body: детали нарисованы в двух свободных клетках атласа пони
-(клетки (2,3) — глаза и (3,3) — хитин, клыки, дыры, крылья). Цвет хитина лежит в текстуре, поэтому палитра
-окраса расы светлая: иначе движок затемнил бы вместе с шерстью и глаза, и клыки.
-Атлас с новыми клетками пишется в <out>/textures/eq_twilight_body_d.png — его надо переимпортировать
-в редакторе вместо текстуры пони. После перезапуска convert_twilight.py этот скрипт нужно запустить снова.
+Everything is on the shared material eq_twilight_body: the details are painted in two free cells of the pony atlas
+(cells (2,3) - eyes and (3,3) - chitin, fangs, holes, wings). The chitin colour is in the texture, so the race's
+coat palette is light: otherwise the engine would darken the eyes and fangs together with the coat.
+The atlas with the new cells is written to <out>/textures/eq_twilight_body_d.png - it has to be reimported
+in the editor in place of the pony texture. After convert_twilight.py is rerun this script must be run again.
 """
 import math
 import os
@@ -35,8 +35,8 @@ os.makedirs(os.path.join(OUT, "preview"), exist_ok=True)
 MAT = "eq_twilight_body"
 CELL, GRID = 1024, 4
 HEAD_BONE, SPINE_BONE, PELVIS_BONE = "bip01_head_13", "bip01_spine2_11", "bip01_pelvis_0"
-EYE_CELL, PARTS_CELL = (2, 3), (3, 3)   # свободные клетки атласа (столбец, строка снизу)
-COAT_CELLS = {(0, 0), (0, 1), (0, 2), (2, 2), (3, 1)}  # шерсть, копыта, перчатки, кожа головы
+EYE_CELL, PARTS_CELL = (2, 3), (3, 3)   # free atlas cells (column, row from the bottom)
+COAT_CELLS = {(0, 0), (0, 1), (0, 2), (2, 2), (3, 1)}  # coat, hooves, gloves, head skin
 EYES_SRC_CELL, LASH_CELL = (3, 0), (2, 0)
 
 
@@ -50,13 +50,13 @@ bones = {b.name: skel.matrix_world @ b.head_local for b in skel.data.bones}
 vl = bpy.context.view_layer
 
 
-# ---------------------------------------------------------------- области клетки деталей (пиксели клетки, снизу)
+# ---------------------------------------------------------------- parts cell regions (cell pixels, from bottom)
 REGIONS = {
-    "chitin": (0, 0, 512, 512),      # x: 0 — матовый, 1 — синий отблеск на рёбрах; y: 0 — низ тела, 1 — верх
+    "chitin": (0, 0, 512, 512),      # x: 0 - matte, 1 - blue sheen on the ridges; y: 0 - bottom of the body, 1 - top
     "fang": (512, 256, 768, 512),
     "hole": (768, 256, 1024, 512),
     "glow": (512, 0, 1024, 256),
-    "wing": (0, 512, 1024, 1024),    # x — вдоль крыла от корня, y — поперёк (-W..W)
+    "wing": (0, 512, 1024, 1024),    # x - along the wing from the root, y - across (-W..W)
 }
 INSET = 12
 
@@ -76,20 +76,20 @@ def cell_of(u, v):
     return (min(int(u * GRID), GRID - 1), min(int(v * GRID), GRID - 1))
 
 
-# ---------------------------------------------------------------- форма крыла (общая для сетки и текстуры)
+# ---------------------------------------------------------------- wing shape (shared by the mesh and the texture)
 WING_LEN, WING_W = 0.46, 0.10
 WING_HOLES = [(0.36, -0.012, 0.050, 0.020), (0.55, 0.006, 0.055, 0.026), (0.73, -0.004, 0.040, 0.016)]
 
 
 def wing_half(s):
-    """Полуширина крыла (м) в точке s (0 — корень, 1 — кончик): верхняя (передняя) и нижняя (рваная) кромки."""
+    """Wing half-width (m) at point s (0 - root, 1 - tip): the upper (leading) and lower (ragged) edges."""
     s = np.clip(s, 0.0, 1.0)
     base = WING_W * (s ** 0.6) * ((1.0 - s) ** 0.5) / 0.468 + 0.012 * (1.0 - s)
     saw = np.mod(s * 4.0 + 0.3, 1.0) ** 1.6
     return base * 0.72, base * (1.0 - 0.42 * saw * (s > 0.15))
 
 
-# ---------------------------------------------------------------- 1. текстуры в атласе
+# ---------------------------------------------------------------- 1. textures in the atlas
 atlas_src = bpy.data.images[f"{MAT}_d"] if f"{MAT}_d" in bpy.data.images else next(
     n.image for n in bpy.data.materials[MAT].node_tree.nodes if n.type == "TEX_IMAGE")
 W, H = atlas_src.size
@@ -108,7 +108,7 @@ def mix(a, b, t):
 
 
 def ramp(t, stops):
-    """t: массив 0..1, stops: [(позиция, (r,g,b))]"""
+    """t: array 0..1, stops: [(position, (r,g,b))]"""
     out = np.zeros(t.shape + (3,), np.float32)
     for (p0, c0), (p1, c1) in zip(stops, stops[1:]):
         m = (t >= p0) & (t <= p1)
@@ -119,7 +119,7 @@ def ramp(t, stops):
 
 
 def hex_pattern(x, y, size):
-    """0..1: ячейки фасеточного глаза — светлые центры, тёмные швы"""
+    """0..1: cells of a faceted eye - light centres, dark seams"""
     q = (x * 0.57735 * 2) / size
     r = (y - x * 0.57735) / size
     cx, cy = q, r
@@ -130,26 +130,26 @@ def hex_pattern(x, y, size):
 
 yy, xx = np.mgrid[0:CELL, 0:CELL].astype(np.float32)
 
-# ---------------------------------------------------------------- глаза: круглый контур
-# Глаз виден сквозь отверстие в коже головы, а край отверстия — ломаная из немногих рёбер: отсюда угловатые
-# глаза в игре. Поэтому глаз рисуем заново: находим, какие пиксели текстуры глазного яблока видны спереди
-# сквозь отверстие (луч от точки яблока к зрителю не задевает кожу), вписываем в эту область гладкий эллипс
-# (в экранных координатах, чтобы он был круглым на экране, а не в развёртке) и рисуем глаз строго внутри него.
-# Снаружи — цвет кожи: край отверстия ложится на такой же цвет и пропадает.
-# Одна раскладка у пони (клетка (3,0)) и у чейнджлинга (клетка (2,3)) — меши голов одинаковые.
-EYE_VIEW_SIDE = 0.15   # глаз смотрит вперёд и чуть наружу
-EYE_FIT_VISIBLE = 0.985  # доля видимых пикселей внутри эллипса
-# Пони: False — исходный рисунок глаз Твайлайт (пользователю он нравится больше нарисованного круглого),
-# True — нарисованный круглый глаз. Подложка и моргание (tools/fix_pony_eyes.py) работают в обоих случаях.
+# ---------------------------------------------------------------- eyes: a round outline
+# The eye is seen through a hole in the head skin, and the hole's edge is a polyline of few edges: hence the angular
+# eyes in game. So we redraw the eye: we find which pixels of the eyeball texture are visible from the front
+# through the hole (a ray from the eyeball point to the viewer does not hit the skin), fit a smooth ellipse into
+# that area (in screen coordinates, so it is round on screen, not in the UV map) and draw the eye strictly inside it.
+# Outside - the skin colour: the hole's edge lands on the same colour and disappears.
+# The same layout for the pony (cell (3,0)) and the changeling (cell (2,3)) - the head meshes are identical.
+EYE_VIEW_SIDE = 0.15   # the eye looks forward and slightly outward
+EYE_FIT_VISIBLE = 0.985  # share of visible pixels inside the ellipse
+# Pony: False - Twilight's original eye drawing (the user likes it more than the painted round one),
+# True - the painted round eye. The underlay and blinking (tools/fix_pony_eyes.py) work in both cases.
 PONY_ROUND_EYES = False
-EYE_FILL = 1.0  # 0 — вписанный эллипс (меньше, но везде круглый), 1 — во всю глазницу
-EYE_SIZE = 1.08  # сверх того — ещё крупнее (края уходят под кожу)
-EYE_RAISE = 0.10  # центр глаза выше на долю его высоты
+EYE_FILL = 1.0  # 0 - inscribed ellipse (smaller, but round everywhere), 1 - fills the whole eye socket
+EYE_SIZE = 1.08  # on top of that - even larger (the edges go under the skin)
+EYE_RAISE = 0.10  # eye centre higher by a fraction of its height
 
 
 def eye_maps():
-    """-> ell: для пикселя клетки глаз расстояние в долях эллипса (0 — центр, 1 — край, inf — не глаз);
-    ux, uy: координаты внутри эллипса по экранным осям (x — поперёк, y — вверх), side: сторона (+1/-1)."""
+    """-> ell: for an eye-cell pixel, the distance in ellipse fractions (0 - centre, 1 - edge, inf - not an eye);
+    ux, uy: coordinates inside the ellipse along the screen axes (x - across, y - up), side: the side (+1/-1)."""
     ob = pony["eq_twilight_head"]
     me = ob.data
     uvd = me.uv_layers.active.data
@@ -160,14 +160,14 @@ def eye_maps():
         u, v = uvd[p.loop_indices[0]].uv
         c = cell_of(u, v)
         if any(lid_a.data[i].value for i in p.vertices):
-            continue  # веки в базовой форме сжаты над глазом и спрятаны
+            continue  # the eyelids in the basis shape are squeezed above the eye and hidden
         if all(eye_a.data[i].value for i in p.vertices):
-            # 1 — глазное яблоко, 2 — подложка в глазнице (tools/fix_pony_eyes.py): её не раскрашиваем
+            # 1 - eyeball, 2 - underlay in the eye socket (tools/fix_pony_eyes.py): it is not painted
             if c == EYES_SRC_CELL and all(eye_a.data[i].value == 1 for i in p.vertices):
                 eye_polys.append(p)
             continue
         if c == LASH_CELL:
-            continue  # тонкие ресницы не закрывают глаз
+            continue  # thin eyelashes do not cover the eye
         occluders.append(list(p.vertices))
     bvh = BVHTree.FromPolygons(world, occluders)
 
@@ -213,40 +213,41 @@ def eye_maps():
         sub = (ys % 3 == 0) & (xs % 3 == 0)
         sample = pts[sub]
         visible = np.array([bvh.ray_cast(Vector(p) + d * 0.0005, d, 0.5)[0] is None for p in sample])
-        # оставляем самое большое связное пятно видимого (сбоку у виска яблоко тоже выглядывает)
+        # keep the largest connected patch of the visible area (at the temple the eyeball also peeks out from the side)
         visible &= largest_blob(proj[sub], visible)
         vis_proj = proj[sub][visible]
         mean = vis_proj.mean(0)
         cov = np.cov(vis_proj.T)
         inv = np.linalg.inv(cov)
         q = proj[sub] - mean
-        val = np.einsum("ij,jk,ik->i", q, inv, q) / 4.0  # у равномерного эллипса дисперсия = полуось²/4
-        # считаем только передний слой яблока: задние точки проецируются туда же, но их всегда закрывает перед
+        val = np.einsum("ij,jk,ik->i", q, inv, q) / 4.0  # for a uniform ellipse the variance = semi-axis²/4
+        # only the front layer of the eyeball counts: back points project to the same place,
+        # but the front always covers them
         depth = sample @ np.array(d[:])
         cells = np.floor(proj[sub] / 0.002).astype(int)
         front_depth = {}
         for key, dep in zip(map(tuple, cells), depth):
             front_depth[key] = max(front_depth.get(key, -9.0), dep)
         front = np.array([dep >= front_depth[key] - 0.004 for key, dep in zip(map(tuple, cells), depth)])
-        k_in = 0.5  # вписанный эллипс: почти весь видим
+        k_in = 0.5  # inscribed ellipse: almost all of it is visible
         for k in np.arange(1.0, 0.5, -0.01):
             inside = (val <= k * k) & front
             if inside.any() and visible[inside].mean() >= EYE_FIT_VISIBLE:
                 k_in = k
                 break
-        k_out = 1.5  # описанный: захватывает почти всю видимую глазницу
+        k_out = 1.5  # circumscribed: takes in almost the whole visible eye socket
         vis_val = val[front & visible]
         for k in np.arange(0.5, 1.5, 0.01):
             if (vis_val <= k * k).mean() >= 0.97:
                 k_out = k
                 break
-        # глаз почти во всю глазницу (как было до скругления): край эллипса местами уходит под кожу
+        # the eye fills almost the whole socket (as before the rounding): the ellipse edge goes under the skin in places
         scale = (k_in + (k_out - k_in) * EYE_FILL) * EYE_SIZE
         mean = mean + np.array([0.0, EYE_RAISE * 2.0 * scale * np.sqrt(cov[1, 1])])
         qa = proj - mean
         ell[ys, xs] = np.sqrt(np.einsum("ij,jk,ik->i", qa, inv, qa) / 4.0) / scale
-        ext = 2.0 * scale * np.sqrt(np.diag(cov))  # полуразмах эллипса по экранным осям
-        ux[ys, xs] = qa[:, 0] / ext[0] * side  # у обоих глаз x растёт к виску
+        ext = 2.0 * scale * np.sqrt(np.diag(cov))  # ellipse half-extent along the screen axes
+        ux[ys, xs] = qa[:, 0] / ext[0] * side  # for both eyes x grows toward the temple
         uy[ys, xs] = qa[:, 1] / ext[1]
         side_map[ys, xs] = side
         log(f"eye {side:+d}: visible {visible.mean():.2f} of eyeball texels, ellipse scale {scale:.2f} "
@@ -256,7 +257,7 @@ def eye_maps():
 
 
 def largest_blob(points, mask, cell=0.002):
-    """Маска точек, попавших в самую большую связную область (сетка cell метров) среди отмеченных."""
+    """Mask of the points that fall into the largest connected region (a grid of cell metres) among the marked ones."""
     keys = [tuple(k) for k in np.floor(points / cell).astype(int)]
     occupied = {k for k, m in zip(keys, mask) if m}
     best, seen = set(), set()
@@ -278,7 +279,7 @@ def largest_blob(points, mask, cell=0.002):
 
 
 def smooth_edge(x, edge, width):
-    """0 внутри (x < edge - width), 1 снаружи, плавно между — сглаженный край без лесенки."""
+    """0 inside (x < edge - width), 1 outside, smooth in between - an anti-aliased edge without staircase."""
     return np.clip((x - (edge - width)) / width, 0.0, 1.0)
 
 
@@ -286,33 +287,33 @@ ell, eux, euy, eye_cov = eye_maps()
 finite = np.isfinite(ell)
 r = np.where(finite, ell, 9.0)
 
-# пони: мультяшный глаз — белок, фиолетовая радужка (как у Твайлайт), зрачок, блики, тёмный контур
+# pony: a cartoon eye - sclera, purple iris (like Twilight's), pupil, highlights, dark outline
 head_cell = cell_view(3, 1)[..., :3]
 bright = head_cell[head_cell.max(-1) > 0.3]
 COAT_GRAY = np.median(bright, axis=0) if len(bright) else np.array([0.9, 0.9, 0.9], np.float32)
 pony_eye = np.empty((CELL, CELL, 3), np.float32)
 pony_eye[:] = COAT_GRAY
 sclera = np.array([0.97, 0.97, 0.98], np.float32)
-# Крупная радужка почти во весь глаз и большой зрачок, как у пони в мультике. Центр почти посередине:
-# маленькая радужка со сдвигом к носу в игре выглядела косой и пугающей.
-# взгляд как у исходной Твайлайт: чуть вниз и к носу, зрачок крупный и почти чёрный
+# A large iris filling almost the whole eye and a big pupil, as for the ponies in the cartoon. The centre is almost
+# in the middle: a small iris shifted toward the nose looked cross-eyed and scary in game.
+# a gaze like the original Twilight's: slightly down and toward the nose, the pupil large and almost black
 IRIS_X, IRIS_Y = -0.12, -0.06
 iris_d = np.sqrt(((eux - IRIS_X) / 0.78) ** 2 + ((euy - IRIS_Y) / 1.0) ** 2)
 pupil_d = np.sqrt(((eux - IRIS_X) / 0.52) ** 2 + ((euy - IRIS_Y) / 0.74) ** 2)
 iris_col = mix((0.26, 0.10, 0.46), (0.80, 0.60, 1.00), (0.45 - euy * 0.55))
-iris_col = mix(iris_col, (0.18, 0.06, 0.30), smooth_edge(iris_d, 1.0, 0.10))  # тёмный ободок радужки
+iris_col = mix(iris_col, (0.18, 0.06, 0.30), smooth_edge(iris_d, 1.0, 0.10))  # dark rim of the iris
 col = mix(np.broadcast_to(sclera, pony_eye.shape), iris_col, 1.0 - smooth_edge(iris_d, 1.0, 0.03))
 col = mix(col, (0.03, 0.01, 0.05), 1.0 - smooth_edge(pupil_d, 1.0, 0.05))
-for hx, hy, hr in ((IRIS_X - 0.22, 0.34, 0.20), (IRIS_X + 0.22, -0.34, 0.09)):  # блики
+for hx, hy, hr in ((IRIS_X - 0.22, 0.34, 0.20), (IRIS_X + 0.22, -0.34, 0.09)):  # highlights
     hd = np.sqrt((eux - hx) ** 2 + (euy - hy) ** 2) / hr
     col = mix(col, (1.0, 1.0, 1.0), 1.0 - smooth_edge(hd, 1.0, 0.2))
-col = mix(col, (0.06, 0.04, 0.08), smooth_edge(r, 0.93, 0.03))  # контур глаза
+col = mix(col, (0.06, 0.04, 0.08), smooth_edge(r, 0.93, 0.03))  # eye outline
 pony_eye = mix(col, COAT_GRAY, smooth_edge(r, 1.0, 0.02))
 pony_eye[~finite] = COAT_GRAY
 if PONY_ROUND_EYES:
     cell_view(*EYES_SRC_CELL)[..., :3] = pony_eye
 
-# чейнджлинг: светящийся фасеточный глаз без зрачка, фон — хитин
+# changeling: a glowing faceted eye without a pupil, chitin background
 EYE_BG = (0.02, 0.022, 0.03)
 EYE_STOPS = [(0.0, (0.80, 1.00, 1.00)), (0.35, (0.45, 0.95, 1.00)), (0.7, (0.12, 0.72, 0.95)),
              (0.92, (0.05, 0.45, 0.78)), (1.0, (0.02, 0.25, 0.50))]
@@ -338,11 +339,11 @@ def paint(name, fn):
     parts[y0:y1, x0:x1, :3] = fn(np.clip(fx, 0, 1), np.clip(fy, 0, 1))
 
 
-# хитин: почти чёрный с холодным отливом, к верху чуть светлее; справа — синий отблеск для рёбер
+# chitin: almost black with a cold sheen, slightly lighter toward the top; on the right - a blue sheen for the ridges
 paint("chitin", lambda fx, fy: mix(mix((0.018, 0.020, 0.028), (0.070, 0.078, 0.105), fy),
                                    (0.10, 0.20, 0.42), fx ** 1.5))
 paint("fang", lambda fx, fy: mix((0.72, 0.74, 0.78), (0.97, 0.97, 0.98), fy))
-# дыра: сквозь неё «видно» — тускло-синее пятно в тёмной кайме
+# hole: you can "see" through it - a dull blue spot in a dark rim
 paint("hole", lambda fx, fy: ramp(np.sqrt((fx - 0.5) ** 2 + (fy - 0.5) ** 2) * 2,
                                   [(0.0, (0.26, 0.36, 0.46)), (0.6, (0.18, 0.26, 0.36)),
                                    (0.8, (0.03, 0.04, 0.06)), (1.0, (0.02, 0.02, 0.03))]))
@@ -377,16 +378,16 @@ atlas_img.save()
 log("atlas saved", atlas_img.filepath_raw)
 
 
-# ---------------------------------------------------------------- вариант лица: королева (Кризалис)
-# Материал лица выбирается у каждого персонажа отдельно (face_textures в skins.xml, ползунок «лицо»
-# в редакторе внешности) — проверено в игре 18.09.2026. Поэтому глаза королевы делаются не новой расой,
-# а вторым атласом: всё то же, кроме клетки глаз. Цвета сняты с референса
-# assets/reference/chrysalis (мятный белок, зелёная радужка, тёмный вертикальный зрачок).
+# ---------------------------------------------------------------- face variant: the queen (Chrysalis)
+# The face material is chosen per character (face_textures in skins.xml, the "face" slider
+# in the appearance editor) - verified in game 18.09.2026. So the queen's eyes are made not as a new race
+# but as a second atlas: everything the same except the eye cell. The colours are taken from the reference
+# assets/reference/chrysalis (mint sclera, green iris, dark vertical pupil).
 QUEEN_SCLERA = (0.71, 0.95, 0.81)
-QUEEN_IRIS_LO = (0.28, 0.62, 0.22)   # к краю радужки
-QUEEN_IRIS_HI = (0.72, 0.88, 0.25)   # к низу, жёлто-зелёный
-QUEEN_PUPIL = (0.02, 0.26, 0.22)     # тёмно-зелёный овал
-QUEEN_SLIT = (0.01, 0.12, 0.10)      # щель внутри овала
+QUEEN_IRIS_LO = (0.28, 0.62, 0.22)   # toward the edge of the iris
+QUEEN_IRIS_HI = (0.72, 0.88, 0.25)   # toward the bottom, yellow-green
+QUEEN_PUPIL = (0.02, 0.26, 0.22)     # dark green oval
+QUEEN_SLIT = (0.01, 0.12, 0.10)      # slit inside the oval
 QUEEN_GLINT = (0.62, 1.00, 0.86)
 
 
@@ -399,9 +400,9 @@ def queen_eye_cell():
               iris, 1.0 - smooth_edge(iris_d, 1.0, 0.04))
     col = mix(col, QUEEN_PUPIL, 1.0 - smooth_edge(pupil_d, 1.0, 0.05))
     col = mix(col, QUEEN_SLIT, 1.0 - smooth_edge(slit_d, 1.0, 0.08))
-    hd = np.sqrt((eux + 0.34) ** 2 + (euy - 0.40) ** 2) / 0.15   # мятный блик сверху у носа
+    hd = np.sqrt((eux + 0.34) ** 2 + (euy - 0.40) ** 2) / 0.15   # mint highlight at the top near the nose
     col = mix(col, QUEEN_GLINT, 1.0 - smooth_edge(hd, 1.0, 0.25))
-    col = mix(col, (0.03, 0.14, 0.12), smooth_edge(r, 0.93, 0.03))  # тёмный контур глаза
+    col = mix(col, (0.03, 0.14, 0.12), smooth_edge(r, 0.93, 0.03))  # dark eye outline
     out = np.ones((CELL, CELL, 4), np.float32)
     out[..., :3] = mix(col, EYE_BG, smooth_edge(r, 1.0, 0.02))
     out[~finite, :3] = EYE_BG
@@ -418,7 +419,7 @@ queen_img.save()
 log("queen atlas saved", queen_img.filepath_raw)
 
 
-# ---------------------------------------------------------------- 2. меши кожи: копии пони с новой раскладкой
+# ---------------------------------------------------------------- 2. skin meshes: copies of the pony with a new layout
 def copy_object(src, name):
     ob = src.copy()
     ob.data = src.data.copy()
@@ -475,9 +476,9 @@ def is_lash(f, uv, lid):
     return c == LASH_CELL and not (lid and any(v[lid] for v in f.verts))
 
 
-# ---------------------------------------------------------------- 3. построение деталей
+# ---------------------------------------------------------------- 3. building the parts
 class Builder:
-    """Накопитель геометрии в мировых координатах: вершины с uv и одной костью."""
+    """Geometry accumulator in world coordinates: vertices with uv and a single bone."""
 
     def __init__(self):
         self.bm = bmesh.new()
@@ -505,7 +506,7 @@ class Builder:
         return f
 
     def loft(self, path, rx, ry, ref, uv_fn, bone, segs=8, cap=True, tag=0):
-        """Трубка по точкам path с эллиптическим сечением (rx по ref×T, ry — поперёк), на конце — острие."""
+        """A tube along the path points with an elliptical cross-section (rx along ref×T, ry - across), a spike at the end."""
         rings = []
         n = len(path)
         first = len(self.bm.verts)
@@ -535,7 +536,7 @@ class Builder:
                 k2 = (k + 1) % segs
                 self.face([c, rings[0][k2], rings[0][k]],
                           [uv_fn(0, 0), uv_fn(0, 0), uv_fn(0, 0)], bone, tag)
-        # сшить кольца и развернуть нормали наружу (движок не рисует изнанку)
+        # stitch the rings and turn the normals outward (the engine does not draw back faces)
         self.bm.verts.ensure_lookup_table()
         new = self.bm.verts[first:]
         bmesh.ops.remove_doubles(self.bm, verts=list(new), dist=1e-7)
@@ -544,7 +545,7 @@ class Builder:
         bmesh.ops.recalc_face_normals(self.bm, faces=list(faces))
 
     def plane(self, outline, holes, frame, uv_fn, bone, tag=0, thickness=0.0012):
-        """Плоская фигура с дырами (заливка через 2D-кривую) в плоскости frame=(origin, X, Y), двусторонняя."""
+        """A flat shape with holes (filled via a 2D curve) in the plane frame=(origin, X, Y), double-sided."""
         cu = bpy.data.curves.new("eq_tmp_curve", "CURVE")
         cu.dimensions = "2D"
         cu.fill_mode = "BOTH"
@@ -606,19 +607,19 @@ _, skin_pts = world_verts(head_src, lambda c: c == (3, 1))
 _, teeth_pts = world_verts(head_src, lambda c: c == (0, 3))
 _, horn_pts = world_verts(mane_src, lambda c: c == (1, 2))
 
-# рог: ось от середины основания к кончику рога единорога
+# horn: the axis from the middle of the base to the tip of the unicorn horn
 horn_base = Vector(horn_pts[horn_pts[:, 2] < horn_pts[:, 2].min() + 0.02].mean(0))
 horn_tip = Vector(horn_pts[horn_pts[:, 2].argmax()])
 horn_axis = (horn_tip - horn_base)
 horn_base = horn_base - horn_axis.normalized() * 0.01
-horn_tip = horn_base + horn_axis * 1.45  # рог у трутней длиннее и толще, чем у единорога
+horn_tip = horn_base + horn_axis * 1.45  # drones have a longer and thicker horn than a unicorn
 log(f"horn base {tuple(round(v, 3) for v in horn_base)}, tip {tuple(round(v, 3) for v in horn_tip)}")
 
 HEAD_C = Vector((0.0, float(skin_pts[:, 1].mean()) + 0.02, float(bones[HEAD_BONE].z) + 0.09))
 
 
 def surface_point(direction, band=0.012):
-    """Точка кожи головы, дальше всех от центра головы в заданном направлении (по средней линии)."""
+    """The head skin point farthest from the head centre in the given direction (along the midline)."""
     d = Vector(direction).normalized()
     rel = skin_pts - np.array(HEAD_C)
     near = np.abs(rel[:, 0]) < band
@@ -633,7 +634,7 @@ def spike_uv(fs, a):
 
 
 def add_horn(builder):
-    """Рог: зазубренный конус от лба."""
+    """Horn: a serrated cone from the forehead."""
     steps = 9
     path = [horn_base.lerp(horn_tip, i / steps) for i in range(steps + 1)]
     r0 = 0.032
@@ -646,7 +647,7 @@ def add_horn(builder):
                  lambda fs, a: chitin_uv(0.5 + 0.5 * fs, 0.35 + 0.65 * abs(math.sin(a)) ** 2), HEAD_BONE, segs=10)
 
 
-# Только рог — для тех, у кого настоящая причёска (герои, лорды): шипы гребня торчали бы сквозь волосы.
+# Horn only - for those with a real hairstyle (heroes, lords): the crest spikes would stick through the hair.
 horn_only = Builder()
 add_horn(horn_only)
 horn_ob = horn_only.to_object("eq_changeling_horn")
@@ -654,11 +655,11 @@ horn_ob = horn_only.to_object("eq_changeling_horn")
 crest = Builder()
 add_horn(crest)
 
-# гребень: ряд плоских колючек по средней линии от рога к затылку и два ряда поменьше по бокам
+# crest: a row of flat spikes along the midline from the horn to the back of the head and two smaller rows on the sides
 SPIKES = 9
 for i in range(SPIKES):
     t = i / (SPIKES - 1)
-    ang = math.radians(65 + 135 * t)  # от «вверх-вперёд» (морда смотрит в -Y) к «назад-вниз»
+    ang = math.radians(65 + 135 * t)  # from "up-forward" (the muzzle faces -Y) to "back-down"
     direction = Vector((0.0, -math.cos(ang), math.sin(ang)))
     for side, scale in ((0.0, 1.0), (-1.0, 0.6), (1.0, 0.6)):
         if side and i in (0, SPIKES - 1):
@@ -677,12 +678,12 @@ for i in range(SPIKES):
 crest_ob = crest.to_object("eq_changeling_crest")
 
 
-# ---------------------------------------------------------------- шлем Кризалис: рог и корона
-# Один предмет в слот шлема (eq_chrysalis_crown): длинный изогнутый зазубренный рог и маленькая
-# чёрная корона с бирюзовыми шариками — как в мультике (референсы assets/reference/chrysalis).
-# Всё на том же атласе: рог и обод — хитин, шарики — бирюзовое свечение (клетка деталей).
+# ---------------------------------------------------------------- Chrysalis's helmet: horn and crown
+# One item in the helmet slot (eq_chrysalis_crown): a long curved serrated horn and a small
+# black crown with turquoise orbs - as in the cartoon (references assets/reference/chrysalis).
+# All on the same atlas: the horn and the band - chitin, the orbs - turquoise glow (the parts cell).
 def skull_point(direction):
-    """Точка кожи головы, дальше всех от её центра в заданном направлении (в любую сторону)."""
+    """The head skin point farthest from its centre in the given direction (in any direction)."""
     d = Vector(direction).normalized()
     rel = skin_pts - np.array(HEAD_C)
     proj = rel @ np.array(d)
@@ -694,19 +695,19 @@ def bezier(p0, p1, p2, t):
     return p0 * (1 - t) ** 2 + p1 * (2 * (1 - t) * t) + p2 * (t ** 2)
 
 
-QUEEN_HORN_LEN = 1.75     # доля длины рога единорога: у королевы он заметно длиннее
-QUEEN_HORN_BEND = 0.95    # насколько кончик уходит назад
-QUEEN_HORN_R = 0.040      # радиус у основания
+QUEEN_HORN_LEN = 1.75     # fraction of the unicorn horn length: the queen's is noticeably longer
+QUEEN_HORN_BEND = 0.95    # how far the tip goes back
+QUEEN_HORN_R = 0.040      # radius at the base
 CROWN_PRONGS = 5
-CROWN_Z = 0.115           # высота обода над центром головы (лоб выше глаз, перед ушами)
-CROWN_LIFT = 0.014        # обод чуть над кожей
-CROWN_BAND = 0.010        # толщина обода
+CROWN_Z = 0.115           # height of the band above the head centre (the forehead above the eyes, in front of the ears)
+CROWN_LIFT = 0.014        # the band slightly above the skin
+CROWN_BAND = 0.010        # band thickness
 
 
 def add_queen_horn(builder):
     steps = 14
     up = horn_axis.normalized()
-    back = Vector((0.0, 1.0, 0.0))   # морда смотрит в -Y, значит назад — это +Y
+    back = Vector((0.0, 1.0, 0.0))   # the muzzle faces -Y, so back is +Y
     length = horn_axis.length
     ctrl = horn_base + up * (length * 1.15)
     tip = horn_base + up * (length * QUEEN_HORN_LEN) + back * (length * QUEEN_HORN_BEND)
@@ -714,7 +715,7 @@ def add_queen_horn(builder):
     radii = []
     for i in range(steps + 1):
         s = i / steps
-        notch = 1.0 + 0.32 * (math.fmod(s * 4.0 + 0.6, 1.0) > 0.62)  # зазубрины по всей длине
+        notch = 1.0 + 0.32 * (math.fmod(s * 4.0 + 0.6, 1.0) > 0.62)  # serrations along the whole length
         radii.append(0.0 if i == steps else QUEEN_HORN_R * (1 - s) ** 0.85 * notch)
     builder.loft(path, radii, radii, Vector((1, 0, 0)),
                  lambda fs, a: chitin_uv(0.45 + 0.55 * fs, 0.3 + 0.7 * abs(math.sin(a)) ** 2),
@@ -725,10 +726,10 @@ head_bvh = BVHTree.FromObject(head_src, bpy.context.evaluated_depsgraph_get())
 
 
 def skull_ring_point(angle_deg, z):
-    """Точка на черепе на высоте z в направлении angle_deg (0 — вперёд, дальше по часовой).
+    """A point on the skull at height z in the direction angle_deg (0 - forward, then clockwise).
 
-    Луч пускаем снаружи внутрь: так корона ложится на поверхность, а не на случайную вершину
-    развёртки (по ближайшим вершинам обод получался рваным).
+    We cast the ray from outside inward: that way the crown lies on the surface, not on a random vertex
+    of the UV map (with nearest vertices the band came out ragged).
     """
     a = math.radians(angle_deg)
     d = Vector((math.sin(a), -math.cos(a), 0.0)).normalized()
@@ -741,11 +742,11 @@ def skull_ring_point(angle_deg, z):
 
 
 def add_crown(builder):
-    """Обод вокруг черепа и зубцы с бирюзовыми шариками (как корона Кризалис в мультике)."""
+    """A band around the skull and prongs with turquoise orbs (like Chrysalis's crown in the cartoon)."""
     z = HEAD_C.z + CROWN_Z
     angles = list(range(0, 360, 20))
     ring = [skull_ring_point(a, z) for a in angles]
-    ring.append(ring[0])  # замыкаем обод
+    ring.append(ring[0])  # close the band
     band = [CROWN_BAND] * len(ring)
     builder.loft(ring, band, band, Vector((0, 0, 1)),
                  lambda fs, a: chitin_uv(0.95, 0.35 + 0.5 * abs(math.cos(a))), HEAD_BONE, segs=6, cap=False)
@@ -759,7 +760,7 @@ def add_crown(builder):
         builder.loft([root, root.lerp(stem_top, 0.6), stem_top], [0.010, 0.007, 0.005], [0.010, 0.007, 0.005],
                      Vector((0, 0, 1)),
                      lambda fs, ang: chitin_uv(0.9, 0.3 + 0.6 * abs(math.cos(ang))), HEAD_BONE, segs=6)
-        # шарик на конце: бирюзовое свечение
+        # an orb at the end: turquoise glow
         orb = [stem_top - dirn * 0.005, stem_top + dirn * 0.014, stem_top + dirn * 0.034]
         builder.loft(orb, [0.007, 0.021, 0.006], [0.007, 0.021, 0.006], Vector((0, 0, 1)),
                      lambda fs, ang: region_uv("glow", 0.5 + 0.45 * math.cos(ang), 0.25 + 0.7 * fs),
@@ -771,7 +772,7 @@ add_queen_horn(crown)
 add_crown(crown)
 crown_ob = crown.to_object("eq_chrysalis_crown")
 
-# крылья + хвост
+# wings + tail
 back = Builder()
 body_src = pony["eq_twilight_body"]
 _, body_pts = world_verts(body_src)
@@ -799,7 +800,7 @@ for side in (1, -1):
     upv = Vector((side * 0.25, -0.15, 1.0))
     ay = (upv - ax * upv.dot(ax)).normalized()
     back.plane(outline, holes, (root, ax, ay), wing_uv, SPINE_BONE)
-    # второе, нижнее крыло — короче и ниже
+    # the second, lower wing - shorter and lower
     root2 = root + Vector((0, 0.0, -0.05))
     ax2 = Vector((side * 0.38, 0.86, 0.22)).normalized()
     ay2 = (upv - ax2 * upv.dot(ax2)).normalized()
@@ -819,9 +820,9 @@ for k, (dx, dz, ln) in enumerate([(0.0, -0.35, 0.26), (-0.25, -0.55, 0.2), (0.25
 wings_ob = back.to_object("eq_changeling_wings")
 
 
-# ---------------------------------------------------------------- 4. копии кожи
+# ---------------------------------------------------------------- 4. skin copies
 def attach(target, builder_ob, weights_from=None):
-    """Добавить деталь в меш кожи: веса — ближайшей вершины weights_from (или свои), ключи мимики — ближайшей."""
+    """Add a part to a skin mesh: weights from the nearest vertex of weights_from (or its own), facial keys from the nearest."""
     me = builder_ob.data
     tag = me.attributes.get("eq_part")
     if weights_from is not None:
@@ -859,8 +860,8 @@ head = chitin_meshes["eq_changeling_head"]
 
 
 def rigid_eyes(ob):
-    """Слайдеры лица двигают глазное яблоко (eq_eye=1) только целиком — нарисованный круглый глаз не плывёт;
-    подложка (eq_eye=2) повторяет ближайшие передние вершины яблока. Моргание (86–88) не трогаем."""
+    """The face sliders move the eyeball (eq_eye=1) only as a whole - the painted round eye does not drift;
+    the underlay (eq_eye=2) follows the nearest front vertices of the eyeball. Blinking (86-88) is left alone."""
     me_ = ob.data
     kbs = me_.shape_keys.key_blocks
     n_ = len(me_.vertices)
@@ -906,7 +907,7 @@ for ob in chitin_meshes.values():
 
 
 def ring_points(obj_pts, z, side_sign, direction):
-    """Точка поверхности на высоте z со стороны side_sign (x), дальняя по направлению direction (x,y)."""
+    """A surface point at height z on the side side_sign (x), the farthest one along direction (x,y)."""
     sel = obj_pts[(np.abs(obj_pts[:, 2] - z) < 0.01) & (obj_pts[:, 0] * side_sign > 0.02)]
     c = sel[:, :2].mean(0)
     d = np.array(direction) / np.linalg.norm(direction)
@@ -930,7 +931,7 @@ def hole_decal(builder, center, normal, radius, bone="bip01_pelvis_0", stretch=1
         builder.face([c, ring[k], ring[k2]], [region_uv("hole", 0.5, 0.5), uvr[k], uvr[k2]], bone)
 
 
-# дыры на голенях: по две на каждой ноге, спереди-снаружи
+# holes on the shins: two on each leg, front-outer side
 legs = chitin_meshes["eq_changeling_legs"]
 _, legs_pts = world_verts(pony["eq_twilight_legs"])
 holes_b = Builder()
@@ -940,7 +941,7 @@ for side in (1, -1):
         hole_decal(holes_b, p, nrm, r, stretch=1.5)
 attach(legs, holes_b.to_object("eq_tmp_holes_legs"), weights_from=pony["eq_twilight_legs"])
 
-# дыры на предплечьях (руки в T-позе, сверху — наружная сторона)
+# holes on the forearms (arms in the T-pose, the top is the outer side)
 body = chitin_meshes["eq_changeling_body"]
 holes_a = Builder()
 for side in (1, -1):
@@ -950,7 +951,7 @@ for side in (1, -1):
     hole_decal(holes_a, p, Vector((0, 0, 1)), 0.016, stretch=0.7)
 attach(body, holes_a.to_object("eq_tmp_holes_arms"), weights_from=pony["eq_twilight_body"])
 
-# клыки: белые изогнутые конусы из-под верхней губы
+# fangs: white curved cones from under the upper lip
 fangs = Builder()
 upper = teeth_pts[teeth_pts[:, 2] > np.median(teeth_pts[:, 2])]
 fang_roots = []
@@ -974,7 +975,7 @@ for v in fang_ob.data.vertices:
     fang_ob.data.attributes["eq_fang"].data[v.index].value = 1
 n_before = len(head.data.vertices)
 attach(head, fang_ob)
-# ключи мимики: клык двигается как ближайший верхний зуб
+# facial keys: a fang moves like the nearest upper tooth
 me = head.data
 keys = me.shape_keys.key_blocks
 basis = keys[0]
@@ -1000,7 +1001,7 @@ fixed = 0
 for v in me.vertices:
     if not fang_attr.data[v.index].value:
         continue
-    # ближайший зуб из верхнего ряда (в локальных координатах меша)
+    # the nearest tooth of the upper row (in the mesh's local coordinates)
     best = min(kd.find_n(basis.data[v.index].co, 8), key=lambda h: (world_z(h[1]) < upper_z, h[2]))[1]
     for kb in keys[1:]:
         kb.data[v.index].co = basis.data[v.index].co + (kb.data[best].co - basis.data[best].co)
@@ -1021,8 +1022,8 @@ for ob in items:
     log(f"item {ob.name}: {len(ob.data.vertices)} verts, {tris} tris, groups {len(ob.vertex_groups)}, "
         f"keys {len(ob.data.shape_keys.key_blocks) if ob.data.shape_keys else 0}")
 
-# ---------------------------------------------------------------- 5. экспорт
-# Материал в FBX — только имя (без картинки): редактор привяжет уже существующий eq_twilight_body.
+# ---------------------------------------------------------------- 5. export
+# The material in the FBX is only a name (no image): the editor will bind the existing eq_twilight_body.
 mat = bpy.data.materials[MAT]
 tex_nodes = [n for n in mat.node_tree.nodes if n.type == "TEX_IMAGE"]
 saved = [n.image for n in tex_nodes]
@@ -1037,12 +1038,12 @@ bpy.ops.export_scene.fbx(filepath=fbx, use_selection=True, add_leaf_bones=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y", path_mode="STRIP")
 log("exported", fbx)
 for n in tex_nodes:
-    n.image = atlas_img  # превью — с новым атласом
+    n.image = atlas_img  # preview - with the new atlas
 for ob in pony.values():
     ob.hide_render = True
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "eq_changeling.blend"), copy=True)
 
-# ---------------------------------------------------------------- 6. превью
+# ---------------------------------------------------------------- 6. preview
 scene = bpy.context.scene
 scene.render.engine = "BLENDER_WORKBENCH"
 scene.display.shading.light = "STUDIO"

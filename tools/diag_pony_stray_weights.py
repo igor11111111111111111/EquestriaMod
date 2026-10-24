@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Только чтение: ищет вершины, чей ДОМИНИРУЮЩИЙ вес приходится на кость, чья позиция в покое
-далеко от самой вершины — то есть привязанные не к соседним костям, а к чему-то постороннему
-(рука/нога/крыло у меша головы и т.п.). В отличие от diag_pony_neck_weights.py (сумма весов),
-это ловит и вершины с суммой ровно 1.0, но не на той кости.
+"""Read-only: finds vertices whose DOMINANT weight falls on a bone whose rest position is
+far from the vertex itself, i.e. bound not to neighbouring bones but to something unrelated
+(an arm/leg/wing on the head mesh, etc.). Unlike diag_pony_neck_weights.py (weight sum),
+this also catches vertices with a sum of exactly 1.0 but on the wrong bone.
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\diag_pony_stray_weights.py
 """
@@ -14,7 +14,7 @@ import mathutils
 col = bpy.data.collections.get("Пони - цельная")
 ARMATURE_NAME = "bip01_notused"
 NAMES = ("eq_pony_head", "eq_pony_hair", "eq_pony_horn")
-# Вершина дальше этого от своей доминирующей кости (в метрах) — подозрительна.
+# A vertex farther than this from its dominant bone (in metres) is suspicious.
 THRESHOLD = 0.25
 
 

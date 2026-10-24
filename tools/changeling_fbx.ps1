@@ -1,12 +1,12 @@
-﻿# Экспорт FBX чейнджлинга из поправленной модели — перед tools\changeling_material.ps1.
+﻿# Exports the changeling FBX from the fixed-up model; run before tools\changeling_material.ps1.
 #
 #   .\tools\changeling_fbx.ps1
 #
-# Зовёт tools\changeling_edit_export.py в assets\changeling\eq_changeling.blend: экспортирует
-# скелет (bip01_notused) и восемь частей (body/tail/wings/legs/gloves/head/ears/horn) из коллекции
-# «Meshy Midnight Changeling» в assets\changeling\eq_changeling.fbx — теми же настройками, что и
-# основной конвейер tools\make_changeling_model.py (оси X/-Y, без анимации). Дальше руками: импорт
-# этого FBX в Modding Kit (Resource Browser -> Import), затем .\tools\changeling_material.ps1.
+# Calls tools\changeling_edit_export.py in assets\changeling\eq_changeling.blend: exports the
+# skeleton (bip01_notused) and eight parts (body/tail/wings/legs/gloves/head/ears/horn) from the collection
+# «Meshy Midnight Changeling» to assets\changeling\eq_changeling.fbx, with the same settings as the
+# main pipeline tools\make_changeling_model.py (axes X/-Y, no animation). Then by hand: import
+# this FBX into the Modding Kit (Resource Browser -> Import), then .\tools\changeling_material.ps1.
 param([string]$Blender = "D:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe")
 
 $ErrorActionPreference = "Stop"

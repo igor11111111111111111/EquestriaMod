@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Вычисляет, как редактор Bannerlord переводит локальные повороты костей из FBX в движок.
+"""Computes how the Bannerlord editor converts local bone rotations from FBX into the engine.
 
-Входные данные:
-  1. Дамп движка (Module/eq_exceptions.log, блок "ДАМП КОСТЕЙ"): для каждой кости entitialRest
-     (rest-поза движка) и channel0 (как движок понял НАШ клип на канале 0) — фреймы в
-     пространстве сущности, s/f/u = столбцы X/Y/Z.
-  2. Исходный FBX скелета: PreRotation каждой кости = что реально лежит в нашем файле как
-     локальный поворот (у непозированных костей; проверено tools/dump_fbx_prerotation.py).
+Input data:
+  1. The engine dump (Module/eq_exceptions.log, the "bone dump" block): for each bone entitialRest
+     (the engine rest pose) and channel0 (how the engine understood OUR clip on channel 0): frames in
+     entity space, s/f/u = columns X/Y/Z.
+  2. The source skeleton FBX: the PreRotation of each bone = what is actually stored in our file as
+     the local rotation (for non-posed bones; verified by tools/dump_fbx_prerotation.py).
 
-Для каждой кости считаем parent-relative повороты: L_k = ch0_parent^-1 * ch0_k (как движок
-ПОНЯЛ файл) и R_k = rest_parent^-1 * rest_k (как ДОЛЖНО быть). Гипотеза: движок применяет к
-FBX-повороту P_k фиксированную смену базиса C (одна на все кости): L_k = C^-1 * P_k * C.
-Перебираем все 24 правильных знаковых перестановки осей C и смотрим суммарную ошибку.
-Если находится C с ошибкой ~0 — модель верна, и нужный нам FBX-поворот для любой целевой
-локальной позы T_k (в осях движка) равен X_k = C * T_k * C^-1.
+For each bone we compute parent-relative rotations: L_k = ch0_parent^-1 * ch0_k (how the engine
+UNDERSTOOD the file) and R_k = rest_parent^-1 * rest_k (how it SHOULD be). Hypothesis: the engine applies to
+the FBX rotation P_k a fixed change of basis C (one for all bones): L_k = C^-1 * P_k * C.
+We iterate over all 24 proper signed axis permutations C and look at the total error.
+If a C with error ~0 is found, the model is correct, and the FBX rotation we need for any target
+local pose T_k (in engine axes) is X_k = C * T_k * C^-1.
 
-Запуск: blender --background --factory-startup --python tools/solve_bone_axes.py -- <log> <skeleton.fbx>
+Run: blender --background --factory-startup --python tools/solve_bone_axes.py -- <log> <skeleton.fbx>
 """
 import itertools
 import math
@@ -27,7 +27,7 @@ from mathutils import Euler, Matrix, Vector
 
 log_path, fbx_path = sys.argv[sys.argv.index("--") + 1:][:2]
 
-# ---------------------------------------------------------------- дамп движка (последний блок)
+# ---------------------------------------------------------------- engine dump (the last block)
 text = open(log_path, encoding="utf-8", errors="replace").read()
 block = text[text.rfind("ДАМП КОСТЕЙ"):]
 vec = r"\(([-\d.]+),([-\d.]+),([-\d.]+)\)"
@@ -46,13 +46,13 @@ for line in block.splitlines():
     if m and cur is not None:
         nums = [float(x) for x in m.groups()[1:]]
         o, f, s, u = (Vector(nums[0:3]), Vector(nums[3:6]), Vector(nums[6:9]), Vector(nums[9:12]))
-        rot = Matrix((s, f, u)).transposed()  # столбцы s,f,u = X,Y,Z
+        rot = Matrix((s, f, u)).transposed()  # columns s,f,u = X,Y,Z
         cur[m.group(1)] = (o, rot)
 print(f"костей в дампе: {len(bones)}")
 
 
 def rel(frames_key, b):
-    """parent-relative поворот кости b по фреймам frames_key."""
+    """parent-relative rotation of bone b by frames frames_key."""
     rot = b[frames_key][1]
     if b["parent"] < 0:
         return rot
@@ -60,7 +60,7 @@ def rel(frames_key, b):
     return parent[frames_key][1].inverted() @ rot
 
 
-# ---------------------------------------------------------------- PreRotation из FBX (по имени)
+# ---------------------------------------------------------------- PreRotation from FBX (by name)
 root, _ = parse_fbx.parse(fbx_path)
 objects = next(e for e in root.elems if e.id == b"Objects")
 pre = {}
@@ -73,7 +73,7 @@ for m in objects.elems:
             for p in e.elems:
                 if p.id == b"P" and p.props[0] == b"PreRotation":
                     pre[name] = Euler(tuple(math.radians(float(x)) for x in p.props[4:7]), "XYZ").to_matrix()
-# имена движка без "bip01_" и без индекса: pelvis, l_thigh, spine...
+# engine names without "bip01_" and without the index: pelvis, l_thigh, spine...
 def fbx_name_for(engine_name):
     for n in pre:
         core = re.sub(r"^bip01_", "", n)
@@ -83,7 +83,7 @@ def fbx_name_for(engine_name):
     return None
 
 
-# ---------------------------------------------------------------- перебор C
+# ---------------------------------------------------------------- iterating over C
 axes = [Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))]
 candidates = []
 for perm in itertools.permutations(range(3)):
@@ -95,7 +95,7 @@ for perm in itertools.permutations(range(3)):
 print(f"кандидатов C: {len(candidates)}")
 
 usable = [b for b in bones if b["parent"] >= 0 and fbx_name_for(b["name"]) and "channel0" in b]
-# берём только непозированные кости (руки мы крутили): исключаем upperarm_twist/foretwist
+# we take only non-posed bones (we rotated the arms): exclude upperarm_twist/foretwist
 usable = [b for b in usable if not re.search(r"upperarm_twist$|foretwist$", b["name"])]
 print("кости для подбора:", [b["name"] for b in usable])
 

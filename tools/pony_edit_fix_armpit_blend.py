@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Пересчитать переход «вес тела -> вес руки» по правильной оси руки, не по |X|.
+"""Recompute the "body weight -> arm weight" transition along the correct arm axis, not by |X|.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_armpit_blend.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_armpit_blend.py
 
-Раньше при повороте плеча один "along" (какую кость руки брать) был исправлен по проекции на
-истинную ось руки (см. pony_edit_fix_arm_twist.py), а вот "s" — долю, на которую вес вообще
-уходит от туловища к руке — я оставил по сырому |X|. У низа подмышки при том же |X| ось руки уже
-дальше от тела, чем сверху (рука висит под углом), поэтому там переход начинался раньше — и рука
-при взмахе «затягивалась» внутрь именно снизу (замечено в игре 27.09.2026). Здесь оба фактора
-считаются одинаково — по проекции на ось, — и зона выбирается по расстоянию до самой оси, а не
-по тому, что вершина уже как-то весит на кости руки.
+Earlier, for shoulder rotation, only "along" (which arm bone to take) was fixed using the projection onto
+the true arm axis (see pony_edit_fix_arm_twist.py), but "s", the share by which the weight moves from the
+torso to the arm at all, I left on raw |X|. At the bottom of the armpit, at the same |X|, the arm axis is
+already further from the body than at the top (the arm hangs at an angle), so the transition started
+earlier there, and on a swing the arm was "pulled" inward exactly from below (noticed in game 27.09.2026).
+Here both factors are computed the same way, by projection onto the axis, and the zone is chosen by the
+distance to the axis itself, not by whether the vertex already has some weight on an arm bone.
 """
 import bpy
 from mathutils import Vector
@@ -19,7 +19,7 @@ skel = bpy.data.objects["bip01_notused"]
 
 ARM_WEIGHT_FROM = 0.20
 ARM_WEIGHT_BLEND = 0.12
-RADIUS = 0.16          # дальше этого от оси руки — не рука, не трогаем
+RADIUS = 0.16          # further than this from the arm axis is not the arm; leave it alone
 
 
 def arm_chain(side):
@@ -48,8 +48,8 @@ ARM_BONE_NAMES = {n for chain in CHAINS.values() for n, _ in chain[2]}
 touched = 0
 for v in ob.data.vertices:
     p = ob.matrix_world @ v.co
-    # сторону берём по тому, к какой ключице физически ближе — знак локальной координаты
-    # ненадёжен: у объекта нетривиальный transform (отрицательный масштаб + поворот)
+    # the side is taken by which clavicle it is physically closer to; the sign of the local coordinate
+    # is unreliable: the object has a non-trivial transform (negative scale + rotation)
     sign = min(CHAINS, key=lambda s: (p - CHAINS[s][0]).length)
     origin, axis, chain = CHAINS[sign]
     rel = p - origin
@@ -57,8 +57,8 @@ for v in ob.data.vertices:
     perp = (rel - axis * u).length
     if perp > RADIUS or u < -0.05 or u > chain[-1][1] + 0.05:
         continue
-    # своя доля веса от туловища у самого начала цепочки (та, что уже есть в других группах
-    # помимо цепочки руки) — считаем один раз, до перезаписи
+    # its own share of torso weight at the very start of the chain (what is already in other groups
+    # besides the arm chain); computed once, before overwriting
     old = {names_by_index[g.group]: g.weight for g in v.groups if names_by_index[g.group] not in ARM_BONE_NAMES}
     s = min(1.0, max(0.0, (u - ARM_WEIGHT_FROM) / ARM_WEIGHT_BLEND))
     s = s * s * (3 - 2 * s)

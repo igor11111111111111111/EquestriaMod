@@ -14,33 +14,33 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Переработка пленных в мясо (equestria_items.xml: eq_prisoner_meat).
+    // Butchering prisoners into meat (equestria_items.xml: eq_prisoner_meat).
     //
-    // В моде все войска — звери (пони, грифоны, драконы, яки, чейнджлинги, олени), часть рас явно
-    // хищники или всеядные — переработка пленных в припасы вписывается в лор так же, как у орков в
-    // The Old Realms. TOR на диске не нашёлся (видимо, удалён — ссылка в памяти проекта это уже
-    // отмечала), свериться с их реализацией напрямую не вышло — сделано с нуля по общим правилам
-    // Bannerlord (TroopRoster/ItemRoster), не скопировано.
+    // In the mod all troops are beasts (ponies, griffons, dragons, yaks, changelings, deer), some races
+    // are clearly predators or omnivores — turning prisoners into supplies fits the lore just like the
+    // orcs in The Old Realms. TOR was not found on disk (apparently deleted — the link in the project
+    // memory already noted this), so comparing with their implementation directly was not possible —
+    // made from scratch following general Bannerlord rules (TroopRoster/ItemRoster), not copied.
     //
-    // Два интерфейса: консольная команда (ниже) и кнопка прямо в окне отряда, в строке пленного —
-    // см. ButtonPatch и форк SandBox\GUI\Prefabs\Party\PartyTroopTuple.xml. У движка готовая кнопка
-    // "Казнить" в той же строке — но её Code (PartyCommandCode.ExecuteTroop) жёстко проверяет
-    // character.IsHero (PartyScreenLogic.IsExecutable, декомпилировано 04.10.2026) и для рядовых
-    // не сработает ни при каком патче снаружи — поэтому вместо переиспользования команды кнопка
-    // переработки перехватывает сам клик (PartyCharacterVM.ExecuteExecuteTroop) и для рядовых
-    // пленных подменяет его целиком, а геройскую казнь не трогает (return true — пусть движок
-    // казнит героя как обычно). Пленных героев не трогаем вообще — у них своя сюжетная судьба
-    // (выкуп, казнь по сюжету).
+    // Two interfaces: the console command (below) and a button right in the party screen, in the
+    // prisoner's row — see ButtonPatch and the fork of SandBox\GUI\Prefabs\Party\PartyTroopTuple.xml.
+    // The engine has a ready "Execute" button in the same row — but its Code
+    // (PartyCommandCode.ExecuteTroop) strictly checks character.IsHero (PartyScreenLogic.IsExecutable,
+    // decompiled 04.10.2026) and will not work for regular troops with any external patch — so instead
+    // of reusing the command the butcher button intercepts the click itself
+    // (PartyCharacterVM.ExecuteExecuteTroop) and for regular prisoners replaces it entirely, while hero
+    // execution is left alone (return true — let the engine execute the hero as usual). Hero prisoners
+    // are not touched at all — they have their own story fate (ransom, scripted execution).
     public static class EquestriaPrisonerButchery
     {
         public const string MeatItemId = "eq_prisoner_meat";
 
-        // Мяса с одного пленного: меньше, чем боец стоил бы выкупом или вербовкой — иначе мясник
-        // всегда выгоднее остальных вариантов распорядиться пленным.
+        // Meat per prisoner: less than the soldier would be worth as ransom or a recruit — otherwise
+        // the butcher is always better than other ways to deal with a prisoner.
         private const int MeatPerPrisoner = 2;
 
-        /// <summary>Переработать до count рядовых пленных отряда. Возвращает (сколько переработано,
-        /// сколько получено мяса).</summary>
+        /// <summary>Butcher up to count regular prisoners of the party. Returns (how many butchered,
+        /// how much meat obtained).</summary>
         internal static (int butchered, int meat) Butcher(MobileParty party, int count)
         {
             if (party == null || count <= 0)
@@ -77,8 +77,8 @@ namespace EquestriaMod
             return (butchered, meat);
         }
 
-        // equestria.butcher_prisoners [сколько] — переработать пленных своего отряда
-        // (без числа — всех рядовых разом)
+        // equestria.butcher_prisoners [how many] — butcher your own party's prisoners
+        // (without a number — all regular ones at once)
         [CommandLineFunctionality.CommandLineArgumentFunction("butcher_prisoners", "equestria")]
         public static string Console(List<string> args)
         {
@@ -97,9 +97,9 @@ namespace EquestriaMod
                 + $" (осталось пленных {MobileParty.MainParty.PrisonRoster.TotalManCount})";
         }
 
-        // ---- /eqprisoners:N — по N пленных каждой расы в отряде игрока при быстром старте
-        // (tools/../run.ps1 -Prisoners) — готовый материал для equestria.butcher_prisoners без
-        // похода в бой за живыми пленными.
+        // ---- /eqprisoners:N — N prisoners of each race in the player's party on quick start
+        // (tools/../run.ps1 -Prisoners) — ready material for equestria.butcher_prisoners without
+        // going to battle for live prisoners.
 
         private const string ArgPrefix = "/eqprisoners:";
         private static int _perRace;
@@ -119,8 +119,8 @@ namespace EquestriaMod
             }
         }
 
-        // Та же пауза после появления карты, что у смотра рас (EquestriaRaceParty) — сразу после
-        // старта кампания ещё доигрывает своё начало.
+        // The same pause after the map appears as in the race review (EquestriaRaceParty) — right after
+        // the start the campaign is still playing out its beginning.
         public static void Tick()
         {
             if (_perRace <= 0 || _done)
@@ -174,9 +174,9 @@ namespace EquestriaMod
             EquestriaCrashLog.Note($"пленные по расам: добавлено {total} ({string.Join(", ", report)})");
         }
 
-        /// <summary>Самый младший небольшой боец этой расы — тот же, кого набирают культуры,
-        /// заведённые под эту расу (см. src/EquestriaMercCamp.cs CampSpots — там же соответствие
-        /// держава-раса). Героев и шаблоны не берём — нужен обычный рядовой персонаж.</summary>
+        /// <summary>The lowest-tier soldier of this race — the same one recruited by the cultures
+        /// set up for this race (see src/EquestriaMercCamp.cs CampSpots — the kingdom-race mapping is
+        /// there too). Heroes and templates are skipped — a regular rank-and-file character is needed.</summary>
         private static CharacterObject BasicTroopOfRace(int race)
         {
             var candidates = CharacterObject.All
@@ -186,10 +186,10 @@ namespace EquestriaMod
             return candidates.FirstOrDefault(c => c.IsBasicTroop) ?? candidates.FirstOrDefault();
         }
 
-        // ---- кнопка в окне отряда (строка пленного, рядом с "Нанять") ----
+        // ---- button in the party screen (prisoner row, next to "Recruit") ----
 
-        // _partyScreenLogic/_partyVm — protected readonly на PartyCharacterVM, декомпилировано:
-        // не публичные, нужна рефлексия.
+        // _partyScreenLogic/_partyVm — protected readonly on PartyCharacterVM, decompiled:
+        // not public, reflection is needed.
         private static readonly FieldInfo PartyScreenLogicField =
             AccessTools.Field(typeof(PartyCharacterVM), "_partyScreenLogic");
         private static readonly FieldInfo PartyVmField =
@@ -198,14 +198,15 @@ namespace EquestriaMod
         [HarmonyPatch(typeof(PartyCharacterVM), "ExecuteExecuteTroop")]
         private static class ButtonPatch
         {
-            // false — пропускаем настоящий метод целиком (для рядового пленного там и так
-            // IsExecutable=false, делать ему нечего); true — геройская казнь идёт как в игре.
+            // false — skip the real method entirely (for a regular prisoner IsExecutable=false there
+            // anyway, it has nothing to do); true — hero execution goes as in the game.
             //
-            // Side==Right: в этом экране (PartyVM) это буквально "свой" — IsPrisonerOfPlayer так и
-            // определён (декомпилировано), а MainPartyPrisoners/OtherPartyPrisoners заполняются по
-            // этому же Side. Кнопка видна и у Left (если когда-то найдётся экран, где рядовой
-            // пленный чужой стороны тоже IsRecruitablePrisoner) — но убирать строку оттуда нечем
-            // (там OtherPartyPrisoners, не MainPartyPrisoners), поэтому на всякий случай не трогаем.
+            // Side==Right: in this screen (PartyVM) it literally means "ours" — IsPrisonerOfPlayer is
+            // defined that way (decompiled), and MainPartyPrisoners/OtherPartyPrisoners are filled by
+            // this same Side. The button is also visible on Left (in case some screen turns up where a
+            // regular prisoner of the other side is also IsRecruitablePrisoner) — but there is nothing
+            // to remove the row from there with (it is OtherPartyPrisoners, not MainPartyPrisoners),
+            // so to be safe we leave it alone.
             private static bool Prefix(PartyCharacterVM __instance)
             {
                 if (__instance?.Character == null || __instance.Character.IsHero
@@ -219,10 +220,11 @@ namespace EquestriaMod
             }
         }
 
-        // Подсказка нашей кнопки. ExecutePrisonerHint (их BasicTooltipViewModel, декомпилировано)
-        // зовёт как раз этот метод с (Troop.Character, IsExecutable) — для рядового пленного
-        // IsExecutable всегда false, и без патча там был бы их текст "нельзя казнить не-героя".
-        // Героев не трогаем (return без подмены) — у них подсказка про казнь должна остаться своя.
+        // Our button's tooltip. ExecutePrisonerHint (their BasicTooltipViewModel, decompiled)
+        // calls exactly this method with (Troop.Character, IsExecutable) — for a regular prisoner
+        // IsExecutable is always false, and without the patch it would show their text "cannot execute
+        // a non-hero". Heroes are left alone (return without replacing) —
+        // their execution tooltip must stay their own.
         [HarmonyPatch(typeof(PartyScreenLogic), "GetExecutableReasonString")]
         private static class HintPatch
         {
@@ -244,9 +246,9 @@ namespace EquestriaMod
                 EquestriaCrashLog.Warn("переработка (кнопка): не нашёл ростер пленных экрана");
                 return;
             }
-            // Число берём из ростера заново, а НЕ из vm.Troop.Number: та снятая копия (TroopRosterElement,
-            // декомпилировано) может быть устаревшей между кадрами — на этом держался баг 04.10.2026
-            // (бесконечное мясо повторным кликом по строке, пока число на экране не обновилось).
+            // The number is read from the roster again, NOT from vm.Troop.Number: that snapshot copy
+            // (TroopRosterElement, decompiled) may be stale between frames — that caused the bug of
+            // 04.10.2026 (infinite meat by clicking the row again before the number on screen updated).
             int index = roster.FindIndexOfTroop(vm.Character);
             int take = index >= 0 ? roster.GetElementNumber(index) : 0;
             if (take <= 0)
@@ -260,9 +262,9 @@ namespace EquestriaMod
             {
                 MobileParty.MainParty.ItemRoster.AddToCounts(meatItem, meat);
                 int totalMeat = MobileParty.MainParty.ItemRoster.GetItemNumber(meatItem);
-                // Своей строки в нижней панели денег не завести без форка ещё одного нативного
-                // экрана (тот же риск, что уже дважды был с панелью времени и строкой пленного) —
-                // поэтому сразу видно всплывающим уведомлением, как деньги/опыт в бою.
+                // A row of our own in the bottom money panel cannot be added without forking one more
+                // native screen (the same risk we already had twice with the time panel and the prisoner
+                // row) — so it is shown right away as a pop-up notification, like money/XP in battle.
                 InformationManager.DisplayMessage(new InformationMessage(
                     new TextObject("{=eq_butcher_meat}+{MEAT} meat (party total: {TOTAL})")
                         .SetTextVariable("MEAT", meat)
@@ -273,23 +275,23 @@ namespace EquestriaMod
             var partyVm = PartyVmField?.GetValue(vm) as PartyVM;
             if (index >= 0)
             {
-                // пленные той же расы ещё остались (взяли не всех — такого при полном снятии пачки
-                // не бывает, но на всякий случай обрабатываем): обновляем строку на новое число.
+                // prisoners of the same race are still left (not all were taken — this does not happen
+                // when the whole stack is removed, but handled just in case): update the row to the new number.
                 vm.Troop = roster.GetElementCopyAtIndex(index);
-                // RefreshValues() у этой строки (декомпилировано) число вообще не трогает — только
-                // имя и подсказки. Число на экране — геттер Number, читающий Troop.Number, но без
-                // явного уведомления Gauntlet об этом не узнает (баг 04.10.2026: "залипшая" пятёрка).
+                // This row's RefreshValues() (decompiled) does not touch the number at all — only the
+                // name and tooltips. The number on screen is the Number getter reading Troop.Number, but
+                // without an explicit notification Gauntlet will not know (bug 04.10.2026: a "stuck" five).
                 vm.OnPropertyChanged("Number");
                 vm.OnPropertyChanged("WoundedCount");
                 vm.RefreshValues();
             }
             else
             {
-                // Пачка кончилась целиком. ExecuteRemoveZeroCounts() не подходит — он решает по
-                // Number==0, а Troop у нас остался старым (взяли всё за один клик, промежуточного
-                // обновления не было), так и не узнал бы, что стало 0 (тот же баг 04.10.2026, другая
-                // ветка). Убираем строку напрямую из списка, который реально рисует экран —
-                // PartyVM.MainPartyPrisoners, публичное поле, без лишней рефлексии.
+                // The stack ran out entirely. ExecuteRemoveZeroCounts() does not fit — it decides by
+                // Number==0, but our Troop stayed old (everything was taken in one click, there was no
+                // intermediate update), so it would never learn it became 0 (the same bug 04.10.2026,
+                // another branch). We remove the row directly from the list the screen actually draws —
+                // PartyVM.MainPartyPrisoners, a public field, no extra reflection.
                 partyVm?.MainPartyPrisoners?.Remove(vm);
             }
             EquestriaCrashLog.Log($"переработка (кнопка): {vm.Character.StringId} x{take} -> мяса {meat}");

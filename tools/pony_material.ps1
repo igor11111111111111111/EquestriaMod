@@ -1,12 +1,12 @@
-﻿# Материал пони и привязка её мешей — после того, как текстуры импортированы в редакторе.
+﻿# Pony material and binding of her meshes — after the textures are imported in the editor.
 #
 #   .\tools\pony_material.ps1
 #
-# Порядок: tools\make_pony_textures.py кладёт eq_pony_body_d/_n/_s.png в assets\pony\textures,
-# их импортируют в редакторе (Resource Browser -> Import; пакет twilight). Дальше всё кодом:
-#   1. материал eq_pony_body — копия eq_twilight_body (шейдер кожи, скиннинг) со своими текстурами;
-#   2. меши eq_pony_* в пакете с геометрией получают этот материал;
-#   3. новая раса pony снимается с заглушки пони: "pony" уходит из NOT_IMPORTED, skins пересобираются.
+# Order: tools\make_pony_textures.py puts eq_pony_body_d/_n/_s.png into assets\pony\textures,
+# they are imported in the editor (Resource Browser -> Import; package twilight). Then everything by code:
+#   1. material eq_pony_body — a copy of eq_twilight_body (skin shader, skinning) with its own textures;
+#   2. meshes eq_pony_* in the geometry package get this material;
+#   3. the new pony race is taken off the pony placeholder: "pony" leaves NOT_IMPORTED, skins are rebuilt.
 param([string]$Game = "D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord")
 
 $ErrorActionPreference = "Stop"
@@ -15,8 +15,8 @@ $Tool = Join-Path $Root "tools\tpac_export\bin\Release\tpac_export.exe"
 $Assets = Join-Path $Root "Module\Assets"
 
 Write-Host "== Текстуры в пакете" -ForegroundColor Cyan
-# Выгрузкой не проверить: у импортированных редактором текстур в пакете нет пикселей (только
-# ссылка на PNG), поэтому смотрим сами записи ассетов.
+# Cannot be checked by exporting: textures imported by the editor have no pixels in the package (only
+# a link to the PNG), so we look at the asset records themselves.
 foreach ($name in "eq_pony_body_d", "eq_pony_body_n", "eq_pony_body_s") {
     $found = & $Tool info $Assets $name 2>&1 | Select-String -Pattern "^== $name`: Texture"
     if (-not $found) {
@@ -31,32 +31,32 @@ Write-Host "== Материал eq_pony_body" -ForegroundColor Cyan
 if ($LASTEXITCODE -ne 0) { throw "материал не создан" }
 
 Write-Host "== Материал гривы" -ForegroundColor Cyan
-# Цвет волос из окна внешности слушает только ванильный шейдер волос, поэтому гриве нужен свой
-# материал — копия female_hair_mat (bumpmap + skinning, две текстуры) с нашими текстурами.
-# Исходник лежит в ванильных пакетах, а текстуры в нашем, поэтому папок две через «;».
+# Only the vanilla hair shader listens to the hair color from the appearance screen, so the mane needs
+# its own material — a copy of female_hair_mat (bumpmap + skinning, two textures) with our textures.
+# The source is in the vanilla packages and the textures in ours, so there are two folders joined by ";".
 $Native = Join-Path $Game "Modules\Native\AssetPackages"
 & $Tool mat-clone "$Native;$Assets" female_hair_mat (Join-Path $Assets "twilight\eq_pony_hair_mtl.tpac") `
     eq_pony_hair 0=eq_pony_body_d 1=eq_pony_body_n
 if ($LASTEXITCODE -ne 0) { throw "материал гривы не создан" }
 
 Write-Host "== Привязка мешей" -ForegroundColor Cyan
-# Куда редактор положит пакет с мешами — зависит от того, какой пакет был выбран при импорте,
-# поэтому ищем, а не задаём путь.
+# Where the editor puts the mesh package depends on which package was chosen at import,
+# so we search instead of setting the path.
 $Found = @(Get-ChildItem $Assets -Recurse -Filter "eq_pony_geo.tpac")
 if ($Found.Count -eq 0) {
     throw "не найден eq_pony_geo.tpac — импортируйте assets\pony\eq_pony.fbx в редакторе"
 }
 if ($Found.Count -gt 1) {
-    # Две копии = импорт лёг в другой пакет, а старая осталась. Молча взять первую нельзя:
-    # привязка уйдёт в устаревшие меши, а игра подхватит какие-то свои.
+    # Two copies = the import went into another package and the old one stayed. Silently taking the
+    # first is not allowed: the binding would go to stale meshes, and the game would pick up some others.
     throw "пакетов eq_pony_geo.tpac несколько, удалите лишние:`n  " + ($Found.FullName -join "`n  ")
 }
 $Geo = $Found[0]
 Write-Host "  пакет: $($Geo.FullName)"
 & $Tool mesh-setmat $Assets $Geo.FullName eq_pony_ eq_pony_body
 if ($LASTEXITCODE -ne 0) { throw "меши не привязаны" }
-# гриве, рогу, хвосту и крыльям — волосяной материал: они красятся цветом причёски из окна
-# внешности (src/EquestriaBodyParts.cs, HairTinted), а этот цвет читает только шейдер волос
+# the mane, horn, tail and wings get the hair material: they are tinted with the hairstyle color from the
+# appearance screen (src/EquestriaBodyParts.cs, HairTinted), and only the hair shader reads that color
 foreach ($m in "eq_pony_hair", "eq_pony_horn", "eq_pony_tail", "eq_pony_wings") {
     & $Tool mesh-setmat $Assets $Geo.FullName $m eq_pony_hair
     if ($LASTEXITCODE -ne 0) { throw "$m не привязан" }
@@ -73,8 +73,8 @@ if ($fixed -ne $text) {
 py $race (Join-Path $Game "Modules") (Join-Path $Root "Module")
 
 Write-Host "== Предмет-хвост на новый меш" -ForegroundColor Cyan
-# Предмет eq_pony_tail нужен окнам без персонажа-агента (смотр рас). Пока пони не была
-# импортирована, он смотрел на хвост Twilight; теперь — на хвост новой модели.
+# The eq_pony_tail item is needed by screens without a character agent (race review). While the pony was
+# not imported, it pointed to Twilight's tail; now — to the tail of the new model.
 $items = Join-Path $Root "tools\make_items.py"
 $text = [IO.File]::ReadAllText($items)
 $fixed = $text -replace 'mesh="eq_twilight_tail"', 'mesh="eq_pony_tail"'

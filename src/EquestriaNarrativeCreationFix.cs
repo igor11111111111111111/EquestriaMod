@@ -7,18 +7,19 @@ using TaleWorlds.MountAndBlade.View;
 
 namespace EquestriaMod
 {
-    // Портреты "родителей"/"детства"/"юности" в мастере создания персонажа
-    // (SandBox.GauntletUI.CharacterCreation.CharacterCreationNarrativeStageView, модуль SandBox —
-    // в csproj не подключён как сборка, патчим по имени типа) строят AgentVisuals СВОИМ, третьим
-    // по счёту независимым путём — не через обычную сборку агента в миссии (OnAgentBuild) и не
-    // через BodyGeneratorView (тот уже патчили явным вызовом Attach, см. EquestriaHairStyleView —
-    // там же объяснение, почему без него скелет/меш у не-пони рас настроен не полностью).
+    // The "parents"/"childhood"/"youth" portraits in the character creation wizard
+    // (SandBox.GauntletUI.CharacterCreation.CharacterCreationNarrativeStageView, SandBox module —
+    // not referenced as an assembly in the csproj, so we patch by type name) build AgentVisuals by their
+    // OWN, third independent path — not through the usual agent build in a mission (OnAgentBuild) and not
+    // through BodyGeneratorView (that one was already patched with an explicit Attach call, see
+    // EquestriaHairStyleView — it also explains why without it the skeleton/mesh of non-pony races is
+    // not fully set up).
     //
-    // Без EquestriaBodyParts.Attach здесь у не-пони рас (замечено 08.10.2026, первый прогон
-    // полного мастера через -DefaultStart: у пони всё нормально, у остальных рас портреты
-    // "родителей" и дальше по возрастам уходят в атакующую анимацию и разворачиваются
-    // горизонтально) часть обязательной для расы настройки (подгонка шлема под голову,
-    // довеска хвоста/крыльев/рога на скелет) просто не выполняется.
+    // Without EquestriaBodyParts.Attach here, for non-pony races (noticed 08.10.2026, first run of the
+    // full wizard via -DefaultStart: ponies are fine, for the other races the "parents" portraits
+    // and the later ages go into an attack animation and turn
+    // horizontal) part of the setup required for the race (fitting the helmet to the head,
+    // attaching tail/wings/horn to the skeleton) simply does not run.
     public static class EquestriaNarrativeCreationFix
     {
         private static readonly Type ViewType =

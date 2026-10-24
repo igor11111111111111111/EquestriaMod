@@ -1,13 +1,13 @@
-# Картинка «кто чем владеет»: рельеф, поселения по державам, границы владений.
+# A "who owns what" picture: relief, settlements by kingdom, borders of holdings.
 #
-#   py tools/map_overview.py [папка Module] [файл вывода]
+#   py tools/map_overview.py [Module folder] [output file]
 #
-# Рисует по сгенерированным XML (equestria_settlements.xml + equestria_clans.xml):
-#   - суша/вода и тип местности бледным фоном;
-#   - владения по ближайшему поселению (Вороной) — заливкой цвета державы;
-#   - города (крупный квадрат), замки (средний), деревни (точка);
-#   - подписи держав в середине их земель и число поселений.
-# Нужна, чтобы глазами проверять баланс держав и пустые места.
+# Draws from the generated XML (equestria_settlements.xml + equestria_clans.xml):
+#   - land/water and terrain type as a pale background;
+#   - holdings by the nearest settlement (Voronoi) - filled with the kingdom's color;
+#   - towns (large square), castles (medium), villages (dot);
+#   - kingdom labels in the middle of their lands and the number of settlements.
+# Needed to check the kingdom balance and empty areas by eye.
 import collections
 import os
 import sys
@@ -86,7 +86,7 @@ def draw(points, path):
     land = equus_map.land_map() & (equus_map.heights() > 0.4)
     n = land.shape[0]
     idx = (np.linspace(0, n - 1, size)).round().astype(int)
-    land = land[np.ix_(idx, idx)][::-1]        # строка 0 — север, как в картинке
+    land = land[np.ix_(idx, idx)][::-1]        # row 0 is north, as in the picture
     img = np.zeros((size, size, 3), np.uint8)
     img[:] = (40, 60, 90)
     img[land] = (70, 80, 70)
@@ -97,7 +97,7 @@ def draw(points, path):
     ys, xs = np.nonzero(land)
     wx = xs * step
     wy = (size - 1 - ys) * step
-    # ближайшее поселение для каждой точки суши — кусками, чтобы не съесть всю память
+    # nearest settlement for each land point - in chunks so as not to eat all the memory
     owner_idx = np.empty(len(xs), np.int32)
     for start in range(0, len(xs), 20000):
         sl = slice(start, start + 20000)
@@ -119,7 +119,7 @@ def draw(points, path):
         color = KINGDOM_COLOR.get(owner, (128, 128, 128))
         d.rectangle([px - r, py - r, px + r, py + r], fill=(255, 255, 255) if kind == "town" else color,
                     outline=(0, 0, 0) if kind != "village" else None)
-    # подписи держав
+    # kingdom labels
     centers = collections.defaultdict(list)
     for kind, x, y, owner, _name in points:
         centers[owner].append((x, y))

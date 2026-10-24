@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Только чтение: ищет вершины, чья ДОМИНИРУЮЩАЯ кость не совпадает НИ С ОДНИМ соседом по рёбрам
-сетки — узкий, надёжный признак случайно не туда привязанного островка (пара вершин на новых
-полигонах, которым при зашивании дыры достался вес от чужого, соседнего в 3D, но не связанного
-по сетке места).
+"""Read-only: finds vertices whose DOMINANT bone matches NONE of their neighbours along mesh
+edges: a narrow, reliable sign of an accidentally misbound island (a couple of vertices on new
+polygons that, when a hole was sealed, got the weight of an unrelated spot that is adjacent in 3D but not
+connected through the mesh).
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\diag_pony_orphan_weights.py
 """

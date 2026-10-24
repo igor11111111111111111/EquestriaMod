@@ -8,29 +8,29 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Машущие крылья летунов (10.10.2026). В human_skeleton нет костей для крыльев, крылья пони — жёсткий
-    // меш на spine2 (tools/creature_data.py). Решение: два ЖЁСТКИХ меша (левое/правое крыло,
-    // tools/make_wing_meshes.py, начало координат — корень крыла у позвоночника) как отдельные
-    // сущности, каждый кадр перед отрисовкой ставятся на кость spine2 агента со смещением корня, и
-    // код сам поворачивает их вокруг корня по синусу — взмах. Штатные крылья eq_pony_wings прячутся.
+    // Flapping wings of fliers (10.10.2026). human_skeleton has no wing bones, the pony wings are a rigid
+    // mesh on spine2 (tools/creature_data.py). Solution: two RIGID meshes (left/right wing,
+    // tools/make_wing_meshes.py, origin at the wing root by the spine) as separate
+    // entities; every frame before rendering they are placed on the agent's spine2 bone with the root offset, and
+    // the code itself rotates them around the root by a sine - the flap. The stock wings eq_pony_wings are hidden.
     //
-    // Отвергнутый путь (10.10.2026): проп на ванильном bird_skeleton со скинованным мешем крыльев и
-    // клипом anim_bird_cycle (tools/make_wings_rig.py). Механизм работает (ястреб на спине машет),
-    // но привязку меша к костям птицы в игре не измерить, и после шести реимпортов крыло всё равно
-    // вращалось не вокруг корня. Скрипт и прафаб eq_pony_wings_rig оставлены на будущее.
+    // Rejected approach (10.10.2026): a prop on the vanilla bird_skeleton with a skinned wing mesh and
+    // the anim_bird_cycle clip (tools/make_wings_rig.py). The mechanism works (a hawk on the back flaps),
+    // but the mesh-to-bird-bone binding cannot be measured in game, and after six reimports the wing still
+    // rotated not around its root. The script and prefab eq_pony_wings_rig are kept for the future.
     public class EquestriaWingsTest : MissionBehavior
     {
         private const bool Enabled = true;
-        private const sbyte SpineBone = 11; // spine2 в human_skeleton (tools/engine_rest_human_skeleton.txt)
+        private const sbyte SpineBone = 11; // spine2 in human_skeleton (tools/engine_rest_human_skeleton.txt)
 
-        // Крылатые расы: прафабы жёстких крыльев, штатный меш (прячем) и корни крыльев в координатах
-        // модели (Blender, печать tools/make_wing_meshes.py -- <раса>). Модель в Blender смотрит в -Y,
-        // агент в движке — в +Y: пространство агента = поворот Blender на 180° вокруг Z.
+        // Winged races: rigid wing prefabs, the stock mesh (hidden) and the wing roots in model
+        // coordinates (Blender, printed by tools/make_wing_meshes.py -- <race>). The model in Blender faces -Y,
+        // the agent in the engine faces +Y: agent space = Blender rotated 180° around Z.
         private sealed class RaceWings
         {
             public string PrefabLeft, PrefabRight, RigidMesh;
             public Vec3 RootLeft, RootRight;
-            public float SweepDeg;   // разворот кончиков крыльев вперёд вокруг вертикали (просьба 10.10.2026)
+            public float SweepDeg;   // forward turn of the wing tips around the vertical (request 10.10.2026)
         }
 
         private static readonly Dictionary<string, RaceWings> Races = new Dictionary<string, RaceWings>
@@ -46,14 +46,14 @@ namespace EquestriaMod
             { "changeling", new RaceWings { PrefabLeft = "eq_changeling_wing_l", PrefabRight = "eq_changeling_wing_r", RigidMesh = "eq_changeling_wings",
                 RootLeft = new Vec3(0.0454f, 0.1324f, 1.3299f), RootRight = new Vec3(-0.0469f, 0.1326f, 1.3264f), SweepDeg = 15f } },
         };
-        // Взмах: угол вокруг продольной оси (вперёд) через корень; знак зеркальный у сторон.
+        // Flap: angle around the longitudinal (forward) axis through the root; the sign is mirrored per side.
         private const float FlapAmplitudeDeg = 45f;
-        private const float FlapPeriod = 1.6f;              // секунд на один взмах
-        private const float FlapRestDeg = 10f;              // крылья чуть приподняты в среднем положении
-        // Разворот меша вокруг вертикали относительно агента: 180 — как у скинованных мешей пони
-        // (Blender -Y → агент +Y). Если крылья окажутся кромкой назад — поставить 0.
+        private const float FlapPeriod = 1.6f;              // seconds per flap
+        private const float FlapRestDeg = 10f;              // wings slightly raised in the middle position
+        // Mesh rotation around the vertical relative to the agent: 180 - as for the skinned pony meshes
+        // (Blender -Y -> agent +Y). If the wings end up with the edge backward, set 0.
         private const float MeshYawDeg = 180f;
-        private const float WingScaleMin = 0.85f;           // размер крыльев летуна, детерминирован по агенту
+        private const float WingScaleMin = 0.85f;           // flier wing size, deterministic per agent
         private const float WingScaleMax = 1.0f;
 
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
@@ -62,13 +62,13 @@ namespace EquestriaMod
         {
             public GameEntity Left;
             public GameEntity Right;
-            public MatrixFrame LocalLeft;    // корень левого крыла относительно кости spine2
+            public MatrixFrame LocalLeft;    // left wing root relative to the spine2 bone
             public MatrixFrame LocalRight;
             public float Phase;
-            public float Period;     // свой период у каждого — чтобы строй не махал синхронно
-            public float Scale;      // размер крыльев: 0.85..1.0 (просьба пользователя 10.10.2026)
-            public float Sweep;      // радианы, разворот вперёд вокруг вертикали
-            public int ColorTries;   // цвет копируем со штатного крыла несколько кадров подряд
+            public float Period;     // each has its own period so a formation does not flap in sync
+            public float Scale;      // wing size: 0.85..1.0 (user's request 10.10.2026)
+            public float Sweep;      // radians, forward turn around the vertical
+            public int ColorTries;   // color is copied from the stock wing for several frames in a row
             public string RigidMesh;
         }
 
@@ -139,8 +139,8 @@ namespace EquestriaMod
                     Right = right,
                     LocalLeft = boneRest.TransformToLocal(RootFrame(cfg.RootLeft)),
                     LocalRight = boneRest.TransformToLocal(RootFrame(cfg.RootRight)),
-                    // Вразнобой: фаза по номеру агента (золотой угол — равномерно по кругу) и
-                    // период ±15% — иначе все созданные в один тик махали синхронно.
+                    // Out of sync: phase by agent index (golden angle - evenly around the circle) and
+                    // period +-15% - otherwise all created in one tick flapped in sync.
                     Phase = agent.Index * 2.39996f,
                     Period = FlapPeriod * (0.85f + 0.3f * ((agent.Index * 7919) % 100) / 100f),
                     Sweep = cfg.SweepDeg * (float)Math.PI / 180f,
@@ -156,9 +156,9 @@ namespace EquestriaMod
             {
                 return;
             }
-            // Цвет — как у штатного (спрятанного) крыла eq_pony_wings: его красит EquestriaBodyParts
-            // по цвету кожи пони (Mesh.Color/Color2). Повторяем первые кадры — покраска может
-            // прийти позже нашего первого тика.
+            // Color - as on the stock (hidden) wing eq_pony_wings: EquestriaBodyParts paints it
+            // by the pony's skin color (Mesh.Color/Color2). Repeat for the first frames - the painting may
+            // arrive later than our first tick.
             if (wings.ColorTries < 30)
             {
                 wings.ColorTries++;
@@ -201,12 +201,12 @@ namespace EquestriaMod
             }
         }
 
-        // Взмах — поворот вокруг продольной оси корня (f = вперёд): левое крыло вверх при +angle,
-        // правое — при -angle (зеркально).
+        // Flap - rotation around the root's longitudinal axis (f = forward): the left wing goes up at +angle,
+        // the right one at -angle (mirrored).
         private static void Place(GameEntity entity, MatrixFrame bone, MatrixFrame local, float angle, float scale, float sweep)
         {
             MatrixFrame root = local;
-            root.rotation.RotateAboutUp(sweep);        // кончик вперёд (знак зеркальный у сторон)
+            root.rotation.RotateAboutUp(sweep);        // tip forward (sign mirrored per side)
             root.rotation.RotateAboutForward(angle);
             MatrixFrame frame = bone.TransformToParent(root);
             frame.rotation.Orthonormalize();

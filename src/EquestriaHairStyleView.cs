@@ -11,7 +11,7 @@ using TaleWorlds.ScreenSystem;
 
 namespace EquestriaMod
 {
-    // Данные для панели переключателя "Сплошная / Полосатая".
+    // Data for the "Solid / Striped" toggle panel.
     public class EquestriaHairStyleVM : ViewModel
     {
         private bool _isVisible;
@@ -42,8 +42,8 @@ namespace EquestriaMod
         private bool _isWingsVisible;
         private string _wingsLabel = string.Empty;
 
-        // Видимость своя, отдельная от IsVisible выше: крылья — не только про причёску,
-        // кнопка нужна на любой вкладке, а не только на вкладке причёски.
+        // Its own visibility, separate from IsVisible above: wings are not only about the hairstyle,
+        // the button is needed on every tab, not just the hair tab.
         [DataSourceProperty]
         public bool IsWingsVisible
         {
@@ -96,10 +96,10 @@ namespace EquestriaMod
             EquestriaPonyBody.SetHornEnabled(now);
         }
 
-        // Command.Click зовёт публичный метод по имени — без атрибута, ViewModel сам его находит
-        // (см. TaleWorlds.MountAndBlade.ViewModelCollection.BannerBuilder.BannerBuilderLayerVM.
-        // ExecuteCenterSigil — тот же приём, без [DataSourceMethod], такого атрибута в этой версии
-        // SDK просто нет).
+        // Command.Click calls a public method by name — no attribute, the ViewModel finds it itself
+        // (see TaleWorlds.MountAndBlade.ViewModelCollection.BannerBuilder.BannerBuilderLayerVM.
+        // ExecuteCenterSigil — the same trick, without [DataSourceMethod]; this SDK version simply
+        // has no such attribute).
         public void ExecutePlain()
         {
             EquestriaCrashLog.Log("переключатель полосок: нажата «Сплошная»");
@@ -113,20 +113,20 @@ namespace EquestriaMod
         }
     }
 
-    // Показывает панель "Сплошная / Полосатая" поверх экрана внешности (окно персонажа, отряд,
-    // цирюльник), только пока раса героя — пони.
+    // Shows the "Solid / Striped" panel over the appearance screen (character
+    // window, party, barber), only while the hero's race is pony.
     //
-    // Первая попытка — свой MissionView с [DefaultView] — не сработала: у экрана внешности нет
-    // обычной миссии, которую движок собирает через общий перебор [DefaultView] (замечено
-    // 29.09.2026: OnBehaviorInitialize не звался вовсе, в логе пусто).
+    // The first attempt — our own MissionView with [DefaultView] — did not work: the appearance
+    // screen has no regular mission that the engine assembles via the general [DefaultView] scan
+    // (noticed 29.09.2026: OnBehaviorInitialize was never called, the log was empty).
     //
-    // Вторая попытка — второй movie на ГОТОВЫЙ GauntletLayer от BodyGeneratorView (у него уже есть
-    // свой, с родным FaceGenVM). Movie показался, подписи обновлялись, но клики по кнопкам никуда
-    // не доходили (лог пустой — значит дело не в C#, а в том, что слой не отдаёт клики второму
-    // movie: видимо, фокус на ввод держит только тот movie, что был на слое первым). Теперь —
-    // СВОЙ ОТДЕЛЬНЫЙ GauntletLayer, добавленный прямо на активный экран (ScreenManager.TopScreen,
-    // у него есть AddLayer — тот же приём, что и в EquestriaSpellWheel, только хозяин слоя не
-    // MissionScreen, а обычный ScreenBase).
+    // The second attempt — a second movie on the EXISTING GauntletLayer of BodyGeneratorView (it
+    // already has its own, with the native FaceGenVM). The movie appeared, labels updated, but clicks
+    // on the buttons went nowhere (empty log — so the problem is not in C# but in the layer not
+    // passing clicks to the second movie: apparently only the movie that was on the layer first holds
+    // input focus). Now — OUR OWN SEPARATE GauntletLayer, added directly to the active screen
+    // (ScreenManager.TopScreen, which has AddLayer — the same trick as in EquestriaSpellWheel, only
+    // the layer's owner is not a MissionScreen but a regular ScreenBase).
     public static class EquestriaHairStyleView
     {
         private static EquestriaHairStyleVM _vm;
@@ -145,13 +145,13 @@ namespace EquestriaMod
             harmony.Patch(method, postfix: new HarmonyMethod(typeof(EquestriaHairStyleView), nameof(AfterTick)));
             EquestriaCrashLog.Log("переключатель полосок: патч на BodyGeneratorView.OnTick поставлен");
 
-            // Снимаем свой слой явно при закрытии экрана внешности — без этого он пережидает
-            // AddLayer/RemoveLayer только при СЛЕДУЮЩЕМ OnTick на другом TopScreen, а OnTick
-            // экрана внешности просто перестаёт вызываться, когда мастер создания персонажа уходит
-            // на следующий этап (тот же TopScreen у всех этапов, см. AfterTick) — кнопки крыльев/
-            // хвоста/рога/полосок оставались висеть поверх «Семьи» и дальше (замечено 08.10.2026,
-            // первый прогон полного мастера через -DefaultStart: раньше до этого флага мастер
-            // нигде целиком не проходили, SkipCharacterCreation всегда стоял).
+            // Remove our layer explicitly when the appearance screen closes — without this it waits
+            // for AddLayer/RemoveLayer only on the NEXT OnTick on another TopScreen, but the appearance
+            // screen's OnTick simply stops being called when the character creation wizard moves to
+            // the next stage (all stages share the same TopScreen, see AfterTick) — the wings/tail/
+            // horn/stripe buttons kept hanging over "Family" and beyond (noticed 08.10.2026,
+            // the first run of the full wizard via -DefaultStart: before this flag the wizard had
+            // never been gone through fully, SkipCharacterCreation was always set).
             var finalizeMethod = AccessTools.Method(typeof(BodyGeneratorView), "OnFinalize");
             if (finalizeMethod == null)
             {
@@ -199,48 +199,48 @@ namespace EquestriaMod
                         _layerOwner.RemoveLayer(_layer);
                     }
                     _vm = new EquestriaHairStyleVM();
-                    // IsFocusLayer НЕ ставим (раньше стоял true): GauntletLayer сам, в ответ на
-                    // наведение на кнопку, зовёт ScreenManager.TrySetFocus на себя
-                    // (EventManagerOnFocusedWidgetChanged) — а с IsFocusLayer=true потом сам же
-                    // не отдаёт фокус назад. Экран крутит персонажа мышью, читая её движение у
-                    // СВОЕГО SceneLayer, и это же вращение зависит от того, что фокус вовремя
-                    // возвращается ему, а не застревает у нас (замечено 29.09.2026: вращение
-                    // стало тугим ровно с тех пор, как этот слой появился). Клики по кнопкам от
-                    // фокуса не зависят — они работают через обычный хит-тест виджета.
+                    // We do NOT set IsFocusLayer (it used to be true): GauntletLayer itself, in
+                    // response to hovering a button, calls ScreenManager.TrySetFocus on itself
+                    // (EventManagerOnFocusedWidgetChanged) — and with IsFocusLayer=true it then
+                    // does not give focus back. The screen rotates the character with the mouse,
+                    // reading its movement from ITS OWN SceneLayer, and that rotation depends on
+                    // focus returning to it in time instead of getting stuck with us (noticed
+                    // 29.09.2026: rotation became stiff exactly since this layer appeared). Button
+                    // clicks do not depend on focus — they work through the normal widget hit test.
                     _layer = new GauntletLayer("EquestriaHairStyle", 200, false);
-                    // Без этого свежий слой клики вообще не получает — но isMouseVisible=true
-                    // (как у родного слоя) спорит с тем, что при вращении персонажа мышью экран
-                    // сам прячет курсор и блокирует его позицию (MBWindowManager.
-                    // DontChangeCursorPos() + SetMouseVisibility(false) в TickInput,
-                    // декомпилировано ilspycmd) — оттого и дребезг (замечено 29.09.2026). Нам
-                    // для двух кнопок видимость курсора не нужна вообще, только сами клики.
+                    // Without this a fresh layer gets no clicks at all — but isMouseVisible=true
+                    // (as on the native layer) conflicts with the screen hiding the cursor and
+                    // locking its position itself while the character is rotated with the mouse
+                    // (MBWindowManager.DontChangeCursorPos() + SetMouseVisibility(false) in
+                    // TickInput, decompiled with ilspycmd) — hence the jitter (noticed 29.09.2026).
+                    // For two buttons we do not need cursor visibility at all, only the clicks.
                     _layer.InputRestrictions.SetInputRestrictions(false, InputUsageMask.MouseButtons);
-                    // Хит-тест доходил и без этого (подтверждено логом: FirstHitLayer=наш,
-                    // IsHitThisFrame=true при наведении), а клик всё равно не срабатывал —
-                    // видимо, обработка самого клика кнопкой требует зарегистрированной
-                    // категории горячих клавиш, как у родного слоя.
+                    // The hit test got through even without this (confirmed by the log:
+                    // FirstHitLayer=ours, IsHitThisFrame=true on hover), yet the click still did
+                    // not fire — apparently the button's handling of the click itself requires a
+                    // registered hotkey category, as on the native layer.
                     _layer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("Generic"));
                     _layer.LoadMovie("EquestriaHairStyle", _vm);
-                    // Отдельный movie, не второй корневой виджет в том же .xml — см. комментарий
-                    // в EquestriaPonyWings.xml, почему.
+                    // A separate movie, not a second root widget in the same .xml — see the comment
+                    // in EquestriaPonyWings.xml for why.
                     _layer.LoadMovie("EquestriaPonyWings", _vm);
                     screen.AddLayer(_layer);
-                    // Раньше тут ещё стоял ScreenManager.TrySetFocus(_layer) — думал, что без
-                    // него клики не идут. Настоящей причиной оказались атрибуты
-                    // DoNotPassEventsToChildren/UpdateChildrenStates на кнопках (см. .xml), а
-                    // TrySetFocus остался лишним и навсегда перетягивал фокус на себя — из-за
-                    // этого перестало вращаться вращение персонажа мышью в редакторе (оно,
-                    // видимо, само завязано на то, что фокус держит родной слой). Убрано
-                    // 29.09.2026.
+                    // There used to be ScreenManager.TrySetFocus(_layer) here too — I thought clicks
+                    // would not get through without it. The real cause turned out to be the
+                    // DoNotPassEventsToChildren/UpdateChildrenStates attributes on the buttons (see
+                    // .xml), and TrySetFocus was left redundant and permanently pulled focus to
+                    // itself — because of this, rotating the character with the mouse in the editor
+                    // stopped working (it apparently depends on the native layer holding focus).
+                    // Removed 29.09.2026.
                     _layerOwner = screen;
                     EquestriaCrashLog.Log("переключатель полосок: свой слой добавлен на " + screen.GetType().Name);
                 }
-                // Расу берём из ЖИВОГО выбора в списке «Народность» (FaceGenVM._selectedRace), а
-                // не из Hero.MainHero.CharacterObject.Race: на этом экране игрок может крутить
-                // список сколько угодно, ещё не нажав «Готово» — а раса героя тем временем
-                // остаётся прежней (например, пони после быстрого старта). Раньше тут проверялась
-                // раса героя, и из-за этого дракону вместо своих хвоста/крыльев/рога цеплялись
-                // пони (замечено 04.10.2026).
+                // The race is taken from the LIVE selection in the "Race" list
+                // (FaceGenVM._selectedRace), not from Hero.MainHero.CharacterObject.Race: on this
+                // screen the player can scroll the list as much as they like before pressing
+                // "Done" — while the hero's race stays the old one (e.g. pony after a quick
+                // start). Previously the hero's race was checked here, and because of that a dragon
+                // got pony parts instead of its own tail/wings/horn (noticed 04.10.2026).
                 int ponyRace = FaceGen.GetRaceOrDefault("pony");
                 int previewRace = ponyRace;
                 if (__instance.DataSource != null)
@@ -252,8 +252,8 @@ namespace EquestriaMod
                     }
                 }
                 bool isPony = previewRace == ponyRace;
-                // Только на вкладке причёски: кнопки лезли поверх остальных вкладок тоже
-                // (замечено 29.09.2026, скриншот с ползунками роста/веса). FaceGenTabs.Hair = 5.
+                // Only on the hair tab: the buttons showed up over the other tabs too
+                // (noticed 29.09.2026, screenshot with the height/weight sliders). FaceGenTabs.Hair = 5.
                 bool onHairTab = __instance.DataSource != null
                     && __instance.DataSource.Tab == (int)FaceGenVM.FaceGenTabs.Hair;
                 _vm.IsVisible = isPony && onHairTab;
@@ -261,46 +261,47 @@ namespace EquestriaMod
                 _vm.PlainLabel = new TextObject("{=eq_hair_plain}Solid").ToString() + (striped ? "" : "  ✓");
                 _vm.StripeLabel = new TextObject("{=eq_hair_stripe}Striped").ToString() + (striped ? "  ✓" : "");
 
-                // Крылья/хвост/рог — везде, где раса пони, не только на вкладке причёски.
+                // Wings/tail/horn — wherever the race is pony, not only on the hair tab.
                 _vm.IsWingsVisible = isPony;
                 _vm.WingsLabel = PartLabel("{=eq_wings_label}Wings: {STATE}", EquestriaPonyBody.WingsEnabled);
                 _vm.TailLabel = PartLabel("{=eq_tail_label}Tail: {STATE}", EquestriaPonyBody.TailEnabled);
                 _vm.HornLabel = PartLabel("{=eq_horn_label}Horn: {STATE}", EquestriaPonyBody.HornEnabled);
 
-                // У экрана барбера (в отличие от инвентаря/отряда) свой AgentVisuals —
-                // BodyGeneratorView._visualToShow, не через CharacterTableau, и наш обычный
-                // per-tick хук (AfterTableauTick) сюда не достаёт. Без принудительного Attach
-                // тут кнопки нажимались (сам клик доходил), а хвост/грива не перекрашивались —
-                // они обновились бы только при следующей смене снаряжения (замечено 29.09.2026).
-                // Не только для пони: любая раса с частями тела (дракон, грифон, як...) должна
-                // получать СВОИ хвост/крылья/рог здесь же, а не только пони — поэтому вызываем
-                // всегда, передавая живую previewRace (Attach сам ничего не делает, если для расы
-                // нет частей тела, см. RaceParts()).
+                // The barber screen (unlike inventory/party) has its own AgentVisuals —
+                // BodyGeneratorView._visualToShow, not via CharacterTableau, and our usual
+                // per-tick hook (AfterTableauTick) does not reach it. Without a forced Attach here
+                // the buttons were pressed (the click itself got through), but the tail/mane were
+                // not recoloured — they would update only on the next equipment change (noticed
+                // 29.09.2026). Not only for ponies: any race with body parts (dragon, griffon,
+                // yak...) must get ITS OWN tail/wings/horn right here too — so we call it always,
+                // passing the live previewRace (Attach does nothing by itself if the race has no
+                // body parts, see RaceParts()).
                 var visuals = _visualToShowField?.GetValue(__instance);
                 if (visuals != null)
                 {
-                    // cacheKey и bodyCode обязательны здесь же: кнопка "показать одежду" в этом
-                    // экране зовёт RefreshCharacterEntity, а та уничтожает _visualToShow и
-                    // строит НОВЫЙ (decompiled BodyGeneratorView.RefreshCharacterEntity: Reset()
-                    // + _visualToShow = null, дальше пересборка). Без cacheKey Attach брал сам
-                    // visuals как ключ кэша (cacheKey ?? visuals) — а он на этом такте уже другой
-                    // объект, и цвет причёски "терялся" ровно в момент нажатия кнопки (замечено
-                    // 29.09.2026: цвет выбран, нажата "показать одежду" — грива/хвост побелели).
-                    // __instance (сам BodyGeneratorView) переживает эту пересборку, как
-                    // CharacterTableau переживает свою в окнах снаряжения — тот же приём.
+                    // cacheKey and bodyCode are required right here: the "show clothes" button on
+                    // this screen calls RefreshCharacterEntity, which destroys _visualToShow and
+                    // builds a NEW one (decompiled BodyGeneratorView.RefreshCharacterEntity: Reset()
+                    // + _visualToShow = null, then a rebuild). Without cacheKey Attach used visuals
+                    // itself as the cache key (cacheKey ?? visuals) — but on that tick it is already
+                    // a different object, and the hair colour got "lost" exactly when the button was
+                    // pressed (noticed 29.09.2026: colour chosen, "show clothes" pressed — mane/tail
+                    // turned white). __instance (the BodyGeneratorView itself) survives this
+                    // rebuild, as CharacterTableau survives its own in the equipment windows — the
+                    // same trick.
                     string bodyCode = __instance.BodyGen?.CurrentBodyProperties.ToString();
                     EquestriaBodyParts.Attach(visuals, previewRace, "барбер", __instance, bodyCode);
                 }
             });
         }
 
-        // _visualToShow — приватное поле BodyGeneratorView, тип AgentVisuals.
+        // _visualToShow — a private field of BodyGeneratorView, of type AgentVisuals.
         private static readonly System.Reflection.FieldInfo _visualToShowField =
             AccessTools.Field(typeof(BodyGeneratorView), "_visualToShow");
 
-        // Ярлык переключателя «Крылья/Хвост/Рог: вкл/выкл» на языке игрока — template держит
-        // {=key}, а «вкл/выкл» своим ключом, иначе под каждую часть пришлось бы заводить
-        // отдельную пару «…: on»/«…: off».
+        // The toggle label "Wings/Tail/Horn: on/off" in the player's language — template holds
+        // {=key}, and "on/off" has its own key, otherwise each part would need its own
+        // separate pair "…: on"/"…: off".
         private static string PartLabel(string template, bool on)
         {
             var text = new TextObject(template);

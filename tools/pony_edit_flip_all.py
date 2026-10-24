@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Развернуть все грани всех восьми частей в assets/pony/eq_pony_edit.blend целиком.
+"""Flip all faces of all eight parts in assets/pony/eq_pony_edit.blend entirely.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_all.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_flip_all.py
 
-Через bmesh напрямую (не bpy.ops.mesh.flip_normals): прошлый заход через операторы в фоновом
-режиме перевернул часть граней через раз вместо всех разом, отчего появилась рябь из дыр.
+Directly via bmesh (not bpy.ops.mesh.flip_normals): the previous attempt via operators in background
+mode flipped every other face instead of all at once, which produced a ripple of holes.
 """
 import bmesh
 import bpy

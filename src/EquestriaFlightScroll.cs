@@ -20,54 +20,54 @@ using TaleWorlds.MountAndBlade.View.Tableaus.Thumbnails;
 
 namespace EquestriaMod
 {
-    // Свиток полёта (tools/make_items.py: eq_flight_scroll_50, примерочная — src/EquestriaFlightTest.cs)
-    // — замена ездовым коням: зверю на звере ездить нелепо. Предмет занимает слот коня (Type="Horse"
-    // в XML — этого хватает редактору снаряжения, декомпиляцией проверено: Equipment.IsItemFitsToSlot
-    // смотрит только на ItemType), но персонаж должен драться и двигаться как пеший.
+    // Flight scroll (tools/make_items.py: eq_flight_scroll_50, fitting room: src/EquestriaFlightTest.cs):
+    // a replacement for riding horses, since a beast riding a beast is absurd. The item takes the horse slot (Type="Horse"
+    // in XML; that is enough for the equipment editor, checked by decompilation: Equipment.IsItemFitsToSlot
+    // looks only at ItemType), but the character must fight and move like one on foot.
     //
-    // ГЛАВНОЕ РЕШЕНИЕ (05.10.2026, после долгого перебора): у предмета НЕТ <ItemComponent><Horse/>.
-    // Раньше он был (свой монстр eq_flight_mount, патчи IsRideable/GetFormationClass и т.д.) —
-    // убрали, когда декомпиляцией нашли, что звук копыт, класс построения (кавалерия) и сама поза
-    // верховой езды в бою читаются движком по самому наличию HorseComponent в снаряжении, В ОБХОД
-    // реального Agent.MountAgent/IsMounted — четыре независимых места так делали, и патчить каждое
-    // по отдельности оказалось бесконечной игрой в прятки (поза "в седле с поводьями" не поддавалась
-    // вообще ничему — ни заморозке каналов анимации, ни классу построения). Без компонента все эти
-    // системы просто не срабатывают сами по себе — предмет остаётся HasHorseComponent=false, и это
-    // единственный способ оказался надёжным.
+    // THE MAIN DECISION (05.10.2026, after a long search): the item has NO <ItemComponent><Horse/>.
+    // It used to have one (our own monster eq_flight_mount, IsRideable/GetFormationClass patches, etc.);
+    // it was removed when decompilation showed that the hoof sounds, the formation class (cavalry) and the riding
+    // pose itself in battle are read by the engine from the mere presence of a HorseComponent in the equipment, BYPASSING
+    // the real Agent.MountAgent/IsMounted: four independent places did this, and patching each
+    // separately turned into an endless game of hide-and-seek (the "in the saddle with reins" pose did not yield
+    // to anything at all: neither freezing animation channels nor the formation class). Without the component all these
+    // systems simply do not fire by themselves: the item stays HasHorseComponent=false, and this
+    // was the only way that proved reliable.
     //
-    // Что ещё остаётся патчить:
-    //  - ItemThumbnailCache.AddItem — иконка предмета в инвентаре падает на NullReferenceException,
-    //    когда ItemComponent==null, а код ожидает HorseComponent (decompile подтвердил).
-    //  - SandboxAgentStatCalculateModel.UpdateAgentStats — +50% скорости, завязано на StringId
-    //    предмета в SpawnEquipment, не на компоненте.
-    // IsRideable/AddMountMesh патчи оставлены как страховка (дёшево, не мешают) на случай, если
-    // где-то ещё остался путь, который их всё же достанет — но по декомпиляции они теперь не
-    // должны срабатывать вовсе.
+    // What still has to be patched:
+    //  - ItemThumbnailCache.AddItem: the item icon in the inventory crashes with a NullReferenceException
+    //    when ItemComponent==null, while the code expects a HorseComponent (decompile confirmed).
+    //  - SandboxAgentStatCalculateModel.UpdateAgentStats: +50% speed, tied to the StringId
+    //    of the item in SpawnEquipment, not to the component.
+    // The IsRideable/AddMountMesh patches are kept as insurance (cheap, harmless) in case
+    // some other path still reaches them, but according to the decompilation they should now
+    // never fire at all.
     //
-    // ПОЗА ПОЛЁТА — свой клип anim_eq_flight_pose на канале 0 (act_eq_flight_pose, см.
-    // Module/ModuleData/action_types.xml и частичный as_human_warrior в pony_action_sets.xml).
-    // Клип задаёт руки (разведены) и ноги (согнуты назад и накрест); остальные кости — rest.
-    // Ноги видны (скрытие меша eq_<раса>_legs и снятие слота Leg убраны 10.10.2026 по просьбе
-    // пользователя), под ногами — вихрь из листьев и пыли (prefab eq_flight_vortex).
+    // FLIGHT POSE: our own clip anim_eq_flight_pose on channel 0 (act_eq_flight_pose, see
+    // Module/ModuleData/action_types.xml and the partial as_human_warrior in pony_action_sets.xml).
+    // The clip sets the arms (spread) and legs (bent back and crossed); the other bones are rest.
+    // The legs are visible (hiding the eq_<race>_legs mesh and clearing the Leg slot were removed 10.10.2026 at the
+    // user's request); under the legs is a vortex of leaves and dust (prefab eq_flight_vortex).
     //
-    // ИСТОРИЯ "разворота на 180°" (решено 10.10.2026, см. equestria-flight-scroll.md): любой клип,
-    // собранный в Blender на modding_resources/human_skeleton.fbx, в игре разворачивал торс на
-    // 180° при правильной голове (или наоборот — в зависимости от осей экспорта). Причина
-    // измерена, не угадана (tools/solve_bone_axes.py по дампу equestria.dump_bones): редактор
-    // берёт parent-relative повороты костей из FBX ДОСЛОВНО, без смены базиса, а rest-поза
-    // скелета в движке НЕ совпадает с PreRotation того FBX (шея 180°, позвоночник ~120°, бедро
-    // 154°, ключицы 91°). Поэтому клип теперь собирается НЕ в Blender-арматуре, а напрямую на
-    // rest движка: tools/make_flight_pose_engine.py пишет в FBX абсолютные локальные повороты
-    // rest_движка × дельта (tools/engine_rest_human_skeleton.txt — тот самый дамп).
+    // HISTORY of the "180° turn" (solved 10.10.2026, see equestria-flight-scroll.md): any clip
+    // built in Blender on modding_resources/human_skeleton.fbx turned the torso by 180° in game
+    // with a correct head (or the other way round, depending on the export axes). The cause was
+    // measured, not guessed (tools/solve_bone_axes.py on the equestria.dump_bones dump): the editor
+    // takes the bones' parent-relative rotations from the FBX VERBATIM, without a basis change, while the engine
+    // skeleton's rest pose does NOT match that FBX's PreRotation (neck 180°, spine ~120°, thigh
+    // 154°, clavicles 91°). So the clip is now built NOT on a Blender armature but directly on
+    // the engine rest: tools/make_flight_pose_engine.py writes absolute local rotations into the FBX:
+    // engine_rest × delta (tools/engine_rest_human_skeleton.txt is that very dump).
     //
-    // Левитацию пробовали сделать сдвигом визуала вверх (GlobalFrame.origin.z += N) — движок
-    // смешивает позу с высотой таза над землёй, и расхождение ломало позу и прятало оружие даже на
-    // 15 см (см. обсуждение 05.10.2026). Подъём на 30 см держится без артефактов — частицы
-    // пыли/вихря под ногами добавлены сверху как визуальный акцент.
+    // Levitation was tried by shifting the visual up (GlobalFrame.origin.z += N): the engine
+    // blends the pose with the pelvis height above the ground, and the mismatch broke the pose and hid the weapon even at
+    // 15 cm (see the discussion of 05.10.2026). A 30 cm lift holds without artefacts; the dust/vortex
+    // particles under the legs are added on top as a visual accent.
     public class EquestriaFlightScroll : MissionBehavior
     {
         private const string ItemId = "eq_flight_scroll_50";
-        // Три свитка (10.10.2026): id → множитель скорости (tools/make_items.py, те же id).
+        // Three scrolls (10.10.2026): id → speed multiplier (tools/make_items.py, the same ids).
         private static readonly Dictionary<string, float> Scrolls = new Dictionary<string, float>
         {
             { "eq_flight_scroll_50", 1.5f },
@@ -82,50 +82,50 @@ namespace EquestriaMod
             float m;
             return item != null && Scrolls.TryGetValue(item.StringId, out m) ? m : 1f;
         }
-        // Свой вихрь-торнадо — prefab Module/Prefabs/eq_flight_fx.xml: ванильные эффекты по GUID
-        // с переопределёнными эмиттерами (inline-определение эффекта в prefab в бою не находится).
-        // Живёт на ОТДЕЛЬНОЙ сущности, которую ставим на землю под агентом каждый тик, — частица,
-        // прицепленная к сущности самого агента (CreateParticleSystemAttachedToEntity), не
-        // рендерится вовсе (проверено 10.10.2026 даже с ванильным psys_game_campfire; то же
-        // наблюдение у мода Bannerlord-Twitch). Работает с 10.10.2026.
+        // Our own tornado vortex, prefab Module/Prefabs/eq_flight_fx.xml: vanilla effects by GUID
+        // with overridden emitters (an inline effect definition in the prefab is not found in battle).
+        // It lives on a SEPARATE entity that we place on the ground under the agent every tick: a particle
+        // attached to the agent's own entity (CreateParticleSystemAttachedToEntity) is not
+        // rendered at all (checked 10.10.2026 even with the vanilla psys_game_campfire; the same
+        // observation in the Bannerlord-Twitch mod). Works since 10.10.2026.
         private const string VortexPrefab = "eq_flight_vortex";
-        // Оптимизация вихря (10.10.2026: при 100 на 100 летунов с вихрем у каждого FPS падал на дно —
-        // 200 сущностей × 5 эмиттеров). Вихрь получают только летуны не дальше VortexMaxDistance от
-        // камеры и не больше VortexMaxCount ближайших; список пересматривается раз в
-        // VortexUpdatePeriod секунд, лишние вихри удаляются, вошедшие в радиус — создаются.
+        // Vortex optimization (10.10.2026: at 100 vs 100 flyers with a vortex each, FPS dropped to the floor:
+        // 200 entities × 5 emitters). Only flyers no further than VortexMaxDistance from the
+        // camera get a vortex, and no more than the VortexMaxCount nearest; the list is revised every
+        // VortexUpdatePeriod seconds, extra vortices are removed, those entering the radius are created.
         private const bool VortexEnabled = true;
-        private const float VortexMaxDistance = 35f;        // метров от камеры
-        private const int VortexMaxCount = 24;              // одновременно живых вихрей
-        private const float VortexUpdatePeriod = 0.25f;     // секунд между пересмотрами списка
+        private const float VortexMaxDistance = 35f;        // metres from the camera
+        private const int VortexMaxCount = 24;              // vortices alive at once
+        private const float VortexUpdatePeriod = 0.25f;     // seconds between list revisions
         private float _vortexNextUpdate;
-        private const float LiftHeight = 0.3f;              // игровых метров — подъём визуала над землёй
+        private const float LiftHeight = 0.3f;              // game metres: lift of the visual above the ground
 
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
 
         private readonly Dictionary<Agent, GameEntity> _vortex = new Dictionary<Agent, GameEntity>();
         private sealed class SwayState { public float Phase; public float Progress; }
         private readonly Dictionary<Agent, SwayState> _sway = new Dictionary<Agent, SwayState>();
-        private const float SwayPeriod = 1.2f;              // секунд на одно качание рук при ходьбе
-        private const float SwayPeriodIdle = 2.5f;          // то же стоя
-        private const float SwayAmplitudeIdle = 0.4f;       // доля размаха стоя
+        private const float SwayPeriod = 1.2f;              // seconds per arm swing while walking
+        private const float SwayPeriodIdle = 2.5f;          // the same while standing
+        private const float SwayAmplitudeIdle = 0.4f;       // share of the swing amplitude while standing
 
-        // Поза "держит поток" (08.10.2026, 6-я попытка со своим клипом, после сброса ног в бою —
-        // см. класс-комментарий выше и память equestria-flight-scroll.md). act_eq_flight_pose
-        // зарегистрирован в Module/ModuleData/action_types.xml (id=soln_action_types) и привязан
-        // к anim_eq_flight_pose частичным блоком as_human_warrior в pony_action_sets.xml
+        // The "holding the flow" pose (08.10.2026, 6th attempt with our own clip, after the legs reset in battle;
+        // see the class comment above and the equestria-flight-scroll.md memory). act_eq_flight_pose
+        // is registered in Module/ModuleData/action_types.xml (id=soln_action_types) and bound
+        // to anim_eq_flight_pose by a partial as_human_warrior block in pony_action_sets.xml
         // (tools/make_flight_pose.py, tools/make_race_action_sets.py). ActionIndexCache.Create
-        // резолвит индекс лениво — на момент статической инициализации класса движок ещё не
-        // загрузил action_types.xml.
+        // resolves the index lazily: at the time of the class's static initialization the engine has not yet
+        // loaded action_types.xml.
         private static ActionIndexCache? _flightPoseAction;
         private static ActionIndexCache FlightPoseAction =>
             (_flightPoseAction ?? (_flightPoseAction = ActionIndexCache.Create("act_eq_flight_pose"))).Value;
 
         private static bool _campaignUiPatched;
 
-        // Патчи UI кампании ставятся из SubModule.OnGameStart, а не из ApplyLate: Harmony при
-        // установке патча запускает статический конструктор CampaignUIHelper, тот читает
-        // GameTexts, которых в главном меню ещё нет → TypeInitializationException, и мастер
-        // создания персонажа падал (10.10.2026).
+        // The campaign UI patches are installed from SubModule.OnGameStart, not from ApplyLate: when Harmony
+        // installs a patch it runs the static constructor of CampaignUIHelper, which reads
+        // GameTexts, which do not exist yet in the main menu → TypeInitializationException, and the character
+        // creation wizard crashed (10.10.2026).
         public static void ApplyCampaignUi(Harmony harmony)
         {
             if (_campaignUiPatched || harmony == null)
@@ -133,10 +133,10 @@ namespace EquestriaMod
                 return;
             }
             _campaignUiPatched = true;
-            // Инвентарь/рынок (10.10.2026, свитки стали товаром): три места в UI кампании читают
-            // HorseComponent у любого Type=Horse без проверки —
-            //  - CampaignUIHelper.GetItemObjectTypeSortIndex (сортировка по типу, падал рынок);
-            //  - SPInventoryVM.IsItemEquipmentPossible / AfterTransfer — упряжь рядом со свитком в слоте коня.
+            // Inventory/market (10.10.2026, scrolls became goods): three places in the campaign UI read
+            // the HorseComponent of any Type=Horse without a check:
+            //  - CampaignUIHelper.GetItemObjectTypeSortIndex (sorting by type, the market crashed);
+            //  - SPInventoryVM.IsItemEquipmentPossible / AfterTransfer: a harness next to the scroll in the horse slot.
             var sortIndex = AccessTools.Method(typeof(CampaignUIHelper), "GetItemObjectTypeSortIndex");
             var equipPossible = AccessTools.Method(typeof(SPInventoryVM), "IsItemEquipmentPossible");
             var afterTransfer = AccessTools.Method(typeof(SPInventoryVM), "AfterTransfer");
@@ -150,12 +150,12 @@ namespace EquestriaMod
                 harmony.Patch(equipPossible, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeIsItemEquipmentPossible)));
                 harmony.Patch(afterTransfer, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeAfterTransfer)));
             }
-            // Подсказка при наведении на повозку сравнивает её с НАДЕТЫМ свитком (тот же слот):
-            // ItemMenuVM.SetHorseComponentTooltip берёт HorseComponent свитка (null) и отдаёт его в
-            // AddHorseItemFlags → NRE (10.10.2026). Пустой компонент — флагов нет.
-            // …и дальше по SetHorseComponentTooltip сравнение со свитком считает заряд/скорость
-            // коня (EquipmentElement.GetModifiedMountCharge → NRE). Если сравниваемый предмет —
-            // свиток, сравнение на время подсказки выключаем целиком.
+            // The hover tooltip on a cart compares it with the EQUIPPED scroll (the same slot):
+            // ItemMenuVM.SetHorseComponentTooltip takes the scroll's HorseComponent (null) and passes it to
+            // AddHorseItemFlags → NRE (10.10.2026). An empty component means no flags.
+            // …and further along SetHorseComponentTooltip the comparison with the scroll computes the horse's
+            // charge/speed (EquipmentElement.GetModifiedMountCharge → NRE). If the compared item is
+            // a scroll, the comparison is switched off entirely for the duration of the tooltip.
             var horseTooltip = AccessTools.Method(typeof(ItemMenuVM), "SetHorseComponentTooltip");
             if (horseTooltip == null)
             {
@@ -165,8 +165,8 @@ namespace EquestriaMod
             {
                 harmony.Patch(horseTooltip, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeSetHorseComponentTooltip)));
             }
-            // Подсказка самого свитка: у него нет компонентов, ванильная подсказка пуста —
-            // дописываем строку «Скорость полёта: +N%» (просьба пользователя 10.10.2026).
+            // The scroll's own tooltip: it has no components, the vanilla tooltip is empty;
+            // we append the line "Flight speed; at the user's request 10.10.2026".
             var refreshTooltips = AccessTools.Method(typeof(ItemMenuVM), "RefreshItemTooltips");
             if (refreshTooltips == null)
             {
@@ -196,10 +196,10 @@ namespace EquestriaMod
                 return;
             }
             harmony.Patch(isRideable, postfix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(AfterIsRideable)));
-            // IsRideable=false не трогает иконку отряда на карте: она строит мешик коня любому,
-            // у кого в слоте коня хоть что-то лежит, в обход этой проверки — и падает с
-            // NullReferenceException в SetHorseColors, когда меш пустой (замечено в игре 05.10.2026).
-            // Глушим сам метод постройки визуала коня для нашего предмета — отдельно и раньше.
+            // IsRideable=false does not affect the party icon on the map: it builds a horse mesh for anyone
+            // who has anything at all in the horse slot, bypassing this check, and crashes with a
+            // NullReferenceException in SetHorseColors when the mesh is empty (noticed in game 05.10.2026).
+            // We mute the horse visual building method itself for our item, separately and earlier.
             var addMountMesh = AccessTools.Method(typeof(MountVisualCreator), "AddMountMesh");
             if (addMountMesh == null)
             {
@@ -209,9 +209,9 @@ namespace EquestriaMod
             {
                 harmony.Patch(addMountMesh, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeAddMountMesh)));
             }
-            // Третье место, где в обход и IsRideable, и AddMountMesh строится меш коня: иконка
-            // предмета в инвентаре (ItemThumbnailCache.AddItem) — та же NullReferenceException на
-            // пустом меше (замечено в игре 05.10.2026, краш при открытии инвентаря со свитком).
+            // A third place where the horse mesh is built bypassing both IsRideable and AddMountMesh: the item
+            // icon in the inventory (ItemThumbnailCache.AddItem), the same NullReferenceException on
+            // an empty mesh (noticed in game 05.10.2026, crash when opening the inventory with the scroll).
             var addItem = AccessTools.Method(typeof(ItemThumbnailCache), "AddItem");
             if (addItem == null)
             {
@@ -221,9 +221,9 @@ namespace EquestriaMod
             {
                 harmony.Patch(addItem, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeAddItem)));
             }
-            // Четвёртое место (10.10.2026, когда свиток получила вся конница): портрет войска/героя
-            // (CharacterThumbnailCache → CharacterSpawner.SpawnMount) берёт item.HorseComponent.Monster
-            // без проверки — NullReferenceException при первой же отрисовке карточки Wonderbolt'а.
+            // A fourth place (10.10.2026, when all the cavalry got the scroll): the troop/hero portrait
+            // (CharacterThumbnailCache → CharacterSpawner.SpawnMount) takes item.HorseComponent.Monster
+            // without a check: a NullReferenceException on the very first render of a Wonderbolt's card.
             var spawnMount = AccessTools.Method(typeof(TaleWorlds.MountAndBlade.View.Scripts.CharacterSpawner), "SpawnMount");
             if (spawnMount == null)
             {
@@ -233,11 +233,11 @@ namespace EquestriaMod
             {
                 harmony.Patch(spawnMount, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeSpawnMount)));
             }
-            // Пятое место (10.10.2026, рынок города): карточка предмета по пути OnCreateTexture →
-            // CreateItemBaseEntity → GetItemPoseAndCamera берёт ((HorseComponent)item.ItemComponent)
-            // .Monster.MonsterUsage для любого Type=Horse — у свитка компонента нет → NRE. Патч
-            // AddItem этот путь не покрывает. Подменяем свиток обычным товаром только для расчёта
-            // позы/камеры (меш в карточке всё равно пустой).
+            // A fifth place (10.10.2026, town market): the item card along the path OnCreateTexture →
+            // CreateItemBaseEntity → GetItemPoseAndCamera takes ((HorseComponent)item.ItemComponent)
+            // .Monster.MonsterUsage for any Type=Horse; the scroll has no component → NRE. The AddItem
+            // patch does not cover this path. We substitute the scroll with ordinary goods only for computing
+            // the pose/camera (the mesh in the card is empty anyway).
             var poseAndCamera = AccessTools.Method(typeof(ItemThumbnailCache), "GetItemPoseAndCamera");
             if (poseAndCamera == null)
             {
@@ -249,9 +249,9 @@ namespace EquestriaMod
                     prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeGetItemPoseAndCamera)),
                     postfix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(AfterGetItemPoseAndCamera)));
             }
-            // Шестое место (10.10.2026, энциклопедия войск): CharacterTableau для бывшей конницы
-            // выбирает «конную» стойку (StanceTypes 2/4), а визуал коня (_mountVisuals) создаётся только
-            // при HorseComponent → AdjustCharacterForStanceIndex падает на null. Свитку — пешая стойка 0.
+            // A sixth place (10.10.2026, troop encyclopedia): CharacterTableau for former cavalry
+            // picks a "mounted" stance (StanceTypes 2/4), while the horse visual (_mountVisuals) is created only
+            // with a HorseComponent → AdjustCharacterForStanceIndex crashes on null. The scroll gets foot stance 0.
             var stance = AccessTools.Method(typeof(TaleWorlds.MountAndBlade.View.Tableaus.CharacterTableau), "SetStanceIndex");
             if (stance == null)
             {
@@ -261,8 +261,8 @@ namespace EquestriaMod
             {
                 harmony.Patch(stance, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeSetStanceIndex)));
             }
-            // …и поза полёта в этой же таблице (энциклопедия/инвентарь): постфикс тика ставит на канал 0
-            // наш act_eq_flight_pose, пока в слоте коня свиток (просьба пользователя 10.10.2026).
+            // …and the flight pose in this same tableau (encyclopedia/inventory): a tick postfix puts on channel 0
+            // our act_eq_flight_pose while a scroll is in the horse slot (at the user's request 10.10.2026).
             var tableauTick = AccessTools.Method(typeof(TaleWorlds.MountAndBlade.View.Tableaus.CharacterTableau), "OnTick");
             if (tableauTick == null)
             {
@@ -272,12 +272,12 @@ namespace EquestriaMod
             {
                 harmony.Patch(tableauTick, postfix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(AfterTableauTick)));
             }
-            // +50% скорости: SandboxAgentStatCalculateModel.UpdateAgentStats — единственная реализация
-            // модели для одиночной кампании (проверено декомпиляцией), её же читает тактика ИИ, так
-            // что бойцы со свитком сами побегут быстрее, а не только игрок. Патчим именно
-            // MaxSpeedMultiplier/CombatMaxSpeedMultiplier — то, что вписывает в них броня/навыки,
-            // а не абсолютный предел скорости (Agent.SetMaximumSpeedLimit — другое, это сброс при
-            // спешивании, не тактическая оценка скорости).
+            // +50% speed: SandboxAgentStatCalculateModel.UpdateAgentStats is the only implementation
+            // of the model for the single-player campaign (checked by decompilation), and the AI tactics read it too, so
+            // soldiers with the scroll will run faster themselves, not only the player. We patch precisely
+            // MaxSpeedMultiplier/CombatMaxSpeedMultiplier, what armour/skills write into them,
+            // not the absolute speed limit (Agent.SetMaximumSpeedLimit is something else, a reset on
+            // dismounting, not a tactical speed estimate).
             var updateStats = AccessTools.Method(typeof(SandboxAgentStatCalculateModel), "UpdateAgentStats");
             if (updateStats == null)
             {
@@ -287,11 +287,11 @@ namespace EquestriaMod
             {
                 harmony.Patch(updateStats, postfix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(AfterUpdateAgentStats)));
             }
-            // Пятое место, завязанное на HorseComponent (вылезло именно из-за того, что мы его
-            // убрали у предмета, 05.10.2026) — иконка отряда на карте считает анимацию боевой
-            // стойки лидера/коня (MobilePartyVisual.GetPartyBattleAnimation) и падает на
-            // NullReferenceException, ожидая HorseComponent там, где его больше нет. Глушим для
-            // партии, чей лидер несёт наш свиток — отдаём безопасные "нет анимации".
+            // A fifth place tied to HorseComponent (it surfaced precisely because we
+            // removed it from the item, 05.10.2026): the party icon on the map computes the battle
+            // stance animation of the leader/horse (MobilePartyVisual.GetPartyBattleAnimation) and crashes with a
+            // NullReferenceException, expecting a HorseComponent where there is none any more. We mute it for
+            // a party whose leader carries our scroll, returning a safe "no animation".
             var getPartyBattleAnimation = AccessTools.Method(typeof(MobilePartyVisual), "GetPartyBattleAnimation");
             if (getPartyBattleAnimation == null)
             {
@@ -301,12 +301,12 @@ namespace EquestriaMod
             {
                 harmony.Patch(getPartyBattleAnimation, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeGetPartyBattleAnimation)));
             }
-            // Шестое место (та самая первопричина пятого): BasicCharacterObject.HasMount() честно
-            // проверяет только Equipment[Horse].Item != null (decompile подтвердил), а не
-            // HasHorseComponent — думает, что конь есть, раз предмет лежит в слоте. От этого
-            // AddCharacterToPartyIcon без проверки лезет в Item.HorseComponent.Monster и падает.
-            // Патчим сам источник: если HasMount() честно скажет "нет", не придётся гоняться за
-            // каждым местом, которое ему верит.
+            // A sixth place (the very root cause of the fifth): BasicCharacterObject.HasMount() honestly
+            // checks only Equipment[Horse].Item != null (decompile confirmed), not
+            // HasHorseComponent, so it thinks there is a horse because an item lies in the slot. Because of this
+            // AddCharacterToPartyIcon reaches into Item.HorseComponent.Monster without a check and crashes.
+            // We patch the source itself: if HasMount() honestly says "no", there is no need to chase
+            // every place that trusts it.
             var hasMount = AccessTools.Method(typeof(BasicCharacterObject), "HasMount");
             if (hasMount == null)
             {
@@ -316,11 +316,11 @@ namespace EquestriaMod
             {
                 harmony.Patch(hasMount, postfix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(AfterHasMount)));
             }
-            // Седьмое место: MountCreationKey.GetRandomMountKey — зовётся при спавне подкрепления в
-            // бою (Mission.SpawnTroop(..., spawnWithHorse: true, ...)), без проверки лезет в
-            // mountItem.HorseComponent.HorseMaterialNames. Этот патч не завязан на StringId нашего
-            // предмета: он вообще не должен звать HorseComponent у предмета, где его нет, —
-            // безопасная защита на любой будущий подобный предмет, не только на свиток.
+            // A seventh place: MountCreationKey.GetRandomMountKey, called when spawning reinforcements in
+            // battle (Mission.SpawnTroop(..., spawnWithHorse: true, ...)), reaches without a check into
+            // mountItem.HorseComponent.HorseMaterialNames. This patch is not tied to our item's StringId:
+            // it should never call HorseComponent on an item that has none at all;
+            // a safe guard for any similar future item, not only the scroll.
             var getRandomMountKey = AccessTools.Method(typeof(MountCreationKey), "GetRandomMountKey");
             if (getRandomMountKey == null)
             {
@@ -330,16 +330,16 @@ namespace EquestriaMod
             {
                 harmony.Patch(getRandomMountKey, prefix: new HarmonyMethod(typeof(EquestriaFlightScroll), nameof(BeforeGetRandomMountKey)));
             }
-            // Восьмое место: Mission.BuildAgent (приватный) — после сборки агента, посреди метода,
-            // не глядя на HasHorseComponent лезет в equipmentElement.Item.HorseComponent.BodyLength,
-            // если слот коня просто не пуст (decompile: IL_0051 get_HorseComponent -> IL_0056
-            // get_BodyLength, 05.10.2026, краш при спавне подкрепления в бою). Метод большой и
-            // приватный — обычный prefix/postfix не вырезать логику изнутри, поэтому на время
-            // ОРИГИНАЛЬНОГО вызова просто опустошаем слот 10 в SpawnEquipment (prefix), а сразу
-            // после возвращаем предмет обратно (postfix). Проверено декомпиляцией: Agent.Build()
-            // перед этим блоком слот не трогает, а EquipItemsFromSpawnEquipment после — читает уже
-            // собранный agent.Equipment, а не SpawnEquipment, и вообще не смотрит на слот коня —
-            // опустошение на этот вызов никак не влияет, предмет всё равно наденется как обычно.
+            // An eighth place: Mission.BuildAgent (private): after building the agent, in the middle of the method,
+            // without looking at HasHorseComponent it reaches into equipmentElement.Item.HorseComponent.BodyLength
+            // if the horse slot is simply not empty (decompile: IL_0051 get_HorseComponent -> IL_0056
+            // get_BodyLength, 05.10.2026, crash when spawning reinforcements in battle). The method is big and
+            // private: an ordinary prefix/postfix cannot cut logic out from inside, so for the duration of the
+            // ORIGINAL call we simply empty slot 10 in SpawnEquipment (prefix), and right
+            // after we put the item back (postfix). Checked by decompilation: Agent.Build()
+            // does not touch the slot before this block, and EquipItemsFromSpawnEquipment afterwards reads the already
+            // built agent.Equipment, not SpawnEquipment, and does not look at the horse slot at all:
+            // emptying for this call has no effect, the item is equipped as usual anyway.
             var buildAgent = AccessTools.Method(typeof(Mission), "BuildAgent", new[] { typeof(Agent), typeof(AgentBuildData) });
             if (buildAgent == null)
             {
@@ -422,8 +422,8 @@ namespace EquestriaMod
 
         private static bool BeforeAddItem(ItemObject item, Scene scene, ref GameEntity __result)
         {
-            // Со своим мешем (lib_scroll_*, 10.10.2026) свиток рисуется обычным путём; пустая сущность
-            // — только если меша нет (с ним и падал AddItem 05.10.2026).
+            // With its own mesh (lib_scroll_*, 10.10.2026) the scroll is drawn the ordinary way; an empty entity
+            // only if there is no mesh (that is what AddItem crashed with on 05.10.2026).
             if (!IsScroll(item) || !string.IsNullOrEmpty(item.MultiMeshName))
             {
                 return true;
@@ -442,12 +442,12 @@ namespace EquestriaMod
             return false;
         }
 
-        // Превью свитка/повозки (10.10.2026): для Type=Horse движок берёт «конскую» камеру (у свитка
-        // при этом NRE на HorseComponent, у повозки меш телеги не влезает в кадр), а для товаров
-        // подбирает кадр по габаритам меша. На время расчёта позы объявляем предмет товаром:
-        // ItemObject.Type — публичное поле. Повозка = ванильный вьючный с мешем bd_cart_* (equestria_items.xslt).
-        // internal: тем же признаком повозку отличает EquestriaFlightArmy — «вьючный» у ванили ещё и
-        // ездовая лошадь (saddle_horse) и старая кляча (old_horse), а повозки только три — с мешем телеги
+        // Scroll/cart preview (10.10.2026): for Type=Horse the engine takes the "horse" camera (with the scroll
+        // this gives an NRE on HorseComponent, with the cart the wagon mesh does not fit in the frame), while for goods
+        // it picks the frame by the mesh's bounding box. For the duration of the pose calculation we declare the item
+        // goods: ItemObject.Type is a public field. Cart = a vanilla pack animal with a bd_cart_* mesh (equestria_items.xslt).
+        // internal: EquestriaFlightArmy tells a cart apart by the same sign: in vanilla "pack animal" also covers
+        // the riding horse (saddle_horse) and the old nag (old_horse), while there are only three carts, with a wagon mesh
         internal static bool IsCart(ItemObject item) =>
             item != null && item.Type == ItemObject.ItemTypeEnum.Horse && (item.MultiMeshName ?? "").StartsWith("bd_cart", StringComparison.OrdinalIgnoreCase);
 
@@ -470,7 +470,7 @@ namespace EquestriaMod
 
         private static ItemObject _sortStandIn;
 
-        // Сортировка по типу: свиток считаем вьючным зверем (тот же индекс, что у sumpter_horse).
+        // Sorting by type: the scroll counts as a pack animal (the same index as sumpter_horse).
         private static void BeforeItemTypeSortIndex(ref ItemObject item)
         {
             if (!IsScroll(item))
@@ -499,7 +499,7 @@ namespace EquestriaMod
             }
             string label = new TextObject("{=eq_flight_speed}Flight speed").ToString();
             string value = "+" + Math.Round((speed - 1f) * 100f) + "%";
-            // HintViewModel живёт в TaleWorlds.Core.ViewModelCollection (нет в ссылках) — метод ищем по имени.
+            // HintViewModel lives in TaleWorlds.Core.ViewModelCollection (not in the references): the method is found by name.
             System.Reflection.MethodInfo create = AccessTools.Method(typeof(ItemMenuVM), "CreateProperty");
             create?.Invoke(__instance, new object[] { __instance.TargetItemProperties, label, value, 0, null });
         }
@@ -510,12 +510,12 @@ namespace EquestriaMod
             {
                 return null;
             }
-            // ItemVM.ItemRosterElement — публичное ПОЛЕ (не свойство), проверено декомпиляцией.
+            // ItemVM.ItemRosterElement is a public FIELD (not a property), checked by decompilation.
             object element = Traverse.Create(itemVm).Field("ItemRosterElement").GetValue();
             return element is ItemRosterElement roster ? roster.EquipmentElement.Item : null;
         }
 
-        // ItemVM живёт в TaleWorlds.Core.ViewModelCollection (не в ссылках проекта) — через Traverse.
+        // ItemVM lives in TaleWorlds.Core.ViewModelCollection (not in the project references): via Traverse.
         private static void BeforeSetHorseComponentTooltip(ItemMenuVM __instance)
         {
             Traverse field = Traverse.Create(__instance).Field("_comparedItem");
@@ -546,7 +546,7 @@ namespace EquestriaMod
             return equipment != null && IsScroll(equipment[EquipmentIndex.ArmorItemEndSlot].Item);
         }
 
-        // Упряжь на свиток не надеть: иначе IsItemEquipmentPossible лезет в HorseComponent свитка.
+        // A harness cannot be put on a scroll: otherwise IsItemEquipmentPossible reaches into the scroll's HorseComponent.
         private static bool BeforeIsItemEquipmentPossible(SPInventoryVM __instance, SPItemVM itemVM, ref bool __result)
         {
             ItemObject item = itemVM?.ItemRosterElement.EquipmentElement.Item;
@@ -558,8 +558,8 @@ namespace EquestriaMod
             return true;
         }
 
-        // После переноса: если в слоте коня свиток, а упряжь ещё надета — снимаем её сами, до того
-        // как AfterTransfer сравнит семейства зверей через HorseComponent свитка.
+        // After a transfer: if the horse slot holds a scroll while the harness is still equipped, we remove it ourselves, before
+        // AfterTransfer compares the animal families through the scroll's HorseComponent.
         private static void BeforeAfterTransfer(SPInventoryVM __instance)
         {
             Equipment equipment = ActiveEquipment(__instance);
@@ -648,7 +648,7 @@ namespace EquestriaMod
             }
         }
 
-        // Кому положен вихрь: летуны в радиусе VortexMaxDistance от камеры, ближайшие VortexMaxCount.
+        // Who gets a vortex: flyers within VortexMaxDistance of the camera, the VortexMaxCount nearest.
         private void UpdateVortexSet()
         {
             Vec3 eye = Mission.Current.Scene.LastFinalRenderCameraPosition;
@@ -712,10 +712,10 @@ namespace EquestriaMod
             }
         }
 
-        // Дамп скелета игрока в eq_exceptions.log: rest-фреймы всех костей (источник правды для
-        // tools/make_flight_pose_engine.py — см. tools/engine_rest_human_skeleton.txt) плюс
-        // текущие фреймы и channel0, чтобы сверять, как движок понял клип (tools/solve_bone_axes.py).
-        // Консоль: equestria.dump_bones (в бою, игрок должен стоять в проверяемой позе).
+        // Dump of the player's skeleton to eq_exceptions.log: the rest frames of all bones (the source of truth for
+        // tools/make_flight_pose_engine.py, see tools/engine_rest_human_skeleton.txt) plus
+        // the current frames and channel0, to check how the engine understood the clip (tools/solve_bone_axes.py).
+        // Console: equestria.dump_bones (in battle, the player must stand in the pose being checked).
         [CommandLineFunctionality.CommandLineArgumentFunction("dump_bones", "equestria")]
         public static string DumpBonesCommand(List<string> args)
         {
@@ -727,12 +727,12 @@ namespace EquestriaMod
             return "Дамп костей записан в eq_exceptions.log.";
         }
 
-        // Поворот, переводящий rest в now (now = R * rest): ось и угол, в системе сущности.
+        // The rotation that takes rest to now (now = R * rest): axis and angle, in entity space.
         private static string Delta(MatrixFrame rest, MatrixFrame now)
         {
             Mat3 r = rest.rotation;
             Mat3 n = now.rotation;
-            // R = n * rest^-1; rest ортонормирована, обратная = транспонированная
+            // R = n * rest^-1; rest is orthonormal, the inverse = the transpose
             Mat3 rt = r;
             rt.Transpose();
             Mat3 d = n;
@@ -749,7 +749,7 @@ namespace EquestriaMod
             return $"угол={angle:0.0}° ось={F(axis)}";
         }
 
-        // a * b для столбцовых матриц (s,f,u — столбцы X,Y,Z)
+        // a * b for column matrices (s,f,u are the columns X,Y,Z)
         private static Mat3 Mat3Mul(Mat3 a, Mat3 b)
         {
             return new Mat3(
@@ -816,59 +816,59 @@ namespace EquestriaMod
                 }
                 try
                 {
-                    // Поза на канале 0 — каждый тик: обычная локомоция перезаписывает канал 0 сама,
-                    // разовая установка слетала через долю секунды. actionSpeed 0: клип сам не идёт,
-                    // его прогресс задаём ниже. ИИ — с ignorePriority (его локомоция держит канал 0
-                    // с большим приоритетом); игроку не даём — рвал переход в атаку (act_stand_1).
-                    // У самого действия НЕТ type (action_types.xml): действия типа actt_idle ИИ
-                    // сбрасывал с канала каждый кадр при движении строем — выглядело как ходьба.
+                    // Pose on channel 0 every tick: the ordinary locomotion overwrites channel 0 itself,
+                    // a one-off setting fell off within a fraction of a second. actionSpeed 0: the clip does not run by itself,
+                    // its progress is set below. For the AI, with ignorePriority (its locomotion holds channel 0
+                    // with a higher priority); not for the player: it broke the transition into an attack (act_stand_1).
+                    // The action itself has NO type (action_types.xml): actions of type actt_idle the AI
+                    // reset from the channel every frame when moving in formation, which looked like walking.
                     if (agent.GetCurrentAction(0) != FlightPoseAction)
                     {
                         agent.SetActionChannel(0, FlightPoseAction, !agent.IsPlayerControlled, 0UL, 0f, 0f);
                     }
-                    // Покачивание рук при ходьбе: кадр 1 клипа — базовая поза, кадр 250 — руки чуть
-                    // выше и вперёд (tools/make_flight_pose_engine.py, ARM_SWAY_*). Пока агент идёт,
-                    // гоняем прогресс 0..1 по косинусу; стоя — медленнее и с меньшим размахом.
+                    // Arm sway while walking: clip frame 1 is the base pose, frame 250 has the arms slightly
+                    // higher and forward (tools/make_flight_pose_engine.py, ARM_SWAY_*). While the agent walks,
+                    // we drive the progress 0..1 along a cosine; standing, slower and with a smaller amplitude.
                     SwayState sway;
                     if (!_sway.TryGetValue(agent, out sway))
                     {
                         sway = new SwayState();
                         _sway[agent] = sway;
                     }
-                    // До первой атаки у ИИ оружие в ножнах, и локомоция "без оружия" идёт шагом поверх
-                    // позы; с оружием в руках (после атаки, у игрока всегда) поза держится (скриншот
-                    // 10.10.2026). Летуну оружие в руки сразу.
-                    // Стоя руки тоже дышат, но медленнее и слабее.
+                    // Before the first attack the AI's weapon is sheathed, and the "unarmed" locomotion walks on top of
+                    // the pose; with a weapon in hand (after an attack, always for the player) the pose holds (screenshot
+                    // 10.10.2026). The flyer gets a weapon in hand right away.
+                    // Standing, the arms breathe too, but slower and weaker.
                     bool moving = agent.MovementVelocity.LengthSquared > 0.05f;
                     float period = moving ? SwayPeriod : SwayPeriodIdle;
                     float amplitude = moving ? 1f : SwayAmplitudeIdle;
                     sway.Phase += dt * (2f * (float)System.Math.PI / period);
                     sway.Progress = amplitude * (0.5f - 0.5f * (float)System.Math.Cos(sway.Phase));
-                    // Скорость/прогресс — ТОЛЬКО когда на канале наша поза. Иначе у ИИ замораживались
-                    // его собственные действия на канале 0 (удар, блок, разворот) — бойцы дёргались
-                    // и "вставали" (замечено в бою 100 на 100, 10.10.2026).
+                    // Speed/progress ONLY when our pose is on the channel. Otherwise the AI's own actions
+                    // on channel 0 (strike, block, turn) froze, and the soldiers twitched
+                    // and "stood up" (noticed in a 100 vs 100 battle, 10.10.2026).
                     if (agent.GetCurrentAction(0) == FlightPoseAction)
                     {
                         agent.SetCurrentActionSpeed(0, 0f);
                         agent.SetCurrentActionProgress(0, sway.Progress);
                     }
-                    // Вихрь — отдельная сущность на земле под агентом (Agent.Position — физические
-                    // ноги, без подъёма визуала), как снаряд в EquestriaSpellMission. Кому он положен,
-                    // решает UpdateVortexSet (радиус от камеры + потолок), здесь только двигаем.
+                    // The vortex is a separate entity on the ground under the agent (Agent.Position is the physical
+                    // legs, without the visual lift), like a projectile in EquestriaSpellMission. Who gets it
+                    // is decided by UpdateVortexSet (radius from the camera + cap); here we only move it.
                     GameEntity vortex;
                     if (_vortex.TryGetValue(agent, out vortex) && vortex != null)
                     {
                         MatrixFrame ground = new MatrixFrame(Mat3.Identity, agent.Position);
                         vortex.SetGlobalFrame(in ground);
                     }
-                    // Подъём визуала над землёй: пробуем снова (05.10.2026) теперь, когда у
-                    // предмета убран HasHorseComponent и поза честно пешая — старый баг (согнутые
-                    // ноги, пропадающий меч уже на +15 см) по декомпиляции был похож на конфликт
-                    // именно с позой "наездника": отдельной системы, которая держит ноги у земли,
-                    // у людей в отличие от коня/верблюда/кабана в monsters.xml вообще нет (там это
-                    // настраивается индивидуально per-monster, и у человека полей для этого нет).
-                    // Начинаем с малого (30 см): если артефакт всё же вернётся — значит, причина
-                    // была другая, и подъём придётся снова убрать.
+                    // Lift of the visual above the ground: we try again (05.10.2026) now that the
+                    // item has had HasHorseComponent removed and the pose is honestly on foot. The old bug (bent
+                    // legs, the sword vanishing already at +15 cm) by the decompilation looked like a conflict
+                    // specifically with the "rider" pose: a separate system that keeps the legs at the ground
+                    // does not exist at all for humans, unlike the horse/camel/boar in monsters.xml (there it is
+                    // configured individually per-monster, and the human has no fields for it).
+                    // We start small (30 cm): if the artefact comes back after all, the cause
+                    // was something else, and the lift will have to be removed again.
                     var visuals = agent.AgentVisuals;
                     if (visuals != null)
                     {
@@ -879,7 +879,7 @@ namespace EquestriaMod
                 }
                 catch
                 {
-                    // Один кадр анимации/визуала не стоит ронять бой — пропускаем агента и едем дальше.
+                    // One frame of animation/visual is not worth bringing down the battle: skip the agent and move on.
                 }
             }
         }

@@ -1,7 +1,7 @@
-# Тест ориентации экспорта на ванильных мешах с весами разработчиков (Female_BodyBase: тело, кисти, ступни, голова).
-# Даёт два FBX для импорта в редактор и сравнения анимации в Model Viewer:
-#   eq_convA.fbx — меши развёрнуты к -Y, веса l/r переставлены, скелет без поворота (как сейчас у пони)
-#   eq_convB.fbx — меши как есть (+Y), веса по положению, весь скелет повёрнут на 180° при экспорте
+# Export orientation test on vanilla meshes with the developers' weights (Female_BodyBase: body, hands, feet, head).
+# Produces two FBX files for import into the editor and comparison of the animation in the Model Viewer:
+#   eq_convA.fbx - meshes turned to -Y, l/r weights swapped, skeleton not rotated (as the pony has now)
+#   eq_convB.fbx - meshes as is (+Y), weights by position, the whole skeleton rotated 180° on export
 #
 # blender --background --factory-startup --python convention_test.py -- <human_skeleton.fbx> <Female_BodyBase.fbx> <out_dir>
 import math
@@ -16,7 +16,7 @@ from reference_body import bone_name_map, fit_matrix  # noqa: E402
 
 SKEL, REF, OUT = sys.argv[sys.argv.index("--") + 1:]
 os.makedirs(OUT, exist_ok=True)
-MATERIAL = "eq_twilight_body"  # уже есть в редакторе — импорт без ошибок материалов
+MATERIAL = "eq_twilight_body"  # already exists in the editor: import without material errors
 
 
 def log(*a):

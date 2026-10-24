@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Этап 1: дублировать и отзеркалить левую руку в мировых координатах, НЕ трогая правую.
+"""Stage 1: duplicate and mirror the left arm in world coordinates WITHOUT touching the right one.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_arm_stage1.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_arm_stage1.py
 
-Только создаёт зеркальную копию рядом (новые вершины/грани, отдельно от старой правой руки),
-чтобы сначала визуально сверить, совпадает ли она с текущей правой рукой по месту. Старую правую
-руку и объединение делает отдельный, второй скрипт — после того как эта проверка пройдёт.
+It only creates a mirrored copy next to it (new vertices/faces, separate from the old right arm),
+to first visually check whether it matches the current right arm in position. The old right
+arm and the merge are handled by a separate, second script, after this check passes.
 
-Зеркалим именно в МИРОВЫХ координатах (не в локальных): у объекта нетривиальный transform
-(отрицательный масштаб по X + поворот), и локальное «просто отразить X» даёт перекошенный
-результат — с мировыми координатами это не важно.
+We mirror specifically in WORLD coordinates (not local ones): the object has a non-trivial transform
+(negative scale on X + rotation), and a local "just flip X" gives a skewed
+result; with world coordinates this does not matter.
 """
 import re
 

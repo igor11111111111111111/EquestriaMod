@@ -1,4 +1,4 @@
-# Сравнение длины списков внешности расы pony и человека (для редактора внешности они должны совпадать).
+# Compare the lengths of the appearance lists of the pony race and the human (they must match for the face editor).
 # py tools/compare_race_lists.py <Native skins.xml> <pony_skins.xml>
 import sys
 import xml.etree.ElementTree as ET

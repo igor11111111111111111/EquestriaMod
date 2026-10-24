@@ -1,12 +1,12 @@
-﻿# Экспорт FBX оленихи из поправленной модели — перед tools\deer_material.ps1.
+﻿# Exports the doe FBX from the fixed-up model; run before tools\deer_material.ps1.
 #
 #   .\tools\deer_fbx.ps1
 #
-# Зовёт tools\deer_edit_export.py в assets\deer\eq_deer.blend: экспортирует скелет (bip01_notused)
-# и части (body/legs/tail/gloves/ears/hair/head, 4 варианта рогов, 4 копии кос) из «Meshy Braided Fawn» в
-# assets\deer\eq_deer.fbx — теми же настройками, что и основной конвейер tools\make_deer_model.py
-# (оси X/-Y, без анимации). Дальше руками: импорт этого FBX в Modding Kit (Resource Browser ->
-# Import), затем .\tools\deer_material.ps1.
+# Calls tools\deer_edit_export.py in assets\deer\eq_deer.blend: exports the skeleton (bip01_notused)
+# and parts (body/legs/tail/gloves/ears/hair/head, 4 antler variants, 4 braid copies) from
+# «Meshy Braided Fawn» to assets\deer\eq_deer.fbx, with the same settings as the main pipeline
+# tools\make_deer_model.py (axes X/-Y, no animation). Then by hand: import this FBX into the Modding Kit
+# (Resource Browser -> Import), then .\tools\deer_material.ps1.
 param([string]$Blender = "D:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe")
 
 $ErrorActionPreference = "Stop"

@@ -1,13 +1,13 @@
-"""Усиление музыки (запускается внутри Blender: у него есть звуковой модуль aud).
+"""Music gain (runs inside Blender: it has the aud sound module).
 
-  blender --background --factory-startup --python tools/music_gain.py -- <файл-задание.json>
+  blender --background --factory-startup --python tools/music_gain.py -- <job-file.json>
 
-Задание: [[исходный ogg, готовый ogg, целевая громкость, битрейт], ...].
+Job: [[source ogg, output ogg, target loudness, bitrate], ...].
 
-Треки в наборе очень разные по громкости (у тихих в 5 раз меньше, чем у ванильной музыки игры),
-поэтому каждый подтягивается к ОДНОЙ громкости: подбирается усиление, при котором средняя громкость
-(rms) после мягкого ограничения (tanh) равна целевой. Так тихие становятся слышны, а громкие не орут.
-Битрейт заодно задаёт вес готовой музыки. Вызывается из tools/make_music.py.
+The tracks in the set differ a lot in loudness (the quiet ones are 5 times lower than the game's vanilla music),
+so each one is pulled to ONE loudness: a gain is chosen at which the average loudness
+(rms) after soft limiting (tanh) equals the target. That way the quiet ones become audible and the loud ones do not blare.
+The bitrate also sets the size of the finished music. Called from tools/make_music.py.
 """
 import json
 import os
@@ -18,7 +18,7 @@ import numpy as np
 
 jobs = json.load(open(sys.argv[sys.argv.index("--") + 1], encoding="utf-8"))
 MAX_GAIN = 16.0
-# запас по пикам: кодек ogg на выходе слегка перелетает через край, с запасом пики остаются в норме
+# peak headroom: the ogg codec slightly overshoots the edge on output, with headroom the peaks stay within limits
 HEADROOM = 0.85
 
 
@@ -31,7 +31,7 @@ for src, dst, target, bitrate in jobs:
     rate, channels = int(sound.specs[0]), int(sound.specs[1])
     data = sound.data()
     gain = min(MAX_GAIN, target / max(rms(data), 1e-9))
-    for _ in range(4):  # tanh поджимает громкость, поэтому усиление подбираем в несколько шагов
+    for _ in range(4):  # tanh squeezes loudness, so the gain is chosen in several steps
         loud = np.tanh(data * gain) * HEADROOM
         got = rms(loud)
         if abs(got - target) < 0.005 or got < 1e-9:

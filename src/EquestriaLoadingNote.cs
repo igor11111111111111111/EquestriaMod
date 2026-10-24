@@ -7,25 +7,25 @@ using TaleWorlds.MountAndBlade.GauntletUI;
 
 namespace EquestriaMod
 {
-    // Строка о сборке шейдеров прямо на загрузочном экране.
+    // A line about shader compilation right on the loading screen.
     //
-    // У загрузочного окна есть готовое место для текста: LoadingWindowViewModel.DescriptionText —
-    // та самая подпись под картинкой, где игра пишет советы. Окно обновляет себя методом Update,
-    // и достаточно после него подставить свой текст. Так же это делает The Old Realms
-    // (TOR_Core.HarmonyPatches.LoadingScreenPatches) — мод показывает «Shader compilation in
+    // The loading window has a ready place for text: LoadingWindowViewModel.DescriptionText -
+    // the very caption under the picture where the game writes tips. The window updates itself with the Update
+    // method, and it is enough to substitute our own text after it. The Old Realms does the same
+    // (TOR_Core.HarmonyPatches.LoadingScreenPatches) - the mod shows «Shader compilation in
     // progress. Remaining shaders to compile: N».
     //
-    // Число незаконченных сборок отдаёт сам движок: Utilities.GetNumberOfShaderCompilationsInProgress.
-    // Оно общее на игру, а не только наше, но во время загрузки кампании собираются как раз наши
-    // варианты — ванильные давно лежат в Shaders\D3D11\compressed_shader_cache.sack.
+    // The number of unfinished compilations comes from the engine itself: Utilities.GetNumberOfShaderCompilationsInProgress.
+    // It is global for the game, not just ours, but during campaign loading it is exactly our
+    // variants being compiled - the vanilla ones have long been in Shaders\D3D11\compressed_shader_cache.sack.
     public static class EquestriaLoadingNote
     {
-        // Сколько сборок было в разгар: по нему считается, сколько уже сделано
+        // How many compilations there were at the peak: used to compute how many are already done
         private static int _peak;
-        private static string _extra;      // что ещё написать рядом (например, «прогрев начат»)
+        private static string _extra;      // what else to write next to it (for example, "warm-up started")
 
-        // Тексты с переводом: английский по умолчанию, русский и остальные — из языковых файлов
-        // (tools/make_world.py, HAND_WRITTEN). TextObject держим готовыми: подпись обновляется каждый кадр.
+        // Translated texts: English by default, Russian and the rest from the language files
+        // (tools/make_world.py, HAND_WRITTEN). TextObjects are kept ready: the caption is updated every frame.
         private static readonly TextObject Preparing =
             new TextObject("{=eq_load_preparing}Equestria: preparing shaders - {NOTE}");
         private static readonly TextObject Compiling =
@@ -45,7 +45,7 @@ namespace EquestriaMod
             EquestriaCrashLog.Log("надпись на загрузке: подпись окна перехвачена");
         }
 
-        // Постфикс окна загрузки: подменяем подпись, пока идёт сборка шейдеров.
+        // Loading window postfix: replace the caption while shaders are being compiled.
         private static void AfterUpdate(LoadingWindowViewModel __instance)
         {
             try
@@ -53,8 +53,8 @@ namespace EquestriaMod
                 var left = Utilities.GetNumberOfShaderCompilationsInProgress();
                 if (left <= 0)
                 {
-                    // Сборка ещё не началась, но прогрев уже раздаёт меши — покажем и это,
-                    // иначе окно молчит как раз в самое долгое время.
+                    // Compilation has not started yet, but the warm-up is already handing out meshes - show that too,
+                    // otherwise the window is silent exactly during the longest time.
                     if (_extra != null)
                     {
                         __instance.DescriptionText = Preparing.SetTextVariable("NOTE", _extra).ToString();
@@ -68,23 +68,23 @@ namespace EquestriaMod
             }
             catch (Exception)
             {
-                // подпись — дело десятое, ронять из-за неё загрузку нельзя
+                // the caption is a minor matter, the loading must not crash because of it
             }
         }
 
-        /// <summary>Приписка к строке загрузки (чем занят мод), например «греем броню улья».</summary>
+        /// <summary>Addition to the loading line (what the mod is busy with), e.g. "warming up hive armour".</summary>
         public static void Note(string text)
         {
             _extra = text;
         }
 
-        /// <summary>Приписка «броня улья» на языке игрока.</summary>
+        /// <summary>The "hive armour" addition in the player's language.</summary>
         public static string HiveArmourNote()
         {
             return HiveNote.ToString();
         }
 
-        /// <summary>Сообщение слева вверху: видно уже на карте, когда загрузка кончилась.</summary>
+        /// <summary>Message at the top left: visible already on the map once loading has finished.</summary>
         public static void Show(string text)
         {
             try
@@ -93,7 +93,7 @@ namespace EquestriaMod
             }
             catch (Exception)
             {
-                // до создания кампании сообщений ещё нет — не беда
+                // before the campaign is created there are no messages yet - no problem
             }
         }
     }

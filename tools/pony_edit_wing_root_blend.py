@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
-"""Привязать крыло к ключице (= кость передней ноги пони), чтобы оно взмахивало в такт бегу/бою.
+"""Bind the wing to the clavicle (= the pony's front leg bone) so it flaps in time with running/fighting.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_wing_root_blend.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_wing_root_blend.py
 
-Раньше (до 07.10.2026) этот скрипт давал ключице лишь чуть веса у самого корня — только чтобы
-закрыть щель у плеча при развороте руки, остальное крыло оставалось жёстко на bip01_spine2_11
-(по прошлой просьбе не цепляться за кости ног). Теперь — наоборот: ключица уже качается в КАЖДОЙ
-готовой анимации бега/боя (это кость передней лапы), и при 100% веса на одну кость вершина просто
-жёстко вращается вместе с ней — так что отдать ей почти всё крыло даёт взмах "бесплатно", без
-единой новой анимации. Кончик крыла получает самую большую амплитуду сам, просто от плеча рычага.
-Короткий переходный участок у самого основания (ROOT_NEAR..ROOT_FAR) оставлен, чтобы не было щели/
-складки на стыке с телом — дальше него крыло почти целиком на ключице (ROOT_MAX).
+Before (until 07.10.2026) this script gave the clavicle only a little weight right at the root — just to
+close the gap at the shoulder when the arm turns, the rest of the wing stayed rigidly on bip01_spine2_11
+(per an earlier request not to hook onto the leg bones). Now it is the opposite: the clavicle already
+swings in EVERY ready run/fight animation (it is the front leg bone), and with 100% weight on one bone a
+vertex simply rotates rigidly with it — so giving it almost the whole wing yields a flap "for free",
+without a single new animation. The wing tip gets the largest amplitude by itself, simply from the lever arm.
+A short transition zone right at the base (ROOT_NEAR..ROOT_FAR) is kept so there is no gap/fold at the
+joint with the body — beyond it the wing is almost entirely on the clavicle (ROOT_MAX).
 """
 import bpy
 
-ROOT_NEAR = 0.05     # ближе этого к ключице (сам стык с телом) — вес ключицы ~0, держим spine2 как у тела
-ROOT_FAR = 0.30       # дальше этого — уже чистый ROOT_MAX до самого кончика крыла (там макс. амплитуда)
-ROOT_MAX = 0.92       # доля веса ключицы за переходным участком (не 1.0 — чуть держим spine2 для устойчивости)
+ROOT_NEAR = 0.05     # closer than this to the clavicle (the joint with the body) — clavicle weight ~0, keep spine2 like the body
+ROOT_FAR = 0.30       # beyond this — pure ROOT_MAX all the way to the wing tip (max. amplitude there)
+ROOT_MAX = 0.92       # clavicle weight share past the transition zone (not 1.0 — keep a bit of spine2 for stability)
 
 ob = bpy.data.collections["Пони - цельная"].objects["eq_pony_wings"]
 skel = bpy.data.objects["bip01_notused"]

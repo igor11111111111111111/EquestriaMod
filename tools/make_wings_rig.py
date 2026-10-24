@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
-"""Машущие крылья пони на ванильном скелете птицы (10.10.2026).
+"""Flapping pony wings on the vanilla bird skeleton (10.10.2026).
 
-В human_skeleton нет костей для крыльев, а свои кости движок не даёт. Птицы в игре — проп со
-скелетом bird_skeleton и клипами anim_bird_* (Native Bird.cs). Делаем так же: меш крыльев пони
-привязываем к крыльевым костям bird_skeleton, в игре проп вешаем на spine2 и играем anim_bird_cycle.
+human_skeleton has no bones for wings, and the engine does not allow custom bones. Birds in the game
+are a prop with the bird_skeleton skeleton and anim_bird_* clips (Native Bird.cs). We do the same:
+the pony wing mesh is bound to the wing bones of bird_skeleton, in game the prop is attached to spine2
+and plays anim_bird_cycle.
 
-Скелет птицы снят из игры (EquestriaWingsTest, дамп в tools/engine_rest_bird_skeleton.txt) и
-собран здесь как арматура: оси как в make_flight_pose_engine.py (engine s = ось кости = Blender Y,
-f = -Blender X, u = Blender Z), позиции — как в движке (масштаб птицы). Меш крыльев пони
-ужимается в SCALE раз вокруг начала арматуры T ((v - T) / SCALE), а в игре сущность ставится в T
-с масштабом SCALE (EquestriaWings.Scale) — так и кости, и меш возвращаются к размеру пони.
-(Первая версия 10.10.2026 масштабировала кости ×SCALE и оставляла меш как есть — в игре меш
-раздувался второй раз и уезжал в сторону.)
+The bird skeleton was dumped from the game (EquestriaWingsTest, dump in
+tools/engine_rest_bird_skeleton.txt) and rebuilt here as an armature: axes as in
+make_flight_pose_engine.py (engine s = bone axis = Blender Y, f = -Blender X, u = Blender Z), positions
+as in the engine (bird scale). The pony wing mesh is shrunk SCALE times around the armature origin T
+((v - T) / SCALE), and in game the entity is placed at T with scale SCALE (EquestriaWings.Scale) — so
+both the bones and the mesh return to pony size.
+(The first version of 10.10.2026 scaled the bones ×SCALE and left the mesh as is — in game the mesh
+was inflated a second time and drifted sideways.)
 
-Запуск (из корня мода):
+Run (from the mod root):
     blender --background assets/pony/eq_pony_edit.blend --python tools/make_wings_rig.py
-Выход: assets/wings/eq_pony_wings_rig.fbx (меш eq_pony_wings_rig + арматура bird_skeleton),
-затем Resource Browser → Assets/wings → Import new asset.
+Output: assets/wings/eq_pony_wings_rig.fbx (mesh eq_pony_wings_rig + armature bird_skeleton),
+then Resource Browser → Assets/wings → Import new asset.
 """
 import math
 import os
@@ -33,17 +35,17 @@ OUT_FBX = os.path.join(OUT_DIR, "eq_pony_wings_rig.fbx")
 MESH_NAME = "eq_pony_wings_rig"
 ARM_NAME = "bird_skeleton"
 
-# Цепочки крыла, которым раздаём веса (перья-кости не трогаем — они складываются в клипе сами)
-# Только плечевая кость на каждую сторону (10.10.2026): у птицы wing_1/wing_2 — локоть и запястье,
-# они на взмахе гнутся навстречу, и ось вращения для глаза уезжала в середину крыла. Пегасу нужен
-# жёсткий взмах всего крыла вокруг плеча — одна кость, веса 1.0.
+# Wing chains that get weights (the feather bones are not touched — they fold in the clip by themselves)
+# Only the shoulder bone per side (10.10.2026): the bird's wing_1/wing_2 are the elbow and wrist, they
+# bend toward each other on the flap, and the visible rotation axis drifted to the middle of the wing.
+# A pegasus needs a rigid flap of the whole wing around the shoulder — one bone, weights 1.0.
 CHAINS = {
     "left": ["left_wing_shoulder"],
     "right": ["right_wing_shoulder"],
 }
-BLEND_DIST = 0.035  # м (в масштабе птицы, ≈0.06 м пони): плавный переход весов между соседними костями
+BLEND_DIST = 0.035  # m (in bird scale, ≈0.06 m pony): smooth weight transition between neighbouring bones
 
-# --------------------------------------------------------------- дамп
+# --------------------------------------------------------------- dump
 vec = r"\(([-\d.]+),([-\d.]+),([-\d.]+)\)"
 bone_re = re.compile(r"\[(\d+)\] (\S+) parent=(-?\d+)")
 rest_re = re.compile(r"entitialRest\s+o=" + vec + r" f=" + vec + r" s=" + vec + r" u=" + vec)
@@ -62,7 +64,7 @@ for line in open(DUMP, encoding="utf-8", errors="replace"):
 by_name = {b["name"]: b for b in bones}
 assert len(bones) >= 20, "дамп птицы неполный"
 
-# --------------------------------------------------------------- меш крыльев
+# --------------------------------------------------------------- wing mesh
 wings = bpy.data.collections["Пони - цельная"].objects["eq_pony_wings"]
 W = wings.matrix_world
 verts = [W @ v.co for v in wings.data.vertices]
@@ -72,11 +74,11 @@ root_c = sum(root, Vector()) / len(root) if root else Vector((0, 0.2, 1.2))
 bird_tip_x = abs(by_name["right_wing_2_feather"]["o"].x)
 bird_sh = by_name["left_wing_shoulder"]["o"]
 SCALE = (tip_x - 0.02) / bird_tip_x
-# смещение арматуры: плечи птицы (×SCALE) кладём в корень крыльев пони
+# armature offset: the bird's shoulders (×SCALE) are placed at the root of the pony wings
 T = Vector((0.0, root_c.y - bird_sh.y * SCALE, root_c.z - bird_sh.z * SCALE))
 print(f"[wings] размах пони {tip_x:.3f}, птицы {bird_tip_x:.3f} → SCALE={SCALE:.3f}; корень крыльев {tuple(round(c, 3) for c in root_c)}; T={tuple(round(c, 3) for c in T)}")
 
-# --------------------------------------------------------------- арматура
+# --------------------------------------------------------------- armature
 arm_data = bpy.data.armatures.new(ARM_NAME)
 arm = bpy.data.objects.new(ARM_NAME, arm_data)
 bpy.context.scene.collection.objects.link(arm)
@@ -105,13 +107,13 @@ for b in bones:
         edit[b["name"]].parent = edit[bones[b["parent"]]["name"]]
 bpy.ops.object.mode_set(mode="OBJECT")
 
-# --------------------------------------------------------------- копия меша и веса
+# --------------------------------------------------------------- mesh copy and weights
 mesh_copy = wings.data.copy()
 ob = bpy.data.objects.new(MESH_NAME, mesh_copy)
 bpy.context.scene.collection.objects.link(ob)
 ob.matrix_world = Matrix.Identity(4)
-mesh_copy.transform(W)  # в мировые координаты (как лежат на пони)
-# в пространство птицы: (v - T) / SCALE
+mesh_copy.transform(W)  # into world coordinates (as they lie on the pony)
+# into bird space: (v - T) / SCALE
 mesh_copy.transform(Matrix.Translation(-T))
 mesh_copy.transform(Matrix.Scale(1.0 / SCALE, 4))
 for vg in list(ob.vertex_groups):
@@ -138,9 +140,9 @@ def seg_dist(p, a, b):
 stats = {}
 for v in mesh_copy.vertices:
     p = v.co
-    # Движок зеркалит геометрию скинованного меша по X относительно скелета (см. память
-    # equestria-bannerlord-mod: вершины с -X — на правые кости): без обмена сторон каждое крыло
-    # вращалось вокруг плеча противоположной стороны (10.10.2026).
+    # The engine mirrors skinned mesh geometry in X relative to the skeleton (see memory
+    # equestria-bannerlord-mod: vertices with -X go to the right bones): without swapping sides each
+    # wing rotated around the opposite side's shoulder (10.10.2026).
     side = "right" if p.x >= 0 else "left"
     d = sorted(((seg_dist(p, a, b), name) for name, a, b in segs[side]))
     (d0, n0) = d[0]
@@ -156,25 +158,25 @@ print("[wings] вершин по костям:", stats)
 mod = ob.modifiers.new("Armature", "ARMATURE")
 mod.object = arm
 ob.parent = arm
-# Компенсация привязки (10.10.2026): при Z-up файле, совпадающем с движком, меш в игре оказался
-# повёрнут к костям на 90° вокруг X (кости машут вверх-вниз, меш — назад-внутрь). Поворот одного
-# меша давал параллельный сдвиг (движок компенсирует привязку вокруг начала каждой кости), поэтому
-# поворачиваем ВЕСЬ риг — арматуру с мешем-потомком — через трансформ объекта арматуры (корневой
-# узел FBX редактор берёт 1:1, как и у human_skeleton.fbx с его PreRotation (90,0,0)).
+# Bind compensation (10.10.2026): with a Z-up file matching the engine, the mesh in game turned out
+# rotated 90° around X relative to the bones (the bones flap up and down, the mesh back and inward).
+# Rotating the mesh alone gave a parallel offset (the engine compensates the bind around each bone's
+# origin), so we rotate the WHOLE rig — the armature with its child mesh — via the armature object's
+# transform (the editor takes the FBX root node 1:1, as with human_skeleton.fbx and its PreRotation (90,0,0)).
 RIG_FIX_X_DEG = 90.0
 arm.matrix_world = Matrix.Rotation(math.radians(RIG_FIX_X_DEG), 4, "X")
 ob.matrix_parent_inverse = Matrix.Identity(4)
 ob.matrix_basis = Matrix.Identity(4)
 
-# --------------------------------------------------------------- экспорт
+# --------------------------------------------------------------- export
 os.makedirs(OUT_DIR, exist_ok=True)
 bpy.ops.object.select_all(action="DESELECT")
 ob.select_set(True)
 arm.select_set(True)
 bpy.context.view_layer.objects.active = arm
-# Z-up файл (axis_forward="Y", axis_up="Z"): как контейнер клипа позы (make_flight_pose.py). С
-# экспортом по умолчанию (Y-up) кости в игре стояли верно, а МЕШ оказался повёрнут на 90° к ним
-# (bind-матрицы в Y-up против Z-up скелета движка) — крылья махали вперёд (измерено 10.10.2026).
+# Z-up file (axis_forward="Y", axis_up="Z"): like the pose clip container (make_flight_pose.py). With
+# the default export (Y-up) the bones stood correctly in game, but the MESH was rotated 90° to them
+# (bind matrices in Y-up vs. the engine's Z-up skeleton) — the wings flapped forward (measured 10.10.2026).
 bpy.ops.export_scene.fbx(filepath=OUT_FBX, use_selection=True, add_leaf_bones=False, bake_anim=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y", path_mode="STRIP",
                          axis_forward="Y", axis_up="Z")

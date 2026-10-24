@@ -12,23 +12,23 @@ using Path = System.IO.Path;
 
 namespace EquestriaMod
 {
-    // Голосовые отклики на приказы в сцене боя. Реплики — файлы (.wav/.ogg) в Module\Sounds\<папка>:
-    //   order_voice — открыли меню приказов (F1);
-    //   order_move  — отдали приказ «переместиться на позицию»;
-    //   order_charge — отдали приказ «в атаку» (F1, F3);
-    //   order_retreat — отдали приказ «отступать»;
-    //   order_follow — отдали приказ «за мной»;
-    //   order_hold_fire — отдали приказ «прекратить огонь»;
-    //   остальные 18 своих папок (order_advance, order_stop, order_infantry, ...) — каждая под
-    //   свою команду (см. ShoutFolders ниже), озвучены 03.10.2026;
-    //   order_other — то, чему своей папки так и не завели (на будущее — новые приказы движка).
-    // Играет случайная реплика из папки. Чтобы заменить звуки, достаточно поменять файлы.
+    // Voice responses to orders in a battle scene. The lines are files (.wav/.ogg) in Module\Sounds\<folder>:
+    //   order_voice: the order menu was opened (F1);
+    //   order_move: the "move to position" order was given;
+    //   order_charge: the "charge" order was given (F1, F3);
+    //   order_retreat: the "retreat" order was given;
+    //   order_follow: the "follow me" order was given;
+    //   order_hold_fire: the "hold fire" order was given;
+    //   the other 18 folders of their own (order_advance, order_stop, order_infantry, ...) each for
+    //   its own command (see ShoutFolders below), voiced on 03.10.2026;
+    //   order_other: whatever never got its own folder (for the future: new engine orders).
+    // A random line from the folder plays. To replace the sounds, just change the files.
     //
-    // Файлы играет программируемое событие FMOD "event:/Extra/voiceover" — так игра озвучивает
-    // диалоги, свой звуковой банк собирать не нужно.
+    // The files are played by the programmable FMOD event "event:/Extra/voiceover"; that is how the game voices
+    // dialogues, so no need to build our own sound bank.
     //
-    // order_voice/_move/_charge/_retreat/_follow пока на временных репликах из Equestria at War
-    // (см. ИСТОЧНИК.txt рядом с ними) — остальные уже озвучены.
+    // order_voice/_move/_charge/_retreat/_follow are still on temporary lines from Equestria at War
+    // (see the SOURCE note .txt next to them); the rest are already voiced.
     public class EquestriaOrderVoice : MissionLogic
     {
         private const string VoiceEvent = "event:/Extra/voiceover";
@@ -40,10 +40,10 @@ namespace EquestriaMod
         private const string HoldFireFolder = "order_hold_fire";
         private const string OtherFolder = "order_other";
 
-        // 18 команд без своего OrderType (выбор оружия, построения, разворот, передача отряда) —
-        // движок озвучивает их только «выкриком» (Agent.MakeVoice), приказ как таковой
-        // OnOrderIssued не ловит. Играем их из MuteVanillaOrderShouts.Prefix (см. ниже), не
-        // отсюда — там и так уже перехватывается нужный момент, чтобы заглушить ваниль.
+        // 18 commands without their own OrderType (weapon choice, formations, turning, transferring a troop):
+        // the engine voices them only with a "shout" (Agent.MakeVoice); OnOrderIssued does not catch the order
+        // as such. We play them from MuteVanillaOrderShouts.Prefix (see below), not
+        // from here: that is where the right moment is already intercepted anyway, to mute vanilla.
         private const string AdvanceFolder = "order_advance";
         private const string FallBackFolder = "order_fall_back";
         private const string StopFolder = "order_stop";
@@ -65,7 +65,7 @@ namespace EquestriaMod
         private const string HorseArchersFolder = "order_horse_archers";
         private const string MixedFormationFolder = "order_mixed_formation";
 
-        // Приказ -> папка с репликами
+        // Order -> folder with lines
         private static readonly Dictionary<OrderType, string> OrderFolders = new Dictionary<OrderType, string>
         {
             { OrderType.Move, MoveFolder },
@@ -77,7 +77,7 @@ namespace EquestriaMod
             { OrderType.FollowMe, FollowFolder },
             { OrderType.HoldFire, HoldFireFolder },
         };
-        // Остальные приказы (строй, стоять, вперёд, огонь и прочие) озвучиваются общими репликами.
+        // Other orders (formation, stand, advance, fire and the rest) are voiced with the general lines.
 
         private static readonly Dictionary<string, string[]> Clips = new Dictionary<string, string[]>();
         private readonly Random _random = new Random();
@@ -87,20 +87,20 @@ namespace EquestriaMod
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            // Любой сбой здесь уронил бы весь бой (OnMissionTick зовётся каждый кадр без защиты),
-            // поэтому всё внутри — под Try.
+            // Any failure here would bring down the whole battle (OnMissionTick is called every frame without protection),
+            // so everything inside is under Try.
             EquestriaCrashLog.Try("голос приказов", Tick);
         }
 
         private void Tick()
         {
             var team = Mission?.PlayerTeam;
-            // Приказы отдаёт только тот, у кого есть свои войска на поле.
+            // Orders are given only by someone who has their own troops on the field.
             if (team == null || !team.IsPlayerGeneral && !team.IsPlayerSergeant)
             {
                 return;
             }
-            // Контроллер приказов появляется не сразу после начала боя — подписываемся, как только он есть.
+            // The order controller does not appear right after the battle starts; we subscribe as soon as it exists.
             var controller = team.PlayerOrderController;
             if (controller != null && controller != _listening)
             {
@@ -113,7 +113,7 @@ namespace EquestriaMod
             }
             if (Input.IsKeyPressed(InputKey.F1))
             {
-                // Пока звучит прошлая реплика, новую не начинаем — частые нажатия слились бы в кашу.
+                // While the previous line is playing, do not start a new one: frequent presses would merge into a mess.
                 Play(MenuFolder, interrupt: false);
             }
         }
@@ -121,18 +121,18 @@ namespace EquestriaMod
         private void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> formations,
                                    OrderController controller, params object[] parameters)
         {
-            // Приказы без своей папки сюда больше не подставляют order_other: у многих из них
-            // (спешиться, сесть на коня, огонь по усмотрению, вперёд, назад, стоять и т.д.) ЕСТЬ
-            // свой OrderType, и он срабатывает ПАРАЛЛЕЛЬНО с выкриком (Agent.MakeVoice) — тот уже
-            // включает нужную реплику через MuteVanillaOrderShouts.PlayShoutReplacement. Если бы
-            // мы тут всё равно играли order_other, это interrupt=true обрывало бы уже верно
-            // начатую реплику и подменяло её заглушкой (замечено 03.10.2026). Поэтому играем
-            // только то, что явно прописано в OrderFolders — остальное отдано выкрику целиком.
+            // Orders without their own folder no longer get order_other here: many of them
+            // (dismount, mount, fire at will, advance, fall back, stand, etc.) DO HAVE
+            // their own OrderType, and it fires IN PARALLEL with the shout (Agent.MakeVoice), which already
+            // starts the right line via MuteVanillaOrderShouts.PlayShoutReplacement. If
+            // we still played order_other here, its interrupt=true would cut off the correctly
+            // started line and replace it with a placeholder (noticed 03.10.2026). So we play
+            // only what is explicitly listed in OrderFolders; the rest is left entirely to the shout.
             if (!OrderFolders.TryGetValue(orderType, out string folder))
             {
                 return;
             }
-            // Приказ идёт сразу за меню F1, поэтому его реплика перебивает прошлую.
+            // The order comes right after the F1 menu, so its line interrupts the previous one.
             EquestriaCrashLog.Try("голос приказов: " + orderType, () => Play(folder, interrupt: true));
         }
 
@@ -157,13 +157,13 @@ namespace EquestriaMod
             _playing?.Play();
         }
 
-        // Есть ли у нас реплики для этой папки — тогда ванильный выкрик командира не нужен.
+        // Whether we have lines for this folder; then the commander's vanilla shout is not needed.
         internal static bool HasClips(string folder)
         {
             return ClipsIn(folder).Length > 0;
         }
 
-        // Ванильный голос командира -> наша папка, которая его заменяет.
+        // Commander's vanilla voice -> our folder that replaces it.
         internal static readonly Dictionary<SkinVoiceManager.SkinVoiceType, string> ReplacedShouts =
             new Dictionary<SkinVoiceManager.SkinVoiceType, string>
             {
@@ -188,7 +188,7 @@ namespace EquestriaMod
                 { SkinVoiceManager.VoiceType.AttackGate, AttackGateFolder },
                 { SkinVoiceManager.VoiceType.CommandDelegate, CommandDelegateFolder },
                 { SkinVoiceManager.VoiceType.CommandUndelegate, CommandUndelegateFolder },
-                // выбор отряда в меню приказов (пехота, конница, стрелки, все)
+                // troop selection in the order menu (infantry, cavalry, archers, all)
                 { SkinVoiceManager.VoiceType.Infantry, InfantryFolder },
                 { SkinVoiceManager.VoiceType.Cavalry, CavalryFolder },
                 { SkinVoiceManager.VoiceType.Archers, ArchersFolder },
@@ -196,10 +196,10 @@ namespace EquestriaMod
                 { SkinVoiceManager.VoiceType.MixedFormation, MixedFormationFolder },
             };
 
-        // Папки без своего OrderType — у них OnOrderIssued никогда не стреляет (см. комментарий у
-        // констант выше), поэтому реплику играет сам MuteVanillaOrderShouts.Prefix, когда глушит
-        // ванильный выкрик. Move/Charge/Retreat/Follow/HoldFire сюда НЕ входят — для них реплику
-        // уже играет OnOrderIssued, второй раз звать не нужно (получилось бы двойное «ещё раз»).
+        // Folders without their own OrderType: OnOrderIssued never fires for them (see the comment at the
+        // constants above), so the line is played by MuteVanillaOrderShouts.Prefix itself when it mutes
+        // the vanilla shout. Move/Charge/Retreat/Follow/HoldFire are NOT included: for them the line
+        // is already played by OnOrderIssued; no need to call it a second time (that would give a double "once more").
         internal static readonly HashSet<string> ShoutOnlyFolders = new HashSet<string>
         {
             AdvanceFolder, FallBackFolder, StopFolder, MountFolder, DismountFolder, FireAtWillFolder,
@@ -209,8 +209,8 @@ namespace EquestriaMod
             MixedFormationFolder,
         };
 
-        // Зовётся из MuteVanillaOrderShouts.Prefix (статический контекст, своего инстанса нет) —
-        // поэтому не private.
+        // Called from MuteVanillaOrderShouts.Prefix (static context, no instance of its own),
+        // hence not private.
         internal void PlayShoutReplacement(string folder)
         {
             EquestriaCrashLog.Try("голос приказов (выкрик): " + folder, () => Play(folder, interrupt: true));
@@ -238,7 +238,7 @@ namespace EquestriaMod
             {
                 return cached;
             }
-            // Библиотека лежит в <мод>\bin\Win64_Shipping_Client — поднимаемся на два уровня.
+            // The library lives in <mod>\bin\Win64_Shipping_Client; go up two levels.
             string bin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string path = Path.GetFullPath(Path.Combine(bin, "..", "..", "Sounds", folder));
             string[] found = Directory.Exists(path)
@@ -254,10 +254,10 @@ namespace EquestriaMod
         }
     }
 
-    // Глушим ванильный выкрик командира там, где играет наша реплика: иначе оба звучат разом.
-    // Выкрик делает OrderController через Agent.MakeVoice у командира (игрока).
-    // Ставится вручную из EquestriaPatches.ApplyLate — без атрибута [HarmonyPatch], чтобы
-    // PatchAll не трогал его при загрузке мода.
+    // Mute the commander's vanilla shout where our line plays: otherwise both sound at once.
+    // The shout is made by OrderController via Agent.MakeVoice on the commander (the player).
+    // Installed by hand from EquestriaPatches.ApplyLate, without the [HarmonyPatch] attribute, so that
+    // PatchAll does not touch it at mod load.
     public static class MuteVanillaOrderShouts
     {
         public static void Apply(Harmony harmony)
@@ -279,8 +279,8 @@ namespace EquestriaMod
                 {
                     return true;
                 }
-                // Move/Charge/Retreat/Follow/HoldFire уже играет OnOrderIssued — тут их только
-                // глушим. Остальные 20 папок своего OrderType не имеют, реплику играем прямо тут.
+                // Move/Charge/Retreat/Follow/HoldFire are already played by OnOrderIssued; here we only
+                // mute them. The other 20 folders have no OrderType of their own; we play the line right here.
                 if (EquestriaOrderVoice.ShoutOnlyFolders.Contains(folder))
                 {
                     Mission.Current?.GetMissionBehavior<EquestriaOrderVoice>()?.PlayShoutReplacement(folder);
@@ -294,10 +294,10 @@ namespace EquestriaMod
         }
     }
 
-    // Глушим и хоровой отклик войск на приказ («Есть!») — OrderController играет его звуками
-    // event:/alerts/nods/move, /attack, /stop и /formation у середины каждого отряда. Слышен он тише
-    // выкрика героя, как будто отвечает толпа. Глушим все четыре: свои реплики есть на любой приказ.
-    // Ставится вручную из EquestriaPatches.ApplyLate (см. там же, почему не при загрузке мода).
+    // Also mute the troops' choral response to an order ("Aye!"): OrderController plays it with the sounds
+    // event:/alerts/nods/move, /attack, /stop and /formation at the middle of each troop. It sounds quieter
+    // than the hero's shout, as if a crowd answers. We mute all four: we have our own lines for any order.
+    // Installed by hand from EquestriaPatches.ApplyLate (see there why not at mod load).
     public static class MuteVanillaOrderNods
     {
         private static int[] _nods;

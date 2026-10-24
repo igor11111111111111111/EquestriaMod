@@ -4,20 +4,20 @@ using TaleWorlds.Core;
 
 namespace EquestriaMod
 {
-    // Делает героя игрока пони, какую бы державу он ни выбрал при создании персонажа.
+    // Makes the player hero a pony, whichever realm they pick during character creation.
     //
-    // Раньше здесь добавлялась отдельная культура «Пони»: список культур на экране выбора жёстко
-    // прописан на шесть штук, и своя культура в него не попадала без этого обработчика.
-    // Теперь культуры Equus заняли ванильные идентификаторы (Эквестрия = empire, Кристальная
-    // Империя = vlandia и так далее), поэтому экран выбора показывает наши державы сам, а сюжетные
-    // этапы — семья, детство, юность — работают на ванильных данных без подмен.
+    // Previously a separate "Pony" culture was added here: the culture list on the selection screen
+    // is hard-coded to six entries, and our own culture did not get into it without this handler.
+    // Now the Equus cultures have taken the vanilla ids (Equestria = empire, Crystal
+    // Empire = vlandia and so on), so the selection screen shows our realms by itself, and the story
+    // stages — family, childhood, youth — run on vanilla data without substitutions.
     //
-    // Осталась одна задача: раса. В XML её задают персонажам, а герой игрока создаётся в коде.
+    // One task is left: the race. In XML it is set on characters, but the player hero is created in code.
     public class EquestriaCharacterCreationBehavior : CampaignBehaviorBase, ICharacterCreationContentHandler
     {
         public const string RaceId = "pony";
 
-        // Ванильный обработчик зарегистрирован с приоритетом 800; наш вызывается после него
+        // The vanilla handler is registered with priority 800; ours is called after it
         private const int HandlerPriority = 1000;
 
         private CharacterCreationManager _manager;
@@ -34,12 +34,12 @@ namespace EquestriaMod
         private void OnCharacterCreationInitialized(CharacterCreationManager manager)
         {
             _manager = manager;
-            EquestriaCultureArt.Load();     // карточки и фоны народностей — до показа экрана
+            EquestriaCultureArt.Load();     // culture cards and backgrounds — before the screen is shown
             EquestriaCultureArt.ApplyTexts();
             EquestriaQuickStart.NoteCharacterCreationStarted();
             manager.RegisterCharacterCreationContentHandler(this, HandlerPriority);
-            // Пропуск этапов при быстром тесте делает сам EquestriaQuickStart по кадрам:
-            // здесь состояние создания персонажа ещё не активно, и завершать его рано.
+            // Skipping stages in a quick test is done by EquestriaQuickStart itself, frame by frame:
+            // here the character creation state is not active yet, and it is too early to finish it.
         }
 
         void ICharacterCreationContentHandler.InitializeContent(CharacterCreationManager manager)
@@ -64,13 +64,14 @@ namespace EquestriaMod
 
         void ICharacterCreationContentHandler.OnCharacterCreationFinalize(CharacterCreationManager manager)
         {
-            // герою-пони сразу надевается грива, если слот шлема свободен
+            // the pony hero gets a mane right away if the helmet slot is free
             EquestriaMane.EnsureForPonies();
-            // снаряжение предыстории кладёт в слот коня вьючного — у нас это повозка, ей место в обозе
+            // the backstory equipment puts a pack animal into the horse slot — for us that is a cart,
+            // it belongs in the baggage train
             EquestriaCrashLog.Try("конское снаряжение игрока", EquestriaFlightArmy.StripPlayerHorseGear);
             EquestriaCultureArt.Unload();
-            // Срабатывает и у полного мастера, и у пропущенного (SkipCharacterCreation) — сам
-            // EquestriaDefaultStart решает, нужно ли что-то делать (флаг Active).
+            // Fires both for the full wizard and for a skipped one (SkipCharacterCreation) —
+            // EquestriaDefaultStart itself decides whether anything needs doing (the Active flag).
             EquestriaDefaultStart.OnCharacterCreationFinished();
         }
 

@@ -9,15 +9,15 @@ using TaleWorlds.ModuleManager;
 
 namespace EquestriaMod
 {
-    // Скорость отряда по местности.
+    // Party speed by terrain.
     //
-    // Ванильная модель смотрит только на тип грани сетки проходимости и умеет три вещи: лес -30%,
-    // вода и броды -30%, пустыня и дюны -10%. Гор в этом списке нет — в ванили они просто
-    // непроходимы. У нас горы проходимы, иначе карта Эквуса распадается на несвязные куски, и в
-    // сетке они помечены степью (тип Mountain игра считает непроходимым). Поэтому свой множитель:
-    // он лежит в Module/ModuleData/equestria_speed_map.bin (его пишет tools/make_speed_map.py по
-    // той же карте местности и высотам, что и всё остальное) и применяется ПОВЕРХ ванильных
-    // правил. Лес и пустыню там намеренно не штрафуем второй раз.
+    // The vanilla model looks only at the navmesh face type and does three things: forest -30%,
+    // water and fords -30%, desert and dunes -10%. Mountains are not on this list - in vanilla they are simply
+    // impassable. In our mod mountains are passable, otherwise the map of Equus falls apart into disconnected
+    // pieces, and in the mesh they are marked as steppe (the game treats the Mountain type as impassable). Hence
+    // our own multiplier: it lives in Module/ModuleData/equestria_speed_map.bin (written by
+    // tools/make_speed_map.py from the same terrain map and heights as everything else) and is applied ON TOP
+    // of the vanilla rules. Forest and desert are deliberately not penalized a second time there.
     public class EquestriaPartySpeedModel : DefaultPartySpeedCalculatingModel
     {
         private const string FileName = "equestria_speed_map.bin";
@@ -62,7 +62,7 @@ namespace EquestriaMod
                 }
                 _cells = new byte[_grid * _grid];
                 Array.Copy(raw, 12, _cells, 0, _cells.Length);
-                // вторая половина файла, если есть: почему замедление (1 — река)
+                // second half of the file, if present: why it slows down (1 - river)
                 if (raw.Length >= 12 + 2 * _cells.Length)
                 {
                     _why = new byte[_cells.Length];
@@ -77,8 +77,8 @@ namespace EquestriaMod
             }
         }
 
-        // Множитель в точке карты: 1.0 — идти легко, 0.7 — горы и броды, 0.55 — самое тяжёлое.
-        // onRiver — стоит ли отряд на реке: от этого зависит только подпись в разборе скорости.
+        // Multiplier at a map point: 1.0 - easy going, 0.7 - mountains and fords, 0.55 - the hardest.
+        // onRiver - whether the party stands on a river: only the label in the speed breakdown depends on it.
         public static float FactorAt(Vec2 position, out bool onRiver)
         {
             onRiver = false;

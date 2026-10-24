@@ -8,21 +8,21 @@ using TaleWorlds.Engine;
 
 namespace EquestriaMod
 {
-    // Крупные предметы окружения на карте мира (деревья, валуны — tools/map_props.py, имена с
-    // префиксом eq_prop_) пропадают при отдалении камеры, хотя видны вблизи (замечено в игре
-    // 07.10.2026). Дело не в числе LOD-уровней меша: замена одноуровневых map_tree_a/b/c/d на
-    // двухуровневые map_tree_new_a/b/c/d (lod0+lod1-билборд) ничего не изменила — похоже на
-    // отдельную систему отсечения по дальности (возможно, общую с качеством растительности,
-    // foliage_quality в engine_config.txt). По просьбе пользователя графические настройки не
-    // трогаем — вместо этого форсируем нашим предметам лучший LOD GameEntity.
-    // SetEnforcedMaximumLodLevel(0) независимо от дистанции до камеры (apidoc.bannerlord.com,
-    // класс GameEntity).
+    // Large environment props on the world map (trees, boulders: tools/map_props.py, names with
+    // the eq_prop_ prefix) disappear as the camera moves away, although they are visible up close (seen in game
+    // 07.10.2026). It is not the number of mesh LOD levels: replacing the single-level map_tree_a/b/c/d with
+    // the two-level map_tree_new_a/b/c/d (lod0+lod1 billboard) changed nothing; it looks like a
+    // separate distance culling system (possibly shared with the foliage quality,
+    // foliage_quality in engine_config.txt). At the user's request the graphics settings are not
+    // touched; instead we force the best LOD on our props with GameEntity.
+    // SetEnforcedMaximumLodLevel(0) regardless of the distance to the camera (apidoc.bannerlord.com,
+    // class GameEntity).
     //
-    // Доступ к Scene карты мира: Campaign.Current.MapSceneWrapper — интерфейс IMapScene не даёт
-    // прямого доступа к сущностям сцены, у его конкретного (непубличного) типа есть свойство Scene
-    // (видно в decompile SandBox.View.Map.MapScreen: "MapScene = ((MapScene)Campaign.Current.
-    // MapSceneWrapper).Scene"). Тот же приём, что EquestriaBodyParts.GetEntity у AgentVisuals —
-    // берём через рефлексию по имени свойства, не по типу.
+    // Access to the world map Scene: Campaign.Current.MapSceneWrapper; the IMapScene interface gives no
+    // direct access to the scene entities, but its concrete (non-public) type has a Scene property
+    // (seen in decompiled SandBox.View.Map.MapScreen: "MapScene = ((MapScene)Campaign.Current.
+    // MapSceneWrapper).Scene"). The same trick as EquestriaBodyParts.GetEntity on AgentVisuals:
+    // taken via reflection by property name, not by type.
     public static class EquestriaMapPropsLod
     {
         private const string Prefix = "eq_prop_";
@@ -30,7 +30,7 @@ namespace EquestriaMod
         private static bool _done;
         private static DateTime _mapSeenAt = DateTime.MinValue;
 
-        /// <summary>Зовётся каждый кадр из SubModule.OnApplicationTick.</summary>
+        /// <summary>Called every frame from SubModule.OnApplicationTick.</summary>
         public static void Tick()
         {
             if (_done)

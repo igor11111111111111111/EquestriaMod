@@ -1,5 +1,5 @@
-# Отчёт о модели: объекты, размеры, полигоны, материалы, скелет.
-# Запуск: blender --background --factory-startup --python inspect_model.py -- <файл .gltf/.glb/.fbx>
+# Model report: objects, sizes, polygons, materials, skeleton.
+# Run: blender --background --factory-startup --python inspect_model.py -- <.gltf/.glb/.fbx file>
 import sys
 import bpy
 from mathutils import Vector

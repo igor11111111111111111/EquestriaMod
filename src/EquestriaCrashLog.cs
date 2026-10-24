@@ -6,23 +6,23 @@ using System.Text;
 
 namespace EquestriaMod
 {
-    // Запись исключений .NET в отдельный файл рядом с модом.
+    // Writes .NET exceptions to a separate file next to the mod.
     //
-    // Зачем: игра при падении зовёт свой родной обработчик, и управляемый стек до журнала не
-    // доходит — в rgl_log обрыв на полуслове, а в дампе вместо места падения только кадры clr.dll.
-    // Перехват первого шанса срабатывает раньше всего этого, пока стек ещё цел.
+    // Why: on a crash the game calls its own native handler, and the managed stack never reaches the
+    // log — rgl_log breaks off mid-word, and the dump shows only clr.dll frames instead of the crash site.
+    // The first-chance hook fires before all of that, while the stack is still intact.
     //
-    // Файл: <папка мода>\eq_exceptions.log, переписывается при каждом запуске игры.
+    // File: <mod folder>\eq_exceptions.log, overwritten on every game launch.
     //
-    // Подробный режим (10.10.2026, перед релизом): обычные строки (Log) и перехват КАЖДОГО исключения
-    // «первого шанса» во всей игре (со снятием стека) — только с ключом /eqverbose, его добавляет
-    // run.ps1 при любом тестовом запуске. У игрока (запуск из лаунчера) в журнал идут лишь отметки
-    // этапов (Note), предупреждения (Warn, в том числе ошибки шагов Try) и необработанные исключения.
+    // Verbose mode (10.10.2026, before release): ordinary lines (Log) and catching EVERY first-chance
+    // exception in the whole game (with a stack capture) — only with the /eqverbose switch, which
+    // run.ps1 adds on any test launch. For the player (launch from the launcher) the log gets only stage
+    // marks (Note), warnings (Warn, including Try step errors) and unhandled exceptions.
     public static class EquestriaCrashLog
     {
         private const long SizeLimit = 8 * 1024 * 1024;
 
-        /// <summary>Подробный журнал: ключ /eqverbose в командной строке игры.</summary>
+        /// <summary>Verbose log: the /eqverbose switch on the game's command line.</summary>
         public static readonly bool Verbose = Array.Exists(Environment.GetCommandLineArgs(),
             a => string.Equals(a, "/eqverbose", StringComparison.OrdinalIgnoreCase));
 
@@ -39,16 +39,16 @@ namespace EquestriaMod
             _installed = true;
             try
             {
-                // Библиотека лежит в <мод>\bin\Win64_Shipping_Client — поднимаемся на два уровня.
+                // The library is in <mod>\bin\Win64_Shipping_Client — go up two levels.
                 string bin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string root = Path.GetFullPath(Path.Combine(bin, "..", ".."));
                 _path = Path.Combine(root, "eq_exceptions.log");
-                // С меткой BOM: без неё блокнот и PowerShell читают русский текст крякозябрами.
+                // With a BOM: without it Notepad and PowerShell read Russian text as mojibake.
                 File.WriteAllText(_path, "Запуск игры " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "\r\n",
                     new UTF8Encoding(true));
 
-                // Перехват первого шанса дорогой: срабатывает на любое исключение в игре, в том числе
-                // обработанное ею самой, и каждый раз снимает стек — только в подробном режиме.
+                // The first-chance hook is expensive: it fires on any exception in the game, including
+                // ones the game handles itself, and captures the stack every time — verbose mode only.
                 if (Verbose)
                 {
                     AppDomain.CurrentDomain.FirstChanceException += OnFirstChance;
@@ -57,17 +57,17 @@ namespace EquestriaMod
             }
             catch (Exception)
             {
-                // Некуда писать — молчим, иначе сломаем запуск игры из-за журнала.
+                // Nowhere to write — stay silent, otherwise the log would break the game launch.
             }
         }
 
-        // Отметка о шаге мода: видно, на чём именно случилось следующее исключение.
+        // A mark for a mod step: shows exactly where the next exception happened.
         public static void Note(string text)
         {
             Append("--- " + text);
         }
 
-        // Обычная строка journal: числа, найденные объекты, результаты проверок.
+        // An ordinary log line: numbers, found objects, check results.
         public static void Log(string text)
         {
             if (Verbose)
@@ -76,14 +76,14 @@ namespace EquestriaMod
             }
         }
 
-        // Заметное предупреждение: что-то не найдено или выглядит неправильно, но игра ещё жива.
+        // A visible warning: something was not found or looks wrong, but the game is still alive.
         public static void Warn(string text)
         {
             Append("!!! " + text);
         }
 
-        // Обёртка для опасного шага. Исключение внутри не роняет запуск, но попадает в журнал
-        // вместе с именем шага — без неё в родном обработчике игры видно только «упало где-то».
+        // Wrapper for a risky step. An exception inside does not crash the launch, but goes to the log
+        // together with the step name — without it the game's native handler shows only "crashed somewhere".
         public static void Try(string step, Action action)
         {
             try
@@ -99,9 +99,9 @@ namespace EquestriaMod
 
         private static void OnFirstChance(object sender, FirstChanceExceptionEventArgs e)
         {
-            // У исключения «первого шанса» свойство StackTrace содержит только метод, который его
-            // бросил: стек дописывается по мере раскрутки, а она ещё не началась. Поэтому снимаем
-            // текущий стек потока отдельно — из него видно, КТО вызвал упавший метод.
+            // For a first-chance exception the StackTrace property holds only the method that threw it:
+            // the stack is filled in during unwinding, which has not started yet. So we capture the
+            // current thread stack separately — it shows WHO called the failing method.
             string callers;
             try
             {
@@ -143,7 +143,7 @@ namespace EquestriaMod
             try
             {
                 string line = "[" + DateTime.Now.ToString("HH:mm:ss.fff") + "] " + text + "\r\n";
-                // Дописываем с закрытием файла: при падении последняя запись не должна потеряться.
+                // Append and close the file: on a crash the last entry must not be lost.
                 File.AppendAllText(_path, line, new UTF8Encoding(true));
                 _written += line.Length;
             }

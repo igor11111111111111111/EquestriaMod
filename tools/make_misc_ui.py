@@ -1,16 +1,16 @@
-# Мелкие строки интерфейса, вписанные прямо в C# (а не в XML данные): лагерь наёмников
-# (EquestriaMercCamp.cs), переключатель крыльев/хвоста/рога и полосок (EquestriaHairStyleView.cs),
-# кнопка «смотр рас» (EquestriaRaceParty.cs), уведомление о восстановлении расы
-# (EquestriaRaceSaveBehavior.cs). Английский текст уже лежит в коде как {=ключ}English — этот
-# скрипт только довозит русский (и заготовку с тем же английским) до Languages/<язык>.
+# Small UI strings written directly in C# (not in XML data): the mercenary camp
+# (EquestriaMercCamp.cs), the wings/tail/horn and stripes toggle (EquestriaHairStyleView.cs),
+# the "race review" button (EquestriaRaceParty.cs), the race restore notification
+# (EquestriaRaceSaveBehavior.cs). The English text already lives in the code as {=key}English - this
+# script only delivers the Russian (and a stub with the same English) to Languages/<language>.
 #
-#   python make_misc_ui.py <папка Module мода>
+#   python make_misc_ui.py <mod Module folder>
 #
-# Без этого файла нерусский игрок видел бы ровно то, что было написано в коде — а до
-# 04.10.2026 там был сырой русский текст без единого {=ключ}, и показывался он ВСЕМ языкам,
-# включая английский (см. память bannerlord-localization: для английского игра берёт текст по
-# умолчанию из самой строки, Languages её не трогает; для остальных языков без ключа вообще
-# не на что сослаться).
+# Without this file a non-Russian player would see exactly what was written in the code - and until
+# 04.10.2026 there was raw Russian text without a single {=key}, and it was shown to ALL languages,
+# including English (see memory bannerlord-localization: for English the game takes the default text
+# from the string itself, Languages does not touch it; for other languages without a key there is
+# nothing to refer to at all).
 import os
 import sys
 
@@ -21,9 +21,9 @@ MOD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Module")
 DATA = os.path.join(MOD, "ModuleData")
 
-# ключ -> (русский, английский — должен слово в слово совпадать с тем, что после {=ключ} в C#)
+# key -> (Russian, English - must match word for word what follows {=key} in C#)
 STRINGS = {
-    # --- EquestriaMercCamp.cs: лагерь наёмников у столиц держав ---
+    # --- EquestriaMercCamp.cs: mercenary camp near the kingdoms' capitals ---
     "eq_merc_camp_name": ("Лагерь наёмников", "Mercenary camp"),
     "eq_merc_camp_hire_option": ("Нанять наёмников", "Hire mercenaries"),
     "eq_merc_camp_line_empty": (
@@ -59,10 +59,10 @@ STRINGS = {
         "Nobody's here right now - come back in a day or two."),
     "eq_merc_camp_title": ("Лагерь наёмников у {TOWN}", "Mercenary camp near {TOWN}"),
 
-    # --- EquestriaPrisonerButchery.cs: подсказка кнопки переработки пленного в окне отряда ---
+    # --- EquestriaPrisonerButchery.cs: hint of the prisoner processing button in the party screen ---
     "eq_prisoner_butcher_hint": ("Пустить на фарш", "Turn into mincemeat"),
 
-    # --- EquestriaHairStyleView.cs: переключатели причёски/крыльев/хвоста/рога ---
+    # --- EquestriaHairStyleView.cs: hair/wings/tail/horn toggles ---
     "eq_hair_plain": ("Сплошная", "Solid"),
     "eq_hair_stripe": ("Полосатая", "Striped"),
     "eq_wings_label": ("Крылья: {STATE}", "Wings: {STATE}"),
@@ -71,15 +71,15 @@ STRINGS = {
     "eq_state_on": ("вкл", "on"),
     "eq_state_off": ("выкл", "off"),
 
-    # --- EquestriaRaceParty.cs: кнопка смотра рас в главном меню ---
+    # --- EquestriaRaceParty.cs: race review button in the main menu ---
     "eq_race_party_menu": ("Эквестрия: смотр рас", "Equestria: race review"),
 
-    # --- EquestriaRaceSaveBehavior.cs: уведомление после загрузки сохранения ---
+    # --- EquestriaRaceSaveBehavior.cs: notification after loading a save ---
     "eq_race_restored_note": (
         "Эквестрия: раса восстановлена у {COUNT} героев",
         "Equestria: restored race for {COUNT} hero(es)"),
 
-    # --- EquestriaDefaultStart.cs: попап выбора начала игры после мастера создания персонажа ---
+    # --- EquestriaDefaultStart.cs: game start choice popup after the character creation wizard ---
     "eq_start_poor": ("Обычный нищий старт", "Ordinary humble start"),
     "eq_start_mercenary": (
         "Наёмник державы (тир клана 1)", "Mercenary of a kingdom (clan tier 1)"),
@@ -104,13 +104,13 @@ STRINGS = {
     "eq_start_type_mercenary": ("наёмник", "mercenary"),
     "eq_start_type_vassal": ("вассал", "vassal"),
     "eq_start_type_king": ("правитель", "ruler"),
-    # подсказка свитка полёта в инвентаре (src/EquestriaFlightScroll.cs, AfterRefreshItemTooltips)
+    # flight scroll tooltip in the inventory (src/EquestriaFlightScroll.cs, AfterRefreshItemTooltips)
     "eq_flight_speed": ("Скорость полёта", "Flight speed"),
-    # подсказка поселения: заголовок разбивки по расам (src/EquestriaRaceAssimilationCommands.cs)
+    # settlement tooltip: header of the breakdown by race (src/EquestriaRaceAssimilationCommands.cs)
     "eq_race_tooltip": ("Раса", "Race"),
-    # уведомление при переработке пленных (src/EquestriaPrisonerButchery.cs)
+    # notification when processing prisoners (src/EquestriaPrisonerButchery.cs)
     "eq_butcher_meat": ("+{MEAT} мяса (всего в отряде: {TOTAL})", "+{MEAT} meat (party total: {TOTAL})"),
-    # своя группа значков в редакторе знамени (Module/ModuleData/equestria_banner_icons.xml)
+    # our own icon group in the banner editor (Module/ModuleData/equestria_banner_icons.xml)
     "eq_banner_group": ("Эквестрия", "Equestria"),
 }
 

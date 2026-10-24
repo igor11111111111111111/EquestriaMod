@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
-"""Общий скрипт разреза gloves/legs пополам по X=0 — тот же приём, что tools/pony_edit_split_limbs.py
-(07.10.2026), но параметризован по расе, чтобы не дублировать его шесть раз для changeling/deer/
-dragon/griffon/hippogriff/yak. Половины нужны для визуального отрубания конечностей
-(EquestriaDismemberment.cs) — снятая конечность и культя на теле должны быть отдельными мешами.
+"""Shared script that cuts gloves/legs in half at X=0 — the same trick as tools/pony_edit_split_limbs.py
+(07.10.2026), but parameterised by race so it is not duplicated six times for changeling/deer/
+dragon/griffon/hippogriff/yak. The halves are needed for visual dismemberment
+(EquestriaDismemberment.cs) — the severed limb and the stump on the body must be separate meshes.
 
-Запуск (аргументы после "--"):
+Run (arguments after "--"):
   blender --background --factory-startup <race>.blend --python tools/split_limbs.py -- \
-      "<Имя коллекции>" <исходное_имя_gloves> <исходное_имя_legs> <префикс_для_новых_имён>
+      "<Collection name>" <source_gloves_name> <source_legs_name> <prefix_for_new_names>
 
-Например, для дракона (в блендере объекты лежат без префикса расы — eq_gloves/eq_legs, расовый
-префикс добавляется только на экспорте, см. tools/dragon_edit_export.py):
+For example, for the dragon (in Blender the objects have no race prefix — eq_gloves/eq_legs, the race
+prefix is added only on export, see tools/dragon_edit_export.py):
   blender --background --factory-startup assets/dragon/eq_dragon.blend --python tools/split_limbs.py -- \
       "Meshy Frostwing Princess" eq_gloves eq_legs eq_
 
-А для яка (объекты уже с префиксом eq_yak_ прямо в блендере):
+And for the yak (objects already have the eq_yak_ prefix right in Blender):
   blender --background --factory-startup assets/yak/eq_yak.blend --python tools/split_limbs.py -- \
       "Meshy Highland Hugger" eq_yak_gloves eq_yak_legs eq_yak_
 
-Результат — 4 новых объекта <префикс>gloves_l/_r, <префикс>legs_l/_r в той же коллекции. Исходные
-gloves/legs НЕ трогаем и не удаляем — целиком они по-прежнему нужны для обычного (не отрубленного)
-персонажа. Дыра на срезе (если появится) заделывается автозаполнением (bmesh.ops.holes_fill).
+Result — 4 new objects <prefix>gloves_l/_r, <prefix>legs_l/_r in the same collection. The source
+gloves/legs are NOT touched or deleted — whole, they are still needed for a normal (not dismembered)
+character. A hole at the cut (if it appears) is patched by auto-fill (bmesh.ops.holes_fill).
 """
 import sys
 
@@ -57,15 +57,15 @@ def split_half(src_name, side, out_name):
     keep_positive = side == "l"
     to_remove = [v for v in bm.verts if (v.co.x > 0) != keep_positive]
     bmesh.ops.delete(bm, geom=to_remove, context="VERTS")
-    # Вершины ровно на X=0 после удаления могут оставлять вырожденные "ниточки" (ребро длиной
-    # 2-4 мм, не входящее ни в одну замкнутую петлю — holes_fill такое не берёт, остаётся дырка
-    # из 1-2 рёбер). Схлопываем совпадающие вершины и вырожденные грани — только на самой границе
-    # среза (а не по всему мешу, иначе рискуем смазать мелкие детали вроде пальцев).
+    # Vertices exactly at X=0 may leave degenerate "threads" after deletion (an edge 2-4 mm long that
+    # is not part of any closed loop — holes_fill does not take such, a hole of 1-2 edges remains).
+    # We collapse coincident vertices and degenerate faces — only on the cut boundary itself
+    # (not over the whole mesh, otherwise we risk smearing small details like fingers).
     boundary_edges = [e for e in bm.edges if len(e.link_faces) == 1]
     if boundary_edges:
         boundary_verts = list({v for e in boundary_edges for v in e.verts})
         bmesh.ops.remove_doubles(bm, verts=boundary_verts, dist=0.002)
-        # Пересчитываем ПОСЛЕ слияния — старые ссылки на bmesh-элементы могли инвалидироваться.
+        # Recompute AFTER merging — old references to bmesh elements may have been invalidated.
         boundary_edges = [e for e in bm.edges if len(e.link_faces) == 1]
         boundary_verts = list({v for e in boundary_edges for v in e.verts})
         nearby_edges = list({e for v in boundary_verts for e in v.link_edges})

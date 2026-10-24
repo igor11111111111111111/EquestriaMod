@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
-"""Карта проходимости для скорости отрядов: где идти тяжелее.
+"""Passability map for party speed: where the going is harder.
 
-  py -3 tools/make_speed_map.py [папка Module]
+  py -3 tools/make_speed_map.py [Module folder]
 
-Ванильная модель скорости (DefaultPartySpeedCalculatingModel) смотрит ТОЛЬКО на тип грани сетки
-проходимости и умеет всего три вещи: лес -30%, вода и броды -30%, пустыня и дюны -10%. У гор
-штрафа нет вовсе — в ванили горы просто непроходимы. У нас горы проходимы (иначе карта Эквуса
-распадается на куски), и размечены они как степь, потому что настоящий тип Mountain игра считает
-непроходимым. Поэтому отдельная карта: на ней для каждой клетки записан множитель скорости,
-а применяет его src/EquestriaPartySpeed.cs поверх ванильных правил.
+The vanilla speed model (DefaultPartySpeedCalculatingModel) looks ONLY at the navmesh face type
+and can do just three things: forest -30%, water and fords -30%, desert and dunes -10%. Mountains
+have no penalty at all - in vanilla mountains are simply impassable. In our mod mountains are passable
+(otherwise the map of Equus falls apart into pieces), and they are marked as steppe, because the game
+treats the real Mountain type as impassable. Hence a separate map: it stores a speed multiplier for
+every cell, and src/EquestriaPartySpeed.cs applies it on top of the vanilla rules.
 
-Файл: Module/ModuleData/equestria_speed_map.bin — "EQSP", размер сетки, размер карты в метрах,
-дальше по байту на клетку множитель скорости в процентах (100 — без изменений), а следом ещё
-столько же байт: почему замедление (0 — местность, 1 — река), чтобы в разборе скорости писать
-«Брод», а не «Тяжёлая местность».
+File: Module/ModuleData/equestria_speed_map.bin - "EQSP", grid size, map size in metres,
+then one byte per cell with the speed multiplier in percent (100 - unchanged), followed by as many
+bytes again: why it slows down (0 - terrain, 1 - river), so that the speed breakdown can say
+"Ford" rather than "Rough terrain".
 
-Реку нельзя разметить в сетке проходимости: тип River игра считает НЕпроходимым (в наборе
-проходимых только 1,2,3,4,5,6,15,16,17,20), и грани по 10 м перерезали бы карту. Поэтому
-замедление на воде тоже отсюда.
+A river cannot be marked in the navmesh: the game treats the River type as IMpassable (the passable
+set is only 1,2,3,4,5,6,15,16,17,20), and 10 m faces would cut the map apart. So the
+slowdown on water comes from here too.
 """
 import os
 import struct
@@ -29,28 +29,28 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import equus_map  # noqa: E402
 
 MOD = sys.argv[1] if len(sys.argv) > 1 else "Module"
-GRID = 256                  # клеток по стороне: 1024 м / 256 = 4 м на клетку
+GRID = 256                  # cells per side: 1024 m / 256 = 4 m per cell
 OUT = os.path.join(MOD, "ModuleData", "equestria_speed_map.bin")
 
-# Множители по виду местности. Лес и пустыню не трогаем — их уже штрафует сама игра, иначе
-# штраф удвоится. Единица означает «как на равнине».
+# Multipliers by terrain kind. Forest and desert are left alone - the game itself already penalizes them,
+# otherwise the penalty doubles. One means "as on a plain".
 BY_KIND = {
-    equus_map.MOUNTAIN: 0.70,   # камни и осыпи
-    equus_map.SWAMP: 0.80,      # топь
-    equus_map.SNOW: 0.85,       # снег
-    equus_map.FOREST: 1.00,     # уже -30% у игры
-    equus_map.DESERT: 1.00,     # уже -10% у игры
-    equus_map.STEPPE: 0.95,     # холмы и сухая земля
+    equus_map.MOUNTAIN: 0.70,   # rocks and scree
+    equus_map.SWAMP: 0.80,      # bog
+    equus_map.SNOW: 0.85,       # snow
+    equus_map.FOREST: 1.00,     # already -30% from the game
+    equus_map.DESERT: 1.00,     # already -10% from the game
+    equus_map.STEPPE: 0.95,     # hills and dry ground
     equus_map.PLAIN: 1.00,
 }
-# Уклон. Мерить его надо по нашей же карте, иначе штраф ложится и на равнину: медиана уклона на
-# равнине 0.10, в степи и на холмах 0.42, в горах 0.59. Поэтому до SLOPE_FROM штрафа нет вовсе.
-SLOPE_FROM = 0.25      # пологие места не штрафуем
-SLOPE_FULL = 0.90      # здесь штраф за крутизну наибольший
-SLOPE_PENALTY = 0.30   # каков этот штраф
-FLOOR = 0.55           # ниже не опускаемся: иначе отряды в горах почти стоят
-RIVER_FACTOR = 0.70    # брод: столько же, сколько ванильная игра берёт за переход воды
-RIVER_REACH = 2        # на сколько метров расширить русло: у нарисованной ленты ширина ~3 м
+# Slope. It has to be measured on our own map, otherwise the penalty falls on the plain too: median slope on
+# the plain 0.10, on steppe and hills 0.42, in the mountains 0.59. So there is no penalty at all up to SLOPE_FROM.
+SLOPE_FROM = 0.25      # gentle spots are not penalized
+SLOPE_FULL = 0.90      # the steepness penalty is greatest here
+SLOPE_PENALTY = 0.30   # how big that penalty is
+FLOOR = 0.55           # we do not go lower: otherwise parties in the mountains almost stand still
+RIVER_FACTOR = 0.70    # ford: as much as vanilla takes for crossing water
+RIVER_REACH = 2        # how many metres to widen the riverbed by: the painted ribbon is ~3 m wide
 
 
 def log(*a):
@@ -70,9 +70,9 @@ def main():
         factor[terrain == kind] = value
     steep = np.clip((slope - SLOPE_FROM) / (SLOPE_FULL - SLOPE_FROM), 0.0, 1.0)
     factor *= 1.0 - SLOPE_PENALTY * steep
-    # Река: полоса брода поверх всего остального. Русло на карте местности — линия в один
-    # отсчёт, поэтому расширяем её до ширины нарисованной ленты, иначе при усреднении по клетке
-    # в 4 м замедление почти не чувствуется.
+    # River: a ford strip on top of everything else. The riverbed on the terrain map is a line one
+    # sample wide, so we widen it to the width of the painted ribbon, otherwise when averaged over a
+    # 4 m cell the slowdown is barely felt.
     river = terrain == equus_map.RIVER
     if RIVER_REACH > 0:
         radius = int(round(RIVER_REACH / step))
@@ -84,7 +84,7 @@ def main():
     factor[river] = np.minimum(factor[river], RIVER_FACTOR)
     factor = np.clip(factor, FLOOR, 1.0)
 
-    # ужимаем до сетки: берём среднее по клетке, чтобы отряд не дёргался на каждом метре
+    # shrink to the grid: take the mean over the cell so the party does not jerk at every metre
     take = np.linspace(0, size - 1, GRID + 1).round().astype(int)
     cells = np.zeros((GRID, GRID), dtype=np.uint8)
     why = np.zeros((GRID, GRID), dtype=np.uint8)
@@ -93,7 +93,7 @@ def main():
             ys = slice(take[j], max(take[j + 1], take[j] + 1))
             xs = slice(take[i], max(take[i + 1], take[i] + 1))
             cells[j, i] = int(round(float(factor[ys, xs].mean()) * 100))
-            # клетка считается речной, если река занимает хотя бы треть её площади
+            # a cell counts as river if the river covers at least a third of its area
             why[j, i] = 1 if float(river[ys, xs].mean()) > 0.33 else 0
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

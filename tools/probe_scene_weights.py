@@ -1,9 +1,9 @@
-# Эталон многослойной покраски: разбор узлов весов у обычной (боевой) сцены игры.
+# Reference for multi-layer painting: parsing the weight nodes of a regular (battle) game scene.
 #
-#   python probe_scene_weights.py <папка сцены с terrain.bin и scene.xscene>
+#   python probe_scene_weights.py <scene folder with terrain.bin and scene.xscene>
 #
-# Для узлов с несколькими слоями печатает маску слоёв из сцены и раскладку данных узла:
-# блоки «счётчик + картинки» подряд и остаток. С этим сверяем свою запись.
+# For nodes with several layers it prints the layer mask from the scene and the node data layout:
+# consecutive "counter + images" blocks and the remainder. We check our own writing against this.
 import os
 import re
 import struct
@@ -28,7 +28,7 @@ print("узлов: в весах %d, в сцене %d, поток %d байт" %
 
 
 def blocks(blob):
-    """Раскладка: сколько блоков «счётчик + PNG» удаётся прочитать подряд."""
+    """Layout: how many "counter + PNG" blocks can be read in a row."""
     out = []
     position = 0
     while position + 4 <= len(blob):

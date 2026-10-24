@@ -10,25 +10,25 @@ using TaleWorlds.ModuleManager;
 
 namespace EquestriaMod
 {
-    // Описание одного заклинания. Данные — ModuleData/equestria_spells.xml (собирается
-    // tools/make_spells.py). Файл читаем сами: это не игровой тип объектов, игре о нём знать незачем,
-    // и в SubModule.xml он не значится. Так же поступает The Old Realms со своими tor_custom_xmls
-    // (см. docs/tor_reference/04_magic.md).
+    // Description of one spell. Data - ModuleData/equestria_spells.xml (built by
+    // tools/make_spells.py). We read the file ourselves: it is not a game object type, the game has no need
+    // to know about it, and it is not listed in SubModule.xml. The Old Realms does the same with its tor_custom_xmls
+    // (see docs/tor_reference/04_magic.md).
     public class EquestriaSpell
     {
         public string Id;
         public TextObject Name;
         public TextObject Description;
         public int Mana;
-        public float Cooldown;      // секунды
-        public float Damage;        // урон в центре взрыва
-        public float Radius;        // радиус взрыва, метры
-        public float Speed;         // скорость снаряда, м/с
-        public float Life;          // сколько секунд летит (Speed * Life = дальность)
-        public float CastTime;      // задержка перед вылетом
-        public string Trail;        // частицы у снаряда
-        public string Burst;        // частицы взрыва
-        public Vec3 LightColor;     // цвет свечения снаряда (0,0,0 — без света)
+        public float Cooldown;      // seconds
+        public float Damage;        // damage at the center of the explosion
+        public float Radius;        // explosion radius, meters
+        public float Speed;         // projectile speed, m/s
+        public float Life;          // how many seconds it flies (Speed * Life = range)
+        public float CastTime;      // delay before launch
+        public string Trail;        // particles on the projectile
+        public string Burst;        // explosion particles
+        public Vec3 LightColor;     // projectile glow color (0,0,0 - no light)
         public float LightIntensity;
         public float LightRadius;
 
@@ -44,8 +44,8 @@ namespace EquestriaMod
 
         private static List<EquestriaSpell> _spells;
 
-        // Все заклинания мода. Читаются один раз за запуск; при ошибке — пустой список,
-        // мод продолжает работать без магии.
+        // All spells of the mod. Read once per launch; on error - an empty list,
+        // the mod keeps working without magic.
         public static List<EquestriaSpell> All
         {
             get
@@ -91,7 +91,7 @@ namespace EquestriaMod
                     Trail = Attr(node, "trail"),
                     Burst = Attr(node, "burst")
                 };
-                // light="r,g,b,интенсивность,радиус"
+                // light="r,g,b,intensity,radius"
                 string[] light = Attr(node, "light").Split(',');
                 if (light.Length == 5)
                 {
@@ -128,8 +128,8 @@ namespace EquestriaMod
             return All.Find(s => string.Equals(s.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
-        // Что умеет герой. Пока все заклинания доступны игроку: колдовать учимся на одном фаерболе,
-        // ограничения по расе и обучение появятся, когда заклинаний станет больше.
+        // What a hero can do. For now all spells are available to the player: we learn casting on a single fireball,
+        // race restrictions and learning will appear when there are more spells.
         public static List<EquestriaSpell> KnownBy(Hero hero)
         {
             return hero != null && hero == Hero.MainHero ? All : new List<EquestriaSpell>();

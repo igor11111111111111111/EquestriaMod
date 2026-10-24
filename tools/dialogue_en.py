@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Английский текст реплик — по id строки из Module/ModuleData/Languages/RU/eq_*_rus.xml.
+"""English text of the dialogue lines — by string id from Module/ModuleData/Languages/RU/eq_*_rus.xml.
 
-Русские файлы — исходник: там и порядок, и группы, и подстановки. Здесь только перевод к каждому
-id; tools/make_dialogue.py собирает из этого файлы английского и заготовки прочих языков.
-Подстановки ({PLAYER.NAME}, {?PLAYER.GENDER}...{?}...{\\?}, [if:...]) должны остаться те же,
-что в русской строке, иначе игра покажет пустоту или сломает выбор по полу.
+The Russian files are the source: the order, the groups and the substitutions live there. Here is only
+the translation for each id; tools/make_dialogue.py builds the English files and stubs for the other
+languages from this. Substitutions ({PLAYER.NAME}, {?PLAYER.GENDER}...{?}...{\\?}, [if:...]) must stay
+the same as in the Russian string, otherwise the game shows nothing or breaks the gender choice.
 """
 
 EN = {
-    # ------------------------------------------------------------------ разбойники
+    # ------------------------------------------------------------------ bandits
     "eq_surrender_1": "All right, all right, we give up! We just wanted to make friends... our way. Show a little kindness.",
     "eq_surrender_2": "Okay, okay! We surrender! Just don't call Fluttershy, she's got The Stare!",
     "eq_surrender_3": "We surrender! Pony promise — cross my heart and hope to fly, stick a cupcake in my eye!",
@@ -121,9 +121,9 @@ EN = {
     "eq_robbery_done_15": "We'll mail you some zap apple jam. Maybe.",
     "eq_robbery_fight_15": "Won't hand over the harvest? Then we'll gather it ourselves — straight off your hide![if:convo_angry][ib:aggressive]",
 
-    # ------------------------------------------------------------------ лорды
-    # Имя клана уже содержит слово «House» (House of the Sun), поэтому «of House {EQ_LORD_CLAN}»
-    # давало «of House House of the Sun» — пишем просто «of {EQ_LORD_CLAN}»
+    # ------------------------------------------------------------------ lords
+    # The clan name already contains the word "House" (House of the Sun), so "of House {EQ_LORD_CLAN}"
+    # gave "of House House of the Sun" — we write just "of {EQ_LORD_CLAN}"
     "eq_lord_meet_1": "Greetings, traveler. I am {LORD.NAME} of {EQ_LORD_CLAN}. I don't recognize your cutie mark — who might you be?",
     "eq_lord_meet_2": "A new face! I am {LORD.NAME}, and I serve {EQ_LORD_KINGDOM}. And you must be one of those they whisper about in the taverns?",
     "eq_lord_meet_3": "Hold on, no rush. I am {LORD.NAME}. Around here we introduce ourselves — even very busy ponies.",
@@ -153,7 +153,7 @@ EN = {
     "eq_lord_short_3": "Again? You're just like Pinkie — everywhere at once.",
     "eq_lord_short_4": "Yes, yes, {PLAYER.NAME}, I'm listening...",
 
-    # ------------------------------------------------------------------ прочие
+    # ------------------------------------------------------------------ other
     "eq_caravan_own_1": "Boss! Wagons greased, apples unbruised. How can I help?",
     "eq_caravan_own_2": "Everything by the manifest, everything in place! Your orders?",
     "eq_caravan_own_3": "Good to see you! Want to see how much we've traded? Spoiler: a lot.",

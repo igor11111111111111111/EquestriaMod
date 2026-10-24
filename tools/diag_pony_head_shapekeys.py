@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Только чтение: сравнивает каждый шейп-ключ eq_pony_head с Basis и печатает максимальное и
-среднее отклонение вершин — чтобы найти битый ключ без сохранения файла.
+"""Read-only: compares each shape key of eq_pony_head with Basis and prints the maximum and
+average vertex offset, to find a broken key without saving the file.
 
-Запуск:
+Run:
   "D:\\Program Files (x86)\\Steam\\steamapps\\common\\Blender\\blender.exe" --background ^
     assets\\pony\\eq_pony_edit.blend --python tools\\diag_pony_head_shapekeys.py
 """

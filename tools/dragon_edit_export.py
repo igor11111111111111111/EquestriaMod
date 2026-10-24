@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Экспорт поправленной модели дракона из assets/dragon/eq_dragon.blend в assets/dragon/eq_dragon.fbx.
+"""Export the corrected dragon model from assets/dragon/eq_dragon.blend to assets/dragon/eq_dragon.fbx.
 
-Запуск: blender --background assets/dragon/eq_dragon.blend --python tools/dragon_edit_export.py
+Run: blender --background assets/dragon/eq_dragon.blend --python tools/dragon_edit_export.py
 
-Коллекция "Meshy Frostwing Princess" хранит восемь частей под родовыми именами Meshy (eq_body,
-eq_wings, ...) — на экспорт отдаём их под именами, которые ждёт остальной конвейер (eq_dragon_body,
-eq_dragon_wings, ... — см. tools/dragon_material.ps1 и src/EquestriaBodyParts.cs). Переименование
-только в памяти, сам .blend не трогаем и не сохраняем — работу над моделью это не портит.
-Та же настройка экспорта, что и в основном конвейере tools/make_dragon.py (оси X/-Y, без анимации).
+The "Meshy Frostwing Princess" collection holds eight parts under Meshy's generic names (eq_body,
+eq_wings, ...); for export we give them the names the rest of the pipeline expects (eq_dragon_body,
+eq_dragon_wings, ... - see tools/dragon_material.ps1 and src/EquestriaBodyParts.cs). The renaming is
+in memory only; the .blend itself is not touched or saved, so this does not spoil work on the model.
+Same export settings as in the main pipeline tools/make_dragon.py (axes X/-Y, no animation).
 """
 import os
 
@@ -41,9 +41,9 @@ if bpy.context.object and bpy.context.object.mode != "OBJECT":
     bpy.ops.object.mode_set(mode="OBJECT")
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts]:
-    # select_set() молча не выделяет скрытый объект (глаз в Outliner выключен) — у яка
-    # скелет оказался именно таким, экспорт тихо ушёл без костей (замечено по А-позе в бою
-    # 07.10.2026, см. yak_edit_export.py). Снимаем скрытие перед выделением на всякий случай.
+    # select_set() silently does not select a hidden object (eye toggled off in the Outliner); the yak's
+    # skeleton turned out to be exactly that, and the export quietly went out without bones (noticed by
+    # the A-pose in battle 07.10.2026, see yak_edit_export.py). Unhide before selecting, just in case.
     ob.hide_set(False)
     ob.select_set(True)
 bpy.context.view_layer.objects.active = skel

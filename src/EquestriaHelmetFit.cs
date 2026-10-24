@@ -10,76 +10,76 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Шлем на драконью голову.
+    // A helmet on a dragon's head.
     //
-    // Голова у дракона крупнее человеческой, и любой ванильный шлем сидит на ней шапочкой.
-    // Дубликаты шлемов делать нельзя — их в игре сотни, и это же пришлось бы повторять для каждой
-    // расы; уменьшать голову пользователь не хочет.
+    // A dragon's head is bigger than a human's, and any vanilla helmet sits on it like a little cap.
+    // Helmet duplicates are not an option: there are hundreds of them in the game, and the same would have to be
+    // repeated for every race; the user does not want to shrink the head.
     //
-    // Движок УЖЕ умеет подгонять шлем под размер головы: собирая персонажа, он для каждого меша
-    // с признаком UsingFacegenScaling зовёт MetaMesh.UseHeadBoneFaceGenScaling с матрицей из
-    // MBAgentVisuals.GetFacegenScalingMatrix (под ней нативная GetCurrentHelmetScalingFactor —
-    // то есть матрица ровно про шлемы). Мы эту матрицу и домножаем. Так масштаб применяется
-    // В КООРДИНАТАХ КОСТИ ГОЛОВЫ, и шлем ездит вместе с головой.
+    // The engine ALREADY knows how to fit a helmet to the head size: when assembling a character, for every mesh
+    // flagged UsingFacegenScaling it calls MetaMesh.UseHeadBoneFaceGenScaling with a matrix from
+    // MBAgentVisuals.GetFacegenScalingMatrix (underneath is the native GetCurrentHelmetScalingFactor,
+    // i.e. the matrix is exactly about helmets). We multiply that matrix. That way the scale is applied
+    // IN HEAD BONE COORDINATES, and the helmet moves together with the head.
     //
-    // Раньше тут была своя рамка на мешах шлема (Mesh.SetLocalFrame). Размер она меняла, но
-    // применялась в координатах персонажа: при повороте головы шлем оставался на месте
-    // («шлем движется не от кости головы»). Не возвращать.
+    // Previously there was our own frame on the helmet meshes here (Mesh.SetLocalFrame). It changed the size, but
+    // was applied in character coordinates: when the head turned, the helmet stayed in place
+    // ("the helmet does not move from the head bone"). Do not bring it back.
     //
-    // 28.09.2026: комментарий выше описывал родной путь (UsingFacegenScaling/
-    // GetFacegenScalingMatrix/UseHeadBoneFaceGenScaling) как уже работающий — на деле патча на
-    // него никогда не было, весь файл всегда жил на ручной рамке ниже. Попробовали включить
-    // родной путь по-настоящему: движок его действительно позвал (подтверждено логом), но
-    // размер шлема развалился — в бою сел стандартным (нерастянутым), в инвентаре улетел вверх
-    // и раздулся. Судя по всему, GetFacegenScalingMatrix — это не простая диагональная матрица
-    // масштаба, и наивное покомпонентное домножение (.rotation.s/.f/.u на свой множитель) её
-    // портит. Откатили обратно на ручную рамку — она хотя бы держит размер верно везде, просто
-    // не поворачивается вместе с головой. Родной путь можно будет пробовать снова, но сначала
-    // нужно понять настоящий формат этой матрицы (скорее всего не диагональ), а не гадать.
+    // 28.09.2026: the comment above described the native path (UsingFacegenScaling/
+    // GetFacegenScalingMatrix/UseHeadBoneFaceGenScaling) as already working; in fact there was never a patch
+    // on it, the whole file always lived on the manual frame below. We tried to enable
+    // the native path for real: the engine did call it (confirmed by the log), but
+    // the helmet size fell apart: in battle it sat at the standard (unstretched) size, in the inventory it flew up
+    // and swelled. Apparently GetFacegenScalingMatrix is not a simple diagonal scale
+    // matrix, and naive per-component multiplication (.rotation.s/.f/.u by our multiplier) breaks
+    // it. We rolled back to the manual frame: at least it keeps the size right everywhere, it just
+    // does not rotate with the head. The native path can be tried again, but first
+    // we need to understand the real format of this matrix (most likely not a diagonal), not guess.
     public static class EquestriaHelmetFit
     {
-        // Трассировка поворота шлема в журнал — строка на каждый кадр боя, только для отладки
+        // Tracing of the helmet rotation to the log: a line every battle frame, for debugging only
         private const bool TraceHelmet = false;
 
-        // Во сколько раз растягивать шлем на этой расе. Список, а не одно число: у каждой расы
-        // своя голова, и грифону с яком понадобятся свои значения.
-        // По осям, а не одним числом: голова расы вытянута иначе человеческой, и шлем нередко
-        // просится шире, чем выше. Порядок как в Vec3: вбок, вперёд-назад, вверх.
-        // Причёска расы — её приходится возвращать вручную там, где мы прячем шлем: игра не
-        // строит причёску под надетым шлемом (HairCoverType), и голова остаётся голой.
+        // How many times to stretch the helmet on this race. A table, not one number: every race
+        // has its own head, and the griffon and yak will need their own values.
+        // Per axis, not one number: a race's head is elongated differently from a human's, and the helmet often
+        // wants to be wider rather than taller. Order as in Vec3: sideways, front-back, up.
+        // The race's hairstyle: it has to be restored by hand where we hide the helmet: the game does not
+        // build a hairstyle under a worn helmet (HairCoverType), and the head stays bare.
         private static readonly Dictionary<string, string> HairByRace = new Dictionary<string, string>
         {
             { "dragon", "eq_dragon_hair" },
             { "griffon", "eq_griffon_hair" },
             { "hippogriff", "eq_hippogriff_hair" },
-            // у яка в причёске сидят ещё и рога — без этой строки он под шлемом остаётся и без
-            // гривы, и безрогим
+            // the yak's hairstyle also holds the horns: without this line under a helmet it is left both without
+            // a mane and hornless
             { "yak", "eq_yak_hair" },
-            // у оленихи причёска — это рога целиком, без неё она под шлемом безрогая
+            // the doe's hairstyle is the whole antlers; without it she is antlerless under a helmet
             { "deer", "eq_deer_hair" },
-            // у пони причёска — рог; грива вшита в голову
+            // the pony's hairstyle is the horn; the mane is built into the head
             { "pony", "eq_pony_hair" },
         };
 
         private static readonly Dictionary<string, Vec3> ScaleByRace = new Dictionary<string, Vec3>
         {
-            // подобрано в игре: equestria.helmet_scale 2.25 2.25 1.9 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_scale 2.25 2.25 1.9 (05.10.2026, after the blink fix)
             { "pony", new Vec3(2.25f, 2.25f, 1.9f) },
-            // подобрано в игре: equestria.helmet_scale 2 2 1.85 (10.10.2026, поправленная модель дракона)
+            // tuned in game: equestria.helmet_scale 2 2 1.85 (10.10.2026, corrected dragon model)
             { "dragon", new Vec3(2f, 2f, 1.85f) },
-            // подобрано в игре: equestria.helmet_scale 2.1 1.9 1.75 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_scale 2.1 1.9 1.75 (05.10.2026, after the blink fix)
             { "griffon", new Vec3(2.1f, 1.9f, 1.75f) },
-            // подобрано в игре: equestria.helmet_scale 2 1.8 1.6 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_scale 2 1.8 1.6 (05.10.2026, after the blink fix)
             { "changeling", new Vec3(2f, 1.8f, 1.6f) },
-            // подобрано в игре: equestria.helmet_scale 1.8 1.8 1.4 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_scale 1.8 1.8 1.4 (05.10.2026, after the blink fix)
             { "hippogriff", new Vec3(1.8f, 1.8f, 1.4f) },
-            // подобрано в игре: equestria.helmet_scale 1.95 1.95 1.7 (04.10.2026, после пересборки модели)
+            // tuned in game: equestria.helmet_scale 1.95 1.95 1.7 (04.10.2026, after the model rebuild)
             { "yak", new Vec3(1.95f, 1.95f, 1.7f) },
-            // подобрано в игре: equestria.helmet_scale 1.85 1.85 1.55 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_scale 1.85 1.85 1.55 (05.10.2026, after the blink fix)
             { "deer", new Vec3(1.85f, 1.85f, 1.55f) },
         };
 
-        /// <summary>Множитель расы — чтобы подбирать его на лету командой, без перезапуска.</summary>
+        /// <summary>The race multiplier, so it can be tuned on the fly by a command, without a restart.</summary>
         public static Vec3 ScaleFor(string race)
         {
             return ScaleByRace.TryGetValue(race, out Vec3 scale) ? scale : new Vec3(1f, 1f, 1f);
@@ -88,32 +88,33 @@ namespace EquestriaMod
         public static void SetScale(string race, Vec3 scale)
         {
             ScaleByRace[race] = scale;
-            _byRaceId = null;               // пересобрать таблицу по номерам рас
+            _byRaceId = null;               // rebuild the table by race numbers
         }
 
         private static Dictionary<int, Vec3> _byRaceId;
-        // Раса персонажа, которого движок собирает ПРЯМО СЕЙЧАС. Матрицу он просит в середине
-        // сборки, когда раса известна только из её данных, поэтому запоминаем на время вызова.
+        // The race of the character the engine is assembling RIGHT NOW. It asks for the matrix in the middle
+        // of assembly, when the race is known only from its data, so we remember it for the duration of the call.
         [ThreadStatic]
         private static int _building;
-        // Меши шлема запоминаем за внешностью бойца: иначе каждый кадр пришлось бы перебирать
-        // все меши скелета (у бойца их несколько десятков) и сравнивать имена. В бою на тысячу
-        // бойцов это заметно. Внешность пересобирается при смене снаряжения — тогда появляется
-        // новый объект, и запись заводится заново; на всякий случай сверяем и имя меша.
+        // Helmet meshes are remembered per soldier's visuals: otherwise every frame we would have to go through
+        // all the skeleton's meshes (a soldier has several dozen) and compare names. In a battle of a thousand
+        // soldiers this is noticeable. The visuals are rebuilt when the equipment changes: then a
+        // new object appears, and the entry is created anew; just in case we also check the mesh name.
         //
-        // Этого мало: посадка на коня (замечено 28.09.2026, «шлем едет с телом, а не с головой»)
-        // пересобирает скелет ВНУТРИ того же объекта внешности — сам visuals не меняется, и старая
-        // запись в кэше проходила бы по имени меша, а Meshes/Bone в ней остались бы от ПРЕЖНЕГО
-        // скелета: мы бы двигали уже не показываемые меши, а настоящий шлем всадника так и стоял
-        // бы в позе обычного скина брони (то есть ехал бы с телом). Тот же класс бага, что уже был
-        // с CharacterTableau и цветом причёски — там тоже нельзя было полагаться на неизменность
-        // объекта-владельца. Поэтому сверяем ещё и сам скелет.
+        // That is not enough: mounting a horse (noticed 28.09.2026,
+        // "the helmet rides with the body, not the head") rebuilds the skeleton INSIDE the same visuals object:
+        // visuals itself does not change, and the old
+        // cache entry would pass by mesh name, while its Meshes/Bone would remain from the PREVIOUS
+        // skeleton: we would be moving meshes no longer shown, and the rider's real helmet would keep standing
+        // in the pose of an ordinary armour skin (i.e. ride with the body). The same class of bug we already had
+        // with CharacterTableau and the hairstyle colour: there too one could not rely on the owner object
+        // staying the same. So we also check the skeleton itself.
         private sealed class Fitted
         {
             public string MeshName;
             public Mesh[] Meshes;
             public sbyte Bone;
-            public int Race;              // только для окон: путь боя race не хранит (см. Fit(Agent))
+            public int Race;              // for windows only: the battle path does not store race (see Fit(Agent))
             public Skeleton Skeleton;
         }
 
@@ -123,10 +124,10 @@ namespace EquestriaMod
 
         private static System.Reflection.MethodInfo _getData, _getEntity;
         private static System.Reflection.PropertyInfo _raceData, _equipmentData, _monsterData;
-        // Раньше был один общий флаг: успех логировался ОДИН РАЗ за весь процесс, и первая же
-        // удачная раса (например, як) навсегда скрывала от лога все остальные — по такому логу
-        // нельзя было понять, подгоняется ли конкретно грифон (замечено 25.09.2026). Теперь по
-        // имени меша: одна строка на каждый отдельный шлем, а не одна на весь сеанс.
+        // Previously there was one shared flag: success was logged ONCE for the whole process, and the very first
+        // successful race (for example, the yak) forever hid all the others from the log: from such a log
+        // one could not tell whether the griffon specifically was being fitted (noticed 25.09.2026). Now by
+        // mesh name: one line per separate helmet, not one per session.
         private static readonly HashSet<string> _shiftLoggedMeshes = new HashSet<string>();
 
         private static Dictionary<int, Vec3> Scales()
@@ -137,7 +138,7 @@ namespace EquestriaMod
                 foreach (var pair in ScaleByRace)
                 {
                     int race = TaleWorlds.Core.FaceGen.GetRaceOrDefault(pair.Key);
-                    if (race != 0)          // 0 — человек, туда же попадают ненайденные расы
+                    if (race != 0)          // 0 is the human; races that were not found end up there too
                     {
                         _byRaceId[race] = pair.Value;
                     }
@@ -156,17 +157,17 @@ namespace EquestriaMod
                 return;
             }
             int marked = 0;
-            // Какие из точек сборки реально нашлись — печатаем поимённо в конце: одно число
-            // "точек 5" не говорило, какая именно из шести пропала (замечено 25.09.2026).
+            // Which assembly points were actually found: printed by name at the end: a single number
+            // "points 5" did not say which of the six went missing (noticed 25.09.2026).
             var found = new List<string>();
             foreach (var method in AccessTools.GetDeclaredMethods(visuals))
             {
-                // Доспех навешивает отдельный метод, и зовут его не только из сборки внешности —
-                // без него раса в нужный миг оставалась неизвестной и подгонка молчала.
+                // Armour is attached by a separate method, and it is called not only from visuals assembly:
+                // without it the race stayed unknown at the right moment and the fitting was silent.
                 if (method.Name == "AddArmorMultiMeshesToAgentEntity")
                 {
-                    // префикс — сказать движку расу (без неё он не растянет шлем),
-                    // постфикс — опустить уже надетый шлем на место
+                    // prefix: tell the engine the race (without it, it will not stretch the helmet),
+                    // postfix: lower the already worn helmet into place
                     harmony.Patch(method,
                         prefix: new HarmonyMethod(typeof(EquestriaHelmetFit), nameof(BeforeArmour)),
                         postfix: new HarmonyMethod(typeof(EquestriaHelmetFit), nameof(AfterArmour)),
@@ -175,8 +176,8 @@ namespace EquestriaMod
                     found.Add("AgentVisuals.AddArmorMultiMeshesToAgentEntity");
                     continue;
                 }
-                // Кадр окна: только здесь персонаж шевелится без пересборки (энциклопедия,
-                // окно отряда). См. Tick.
+                // Window frame: only here does the character move without being rebuilt (encyclopedia,
+                // party window). See Tick.
                 if (method.Name == "TickVisuals")
                 {
                     harmony.Patch(method,
@@ -195,18 +196,18 @@ namespace EquestriaMod
                 marked++;
                 found.Add("AgentVisuals." + method.Name);
             }
-            // Кость головы у наших монстров выходит -1: движок ищет кости монстра через скелет его
-            // набора движений, и у рас мода эта связка не срабатывает (skeleton в наборах прописан,
-            // а номер всё равно -1). Этот же -1 движок передаёт в подгонку шлема, и тот улетает.
-            // Подставляем верный номер: в человеческом скелете голова — кость 13 (порядок костей
-            // виден в выгрузке tpac_export bones: pelvis 0, spine 9, spine1 10, spine2 11, neck 12,
-            // head 13; те же номера стоят в именах костей пони-блендера — bip01_head_13).
-            // Картинки-заготовки: персонажа собирают, ставят позу и проигрывают анимацию, и только
-            // потом снимают кадр. Подгонка при сборке доспеха приходится на позу покоя, поэтому
-            // повторяем её в конце сборки заготовки (см. FitStatic).
-            // Оба класса лежат в TaleWorlds.MountAndBlade.View.SCRIPTS, а не прямо в View — тип не
-            // находился ни разу (AccessTools.TypeByName отдавал null), поэтому весь путь заготовок
-            // молчал с самого начала (замечено 25.09.2026 по подробному списку точек ниже).
+            // The head bone of our monsters comes out as -1: the engine looks up a monster's bones through the skeleton of its
+            // action set, and for the mod's races this link does not work (the skeleton is set in the sets,
+            // and the number is still -1). The engine passes this same -1 into helmet fitting, and the helmet flies off.
+            // We substitute the correct number: in the human skeleton the head is bone 13 (the bone order
+            // is visible in the tpac_export bones dump: pelvis 0, spine 9, spine1 10, spine2 11, neck 12,
+            // head 13; the same numbers are in the bone names of the pony blend: bip01_head_13).
+            // Preset pictures: the character is assembled, posed and an animation is played, and only
+            // then is the frame taken. The fitting at armour assembly falls on the rest pose, so
+            // we repeat it at the end of the preset assembly (see FitStatic).
+            // Both classes live in TaleWorlds.MountAndBlade.View.SCRIPTS, not directly in View: the type was
+            // never found (AccessTools.TypeByName returned null), so the whole preset path
+            // was silent from the very start (noticed 25.09.2026 from the detailed list of points below).
             foreach (var typeName in new[] { "TaleWorlds.MountAndBlade.View.Scripts.CharacterSpawner",
                                              "TaleWorlds.MountAndBlade.View.Scripts.CharacterDebugSpawner" })
             {
@@ -228,14 +229,14 @@ namespace EquestriaMod
                 found.Add(spawner.Name + ".InitWithCharacter");
             }
 
-            // Встреча с отрядом лорда на карте: SandBox.View.Map.MapConversationTableau держит
-            // СПИСОК внешностей (говорящий первым, за ним до двух телохранителей — читал класс
-            // напрямую), но в своём OnTick тикает ТОЛЬКО _agentVisuals[0] — только говорящего.
-            // Телохранители не получают ни одного кадра после создания, а их поза (и с ней —
-            // положение головы) ставится ПОСЛЕ Create тем же TickAnimationsAndForceUpdate, что и у
-            // заготовок миниатюр, — поэтому у них та же беда: шлем остаётся на позе покоя и висит
-            // в стороне (замечено 25.09.2026, «Императрица Селестия» в порядке, эскорт — нет).
-            // Тикаем весь список сами постфиксом на OnTick.
+            // Meeting a lord's party on the map: SandBox.View.Map.MapConversationTableau holds a
+            // LIST of visuals (the speaker first, then up to two bodyguards; I read the class
+            // directly), but in its OnTick it ticks ONLY _agentVisuals[0], only the speaker.
+            // The bodyguards get not a single frame after creation, and their pose (and with it
+            // the head position) is set AFTER Create by the same TickAnimationsAndForceUpdate as for
+            // the thumbnail presets, so they have the same trouble: the helmet stays on the rest pose and hangs
+            // off to the side (noticed 25.09.2026, "Empress Celestia" fine, the escort not).
+            // We tick the whole list ourselves with a postfix on OnTick.
             var mapConvType = AccessTools.TypeByName("SandBox.View.Map.MapConversationTableau");
             var mapConvTick = mapConvType == null ? null : AccessTools.Method(mapConvType, "OnTick");
             if (mapConvTick == null)
@@ -261,7 +262,7 @@ namespace EquestriaMod
                 + string.Join("\r\n  ", found));
         }
 
-        // Раса берётся из данных внешности: у Create они первым доводом, у Refresh — вторым.
+        // The race is taken from the visuals data: for Create they are the first argument, for Refresh the second.
         private static void BeforeBuild(object[] __args)
         {
             _building = 0;
@@ -280,37 +281,37 @@ namespace EquestriaMod
             });
         }
 
-        // Раса — у самой внешности: на этом шаге её данные уже собраны. Заодно считаем, вокруг
-        // какой точки растягивать: движок применяет матрицу в координатах КОСТИ ГОЛОВЫ, а она
-        // сидит у основания шеи. Без поправки шлем при двойном масштабе уезжает на свою же
-        // высоту над головой (проверено в игре). Поэтому в матрицу кладём сдвиг, оставляющий
-        // середину шлема на месте.
-        // Кость головы берём НЕ ПО ИМЕНИ, а по номеру из данных монстра — тому самому, который
-        // движок сам передаёт в подгонку. По имени не вышло дважды: ни блендеровское
-        // «bip01_head_13», ни короткое «head» скелет не находит, и поправка выходила нулевой.
-        private const float HelmetUp = 0.12f;        // насколько середина шлема выше кости головы
+        // The race is on the visuals themselves: at this step its data is already assembled. We also compute around
+        // which point to stretch: the engine applies the matrix in HEAD BONE coordinates, and that bone
+        // sits at the base of the neck. Without a correction, at double scale the helmet moves up by its own
+        // height above the head (checked in game). So we put into the matrix a shift that keeps
+        // the middle of the helmet in place.
+        // The head bone is taken NOT BY NAME but by the number from the monster data, the very one that
+        // the engine itself passes to the fitting. By name it failed twice: neither the Blender name
+        // «bip01_head_13» nor the short «head» is found by the skeleton, and the correction came out zero.
+        private const float HelmetUp = 0.12f;        // how much higher the middle of the helmet is than the head bone
 
-        // Куда сдвинуть шлем после растяжения: череп у расы сидит не там же, где человеческий.
-        // Порядок как в Vec3: вбок (+X — вправо, если смотреть на персонажа спереди), вперёд
-        // (морда смотрит в -Y, поэтому вперёд — это минус) и вверх. Подбирается на лету командой
-        // equestria.helmet_offset, значения тут — начальные.
+        // Where to shift the helmet after stretching: the race's skull does not sit where a human's does.
+        // Order as in Vec3: sideways (+X is right, looking at the character from the front), forward
+        // (the muzzle faces -Y, so forward is minus) and up. Tuned on the fly by the command
+        // equestria.helmet_offset; the values here are the initial ones.
         private static readonly Dictionary<string, Vec3> ShiftByRace = new Dictionary<string, Vec3>
         {
-            // подобрано в игре: equestria.helmet_offset 0.0 0.08 0.12 (05.10.2026, после правки моргания)
-            // — шлем сдвигается вперёд, поэтому по Y минус (морда смотрит в -Y)
+            // tuned in game: equestria.helmet_offset 0.0 0.08 0.12 (05.10.2026, after the blink fix)
+            // the helmet is shifted forward, hence minus on Y (the muzzle faces -Y)
             { "pony", new Vec3(0f, -0.08f, 0.12f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.13 0.07 (10.10.2026, поправленная
-            // модель дракона) — шлем сдвигается вперёд, поэтому по Y минус (морда смотрит в -Y)
+            // tuned in game: equestria.helmet_offset 0.0 0.13 0.07 (10.10.2026, corrected
+            // dragon model); the helmet is shifted forward, hence minus on Y (the muzzle faces -Y)
             { "dragon", new Vec3(0f, -0.13f, 0.07f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.07 0.15 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_offset 0.0 0.07 0.15 (05.10.2026, after the blink fix)
             { "griffon", new Vec3(0f, -0.07f, 0.15f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.04 0.12 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_offset 0.0 0.04 0.12 (05.10.2026, after the blink fix)
             { "changeling", new Vec3(0f, -0.04f, 0.12f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.04 0.06 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_offset 0.0 0.04 0.06 (05.10.2026, after the blink fix)
             { "hippogriff", new Vec3(0f, -0.04f, 0.06f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.0 0.06 (04.10.2026, после пересборки модели)
+            // tuned in game: equestria.helmet_offset 0.0 0.0 0.06 (04.10.2026, after the model rebuild)
             { "yak", new Vec3(0f, 0f, 0.06f) },
-            // подобрано в игре: equestria.helmet_offset 0.0 0.03 0.13 (05.10.2026, после правки моргания)
+            // tuned in game: equestria.helmet_offset 0.0 0.03 0.13 (05.10.2026, after the blink fix)
             { "deer", new Vec3(0f, -0.03f, 0.13f) },
         };
 
@@ -340,8 +341,8 @@ namespace EquestriaMod
         private static string _why = "не считали";
         private static string _monster = "?";
 
-        // Раса — у самой внешности: движок спросит масштаб шлема посреди этой сборки, и узнать
-        // её там больше неоткуда.
+        // The race is on the visuals themselves: the engine will ask for the helmet scale in the middle of this assembly,
+        // and there is nowhere else to learn it there.
         private static void BeforeArmour(object __instance)
         {
             _building = 0;
@@ -358,17 +359,17 @@ namespace EquestriaMod
             });
         }
 
-        // Меш шлема уже надет — опускаем его на место.
+        // The helmet mesh is already worn: lower it into place.
         //
-        // Почему не через матрицу движка: он берёт из неё только масштаб, а сдвиг игнорирует,
-        // поэтому шлем всегда растёт вокруг кости (та сидит у основания шеи) и уезжает вверх.
-        // Своя рамка задаёт преобразование целиком.
+        // Why not through the engine matrix: it takes only the scale from it and ignores the shift,
+        // so the helmet always grows around the bone (which sits at the base of the neck) and moves up.
+        // Our own frame sets the whole transformation.
         /// <summary>
-        /// Растягивает надетый шлем под голову расы. Зовётся и при сборке доспеха, и каждый кадр
-        /// из тех же точек, что и части тела, — опора должна идти за головой (см. ниже).
+        /// Stretches the worn helmet to the race's head. Called both at armour assembly and every frame
+        /// from the same points as the body parts: the pivot must follow the head (see below).
         /// </summary>
-        /// <summary>Подгонка по бойцу — путь боя. Там у агента ДРУГОЙ тип внешности
-        /// (MBAgentVisuals, а не оконный AgentVisuals), и данные берутся прямо у него.</summary>
+        /// <summary>Fitting per soldier: the battle path. There the agent has a DIFFERENT visuals type
+        /// (MBAgentVisuals, not the window AgentVisuals), and the data is taken straight from it.</summary>
         public static void Fit(Agent agent)
         {
             if (agent == null || agent.IsMount || agent.Character == null
@@ -397,23 +398,23 @@ namespace EquestriaMod
                 };
                 _cache.Remove(visuals);
                 _cache.Add(visuals, kept);
-                // Шлем подтверждён надёжным agent.SpawnEquipment — если спавн-time проверка
-                // (EnsureHairNotBald, завязанная на менее надёжный снимок) успела включить гриву
-                // по ошибке, гасим её здесь (см. HideBaldHairUnderConfirmedHelmet). Та же гонка
-                // была и у ушей (HideEarsUnderConfirmedHelmet) — видны в бою под шлемом, хотя в
-                // окне инвентаря прячутся верно.
+                // The helmet is confirmed by the reliable agent.SpawnEquipment: if the spawn-time check
+                // (EnsureHairNotBald, tied to a less reliable snapshot) managed to turn on the mane
+                // by mistake, we turn it off here (see HideBaldHairUnderConfirmedHelmet). The same race
+                // existed for the ears (HideEarsUnderConfirmedHelmet): visible under the helmet in battle, although in
+                // the inventory window they hide correctly.
                 EquestriaBodyParts.HideBaldHairUnderConfirmedHelmet(visuals, agent.Character.Race);
                 EquestriaBodyParts.HideEarsUnderConfirmedHelmet(visuals, agent.Character.Race);
             }
             Fit(skeleton, kept.Meshes, kept.Bone, agent.Character.Race, meshName,
-                // Трассировка поворота шлема (28.09.2026) писала строку КАЖДЫЙ кадр боя — выключена;
-                // включить для отладки: TraceHelmet = true
+                // Helmet rotation tracing (28.09.2026) wrote a line EVERY battle frame; it is turned off;
+                // to enable for debugging: TraceHelmet = true
                 traceAgent: TraceHelmet && agent == Agent.Main ? agent : null);
         }
 
-        // Отладка "летающего треугольника" (30.09.2026): разворачивает участников разговора на
-        // карте (и игрока в миссии) вокруг вертикальной оси, чтобы посмотреть на них с любой
-        // стороны. Консоль: equestria.rotate_lord <градусы> (накопительно к предыдущему повороту).
+        // Debugging the "flying triangle" (30.09.2026): turns conversation participants on the
+        // map (and the player in a mission) around the vertical axis, to look at them from any
+        // side. Console: equestria.rotate_lord <degrees> (cumulative to the previous rotation).
         [CommandLineFunctionality.CommandLineArgumentFunction("rotate_lord", "equestria")]
         public static string RotateLordCommand(List<string> args)
         {
@@ -456,8 +457,8 @@ namespace EquestriaMod
             return true;
         }
 
-        // Отладка "летающего треугольника": прячет надетый шлем у игрока/участников разговора на
-        // карте. Консоль: equestria.hide_helmet
+        // Debugging the "flying triangle": hides the worn helmet on the player/conversation participants on the
+        // map. Console: equestria.hide_helmet
         [CommandLineFunctionality.CommandLineArgumentFunction("hide_helmet", "equestria")]
         public static string HideHelmetCommand(List<string> args)
         {
@@ -510,9 +511,9 @@ namespace EquestriaMod
             return true;
         }
 
-        // Отладка "летающего треугольника": печатает в eq_exceptions.log все меши скелета
-        // (имя, видимость, материал, bounding box) — ищем лишнюю не-скрытую копию причёски.
-        // Консоль: equestria.dump_meshes
+        // Debugging the "flying triangle": prints all the skeleton's meshes to eq_exceptions.log
+        // (name, visibility, material, bounding box); we are looking for an extra unhidden copy of the hairstyle.
+        // Console: equestria.dump_meshes
         [CommandLineFunctionality.CommandLineArgumentFunction("dump_meshes", "equestria")]
         public static string DumpMeshesCommand(List<string> args)
         {
@@ -599,18 +600,18 @@ namespace EquestriaMod
             return found.ToArray();
         }
 
-        /// <summary>Подгонка по внешности — путь окон (инвентарь, отряд, цирюльник).</summary>
+        /// <summary>Fitting per visuals: the window path (inventory, party, barber).</summary>
         /// <param name="isMapIcon">
-        /// Настоящая крошечная фигурка отряда на карте (а не окно/энциклопедия поверх карты) —
-        /// шлем ей прячем. Раньше это решали по ActiveState is MapState, но энциклопедия и другие
-        /// окна — это ОВЕРЛЕИ поверх карты, у них ТО ЖЕ САМОЕ ActiveState. Проверка тихо прятала
-        /// шлем и в энциклопедии: EquestriaBodyParts.Attach зовёт Fit на КАЖДЫЙ такт CharacterTableau
-        /// (по разу за кадр), и onMap==true возвращала его невидимым сразу вслед за тем, как
-        /// EquestriaHelmetFit.Tick этот же кадр только что верно поставил (замечено 25.09.2026,
-        /// лог показывал успешную подгонку, а шлема на экране не было). Теперь признак приходит
-        /// явно от вызывающего — тот уже знает, кто он: EquestriaBodyParts различает "PartyIcon"
-        /// (настоящая карта) и "окно"/"Tableau"/"обновление" по имени, которым движок сам подписал
-        /// объект внешности при создании.
+        /// The real tiny party figure on the map (not a window/encyclopedia over the map):
+        /// we hide its helmet. Previously this was decided by ActiveState is MapState, but the encyclopedia and other
+        /// windows are OVERLAYS over the map, they have THE SAME ActiveState. The check quietly hid
+        /// the helmet in the encyclopedia too: EquestriaBodyParts.Attach calls Fit on EVERY CharacterTableau tick
+        /// (once per frame), and onMap==true made it invisible again right after
+        /// EquestriaHelmetFit.Tick had just placed it correctly in this same frame (noticed 25.09.2026,
+        /// the log showed a successful fitting, but there was no helmet on screen). Now the flag comes
+        /// explicitly from the caller, which already knows who it is: EquestriaBodyParts tells apart "PartyIcon"
+        /// (the real map) and the window/Tableau/update callers by the name with which the engine itself labelled
+        /// the visuals object at creation.
         /// </param>
         public static void Fit(object visuals, int race, bool isMapIcon)
         {
@@ -618,12 +619,12 @@ namespace EquestriaMod
             {
                 return;
             }
-            // НА КАРТЕ МИРА ШЛЕМ ПРОСТО ПРЯЧЕМ. Фигурку отряда игра собирает один раз и больше
-            // не трогает, а опора растяжения должна идти за головой — от разовой подгонки шлем
-            // уезжал вверх. Оставить его нерастянутым тоже плохо: человеческий шлем тонет в
-            // крупной драконьей голове. Фигурки там с ноготь, отсутствия шлема не видно.
+            // ON THE WORLD MAP WE SIMPLY HIDE THE HELMET. The game assembles the party figure once and never
+            // touches it again, while the stretch pivot must follow the head: with a one-off fitting the helmet
+            // moved up. Leaving it unstretched is bad too: a human helmet sinks into
+            // a big dragon head. The figures there are fingernail-sized, the missing helmet is not visible.
             bool onMap = isMapIcon;
-            // Поиск методов и свойств кешируем: зовётся часто, отражение обошлось бы дорого.
+            // Method and property lookups are cached: called often, reflection would be expensive.
             if (_getData == null || _getData.DeclaringType != visuals.GetType())
             {
                 _getData = AccessTools.Method(visuals.GetType(), "GetCopyAgentVisualsData");
@@ -650,7 +651,7 @@ namespace EquestriaMod
             {
                 return;
             }
-            // В окне персонаж пересобирается на каждый чих, кеш тут ни к чему — мешей ищем сразу
+            // In a window the character is rebuilt at every sneeze, a cache is pointless here: we look up the meshes right away
             sbyte bone = monster?.HeadLookDirectionBoneIndex ?? HumanHeadBone;
             sbyte mapped = skeleton.GetSkeletonBoneMapping(bone);
             var meshes = HelmetMeshes(skeleton, meshName);
@@ -658,10 +659,10 @@ namespace EquestriaMod
             {
                 foreach (var mesh in meshes)
                 {
-                    mesh.SetVisibilityMask(0);          // ноль — не рисовать вовсе
+                    mesh.SetVisibilityMask(0);          // zero: do not draw at all
                 }
-                // Вместо спрятанного шлема возвращаем причёску: под шлемом игра её не строит,
-                // и на карте дракон оставался с голой головой.
+                // Instead of the hidden helmet we restore the hairstyle: the game does not build it under a helmet,
+                // and on the map the dragon was left bare-headed.
                 foreach (var pair in HairByRace)
                 {
                     if (TaleWorlds.Core.FaceGen.GetRaceOrDefault(pair.Key) == race)
@@ -682,62 +683,62 @@ namespace EquestriaMod
             {
                 return;
             }
-            // ОПОРА — ТЕКУЩЕЕ положение кости головы, а не поза покоя. Рамка меша применяется
-            // ПОСЛЕ скиннинга, и растяжение вокруг текущей кости даёт ровно тот же результат,
-            // что правильное растяжение до скиннинга вокруг кости в позе привязки (обе записи
-            // сводятся к b + s*B*(v - b_bind)). Поэтому опору пересчитываем каждый кадр: от
-            // разового выставления шлем поехал бы, как только персонаж двинется с места.
+            // PIVOT: the CURRENT head bone position, not the rest pose. The mesh frame is applied
+            // AFTER skinning, and stretching around the current bone gives exactly the same result
+            // as correct stretching before skinning around the bone in the bind pose (both forms
+            // reduce to b + s*B*(v - b_bind)). So the pivot is recomputed every frame: with a
+            // one-off placement the helmet would drift as soon as the character moves.
             MatrixFrame now = skeleton.GetBoneEntitialFrameWithIndex(bone);
             if (traceAgent != null)
             {
-                // Трассировка поворота шлема (28.09.2026): сравниваем то, что реально читает наша
-                // подгонка (вектор "вперёд" кости в координатах сущности), с тем, что движок сам
-                // считает направлением взгляда/тела агента — чтобы понять, какую кость шлем
-                // на самом деле повторяет.
+                // Helmet rotation tracing (28.09.2026): we compare what our fitting actually reads
+                // (the bone's "forward" vector in entity coordinates) with what the engine itself
+                // considers the agent's look/body direction, to understand which bone the helmet
+                // really follows.
                 Vec3 f = now.rotation.f;
-                // Единицы LookDirectionAsAngle/MovementDirectionAsAngle не проверены — пишем как
-                // есть (сырым числом), разберёмся по логу: радианы уложатся в ~[-3.14;3.14],
-                // градусы — в ~[-180;180] или [0;360].
+                // The units of LookDirectionAsAngle/MovementDirectionAsAngle are not verified: we write them as
+                // is (raw number) and will sort it out from the log: radians will fit in ~[-3.14;3.14],
+                // degrees in ~[-180;180] or [0;360].
                 EquestriaCrashLog.Log($"шлем трассировка: кость={bone} вперёд=({f.x:0.00},{f.y:0.00},{f.z:0.00}) "
                     + $"взгляд(сырое)={traceAgent.LookDirectionAsAngle:0.000} "
                     + $"тело(сырое)={traceAgent.MovementDirectionAsAngle:0.000}");
             }
             Vec3 shift = Shift(race);
 
-            // ОСИ РАСТЯЖЕНИЯ ПОВОРАЧИВАЕМ ВМЕСТЕ С ГОЛОВОЙ. Множитель неравномерный (шлем шире,
-            // чем выше), а рамка задаёт его по осям персонажа — при повороте головы шлем каждый
-            // раз растягивался по-новому и «плыл». Поэтому берём поворот головы ОТНОСИТЕЛЬНО позы
-            // покоя и разворачиваем им сам масштаб: M = R * S * Rᵀ. В покое R единичный, и
-            // выходит ровно прежнее поведение, так что подобранные числа не меняют смысла.
+            // THE STRETCH AXES ROTATE TOGETHER WITH THE HEAD. The multiplier is non-uniform (the helmet is wider
+            // than taller), and the frame sets it in the character's axes: when the head turned, the helmet
+            // was stretched anew each time and "floated". So we take the head rotation RELATIVE to the rest
+            // pose and rotate the scale itself by it: M = R * S * Rᵀ. At rest R is identity, and
+            // the behaviour is exactly as before, so the tuned numbers keep their meaning.
             MatrixFrame rest = skeleton.GetBoneEntitialRestFrame(bone, false);
             Vec3 c1 = now.rotation.TransformToParent(rest.rotation.TransformToLocal(new Vec3(1f, 0f, 0f)));
             Vec3 c2 = now.rotation.TransformToParent(rest.rotation.TransformToLocal(new Vec3(0f, 1f, 0f)));
             Vec3 c3 = now.rotation.TransformToParent(rest.rotation.TransformToLocal(new Vec3(0f, 0f, 1f)));
-            // ПОДЪЁМ ОПОРЫ (HelmetUp) — ТОЖЕ ПО c3, не по сырой мировой Z. Кость сидит у основания
-            // шеи, а центр головы — выше; раньше этот подъём шёл прямо вверх по миру, что верно
-            // только когда голова смотрит ровно вперёд. При сильном наклоне головы вниз (бой,
-            // осмотр земли) мировой верх и верх головы расходятся — опора уезжала назад/вверх от
-            // настоящего центра головы, и затылок вылезал из-под шлема сзади (29.09.2026-правка,
-            // тот же класс бага, что и с shift чуть ниже).
+            // LIFTING THE PIVOT (HelmetUp) IS ALSO ALONG c3, not along raw world Z. The bone sits at the base
+            // of the neck, and the centre of the head is higher; previously this lift went straight up in the world, which is right
+            // only when the head looks straight ahead. With a strong downward head tilt (battle,
+            // looking at the ground) world up and head up diverge: the pivot drifted back/up from
+            // the real centre of the head, and the back of the head stuck out from under the helmet (29.09.2026 fix,
+            // the same class of bug as with shift just below).
             Vec3 pivot = now.origin + c3 * HelmetUp;
-            // столбцы M — сумма внешних произведений, по одному на ось масштаба
+            // the columns of M are a sum of outer products, one per scale axis
             Vec3 mx = c1 * (scale.x * c1.x) + c2 * (scale.y * c2.x) + c3 * (scale.z * c3.x);
             Vec3 my = c1 * (scale.x * c1.y) + c2 * (scale.y * c2.y) + c3 * (scale.z * c3.y);
             Vec3 mz = c1 * (scale.x * c1.z) + c2 * (scale.y * c2.z) + c3 * (scale.z * c3.z);
             Vec3 moved = mx * pivot.x + my * pivot.y + mz * pivot.z;
-            // SHIFT ТОЖЕ ПОВОРАЧИВАЕМ ВМЕСТЕ С ГОЛОВОЙ — тем же разворотом c1/c2/c3, что и оси
-            // масштаба выше. Раньше shift добавлялся сырым, в осях мира/тела: в покое (now.rotation
-            // ≈ rest.rotation, c1/c2/c3 ≈ единичный базис) это не отличить от верного поведения —
-            // поэтому в окнах/меню, где голова почти не отклоняется от позы покоя, шлем сидел ровно.
-            // В бою голова активно поворачивается (взгляд на цель, удары, уклонения), c1/c2/c3
-            // расходятся с единичным базисом — и несповёрнутый сдвиг «уезжал» в сторону от кости,
-            // тем заметнее, чем больше сам shift и множитель расы (у пони и то, и другое большие).
-            // Именно это и есть «рассинхронизация шлема в бою», не частота пересчёта.
+            // SHIFT IS ALSO ROTATED TOGETHER WITH THE HEAD, by the same c1/c2/c3 rotation as the scale
+            // axes above. Previously shift was added raw, in world/body axes: at rest (now.rotation
+            // ≈ rest.rotation, c1/c2/c3 ≈ the identity basis) this cannot be told from the correct behaviour,
+            // so in windows/menus, where the head barely deviates from the rest pose, the helmet sat straight.
+            // In battle the head turns actively (looking at a target, strikes, dodges), c1/c2/c3
+            // diverge from the identity basis, and the unrotated shift "drifted" sideways from the bone,
+            // the more noticeably the bigger the shift itself and the race multiplier (for the pony both are big).
+            // That is exactly the "helmet desync in battle", not the recompute frequency.
             Vec3 shiftRotated = c1 * shift.x + c2 * shift.y + c3 * shift.z;
             foreach (var mesh in meshes)
             {
-                // Рамку задаём АБСОЛЮТНО, а не накапливаем: исходная всегда нулевая (вершины
-                // доспеха записаны в координатах тела), поэтому повторный вызов ничего не портит.
+                // The frame is set ABSOLUTELY, not accumulated: the original is always zero (the armour
+                // vertices are written in body coordinates), so a repeated call spoils nothing.
                 var frame = MatrixFrame.Identity;
                 frame.rotation.s = mx;
                 frame.rotation.f = my;
@@ -754,23 +755,23 @@ namespace EquestriaMod
         }
 
         /// <summary>
-        /// Подгонка каждый кадр в окнах: энциклопедия, отряд, снаряжение.
+        /// Fitting every frame in windows: encyclopedia, party, equipment.
         ///
-        /// Разовой подгонки при сборке не хватает. Рамка меша задаётся В КООРДИНАТАХ ПЕРСОНАЖА и
-        /// считается вокруг ТЕКУЩЕГО положения кости головы; в окне персонажа собирают в одной
-        /// позе, а потом проигрывают стойку — голова уезжает, и шлем при множителе около двух
-        /// оказывается в стороне от неё (в энциклопедии он висел выше и правее головы, замечено
-        /// 25.09.2026). В бою этого не было: там подгонка и так идёт каждый кадр.
+        /// A one-off fitting at assembly is not enough. The mesh frame is set IN CHARACTER COORDINATES and
+        /// computed around the CURRENT head bone position; in a window the character is assembled in one
+        /// pose, and then a stance is played: the head moves, and with a multiplier of about two the helmet
+        /// ends up off to the side of it (in the encyclopedia it hung above and to the right of the head, noticed
+        /// 25.09.2026). In battle this did not happen: there the fitting runs every frame anyway.
         /// </summary>
         public static void Tick(object visuals)
         {
-            // Проверку "ActiveState is MapState" здесь держали как отсечку "мы — крошечная
-            // иконка отряда на карте, туда не лезем". Ошиблись с самим состоянием: у окна
-            // энциклопедии, открытого поверх карты, ActiveState — ТОТ ЖЕ MapState (это оверлей,
-            // не отдельное игровое состояние). Проверка тихо выключала подгонку и в энциклопедии
-            // тоже — в логе не было ни одной строки о ней (замечено 25.09.2026). Крошечную иконку
-            // прячет отдельно Fit(object, int) при сборке (mesh.SetVisibilityMask(0)); перерисовать
-            // ей ещё и рамку — не вредно, невидимый меш просто передвинется невидимо.
+            // The "ActiveState is MapState" check was kept here as a cutoff: "we are the tiny
+            // party icon on the map, do not go there". We were wrong about the state itself: for the encyclopedia
+            // window opened over the map, ActiveState is THE SAME MapState (it is an overlay,
+            // not a separate game state). The check quietly turned off the fitting in the encyclopedia
+            // too: the log had not a single line about it (noticed 25.09.2026). The tiny icon
+            // is hidden separately by Fit(object, int) at assembly (mesh.SetVisibilityMask(0)); redrawing
+            // its frame too does no harm, an invisible mesh just moves invisibly.
             if (visuals == null)
             {
                 return;
@@ -779,16 +780,16 @@ namespace EquestriaMod
         }
 
         /// <summary>
-        /// Разовая подгонка для картинок-заготовок: миниатюры в дереве войск, лица в списках.
+        /// One-off fitting for preset pictures: thumbnails in the troop tree, faces in lists.
         ///
-        /// Их рисуют так: собирают персонажа, задают позу и один раз проигрывают анимацию
-        /// (CharacterSpawner.InitWithCharacter -> TickAnimationsAndForceUpdate), потом снимают
-        /// картинку. Наша подгонка при сборке доспеха случается ДО этой анимации, то есть по позе
-        /// покоя, — и на миниатюре шлем висел в стороне от головы, хотя в большом окне сидел верно
-        /// (замечено 25.09.2026). Поэтому подгоняем ещё раз, когда поза уже проиграна.
+        /// They are drawn like this: the character is assembled, posed and an animation is played once
+        /// (CharacterSpawner.InitWithCharacter -> TickAnimationsAndForceUpdate), then the picture
+        /// is taken. Our fitting at armour assembly happens BEFORE this animation, i.e. on the rest
+        /// pose, and on the thumbnail the helmet hung off to the side of the head, although in the big window it sat right
+        /// (noticed 25.09.2026). So we fit once more when the pose has already been played.
         ///
-        /// Проверку «мы на карте» тут не делаем нарочно: энциклопедию открывают и с карты мира,
-        /// а миниатюра статична — один верный расчёт ей и нужен.
+        /// The "we are on the map" check is deliberately not done here: the encyclopedia is opened from the world map too,
+        /// and a thumbnail is static: one correct calculation is all it needs.
         /// </summary>
         public static void FitStatic(object visuals)
         {
@@ -798,12 +799,12 @@ namespace EquestriaMod
             }
         }
 
-        // Раньше здесь было ускорение — переиспользовать запомненные меши по нескольку кадров
-        // подряд, перечитывая внешность раз в 15 кадров. Сломало и большое окно, и заготовки: окна
-        // персонажей переиспользуют один и тот же объект внешности при переключении войска в
-        // дереве (замечено 25.09.2026), и залежавшийся кеш держал меши ПРЕЖНЕГО персонажа, пока не
-        // истекут кадры, — шлем не подгонялся вовсе. Читаем внешность заново на каждый вызов: тут
-        // не бой на тысячу бойцов, а окно с одним-двумя персонажами, лишний мусор не страшен.
+        // Previously there was a speed-up here: reusing remembered meshes for several frames
+        // in a row, rereading the visuals every 15 frames. It broke both the big window and the presets: character
+        // windows reuse one and the same visuals object when switching troops in the
+        // tree (noticed 25.09.2026), and the stale cache held the meshes of the PREVIOUS character until
+        // the frames ran out, so the helmet was not fitted at all. We reread the visuals on every call: this is
+        // not a battle of a thousand soldiers but a window with one or two characters, extra garbage is no problem.
         private static void Tick(object visuals, string where)
         {
             EquestriaCrashLog.Try("шлем под расу (" + where + ")", () =>
@@ -826,16 +827,16 @@ namespace EquestriaMod
                 }
                 else if (kept != null && _shiftLoggedMeshes.Add("!missing:" + kept.MeshName))
                 {
-                    // Раса своя, шлем в снаряжении есть, а мешей на скелете не нашлось — на всякий
-                    // случай смотрим, если подгонка снова где-то замолчит. По имени меша, а не
-                    // одноразово: иначе первый же промах навсегда скроет остальные.
+                    // The race is ours, there is a helmet in the equipment, but no meshes were found on the skeleton: just in
+                    // case we watch for this, in case the fitting goes silent somewhere again. By mesh name, not
+                    // once only: otherwise the very first miss would forever hide the rest.
                     EquestriaCrashLog.Warn($"шлем под расу ({where}): меш {kept.MeshName}"
                         + $" не найден на скелете (мешей всего {skeleton.GetAllMeshes().Count()})");
                 }
             });
         }
 
-        /// <summary>Разобрать внешность: раса, меши шлема, кость головы. null — шлема нет.</summary>
+        /// <summary>Parse the visuals: race, helmet meshes, head bone. null means there is no helmet.</summary>
         private static Fitted Read(object visuals, Skeleton skeleton)
         {
             var data = _getData?.Invoke(visuals, null);
@@ -880,9 +881,9 @@ namespace EquestriaMod
                     : AccessTools.Property(data.GetType(), "RaceData")?.GetValue(data);
                 if (race is int id)
                 {
-                    // Настоящую карточную иконку прячет EquestriaBodyParts.Attach (он видит имя,
-                    // которым движок подписал объект внешности); отсюда — никогда не прячем, чтобы
-                    // не спрятать шлем окну по ошибке ещё до того, как Attach разберётся, кто это.
+                    // The real card icon is hidden by EquestriaBodyParts.Attach (it sees the name
+                    // with which the engine labelled the visuals object); from here we never hide, so as
+                    // not to hide a window's helmet by mistake before Attach works out who it is.
                     Fit(__instance, id, isMapIcon: false);
                 }
             });
@@ -921,9 +922,9 @@ namespace EquestriaMod
 
         public static object LastMapConversation { get; private set; }
 
-        // Тикаем ВЕСЬ список внешностей разговора, а не только говорящего (см. комментарий у
-        // патча в Apply). Список приватный (List<AgentVisuals>), достаём его отражением один раз
-        // на класс — как и в остальных местах файла, тип у всех вызовов один и тот же.
+        // We tick the WHOLE list of conversation visuals, not only the speaker (see the comment at the
+        // patch in Apply). The list is private (List<AgentVisuals>); we get it by reflection once
+        // per class, as elsewhere in the file; the type is the same for all calls.
         private static void AfterMapConversationTick(object __instance)
         {
             LastMapConversation = __instance;
@@ -935,25 +936,25 @@ namespace EquestriaMod
                 {
                     return;
                 }
-                // У разговора на карте нет CharacterObjectStringIdData во внешности (проверено
-                // логом: null у всех участников) — зато у самого полотна есть _data с двумя
-                // явными персонажами (игрок и собеседник). По ИНДЕКСУ в списке их не отличить
-                // надёжно (порядок оказался не "игрок, потом собеседник" — первый тест окрасил не
-                // того), поэтому сверяем BodyProperties каждой внешности (AgentVisualsData.
-                // BodyPropertiesData) с BodyProperties игрока/собеседника: это те же самые данные,
-                // ключ совпадает побайтово у одного и того же персонажа, независимо от позиции
-                // в списке. Эскорт лорда своего Hero не имеет — его BodyProperties ни с кем не
-                // совпадёт, и он останется некрашеным (это не главные персонажи).
+                // A map conversation has no CharacterObjectStringIdData in the visuals (checked
+                // by the log: null for all participants), but the tableau itself has _data with two
+                // explicit characters (the player and the interlocutor). By INDEX in the list they cannot be told apart
+                // reliably (the order turned out not to be "player, then interlocutor": the first test coloured the wrong
+                // one), so we compare the BodyProperties of each visuals (AgentVisualsData.
+                // BodyPropertiesData) with the BodyProperties of the player/interlocutor: this is the same data,
+                // the key matches byte for byte for one and the same character, regardless of the position
+                // in the list. A lord's escort has no Hero of its own: its BodyProperties will match
+                // no one, and it stays uncoloured (these are not main characters).
                 var conv = ConversationCharacterKeys(__instance);
                 int count = 0;
                 foreach (var visuals in list)
                 {
                     Tick(visuals, "разговор");
-                    // Разговор на карте собирает участников СВОИМ путём — EquestriaBodyParts.Attach
-                    // к его такту не подключён (хвост/крылья/рог приходят через AgentVisuals.Create/
-                    // Refresh где-то выше по цепочке, а лор-цвет там иногда не долетает — например,
-                    // если CharacterObjectStringIdData к моменту Create ещё пуст). Красим и крепим
-                    // части тела ЕЩЁ РАЗ прямо здесь, заведомо рабочим путём — Attach идемпотентен.
+                    // A map conversation assembles its participants ITS OWN way: EquestriaBodyParts.Attach
+                    // is not hooked to its tick (tail/wings/horn come via AgentVisuals.Create/
+                    // Refresh somewhere up the chain, and the lore colour sometimes does not get there, for example
+                    // if CharacterObjectStringIdData is still empty at the moment of Create). We colour and attach
+                    // the body parts ONCE MORE right here, by a path known to work; Attach is idempotent.
                     AttachAndColorConversationParticipant(visuals, conv);
                     count++;
                 }
@@ -965,19 +966,19 @@ namespace EquestriaMod
             });
         }
 
-        // Раса и BodyProperties персонажа — тем же способом, что Read() выше
-        // (GetCopyAgentVisualsData), но отдельным кэшем метода: тип внешности участников
-        // разговора — не обязательно тот же, что у _getData/_raceData (те кэшируются под
-        // последний вызов обычного Tick).
+        // The character's race and BodyProperties, the same way as Read() above
+        // (GetCopyAgentVisualsData), but with a separate method cache: the visuals type of conversation
+        // participants is not necessarily the same as for _getData/_raceData (those are cached for
+        // the last call of the ordinary Tick).
         private static System.Reflection.MethodInfo _convGetData;
         private static System.Reflection.PropertyInfo _convRaceData;
         private static System.Reflection.PropertyInfo _convBodyData;
 
-        // Кто есть кто в разговоре. По ИНДЕКСУ в _agentVisuals отличить игрока/собеседника
-        // ненадёжно (первый тест окрасил не того — порядок не "игрок, потом собеседник", как
-        // ожидалось), поэтому сверяем BodyProperties: у одного и того же персонажа ключ
-        // побайтово совпадает что у Hero, что у его внешности в разговоре, независимо от
-        // позиции в списке.
+        // Who is who in the conversation. Telling the player/interlocutor apart by INDEX in _agentVisuals
+        // is unreliable (the first test coloured the wrong one: the order is not "player, then interlocutor", as
+        // expected), so we compare BodyProperties: for one and the same character the key
+        // matches byte for byte both on the Hero and on its visuals in the conversation, regardless of the
+        // position in the list.
         private struct ConvKeys
         {
             public string PlayerKey, PlayerId, PartnerKey, PartnerId;
@@ -1008,9 +1009,9 @@ namespace EquestriaMod
             return new ConvKeys { PlayerKey = playerKey, PlayerId = playerId, PartnerKey = partnerKey, PartnerId = partnerId };
         }
 
-        // ConversationCharacterData.Character (CharacterObject) — публичное поле, не свойство.
-        // BodyProperties берём с HeroObject: у самого CharacterObject-шаблона своей уникальной
-        // внешности нет, она только у конкретного живого Hero.
+        // ConversationCharacterData.Character (CharacterObject) is a public field, not a property.
+        // BodyProperties are taken from HeroObject: the CharacterObject template itself has no unique
+        // appearance of its own; only a specific living Hero has one.
         private static void CharacterIdAndKey(object conversationCharacterData, out string id, out string bodyKey)
         {
             id = null;
@@ -1078,7 +1079,7 @@ namespace EquestriaMod
             {
                 return;
             }
-            // только наши расы: у ванильных монстров номер и так верный
+            // only our races: for vanilla monsters the number is already correct
             if (!Scales().Keys.Any() || !ScaleByRace.Keys.Any(r => __instance.StringId.StartsWith(r)))
             {
                 return;

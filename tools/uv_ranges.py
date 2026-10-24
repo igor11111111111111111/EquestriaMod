@@ -1,4 +1,4 @@
-# Диапазоны UV по материалам в готовом eq_twilight.blend (можно ли собрать атлас без запекания).
+# UV ranges per material in the finished eq_twilight.blend (whether an atlas can be built without baking).
 import bpy
 
 stats = {}

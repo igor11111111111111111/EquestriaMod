@@ -1,19 +1,19 @@
-# Сборка расы из чужой модели: детали зверя на готовое антро-тело пони.
+# Building a race from someone else's model: animal details on the ready-made anthro pony body.
 #
-#   blender --background --factory-startup --python make_creature_parts.py -- <вид> <модель.glb>
-#           <pony.blend> <папка вывода> [--preview]
+#   blender --background --factory-startup --python make_creature_parts.py -- <kind> <model.glb>
+#           <pony.blend> <output folder> [--preview]
 #
-# Что делает: вырезает из четвероногой модели те части, которым разворот не нужен (голова с
-# клювом или рогами, крылья, хвост, когти), ставит каждую на своё место рядом с костью
-# человеческого скелета Bannerlord и жёстко привязывает к ней. Туловище, руки и ноги берутся
-# готовые — от нашей антро-пони, они уже привязаны и правильно анимируются.
+# What it does: cuts out of the quadruped model the parts that need no unfolding (the head with
+# beak or horns, wings, tail, claws), places each one in its spot next to a bone
+# of the Bannerlord human skeleton and rigidly binds it to it. The torso, arms and legs are taken
+# ready-made from our anthro pony; they are already bound and animate correctly.
 #
-# Почему так, а не «развернуть всю модель»: у четвероногого нет геометрии в тех местах, где у
-# стоящего должны быть бок, подмышка и пах, — автоматический разворот рвёт там кожу (проверено
-# четырьмя способами, см. docs/reference/creatures). Детали же переносятся жёстко и целиком,
-# поэтому выглядят ровно так, как их слепил генератор.
+# Why this way and not "unfold the whole model": a quadruped has no geometry where
+# a standing figure must have a flank, armpit and groin, and automatic unfolding tears the skin there (tested
+# in four ways, see docs/reference/creatures). The details, on the other hand, are transferred rigidly and whole,
+# so they look exactly as the generator sculpted them.
 #
-# Размеры и повороты деталей — в tools/creature_data.py, ключ "graft".
+# Detail sizes and rotations are in tools/creature_data.py, key "graft".
 import math
 import os
 import sys
@@ -28,8 +28,8 @@ _args = [a for a in sys.argv[sys.argv.index("--") + 1:]]
 PREVIEW = "--preview" in _args
 _args = [a for a in _args if not a.startswith("--")]
 KEY, GLB, PONY, OUT = _args[:4]
-OUT = os.path.abspath(OUT)      # пути должны быть полными: Блендер сохраняет картинки
-GLB = os.path.abspath(GLB)      # относительно открытого .blend, а не текущей папки
+OUT = os.path.abspath(OUT)      # paths must be absolute: Blender saves images
+GLB = os.path.abspath(GLB)      # relative to the open .blend, not the current folder
 CARD = CREATURES[KEY]
 PREFIX = "eq_" + CARD["name"]
 os.makedirs(OUT, exist_ok=True)
@@ -41,7 +41,7 @@ def log(*a):
     print("[parts]", *a, flush=True)
 
 
-# ---------------------------------------------------------------- 1. база: пони со скелетом
+# ---------------------------------------------------------------- 1. base: the pony with skeleton
 bpy.ops.wm.open_mainfile(filepath=PONY)
 scene = bpy.context.scene
 vl = bpy.context.view_layer
@@ -85,7 +85,7 @@ def match(q, rule):
     return True
 
 
-# ---------------------------------------------------------------- 2. модель зверя
+# ---------------------------------------------------------------- 2. the animal model
 images_before = set(bpy.data.images.keys())
 before = set(scene.objects)
 bpy.ops.import_scene.gltf(filepath=GLB)
@@ -101,12 +101,12 @@ beast = vl.objects.active
 beast.name = PREFIX + "_beast"
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-# разворот мордой в -Y, как смотрит персонаж Bannerlord
+# turn the muzzle to -Y, the way a Bannerlord character faces
 turn = Matrix.Rotation(math.radians(CARD["yaw"]), 4, "Z")
 beast.matrix_world = turn @ beast.matrix_world
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-# сшивка «супа»: соседние треугольники у модели генератора не делят вершины
+# stitching the "soup": neighbouring triangles of the generator's model do not share vertices
 select_only([beast], beast)
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
@@ -126,8 +126,8 @@ def separate(ob, indices, name):
     chosen = set(indices)
     for i in indices:
         ob.data.vertices[i].select = True
-    # грань уезжает вместе с вершинами только если выбрана целиком — отмечаем такие грани сами,
-    # иначе в новом объекте остаётся облако точек без единой грани
+    # a face moves along with its vertices only if it is selected entirely; we mark such faces ourselves,
+    # otherwise the new object is left with a cloud of points without a single face
     for f in ob.data.polygons:
         f.select = all(i in chosen for i in f.vertices)
     was = set(scene.objects)
@@ -142,8 +142,8 @@ def separate(ob, indices, name):
 
 
 def drop_small_islands(ob, min_verts=24):
-    """Выбрасывает мелкие обрывки: при резке по координатам всегда цепляются чужие кусочки,
-    и они висят в воздухе рядом с деталью."""
+    """Throws away small scraps: cutting by coordinates always catches foreign bits,
+    and they hang in the air next to the detail."""
     me = ob.data
     parent = list(range(len(me.vertices)))
 
@@ -183,7 +183,7 @@ def bounds(ob):
     return lo, hi
 
 
-# ---------------------------------------------------------------- 3. детали
+# ---------------------------------------------------------------- 3. details
 parts = {}
 for name, spec in CARD.get("graft", {}).items():
     idx = [v.index for v in beast.data.vertices if match(beast.matrix_world @ v.co, spec["rule"])]
@@ -193,20 +193,20 @@ for name, spec in CARD.get("graft", {}).items():
         continue
     select_only([part], part)
     dropped = drop_small_islands(part)
-    # дырка от разреза (плоский срез шеи) заращивается: иначе сзади видно, что голова полая
+    # the hole from the cut (the flat neck cut) is filled: otherwise from behind you can see the head is hollow
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.mesh.fill_holes(sides=0)
     bpy.ops.mesh.normals_make_consistent(inside=False)
     bpy.ops.object.mode_set(mode="OBJECT")
-    # упрощение до разумного числа треугольников
+    # simplification to a reasonable number of triangles
     limit = spec.get("tris", 3000)
     if tri_count(part) > limit:
         dec = part.modifiers.new("dec", "DECIMATE")
         dec.ratio = limit / tri_count(part)
         bpy.ops.object.modifier_apply(modifier=dec.name)
 
-    # масштаб: деталь должна стать заданной высоты (или ширины)
+    # scale: the detail must reach the given height (or width)
     lo, hi = bounds(part)
     size = hi - lo
     axis = {"z": 2, "y": 1, "x": 0}[spec.get("by", "z")]
@@ -214,7 +214,7 @@ for name, spec in CARD.get("graft", {}).items():
     part.matrix_world = Matrix.Scale(k, 4) @ part.matrix_world
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-    # поворот вокруг своей середины
+    # rotation around its own middle
     pitch, roll, yaw = (math.radians(a) for a in spec.get("rotate", (0, 0, 0)))
     lo, hi = bounds(part)
     mid = (lo + hi) / 2
@@ -222,7 +222,7 @@ for name, spec in CARD.get("graft", {}).items():
     part.matrix_world = Matrix.Translation(mid) @ rot @ Matrix.Translation(-mid) @ part.matrix_world
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-    # положение: заданная точка детали совмещается с точкой у кости
+    # position: the given point of the detail is aligned with the point at the bone
     lo, hi = bounds(part)
     anchor = {"bottom": Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z)),
               "top": Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, hi.z)),
@@ -233,7 +233,7 @@ for name, spec in CARD.get("graft", {}).items():
     part.matrix_world = Matrix.Translation(target - anchor) @ part.matrix_world
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-    # жёсткая привязка к кости
+    # rigid binding to the bone
     for vg in list(part.vertex_groups):
         part.vertex_groups.remove(vg)
     vg = part.vertex_groups.new(name=BONES[spec["bone"]])
@@ -249,7 +249,7 @@ for name, spec in CARD.get("graft", {}).items():
 
 bpy.data.objects.remove(beast, do_unlink=True)
 
-# ---------------------------------------------------------------- 4. текстуры и экспорт
+# ---------------------------------------------------------------- 4. textures and export
 for img in bpy.data.images:
     if img.size[0] == 0 or img.name in images_before:
         continue
@@ -261,7 +261,7 @@ for img in bpy.data.images:
     img.save()
     log("текстура %s -> %s" % (img.name, os.path.basename(path)))
 
-# в экспорт идут только наши детали и скелет: тело, ноги и кисти берутся от пони как есть
+# only our details and the skeleton go into the export: the body, legs and hands are taken from the pony as is
 select_only(list(parts.values()) + [skel], skel)
 fbx = os.path.join(OUT, PREFIX + ".fbx")
 bpy.ops.export_scene.fbx(filepath=fbx, use_selection=True, add_leaf_bones=False,

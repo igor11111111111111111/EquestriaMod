@@ -8,15 +8,15 @@ using TaleWorlds.Localization;
 
 namespace EquestriaMod
 {
-    // Мана героев. Копится на глобальной карте по часам, тратится в бою на заклинания — так же
-    // устроены «ветра магии» в The Old Realms (разбор: docs/tor_reference/04_magic.md, раздел 5).
+    // Heroes' mana. It accumulates hourly on the world map and is spent on spells in battle - the
+    // "winds of magic" in The Old Realms work the same way (analysis: docs/tor_reference/04_magic.md, section 5).
     //
-    // Хранится в сейве отдельным словарём: у Hero своего поля под ману нет, а лезть в чужие
-    // структуры незачем.
+    // Stored in the save as a separate dictionary: Hero has no field of its own for mana, and there is no
+    // reason to meddle with other structures.
     public class EquestriaManaBehavior : CampaignBehaviorBase
     {
         public const float MaxMana = 60f;
-        public const float PerHour = 3f;       // полный запас примерно за сутки пути
+        public const float PerHour = 3f;       // a full pool in about a day of travel
 
         private Dictionary<string, float> _mana = new Dictionary<string, float>();
 
@@ -26,8 +26,8 @@ namespace EquestriaMod
         {
             _instance = this;
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, HourlyTick);
-            // Новый заклинатель начинает с полным запасом: иначе первый бой он стоит без магии,
-            // пока не пройдёт двадцать часов пути.
+            // A new caster starts with a full pool: otherwise he spends the first battle without magic
+            // until twenty hours of travel have passed.
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, _ =>
                 EquestriaCrashLog.Try("первичная мана", FillNewCasters));
         }
@@ -51,9 +51,9 @@ namespace EquestriaMod
             _instance = this;
         }
 
-        // Мана растёт только в пути по карте: в бою её взять неоткуда. Пока колдует один игрок,
-        // поэтому и перебирать никого не нужно; когда заклинания получат лорды — сюда придёт
-        // обход Hero.AllAliveHeroes с проверкой CanCast.
+        // Mana grows only while travelling on the map: in battle there is nowhere to get it. For now only the
+        // player casts, so there is no one to iterate over; when lords get spells, a pass over
+        // Hero.AllAliveHeroes with a CanCast check will go here.
         private void HourlyTick()
         {
             if (CanCast(Hero.MainHero))
@@ -93,7 +93,7 @@ namespace EquestriaMod
             Set(hero, Get(hero) + amount);
         }
 
-        // Хватило ли маны; при успехе она сразу списывается.
+        // Whether there was enough mana; on success it is deducted at once.
         public static bool TrySpend(Hero hero, float amount)
         {
             if (hero == null || Get(hero) < amount)
@@ -104,7 +104,7 @@ namespace EquestriaMod
             return true;
         }
 
-        // Консоль: equestria.mana  /  equestria.mana 60
+        // Console: equestria.mana  /  equestria.mana 60
         [CommandLineFunctionality.CommandLineArgumentFunction("mana", "equestria")]
         public static string ManaCommand(List<string> args)
         {
@@ -121,16 +121,16 @@ namespace EquestriaMod
         }
     }
 
-    // Показ маны на панели карты. Ванильная MapInfoVM держит два списка значков (скорость, еда,
-    // мораль…) — дописываем в нижний свой. Свою панель рисовать не нужно: игра сама покажет
-    // иконку и число. Так же делает TOR (ViewModelExtension на MapInfoVM).
+    // Showing mana on the map panel. The vanilla MapInfoVM holds two lists of icons (speed, food,
+    // morale...) - we add ours to the lower one. No need to draw our own panel: the game shows the
+    // icon and the number itself. TOR does the same (ViewModelExtension on MapInfoVM).
     [HarmonyPatch(typeof(MapInfoVM), "Refresh")]
     public static class EquestriaManaMapInfoPatch
     {
         private static readonly Dictionary<MapInfoVM, MapInfoItemVM> Items =
             new Dictionary<MapInfoVM, MapInfoItemVM>();
 
-        // Refresh зовётся по многу раз в секунду: при поломке отключаемся, чтобы не залить журнал.
+        // Refresh is called many times per second: on failure we switch off so as not to flood the log.
         private static bool _broken;
 
         [HarmonyPostfix]
@@ -146,7 +146,7 @@ namespace EquestriaMod
                 if (!Items.TryGetValue(__instance, out item))
                 {
                     item = new MapInfoItemVM("eq_mana", Hint);
-                    // своего спрайта у мода нет — берём ванильный значок влияния
+                    // the mod has no sprite of its own - use the vanilla influence icon
                     item.SetOverriddenVisualId("influence");
                     __instance.SecondaryInfoItems.Add(item);
                     Items[__instance] = item;
@@ -175,7 +175,7 @@ namespace EquestriaMod
         }
     }
 
-    // Короткие обёртки для интерфейса: мана игрока.
+    // Short wrappers for the UI: the player's mana.
     public static class EquestriaMana
     {
         public static float Value

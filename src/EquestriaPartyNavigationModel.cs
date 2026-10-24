@@ -4,17 +4,17 @@ using TaleWorlds.Core;
 
 namespace EquestriaMod
 {
-    // Проходимость карты мира для отрядов.
+    // World map passability for parties.
     //
-    // У граней нашей сетки проходимости (Module\SceneObj\Main_map\navmesh.bin, её строит редактор)
-    // тип местности равен 0 — такого типа в игре нет, и стандартная модель считала всю карту
-    // непроходимой для сухопутных отрядов. Отсюда были все странности:
-    //   - к точке на земле отряд шёл (путь не строился, и он двигался по прямой);
-    //   - к другому отряду — стоял на месте: игра решала, что цель на непроходимой местности;
-    //   - лорды не могли никого догнать и через пару недель застревали.
+    // The faces of our navmesh (Module\SceneObj\Main_map\navmesh.bin, built by the editor) have
+    // terrain type 0 - the game has no such type, and the default model treated the whole map as
+    // impassable for land parties. That caused all the oddities:
+    //   - a party did go to a point on the ground (no path was built, so it moved in a straight line);
+    //   - towards another party it stood still: the game decided the target was on impassable terrain;
+    //   - lords could not catch anyone and got stuck after a couple of weeks.
     //
-    // Проставить тип граням можно только в редакторе (файл, изменённый нашим кодом, игра не
-    // принимает), поэтому пока считаем «нулевую» местность равниной.
+    // Face types can only be set in the editor (the game does not accept a file modified by our
+    // code), so for now we treat the "zero" terrain as plain.
     public class EquestriaPartyNavigationModel : DefaultPartyNavigationModel
     {
         private const TerrainType Unset = (TerrainType)0;

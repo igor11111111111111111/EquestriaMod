@@ -14,22 +14,22 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Смотр рас: старт, после которого в отряде игрока стоят по три спутника КАЖДОЙ расы, и каждый
-    // одет в случайную броню. Нужен, чтобы одним запуском посмотреть, как на всех наших моделях
-    // сидят ванильные доспехи — до этого каждую расу приходилось смотреть отдельной кампанией.
+    // Race review: a start after which the player's party has three companions of EACH race, each
+    // dressed in random armour. Needed to see in one launch how vanilla armour fits on all our
+    // models - before this each race had to be checked in a separate campaign.
     //
-    // Запускается тремя способами:
-    //   .\run.ps1 -Races          новая песочница без единого клика, спутники уже в отряде;
-    //   кнопка «Эквестрия: смотр рас» в главном меню — то же самое руками;
-    //   equestria.race_party [сколько] — набрать в уже начатой кампании.
+    // Started in three ways:
+    //   .\run.ps1 -Races          a new sandbox without a single click, companions already in the party;
+    //   the "Equestria: race review" button in the main menu - the same by hand;
+    //   equestria.race_party [how many] - recruit them in an already started campaign.
     public static class EquestriaRaceParty
     {
         private const string OptionId = "EquestriaRaceParty";
-        private const string ArgPrefix = "/eqraces";     // допускается /eqraces:5
+        private const string ArgPrefix = "/eqraces";     // /eqraces:5 is allowed
         private const int DefaultPerRace = 3;
         private const int MaxPerRace = 20;
 
-        private static int _wanted;                      // 0 — смотр не запрашивали
+        private static int _wanted;                      // 0 - review not requested
         private static bool _done;
         private static DateTime _mapSeenAt = DateTime.MinValue;
 
@@ -68,9 +68,9 @@ namespace EquestriaMod
             EquestriaQuickStart.StartQuickCampaign();
         }
 
-        // Ждём карту: до неё у игрока нет ни отряда, ни клана, и спутника некуда брать.
-        // Двухсекундная пауза — та же, что у примерочной шлемов: сразу после появления карты
-        // кампания ещё доигрывает своё начало.
+        // Wait for the map: before it the player has neither a party nor a clan, and nowhere to put a companion.
+        // The two-second pause is the same as in the helmet fitting room: right after the map appears
+        // the campaign is still finishing its start.
         public static void Tick()
         {
             if (_wanted <= 0 || _done)
@@ -96,9 +96,9 @@ namespace EquestriaMod
                 string report = Run(new List<string> { _wanted.ToString() });
                 EquestriaCrashLog.Log(report.Replace("\n", " "));
                 InformationManager.DisplayMessage(new InformationMessage(report, Colors.Magenta));
-                // Если тем же запуском просят бой (/eqbattle), экран отряда не открываем: он сменил
-                // бы состояние игры, и бой (EquestriaShowcase, ждёт карту так же, как и мы) не
-                // начался бы — тот же приём, что у EquestriaHelmetTest с инвентарём.
+                // If the same launch also asks for a battle (/eqbattle), do not open the party screen: it would
+                // change the game state, and the battle (EquestriaShowcase, waits for the map just like we do)
+                // would not start - the same trick as EquestriaHelmetTest uses with the inventory.
                 bool toBattle = Environment.GetCommandLineArgs()
                     .Any(a => string.Equals(a, "/eqbattle", StringComparison.OrdinalIgnoreCase));
                 if (!toBattle)
@@ -108,7 +108,7 @@ namespace EquestriaMod
             });
         }
 
-        // Слоты брони и типы предметов для них. Оружие не выдаём: смотрим именно посадку доспеха.
+        // Armour slots and the item types for them. No weapons: we are looking specifically at armour fit.
         private static readonly (EquipmentIndex Slot, ItemObject.ItemTypeEnum Type)[] Wear =
         {
             (EquipmentIndex.Head, ItemObject.ItemTypeEnum.HeadArmor),
@@ -120,11 +120,11 @@ namespace EquestriaMod
 
         private static Dictionary<ItemObject.ItemTypeEnum, List<ItemObject>> _pool;
 
-        // Что вообще можно надеть. Отсекаем предметы без меша и части тела рас (хвосты, крылья,
-        // гребни): они тоже числятся бронёй, но их вешает на скелет EquestriaBodyParts, и в слоте
-        // накидки им делать нечего — иначе оленю достался бы чужой хвост.
-        // internal — переиспользуется EquestriaDebugCommands.DismembermentTestBattle (случайная
-        // броня на бойцах тестового боя).
+        // What can be worn at all. Filter out items without a mesh and race body parts (tails, wings,
+        // crests): they also count as armour, but EquestriaBodyParts attaches them to the skeleton, and
+        // they have no business in the cape slot - otherwise a deer would get someone else's tail.
+        // internal - reused by EquestriaDebugCommands.DismembermentTestBattle (random
+        // armour on the fighters of the test battle).
         internal static List<ItemObject> Pool(ItemObject.ItemTypeEnum type)
         {
             if (_pool == null)
@@ -140,8 +140,8 @@ namespace EquestriaMod
             return _pool.TryGetValue(type, out list) ? list : new List<ItemObject>();
         }
 
-        // Одеваем вразнобой: каждый слот — свой случайный предмет, и боевой набор совпадает с
-        // гражданским, чтобы броня была видна в любом окне.
+        // Dress randomly: each slot gets its own random item, and the battle set matches the
+        // civilian one so the armour is visible in any screen.
         private static string Dress(Hero hero)
         {
             var worn = new List<string>();
@@ -160,7 +160,7 @@ namespace EquestriaMod
             return string.Join(", ", worn);
         }
 
-        // equestria.race_party [сколько на расу] — набрать в отряд спутников всех рас
+        // equestria.race_party [how many per race] - recruit companions of all races into the party
         [CommandLineFunctionality.CommandLineArgumentFunction("race_party", "equestria")]
         public static string Run(List<string> args)
         {
@@ -176,9 +176,9 @@ namespace EquestriaMod
             {
                 return "Список рас пуст — skins не загрузились.";
             }
-            // Шаблоны странников: из них делаются обычные спутники (см. equestria.companions).
-            // Канонных (spc_eq_*) не берём: у них своя внешность и своя раса, а нам нужны
-            // одинаковые болванки, которым расу назначаем мы.
+            // Wanderer templates: ordinary companions are made from them (see equestria.companions).
+            // Canon ones (spc_eq_*) are skipped: they have their own looks and race, and we need
+            // identical blanks to which we assign the race ourselves.
             var templates = CharacterObject.All
                 .Where(c => c.Occupation == Occupation.Wanderer && c.IsTemplate
                             && !c.StringId.StartsWith("spc_eq_"))
@@ -192,8 +192,8 @@ namespace EquestriaMod
             int total = 0;
             for (int race = 0; race < names.Length; race++)
             {
-                // Ванильного человека пропускаем: в моде им никто не играет, и в окне внешности
-                // его тоже не видно (см. EquestriaRaceSelector).
+                // Skip the vanilla human: nobody plays one in the mod, and it is not shown
+                // in the appearance screen either (see EquestriaRaceSelector).
                 if (names[race] == "human")
                 {
                     continue;
@@ -205,7 +205,7 @@ namespace EquestriaMod
                     EquestriaDebugCommands.JoinParty(hero, true);
                     EquestriaRaceSaveBehavior.SetRace(hero, race);
                     string worn = Dress(hero);
-                    // Имя по расе с номером — иначе в отряде не разобрать, кто какой расы.
+                    // Name by race with a number - otherwise you cannot tell who is which race in the party.
                     var title = EquestriaRaceSelector.TitleOf(names[race]).ToString();
                     var full = new TextObject("{=!}" + title + " " + (k + 1));
                     EquestriaCrashLog.Try("смотр рас: имя спутника", () => hero.SetName(full, full));
@@ -214,8 +214,8 @@ namespace EquestriaMod
                 }
                 report.Append(report.Length > 0 ? ", " : "").Append(names[race]);
             }
-            // Пони получают гриву и хвост в свободные слоты — у остальных рас это делает
-            // EquestriaBodyParts прямо в бою.
+            // Ponies get the mane and tail in free slots - for the other races EquestriaBodyParts
+            // does this right in battle.
             EquestriaMane.EnsureForPonies();
             return $"Смотр рас: добавлено спутников {total} (по {per} на расу). Расы: {report}. "
                 + $"Героев в отряде: {MobileParty.MainParty.MemberRoster.TotalHeroes}.";

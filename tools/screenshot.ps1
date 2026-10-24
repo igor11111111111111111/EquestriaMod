@@ -1,9 +1,9 @@
-﻿# Снимок экрана — чтобы можно было посмотреть на игру, не отвлекая человека.
+﻿# Screenshot - so the game can be looked at without distracting the person.
 #
 #   .\screenshot.ps1 -Wait 60 -Out shot.png
 #
-# Важно: из исключительного полноэкранного режима (display_mode = 1 в engine_config.txt) обычный
-# снимок выходит чёрным. Нужен оконный без рамки — display_mode = 2.
+# Important: in exclusive fullscreen mode (display_mode = 1 in engine_config.txt) a normal
+# screenshot comes out black. Borderless windowed is needed - display_mode = 2.
 param(
     [int]$Wait = 0,
     [string]$Out = "$env:TEMP\bannerlord_shot.png"
@@ -26,7 +26,7 @@ $bitmap.Save($Out, [System.Drawing.Imaging.ImageFormat]::Png)
 $graphics.Dispose()
 $bitmap.Dispose()
 
-# Полностью чёрный кадр означает, что игра всё же в исключительном полноэкранном режиме.
+# A fully black frame means the game is in exclusive fullscreen mode after all.
 $check = New-Object System.Drawing.Bitmap($Out)
 $bright = 0
 for ($x = 0; $x -lt $check.Width; $x += 97) {

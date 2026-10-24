@@ -1,20 +1,20 @@
-# Оснащённая модель зверя (glb со скелетом) -> антро-персонаж Bannerlord.
+# Rigged beast model (glb with a skeleton) -> Bannerlord anthro character.
 #
-#   blender --background --factory-startup --python convert_rigged.py -- <вид> <модель.glb>
-#           <скелет.fbx> <папка вывода> [--preview] [--stop-tpose]
+#   blender --background --factory-startup --python convert_rigged.py -- <species> <model.glb>
+#           <skeleton.fbx> <output folder> [--preview] [--stop-tpose]
 #
-# В отличие от convert_creature.py здесь у модели есть свой скелет и нормальная привязка
-# (например, оснащённая в Meshy). Это меняет всё: кожу можно гнуть как угодно, она едет
-# за костями и не рвётся. Порядок работы:
-#   1. Импорт, чистка мусора (Meshy кладёт рядом сферу), увеличение до метров.
-#   2. Поза покоя берётся из первого кадра анимации: у таких моделей сам rest часто вырожденный.
-#   3. Зверь ставится в стойку: каждой кости задаётся направление из карты "tpose"
-#      (спина вверх, передние лапы в стороны, задние вниз) — обычный разворот по цепочке.
-#   4. Поза запекается, модель масштабируется под скелет Bannerlord.
-#   5. Кости зверя доворачиваются к одноимённым костям Bannerlord (карта "bone_map"), поза
-#      снова запекается — теперь суставы стоят там, где их ждёт движок.
-#   6. Группы вершин переименовываются в кости Bannerlord, меш привязывается к его скелету,
-#      режется на предметы и пишется в FBX.
+# Unlike convert_creature.py, here the model has its own skeleton and proper skinning
+# (for example, rigged in Meshy). That changes everything: the skin can be bent any way, it follows
+# the bones and does not tear. Workflow:
+#   1. Import, junk cleanup (Meshy puts a sphere next to it), scale up to meters.
+#   2. The rest pose is taken from the first animation frame: in such models the rest itself is often degenerate.
+#   3. The beast is put into a stance: each bone gets a direction from the "tpose" map
+#      (spine up, front legs out to the sides, hind legs down) - a plain rotation along the chain.
+#   4. The pose is baked, the model is scaled to the Bannerlord skeleton.
+#   5. The beast's bones are turned toward the Bannerlord bones of the same name ("bone_map"), the pose
+#      is baked again - now the joints are where the engine expects them.
+#   6. Vertex groups are renamed to Bannerlord bones, the mesh is bound to its skeleton,
+#      cut into items and written to FBX.
 import math
 import os
 import sys
@@ -61,7 +61,7 @@ def mesh_bounds(ob):
     return lo, hi
 
 
-# ---------------------------------------------------------------- 1. скелет Bannerlord
+# ---------------------------------------------------------------- 1. Bannerlord skeleton
 before = set(scene.objects)
 bpy.ops.import_scene.fbx(filepath=SKEL_FBX, automatic_bone_orientation=False,
                          primary_bone_axis="X", secondary_bone_axis="-Y")
@@ -76,7 +76,7 @@ H = {key: skel.matrix_world @ skel.data.bones[name].head_local for key, name in 
      if name in skel.data.bones}
 log("скелет Bannerlord: %d костей, таз на высоте %.2f м" % (len(skel.data.bones), H["pelvis"].z))
 
-# ---------------------------------------------------------------- 2. модель со скелетом
+# ---------------------------------------------------------------- 2. model with a skeleton
 images_before = set(bpy.data.images.keys())
 before = set(scene.objects)
 bpy.ops.import_scene.gltf(filepath=GLB)
@@ -91,7 +91,7 @@ for o in new:
     if o not in (beast_rig, beast) and o.type not in ("MESH", "ARMATURE"):
         bpy.data.objects.remove(o, do_unlink=True)
 
-# поза покоя из первого кадра анимации: у моделей Meshy сам rest бывает вырожденным
+# rest pose from the first animation frame: in Meshy models the rest itself can be degenerate
 scene.frame_set(int(scene.frame_start))
 vl.update()
 select_only([beast_rig], beast_rig)
@@ -102,7 +102,7 @@ bpy.ops.object.mode_set(mode="OBJECT")
 beast_rig.animation_data_clear()
 vl.update()
 
-# в метры: модель приходит в сантиметрах (масштаб армaтуры 0.01)
+# to meters: the model comes in centimeters (armature scale 0.01)
 scale_up = Matrix.Scale(100.0, 4)
 for o in (beast_rig, beast):
     o.matrix_world = scale_up @ o.matrix_world
@@ -113,7 +113,7 @@ lo, hi = mesh_bounds(beast)
 log("модель: %d вершин, %d костей, габариты %.2f x %.2f x %.2f м"
     % (len(beast.data.vertices), len(beast_rig.data.bones), *(hi - lo)))
 
-# разворот мордой в -Y
+# turn to face -Y
 turn = Matrix.Rotation(math.radians(CARD.get("rigged_yaw", CARD["yaw"])), 4, "Z")
 for o in (beast_rig, beast):
     o.matrix_world = turn @ o.matrix_world
@@ -127,9 +127,9 @@ def bone_dir(pb):
 
 
 def aim(rig, name, target, ref=None):
-    """Доворачивает кость так, чтобы направление на сустав ref (или собственный конец кости)
-    смотрело в заданную сторону. Через сустав надёжнее: у чужих скелетов кость часто смотрит
-    не туда, куда идёт конечность (у грифона «грудь» направлена к хвосту)."""
+    """Turns the bone so that the direction to joint ref (or the bone's own tail)
+    points the given way. Going via the joint is more reliable: in foreign skeletons a bone often points
+    not where the limb goes (in the griffon the "chest" points toward the tail)."""
     pb = rig.pose.bones.get(name)
     if pb is None:
         return False
@@ -150,9 +150,9 @@ def aim(rig, name, target, ref=None):
 
 
 def spin(rig, name, degrees):
-    """Поворачивает кость вокруг её начала на заданные углы (мировые оси X, Y, Z).
-    Нужно, чтобы поднять корпус: «нацеливание» тут не помогает — у четвероногого шея и так
-    смотрит вверх-вперёд, и целиться некуда, а поднять надо всю грудную клетку."""
+    """Rotates the bone around its head by the given angles (world axes X, Y, Z).
+    Needed to raise the torso: "aiming" does not help here - in a quadruped the neck already
+    points up and forward, so there is nothing to aim at, but the whole rib cage has to be raised."""
     pb = rig.pose.bones.get(name)
     if pb is None:
         return False
@@ -165,7 +165,7 @@ def spin(rig, name, degrees):
     return True
 
 
-# ---------------------------------------------------------------- 3. стойка
+# ---------------------------------------------------------------- 3. stance
 TPOSE = CARD.get("tpose", {})
 select_only([beast_rig], beast_rig)
 bpy.ops.object.mode_set(mode="POSE")
@@ -185,7 +185,7 @@ bpy.ops.object.mode_set(mode="OBJECT")
 vl.update()
 log("стойка: развёрнуто костей %d из %d" % (done, len(TPOSE)))
 
-# запекаем стойку в геометрию
+# bake the stance into the geometry
 select_only([beast], beast)
 for m in list(beast.modifiers):
     if m.type == "ARMATURE":
@@ -207,7 +207,7 @@ if PREVIEW:
 if STOP_TPOSE:
     raise SystemExit(0)
 
-# ---------------------------------------------------------------- 4. размер под скелет Bannerlord
+# ---------------------------------------------------------------- 4. size to fit the Bannerlord skeleton
 BONE_MAP = CARD.get("bone_map", {})
 rig_head = beast_rig.pose.bones.get("head") or beast_rig.pose.bones[0]
 hips = beast_rig.pose.bones.get("Hips") or beast_rig.pose.bones[0]
@@ -224,19 +224,19 @@ lo, hi = mesh_bounds(beast)
 log("подгонка под скелет: масштаб x%.2f, рост %.2f м (таз->голова %.2f -> %.2f)"
     % (k, hi.z - lo.z, beast_span, human_span))
 
-# ---------------------------------------------------------------- 5. кости к костям Bannerlord
+# ---------------------------------------------------------------- 5. bones to Bannerlord bones
 select_only([beast_rig], beast_rig)
 bpy.ops.object.mode_set(mode="POSE")
-# Направление кости Bannerlord берём как «от своего сустава к следующему по цепочке»:
-# собственный конец кости у ванильного скелета смотрит не вдоль конечности (кость таза,
-# например, направлена назад), и целиться по нему нельзя.
+# The direction of a Bannerlord bone is taken as "from its joint to the next one along the chain":
+# the bone's own tail in the vanilla skeleton does not point along the limb (the pelvis bone,
+# for example, points backward), so it cannot be aimed by.
 NEXT_KEY = {}
 for chain in CHAINS:
     for a, b in zip(chain, chain[1:]):
         NEXT_KEY[a] = b
 RETARGET = CARD.get("retarget", {})
-# Наведение и растяжение делаем в несколько проходов: растянув родителя, мы сдвигаем сустав
-# ребёнка, и его направление снова уезжает. Трёх проходов хватает, чтобы всё сошлось.
+# Aiming and stretching are done in several passes: stretching a parent moves the child's
+# joint, and its direction drifts off again. Three passes are enough for everything to converge.
 moved = 0
 for _pass in range(3):
     for bone in sorted(beast_rig.data.bones, key=lambda b: len(b.parent_recursive)):
@@ -251,9 +251,9 @@ for _pass in range(3):
         if want.length < 1e-6:
             continue
         moved += aim(beast_rig, bone.name, want, spec.get("ref"))
-        # Длину подгоняем только у конечностей: руки и ноги должны дотянуться до человеческих
-        # суставов (иначе оружие окажется не в кисти). Шею и корпус зверю не укорачиваем —
-        # он и должен остаться длиннотелым.
+        # Length is fitted only for limbs: arms and legs must reach the human
+        # joints (otherwise the weapon ends up outside the hand). The beast's neck and torso are not
+        # shortened - it should stay long-bodied.
         if not spec.get("stretch"):
             continue
         pb = beast_rig.pose.bones.get(bone.name)
@@ -285,9 +285,9 @@ for m in list(beast.modifiers):
         bpy.ops.object.modifier_apply(modifier=m.name)
 log("кости довёрнуты к костям Bannerlord: %d" % moved)
 
-# ---------------------------------------------------------------- 6. веса на скелет Bannerlord
+# ---------------------------------------------------------------- 6. weights onto the Bannerlord skeleton
 names = {g.index: g.name for g in beast.vertex_groups}
-weights = {}          # вершина -> {кость Bannerlord: вес}
+weights = {}          # vertex -> {Bannerlord bone: weight}
 for v in beast.data.vertices:
     acc = {}
     for g in v.groups:
@@ -317,7 +317,7 @@ mod = beast.modifiers.new("Armature", "ARMATURE")
 mod.object = skel
 beast.name = PREFIX + "_body"
 
-# ---------------------------------------------------------------- 7. текстуры и экспорт
+# ---------------------------------------------------------------- 7. textures and export
 for img in bpy.data.images:
     if img.size[0] == 0 or img.name in images_before:
         continue

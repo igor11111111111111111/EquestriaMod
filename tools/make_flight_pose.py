@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Экспорт FBX-КОНТЕЙНЕРА для позы свитка полёта: human_skeleton.fbx с ключами на всех костях.
+"""Export the FBX CONTAINER for the flight scroll pose: human_skeleton.fbx with keys on all bones.
 
-Сама поза здесь НЕ задаётся. Повороты всех костей в этом файле перезаписывает
-tools/make_flight_pose_engine.py — на rest-позе движка (tools/engine_rest_human_skeleton.txt),
-потому что rest скелета в движке не совпадает с PreRotation human_skeleton.fbx и любой клип,
-собранный на Blender-арматуре с этого FBX, в игре разворачивает торс на 180° (10.10.2026,
-подробности в equestria-flight-scroll.md). От контейнера нужны только узлы костей, кривые
-Lcl Rotation с ключами (кадры 1..15) и связи между ними.
+The pose itself is NOT set here. The rotations of all bones in this file are overwritten by
+tools/make_flight_pose_engine.py on the engine's rest pose (tools/engine_rest_human_skeleton.txt),
+because the engine skeleton's rest does not match the PreRotation of human_skeleton.fbx, and any clip
+built on a Blender armature from this FBX turns the torso 180° in game (10.10.2026,
+details in equestria-flight-scroll.md). All the container has to provide is the bone nodes, the
+Lcl Rotation curves with keys (frames 1..15) and the links between them.
 
-Файл обязан быть Z-up (axis_forward="Y", axis_up="Z"): тогда у таза родитель — мир, и его
-локальный поворот = rest движка в пространстве сущности без каких-либо конвертаций.
+The file must be Z-up (axis_forward="Y", axis_up="Z"): then the pelvis's parent is the world, and its
+local rotation = the engine rest in entity space without any conversions.
 
-Конвейер:
+Pipeline:
     blender --background --factory-startup --python tools/make_flight_pose.py -- export <human_skeleton.fbx> assets/flight_test/eq_flight_arms_pose_raw.fbx
     blender --background --factory-startup --python tools/make_flight_pose_engine.py -- tools/engine_rest_human_skeleton.txt assets/flight_test/eq_flight_arms_pose_raw.fbx assets/flight_test/eq_flight_arms_pose.fbx
     cp assets/flight_test/eq_flight_arms_pose.fbx Module/AssetSources/
-    редактор: Resource Browser -> Assets -> eq_flight_arms_pose.fbx -> Reimport
+    editor: Resource Browser -> Assets -> eq_flight_arms_pose.fbx -> Reimport
 """
 import sys
 

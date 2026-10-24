@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Текстуры оленихи в именах и раскладке мода — в AssetSources для импорта редактором.
+"""Doe textures with the mod's names and layout - into AssetSources for import by the editor.
 
   py tools/make_deer_textures.py
 
-Из запечённых текстур модели (assets/deer/textures, их пишет make_deer_model.py) делаются три
-файла по образцу пони (eq_twilight_body_d/_n/_s):
-  eq_deer_body_d.png — цвет (2048);
-  eq_deer_body_n.png — нормали (2048);
-  eq_deer_body_s.png — блеск: у glTF в канале G лежит шероховатость, блеск = 1 - шероховатость.
-Остаются в assets/deer/textures — оттуда их импортируют в редакторе (Resource Browser → Import,
-пакет twilight), и редактор сам копирует файл в Module/AssetSources/twilight. Класть их туда
-заранее нельзя: при импорте редактор копирует файл в ту же папку и падает с «Unable to copy ...
-to Assets folder». Сам пакет хранит только ссылку на PNG и параметры, пиксели печёт редактор
-в RuntimeDataCache — поэтому кодом текстуру в мод не положить.
+From the model's baked textures (assets/deer/textures, written by make_deer_model.py) three
+files are made following the pony pattern (eq_twilight_body_d/_n/_s):
+  eq_deer_body_d.png - colour (2048);
+  eq_deer_body_n.png - normals (2048);
+  eq_deer_body_s.png - specular: glTF keeps roughness in the G channel, specular = 1 - roughness.
+They stay in assets/deer/textures - they are imported from there in the editor (Resource Browser → Import,
+package twilight), and the editor copies the file into Module/AssetSources/twilight itself. Putting them
+there beforehand is not allowed: on import the editor copies the file into the same folder and crashes with
+"Unable to copy ... to Assets folder". The package itself stores only a reference to the PNG and parameters;
+the pixels are baked by the editor into RuntimeDataCache - so a texture cannot be put into the mod by code.
 """
 import os
 

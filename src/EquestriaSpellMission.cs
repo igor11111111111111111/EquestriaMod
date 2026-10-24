@@ -9,22 +9,22 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Магия в бою: удержание Q открывает колесо, отпускание запускает выбранное заклинание.
+    // Magic in battle: holding Q opens the wheel, releasing it casts the selected spell.
     //
-    // В The Old Realms на каждый снаряд вешается свой ScriptComponentBehavior; у нас все снаряды
-    // ведёт одно поведение миссии — их единицы, а отлаживать и считать так проще
-    // (разбор устройства TOR: docs/tor_reference/04_magic.md).
+    // In The Old Realms each projectile gets its own ScriptComponentBehavior; here all projectiles
+    // are driven by one mission behaviour: there are only a few of them, and it is easier to debug and count this way
+    // (breakdown of the TOR design: docs/tor_reference/04_magic.md).
     public class EquestriaSpellMission : MissionBehavior
     {
         public const InputKey WheelKey = InputKey.Q;
 
-        private const float SlowedTime = 0.3f;     // как в TOR: колесо замедляет бой
-        private const int TimeRequestId = 0x4551;  // «EQ»: свой номер запроса скорости времени
-        private const float MinArmingTime = 0.1f;  // до этого снаряд не взрывается — иначе о самого мага
-        private const float HitHeight = 2.0f;      // насколько снаряд «высокий» при проверке попадания
+        private const float SlowedTime = 0.3f;     // as in TOR: the wheel slows down the battle
+        private const int TimeRequestId = 0x4551;  // "EQ": our own time speed request number
+        private const float MinArmingTime = 0.1f;  // before this the projectile does not explode, otherwise it would hit the mage himself
+        private const float HitHeight = 2.0f;      // how "tall" the projectile is when checking for a hit
 
-        // Off — обычный бой; Wheel — открыто колесо; Aim — оружие убрано, висит прицел,
-        // ждём ЛКМ; Cast — замах пошёл, снаряд вот-вот вылетит.
+        // Off: regular battle; Wheel: the wheel is open; Aim: weapon put away, the crosshair is shown,
+        // waiting for LMB; Cast: the swing has started, the projectile is about to fly.
         public enum Mode { Off, Wheel, Aim, Cast }
 
         private class Flying
@@ -49,13 +49,13 @@ namespace EquestriaMod
         private float _messageUntil;
         private string _message = string.Empty;
 
-        // Оружие, убранное на время колдовства: после каста возвращаем в руки то же самое
+        // The weapon put away for the duration of casting: after the cast the same one goes back into the hands
         private EquipmentIndex _mainHand = EquipmentIndex.None;
         private EquipmentIndex _offHand = EquipmentIndex.None;
         private bool _rewield;
-        private float _suppressUntil;   // ещё чуть-чуть не даём бить: ЛКМ отпускают уже после каста
+        private float _suppressUntil;   // a little longer we do not let it strike: LMB is released after the cast
 
-        // Мана вне кампании (пользовательский бой): считаем свою, герою её взять неоткуда.
+        // Mana outside the campaign (custom battle): we keep our own, the hero has nowhere to get it from.
         private float _localMana = EquestriaManaBehavior.MaxMana;
 
         public override MissionBehaviorType BehaviorType
@@ -63,7 +63,7 @@ namespace EquestriaMod
             get { return MissionBehaviorType.Other; }
         }
 
-        // ---- что показывает колесо -------------------------------------------------------------
+        // ---- what the wheel shows -------------------------------------------------------------
 
         public List<EquestriaSpell> Spells { get { return _spells; } }
 
@@ -73,7 +73,7 @@ namespace EquestriaMod
 
         public bool Aiming { get { return _mode == Mode.Aim || _mode == Mode.Cast; } }
 
-        // Пока целимся и колдуем, игра не должна бить рукой по ЛКМ (см. EquestriaSpellCombatPatch)
+        // While aiming and casting, the game must not strike with the hand on LMB (see EquestriaSpellCombatPatch)
         public bool SuppressCombat
         {
             get
@@ -133,7 +133,7 @@ namespace EquestriaMod
             return spell != null && CooldownLeft(spell) <= 0f && Mana >= spell.Mana;
         }
 
-        // ---- жизнь поведения -------------------------------------------------------------------
+        // ---- behaviour lifecycle -------------------------------------------------------------------
 
         public override void AfterStart()
         {
@@ -145,7 +145,7 @@ namespace EquestriaMod
             }
             else
             {
-                _spells.AddRange(EquestriaSpells.All);   // пользовательский бой: даём всё, что есть
+                _spells.AddRange(EquestriaSpells.All);   // custom battle: give everything there is
             }
             EquestriaCrashLog.Log($"магия в бою: заклинаний у игрока {_spells.Count}");
         }
@@ -171,8 +171,8 @@ namespace EquestriaMod
                 && !TaleWorlds.ScreenSystem.ScreenManager.GetMouseVisibility();
         }
 
-        // Порядок как в The Old Realms: удержание Q — выбор, отпускание — переход в прицеливание
-        // (оружие убирается, появляется прицел), выстрел — по ЛКМ, отмена — по ПКМ.
+        // The order is as in The Old Realms: holding Q is the choice, releasing it switches to aiming
+        // (the weapon is put away, the crosshair appears), the shot is on LMB, cancel is on RMB.
         private void HandleInput()
         {
             if (!CanUseMagic())
@@ -200,7 +200,7 @@ namespace EquestriaMod
                 case Mode.Aim:
                     if (held)
                     {
-                        SetMode(Mode.Wheel);      // передумал — снова колесо
+                        SetMode(Mode.Wheel);      // changed their mind: back to the wheel
                     }
                     else if (Input.IsKeyPressed(InputKey.RightMouseButton))
                     {
@@ -234,7 +234,7 @@ namespace EquestriaMod
                 Cancel();
                 return;
             }
-            // Что было в руках, вернём после каста
+            // What was in the hands is returned after the cast
             if (_mainHand == EquipmentIndex.None && _offHand == EquipmentIndex.None)
             {
                 _mainHand = Agent.Main.GetPrimaryWieldedItemIndex();
@@ -261,7 +261,7 @@ namespace EquestriaMod
                 return;
             }
             _mode = mode;
-            // Колесо и прицеливание идут в замедленном времени — как в TOR
+            // The wheel and aiming run in slowed time, as in TOR
             SlowTime(mode == Mode.Wheel || mode == Mode.Aim);
             if (mode == Mode.Off)
             {
@@ -269,8 +269,8 @@ namespace EquestriaMod
             }
         }
 
-        // Убрать оружие на время колдовства и вернуть его после. За такт делаем один шаг:
-        // игра проигрывает анимацию, и следующий вызов увидит уже новое состояние рук.
+        // Put the weapon away for the duration of casting and return it afterwards. We do one step per tick:
+        // the game plays the animation, and the next call already sees the new state of the hands.
         private void UpdateWieldedItems()
         {
             Agent me = Agent.Main;
@@ -309,7 +309,7 @@ namespace EquestriaMod
             _offHand = EquipmentIndex.None;
         }
 
-        // Пока колесо открыто, бой идёт медленнее — иначе выбирать заклинание некогда.
+        // While the wheel is open, the battle runs slower; otherwise there is no time to choose a spell.
         private void SlowTime(bool enable)
         {
             if (Mission.Current == null || enable == _slowed)
@@ -334,7 +334,7 @@ namespace EquestriaMod
             _messageUntil = Mission.Current.CurrentTime + 2f;
         }
 
-        // ---- каст ------------------------------------------------------------------------------
+        // ---- cast ------------------------------------------------------------------------------
 
         private void StartCast(EquestriaSpell spell)
         {
@@ -355,7 +355,7 @@ namespace EquestriaMod
             _casting = spell;
             _castLeft = spell.CastTime;
             SetMode(Mode.Cast);
-            // Анимация замаха: та же, что у брошенного камня — своих анимаций колдовства у нас нет.
+            // The swing animation: the same as for a thrown stone; we have no casting animations of our own.
             ActionIndexCache action = ActionIndexCache.Create("act_release_heavy_thrown");
             Agent.Main.SetActionChannel(1, action, false, 0UL);
         }
@@ -373,7 +373,7 @@ namespace EquestriaMod
             }
             EquestriaSpell spell = _casting;
             _casting = null;
-            // после каста ещё мгновение не бьём: ЛКМ игрок отпустит уже сейчас
+            // after the cast we do not strike for a moment longer: the player releases LMB right now
             _suppressUntil = Mission.Current.CurrentTime + 0.4f;
             SetMode(Mode.Off);
             if (Agent.Main == null || !Agent.Main.IsActive())
@@ -403,7 +403,7 @@ namespace EquestriaMod
             return true;
         }
 
-        // ---- снаряд ----------------------------------------------------------------------------
+        // ---- projectile ----------------------------------------------------------------------------
 
         private void Launch(EquestriaSpell spell, Agent caster)
         {
@@ -435,9 +435,9 @@ namespace EquestriaMod
             });
         }
 
-        // Эффект в XML задаётся двумя способами: "psys_имя" — частица напрямую, "prefab:имя" —
-        // сущность из Module/Prefabs (нужна там, где частицу надо донастроить: у хвоста снаряда
-        // переопределены излучатели, иначе он не испускает пламя на ходу).
+        // The effect is set in XML in two ways: "psys_name" is a particle directly, "prefab:name" is
+        // an entity from Module/Prefabs (needed where the particle has to be tuned further: the projectile tail
+        // has overridden emitters, otherwise it does not emit flame in flight).
         private static void AttachEffect(GameEntity parent, string effect)
         {
             if (parent == null || string.IsNullOrEmpty(effect) || effect == "none")
@@ -477,7 +477,7 @@ namespace EquestriaMod
                 }
                 else if (shot.Life >= shot.Spell.Life)
                 {
-                    Explode(shot, next);   // выдохся на лету — всё равно рвётся, видно, докуда достал
+                    Explode(shot, next);   // ran out in flight: it still bursts, so you can see how far it reached
                     exploded = true;
                 }
 
@@ -494,8 +494,8 @@ namespace EquestriaMod
             }
         }
 
-        // Попадание ищем двумя способами: луч по сцене (земля, стены, ворота) и близость агента —
-        // ровно как в TOR, где физика ловит препятствия, а агенты проверяются перебором рядом стоящих.
+        // The hit is searched for in two ways: a ray through the scene (ground, walls, gates) and agent proximity,
+        // exactly as in TOR, where physics catches obstacles and agents are checked by iterating over those standing nearby.
         private bool HitsSomething(Flying shot, Vec3 next, out Vec3 hit)
         {
             hit = next;
@@ -560,14 +560,14 @@ namespace EquestriaMod
                 {
                     continue;
                 }
-                // к краю взрыва урон падает вдвое — попадание в упор должно быть заметно лучше
+                // towards the edge of the explosion the damage halves: a point-blank hit must be noticeably better
                 float damage = spell.Damage * (1f - 0.5f * distance / spell.Radius);
                 Hit(agent, shot.Caster, (int)damage, position);
             }
         }
 
-        // Урон наносим «ударом», а не вычитанием здоровья: так игра правильно засчитывает убийство,
-        // роняет тело и даёт опыт. Сборка удара повторяет TOR (см. 04_magic.md, раздел 7).
+        // Damage is dealt as a "blow", not by subtracting health: this way the game correctly credits the kill,
+        // drops the body and gives experience. The blow assembly follows TOR (see 04_magic.md, section 7).
         private static void Hit(Agent victim, Agent caster, int damage, Vec3 from)
         {
             if (damage <= 0 || caster == null)
@@ -601,7 +601,7 @@ namespace EquestriaMod
 
             AttackCollisionData collision = AttackCollisionData.GetAttackCollisionDataForDebugPurpose(
                 false, false, false, true, false, false, false, false, false, false, false, false,
-                // -999 вместо номера слота оружия: удар идёт не от предмета, а от заклинания
+                // -999 instead of a weapon slot number: the blow comes not from an item but from a spell
                 CombatCollisionResult.StrikeAgent, -999, 1, 2, blow.BoneIndex, blow.VictimBodyPart,
                 caster.Monster.MainHandItemBoneIndex, Agent.UsageDirection.AttackUp, -1,
                 CombatHitResultFlags.NormalHit, 0.5f, 1f, 0f, 0f, 0f, 0f, 0f, 0f,
@@ -622,12 +622,12 @@ namespace EquestriaMod
         }
     }
 
-    // Пока герой целится заклинанием, оружие убрано, и ЛКМ должна пускать заклинание, а не бить
-    // кулаком. Законного крючка нет: игра спрашивает у агента свойство CombatActionsEnabled
-    // (MissionMainAgentController), его и перекрываем. Так же сделано в The Old Realms.
+    // While the hero is aiming a spell, the weapon is put away, and LMB must cast the spell, not punch
+    // with the fist. There is no legitimate hook: the game asks the agent for the CombatActionsEnabled property
+    // (MissionMainAgentController), and that is what we override. The Old Realms does the same.
     //
-    // Патч ставится поздно (EquestriaPatches.ApplyLate): ранний патч Agent запускает статическую
-    // инициализацию класса до того, как игра прочитает анимации, и пони лежат набок в окнах.
+    // The patch is applied late (EquestriaPatches.ApplyLate): an early Agent patch triggers the static
+    // initialization of the class before the game reads the animations, and ponies lie on their side in windows.
     public static class EquestriaSpellCombatPatch
     {
         public static void Apply(HarmonyLib.Harmony harmony)

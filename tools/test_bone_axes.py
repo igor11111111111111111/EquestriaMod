@@ -1,4 +1,4 @@
-# Какие оси костей при экспорте FBX сохраняют ориентацию костей оригинального human_skeleton.fbx.
+# Which bone axes on FBX export preserve the bone orientation of the original human_skeleton.fbx.
 # blender --background --factory-startup --python test_bone_axes.py -- <human_skeleton.fbx> <tmp_dir>
 import os
 import sys
@@ -14,7 +14,7 @@ def reset():
 
 
 def bone_mats(path):
-    """Матрицы костей в мировом пространстве при импорте с настройками по умолчанию."""
+    """World-space bone matrices when imported with default settings."""
     reset()
     bpy.ops.import_scene.fbx(filepath=path)
     arm = next(o for o in bpy.context.scene.objects if o.type == "ARMATURE")
@@ -38,7 +38,7 @@ def diff(a, b):
         mb = b[name]
         for i in range(3):
             for j in range(4):
-                scale = 1.0 if j < 3 else 100.0  # позиции крошечные (масштаб 0.01) — усилим
+                scale = 1.0 if j < 3 else 100.0  # positions are tiny (scale 0.01), so amplify them
                 worst = max(worst, abs(ma[i][j] - mb[i][j]) * scale)
     return worst
 

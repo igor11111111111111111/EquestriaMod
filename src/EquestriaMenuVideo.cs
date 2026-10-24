@@ -7,17 +7,17 @@ using Path = System.IO.Path;
 
 namespace EquestriaMod
 {
-    // Видео на фоне главного меню — только наше.
+    // The video in the main menu background: only ours.
     //
-    // Игра сама просматривает Videos\initial_menu\<папка>\ у КАЖДОГО активного модуля, собирает
-    // пары «*_pc.ivf + *.ogg» и на каждом показе меню берёт случайную (MBInitialScreenBase
-    // .RefreshScene). Native — активный модуль всегда, так что его восемь ванильных роликов из
-    // списка не убрать: наш выпадал бы раз из девяти. Поэтому подменяем путь в самом
-    // VideoPlayerView.PlayVideo: что бы игра ни выбрала из initial_menu, играет наш файл.
+    // The game itself scans Videos\initial_menu\<folder>\ of EVERY active module, collects
+    // "*_pc.ivf + *.ogg" pairs and on every menu display picks a random one (MBInitialScreenBase
+    // .RefreshScene). Native is always an active module, so its eight vanilla videos cannot be removed
+    // from the list: ours would come up once in nine. So we replace the path in
+    // VideoPlayerView.PlayVideo itself: whatever the game picks from initial_menu, our file plays.
     //
-    // Наш ролик: Module\Videos\initial_menu\equestria\1440p_pc.ivf + *.ogg. Формат тот же, что у
-    // ванили: IVF с VP8, звук отдельным OGG, 24 кадра/с (частота зашита в игре). Как собрать ролик
-    // из mp4 — docs/menu_video.md. Пока файлов нет, патч ничего не подменяет, меню остаётся ванильным.
+    // Our video: Module\Videos\initial_menu\equestria\1440p_pc.ivf + *.ogg. The format is the same as
+    // vanilla's: IVF with VP8, sound as a separate OGG, 24 fps (the rate is hardcoded in the game). How to build the video
+    // from mp4: docs/menu_video.md. While there are no files, the patch replaces nothing and the menu stays vanilla.
     public static class EquestriaMenuVideo
     {
         private const string Folder = "equestria";
@@ -40,7 +40,7 @@ namespace EquestriaMod
             EquestriaCrashLog.Log("видео меню: PlayVideo перехвачен");
         }
 
-        // Наши файлы ищем рядом с нашей DLL: <мод>\bin\Win64_Shipping_Client -> <мод>\Videos.
+        // Our files are searched for next to our DLL: <mod>\bin\Win64_Shipping_Client -> <mod>\Videos.
         private static void Resolve()
         {
             _resolved = true;
@@ -67,7 +67,7 @@ namespace EquestriaMod
             }
         }
 
-        // Подменяем только ролики меню: заставка с логотипами и остальное идёт этим же методом.
+        // We replace only the menu videos: the logo intro and the rest go through this same method.
         private static void BeforePlay(ref string videoFileName, ref string soundFileName)
         {
             if (videoFileName == null

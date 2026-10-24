@@ -1,9 +1,9 @@
-# Эталон: как устроены многослойные узлы весов на ВАНИЛЬНОЙ карте мира.
+# Reference: how multi-layer weight nodes are laid out on the VANILLA world map.
 #
-#   python probe_vanilla_weights.py [папка игры]
+#   python probe_vanilla_weights.py [game folder]
 #
-# Для первых узлов с несколькими слоями печатает: сколько масок, их заголовки PNG и какие
-# слои/уровни указаны у этого узла в scene.xscene. С этим сверяем свою раскраску.
+# For the first nodes with several layers prints: how many masks, their PNG headers and which
+# layers/levels this node has in scene.xscene. We check our own painting against this.
 import os
 import re
 import struct
@@ -30,7 +30,7 @@ print("узлов", count)
 stream = tb.lz4_decompress(w.data[w.header_size + 40:], None)
 print("поток весов распакован: %d байт (ждали %d)" % (len(stream), extra[2]))
 
-# Маски узлов из сцены: выдёргиваем атрибуты регуляркой, сцена большая
+# Node masks from the scene: pull the attributes out with a regex, the scene is large
 text = open(os.path.join(FOLDER, "scene.xscene"), encoding="utf-8").read()
 nodes_xml = text[text.find("<nodes>"):text.find("</nodes>")]
 node_tags = re.findall(r"<node [^>]*>.*?</node>", nodes_xml, re.S)

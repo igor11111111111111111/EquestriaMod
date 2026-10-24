@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Текстуры новой пони в именах и раскладке мода — для импорта редактором.
+"""Textures of the new pony with the mod's names and layout — for import by the editor.
 
   py tools/make_pony_textures.py
 
-Из текстур модели (assets/pony/textures, их кладёт make_pony_model.py) делаются три файла
-по образцу остальных рас (eq_twilight_body_d/_n/_s):
-  eq_pony_body_d.png — цвет (2048);
-  eq_pony_body_n.png — нормали (2048);
-  eq_pony_body_s.png — блеск: у Meshy шероховатость отдельной картинкой, блеск = 1 - шероховатость.
-Металличность игровой шейдер кожи не читает, её пропускаем.
-Остаются в assets/pony/textures — оттуда их импортируют в редакторе (Resource Browser -> Import,
-пакет twilight); класть их в Module/AssetSources заранее нельзя (см. tools/make_deer_textures.py).
+From the model's textures (assets/pony/textures, put there by make_pony_model.py) three files are made
+following the other races' pattern (eq_twilight_body_d/_n/_s):
+  eq_pony_body_d.png — color (2048);
+  eq_pony_body_n.png — normals (2048);
+  eq_pony_body_s.png — gloss: Meshy gives roughness as a separate image, gloss = 1 - roughness.
+The game's skin shader does not read metalness, so it is skipped.
+They stay in assets/pony/textures — from there they are imported in the editor (Resource Browser -> Import,
+package twilight); putting them into Module/AssetSources in advance is not allowed (see tools/make_deer_textures.py).
 """
 import os
 

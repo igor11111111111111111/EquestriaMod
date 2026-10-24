@@ -1,13 +1,13 @@
-﻿# Материал для своих значков знамён — после того, как лист импортирован в редакторе.
+﻿# Material for our own banner icons - after the sheet has been imported in the editor.
 #
 #   .\tools\banner_material.ps1
 #
-# Порядок: tools\make_banner_icons.py кладёт лист assets\banner_icons\eq_banner_icons_d.png
-# (2048x2048, 4x4 значка). Его импортируют в редакторе (Resource Browser -> Import; пакет
-# banner_icons). Дальше материал делается копией ванильного custom_banner_icons_01: у него нужный
-# шейдер gui_color_and_stroke и флаг alpha_test, подбирать их руками не нужно.
+# Order: tools\make_banner_icons.py puts the sheet assets\banner_icons\eq_banner_icons_d.png
+# (2048x2048, 4x4 icons). It is imported in the editor (Resource Browser -> Import; package
+# banner_icons). Then the material is made as a copy of vanilla custom_banner_icons_01: it has the right
+# shader gui_color_and_stroke and the alpha_test flag, no need to pick them by hand.
 #
-# Имя материала обязано совпадать с material_name в Module\ModuleData\equestria_banner_icons.xml.
+# The material name must match material_name in Module\ModuleData\equestria_banner_icons.xml.
 param([string]$Game = "D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord")
 
 $ErrorActionPreference = "Stop"
@@ -26,7 +26,7 @@ Write-Host "  eq_banner_icons_d — есть"
 
 Write-Host "== Материал eq_banner_icons" -ForegroundColor Cyan
 New-Item -ItemType Directory -Force $Pack | Out-Null
-$ErrorActionPreference = "Continue"      # инструмент пишет ход работы, и пустая строка в потоке ошибок роняла скрипт
+$ErrorActionPreference = "Continue"      # the tool prints its progress, and an empty line in the error stream crashed the script
 & $Tool mat-clone "$Native;$Assets" custom_banner_icons_01 (Join-Path $Pack "eq_banner_icons_mtl.tpac") `
     eq_banner_icons 0=eq_banner_icons_d
 if ($LASTEXITCODE -ne 0) { throw "материал не создан (код $LASTEXITCODE)" }

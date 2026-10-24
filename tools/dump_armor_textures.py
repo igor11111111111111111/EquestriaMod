@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-r"""Выгрузка ванильных текстур брони в assets\reference\vanilla_armor\<меш>\.
+r"""Export vanilla armor textures to assets\reference\vanilla_armor\<mesh>\.
 
-  py -3 tools/dump_armor_textures.py               # чего не хватает пакету улья
-  py -3 tools/dump_armor_textures.py --force       # заново всё
+  py -3 tools/dump_armor_textures.py               # what the hive pack is missing
+  py -3 tools/dump_armor_textures.py --force       # everything again
 
-Из них tools/hive_armor.py печёт хитиновые: нужны цвет (_d) и маска клана (_c), нормали и блики
-остаются ванильными. Раньше это делалось руками по мешу, и у 23 вещей текстур не оказалось вовсе:
-меш есть, папка есть, а в ней один FBX (обнаружено 25.09.2026).
+From them tools/hive_armor.py bakes the chitin ones: it needs color (_d) and the clan mask (_c), normals and
+specular stay vanilla. This used to be done by hand per mesh, and 23 items turned out to have no textures at all:
+the mesh exists, the folder exists, but there is a single FBX in it (found 25.09.2026).
 
-Где что лежит:
-  Modules\Native\AssetPackages    — меши и материалы, по ним узнаём имена текстур;
-  Modules\Native\EmAssetPackages  — редакторские пакеты, и ТОЛЬКО там у текстур есть пиксели.
-    В игровых пакетах картинка почти всегда пустая («has no pixel data»).
-Каждый запуск инструмента заново читает сотни пакетов, поэтому все имена передаём списком через
-запятую и обходимся тремя запусками на всю броню.
+Where things are:
+  Modules\Native\AssetPackages    - meshes and materials, from them we learn the texture names;
+  Modules\Native\EmAssetPackages  - editor packages, and ONLY there do textures have pixels.
+    In the game packages the image is almost always empty («has no pixel data»).
+Each run of the tool reads hundreds of packages anew, so all names are passed as a comma-separated
+list and three runs are enough for all the armor.
 """
 import os
 import shutil
@@ -52,20 +52,20 @@ def has_diffuse(mesh):
 
 
 def materials_of(meshes):
-    """меш -> список материалов; пустой список, если у подмешей материал не проставлен"""
+    """mesh -> list of materials; an empty list if the submeshes have no material set"""
     found = {}
     for line in run("mesh-mats", NATIVE, ",".join(meshes)):
         name, _, rest = line.partition(": ")
         if name not in meshes or not rest:
             continue
-        # У части ванильных рукавиц материал пустой (нулевой guid) — их спасает fallback
-        # в tools/hive_material.ps1, текстуры им не нужны.
+        # Some vanilla gauntlets have an empty material (zero guid) - the fallback
+        # in tools/hive_material.ps1 saves them, they need no textures.
         found[name] = [m for m in (p.strip() for p in rest.split(",")) if m and not is_guid(m)]
     return found
 
 
 def textures_of(mats):
-    """материал -> имена текстур из слотов 0 (цвет) и 1 (маска клана)"""
+    """material -> texture names from slots 0 (color) and 1 (clan mask)"""
     found = {}
     current = None
     for line in run("mat-info", NATIVE, ",".join(mats)):
@@ -101,9 +101,9 @@ def main():
     if not want:
         raise SystemExit("не нашёл ни одной текстуры")
 
-    # Одним заходом по редакторским пакетам на все имена; по папкам мешей раскладываем сами.
-    # Имена набора отличаются хвостом (_d, _c, _n, _s) — забираем набор целиком: цвет и маску
-    # читает hive_armor.py, остальное пригодится глазами сверить.
+    # One pass over the editor packages for all names; we sort into the mesh folders ourselves.
+    # Names of a set differ by suffix (_d, _c, _n, _s) - we take the whole set: color and mask
+    # are read by hive_armor.py, the rest is useful for checking by eye.
     bases = sorted({n[:-2] for names in want.values() for n in names})
     temp = tempfile.mkdtemp(prefix="armor_tex_")
     log("выгружаю %d наборов текстур из редакторских пакетов…" % len(bases))

@@ -15,15 +15,15 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Примерочная шлемов: одной командой попасть в инвентарь с надетым шлемом и с набором чужих
-    // под рукой. Нужна для подгонки шлема под крупную голову расы (src/EquestriaHelmetFit.cs):
-    // важно посмотреть и закрытые шлемы, и открытые — движок подгоняет их по-разному.
+    // Helmet fitting room: with one command get into the inventory wearing a helmet and with a set of others
+    // at hand. Needed for fitting a helmet to a race's large head (src/EquestriaHelmetFit.cs):
+    // it is important to look at both closed and open helmets; the engine fits them differently.
     public static class EquestriaHelmetTest
     {
-        private const int PerKind = 8;      // сколько взять открытых и сколько закрытых
+        private const int PerKind = 8;      // how many open ones and how many closed ones to take
 
-        // Ключ запуска: /eqhelmets или /eqhelmets:open — всё то же самое, но без консоли.
-        // Дождавшись карты, сам выдаёт шлемы, надевает один и открывает инвентарь.
+        // Launch key: /eqhelmets or /eqhelmets:open, all the same, but without the console.
+        // Once the map is reached, it hands out the helmets itself, puts one on and opens the inventory.
         private const string ArgPrefix = "/eqhelmets";
         private const string BigBattleArg = "/eqbigbattle";
         private static bool _bigBattle;
@@ -51,7 +51,7 @@ namespace EquestriaMod
             }
         }
 
-        // Ждём, пока кампания встанет на карту: до этого у игрока ещё нет персонажа.
+        // Wait until the campaign is on the map: before that the player has no character yet.
         public static void Tick()
         {
             if (_requested == null || _done)
@@ -78,16 +78,16 @@ namespace EquestriaMod
 
         private static bool IsOpen(ItemObject item)
         {
-            // «Открытый» — тот, что оставляет голову видимой; по этому же признаку движок решает,
-            // подгонять ли шлем под размер головы (ItemObject.UsingFacegenScaling)
+            // "Open" is one that leaves the head visible; by the same sign the engine decides
+            // whether to fit the helmet to the head size (ItemObject.UsingFacegenScaling)
             return item.ArmorComponent != null
                    && item.ArmorComponent.MeshesMask.HasAnyFlag(SkinMask.HeadVisible);
         }
 
         private static List<ItemObject> Pick(bool open)
         {
-            // Только ванильные шлемы: наши предметы (eq_*) — это рога и гривы рас, они тоже
-            // числятся «шлемами», и в прошлый раз примерочная выдала именно их.
+            // Vanilla helmets only: our items (eq_*) are the races' horns and manes, they also
+            // count as "helmets", and last time the fitting room handed out exactly those.
             var all = MBObjectManager.Instance.GetObjectTypeList<ItemObject>()
                 .Where(i => i != null && i.ItemType == ItemObject.ItemTypeEnum.HeadArmor
                             && i.ArmorComponent != null && IsOpen(i) == open
@@ -99,12 +99,12 @@ namespace EquestriaMod
             {
                 return all;
             }
-            // берём вразнобой по всей цене — от шапки до шлема полководца
+            // take them spread over the whole price range, from a cap to a commander's helmet
             var step = (double)(all.Count - 1) / (PerKind - 1);
             return Enumerable.Range(0, PerKind).Select(k => all[(int)(k * step)]).Distinct().ToList();
         }
 
-        // equestria.helmet_test [open|closed] — выдать шлемы, надеть один и открыть инвентарь
+        // equestria.helmet_test [open|closed]: hand out helmets, put one on and open the inventory
         [CommandLineFunctionality.CommandLineArgumentFunction("helmet_test", "equestria")]
         public static string Run(List<string> args)
         {
@@ -113,7 +113,7 @@ namespace EquestriaMod
                 return "Нужна начатая кампания.";
             }
             string want = args != null && args.Count > 0 ? args[0].ToLower() : "closed";
-            // Примерка нужна именно на драконе — ставим расу героя, если он ещё не дракон
+            // The fitting is needed specifically on a dragon: set the hero's race if he is not a dragon yet
             int dragon = TaleWorlds.Core.FaceGen.GetRaceOrDefault("dragon");
             if (dragon != 0 && Hero.MainHero.CharacterObject.Race != dragon)
             {
@@ -130,7 +130,7 @@ namespace EquestriaMod
                 }
             }
 
-            // Надеваем сразу: так окно открывается с уже надетым шлемом, и видно посадку
+            // Put it on right away: that way the window opens with the helmet already on, and the fit is visible
             var wear = (want == "open" ? open : closed).FirstOrDefault()
                        ?? open.Concat(closed).FirstOrDefault();
             if (wear != null)
@@ -145,8 +145,8 @@ namespace EquestriaMod
             report.AppendLine($"Выдано шлемов: открытых {open.Count}, закрытых {closed.Count}.");
             report.AppendLine($"Надет: {(wear != null ? wear.Name.ToString() : "нет")} "
                 + $"({(wear != null && IsOpen(wear) ? "открытый" : "закрытый")}).");
-            // Если тем же запуском просят бой, инвентарь не открываем: он сменил бы состояние
-            // игры, и бой не начался бы — показ боя ждёт карту.
+            // If the same launch asks for a battle, do not open the inventory: it would change the game
+            // state, and the battle would not start; showing the battle waits for the map.
             bool toBattle = _bigBattle || Environment.GetCommandLineArgs()
                 .Any(a => string.Equals(a, "/eqbattle", StringComparison.OrdinalIgnoreCase));
             report.Append(toBattle
@@ -164,12 +164,12 @@ namespace EquestriaMod
             return report.ToString();
         }
 
-        // Крупный бой драконов: обе стороны — стургийские ветераны (у мода эта культура и есть
-        // драконы), они в полном доспехе со шлемами. Нужен, чтобы смотреть шлем в гуще и заодно
-        // мерить, во что обходится подгонка на тысяче бойцов.
+        // Big dragon battle: both sides are Sturgian veterans (in the mod this culture is the
+        // dragons), they are in full armour with helmets. Needed to look at the helmet in a crowd and at the same
+        // time measure what the fitting costs on a thousand soldiers.
         private const string BigTroop = "sturgian_veteran_warrior";
 
-        // equestria.big_battle [сколько с каждой стороны] [id войска]
+        // equestria.big_battle [how many per side] [troop id]
         [CommandLineFunctionality.CommandLineArgumentFunction("big_battle", "equestria")]
         public static string BigBattle(List<string> args)
         {
@@ -190,8 +190,8 @@ namespace EquestriaMod
                 return "Нет такого войска: " + troopId;
             }
 
-            // Врага делаем отрядом разбойников — это самый короткий путь создать отряд на карте, —
-            // но состав подменяем целиком: в бою важны сами бойцы, а не вывеска банды.
+            // The enemy is made a bandit party: that is the shortest way to create a party on the map,
+            // but its roster is replaced entirely: in battle the soldiers themselves matter, not the gang's sign.
             var clan = Clan.BanditFactions.FirstOrDefault(c => c.StringId == "looters");
             if (clan?.DefaultPartyTemplate == null)
             {
@@ -208,16 +208,16 @@ namespace EquestriaMod
             MobileParty.MainParty.MemberRoster.AddToCounts(troop, side);
 
             EncounterManager.StartPartyEncounter(PartyBase.MainParty, enemy.Party);
-            // Сразу в поле, без меню стычки: иначе игра ждёт нажатия «Атаковать»
+            // Straight to the field, without the encounter menu: otherwise the game waits for "Attack"
             EquestriaCrashLog.Try("крупный бой: вход в сражение", PlayerEncounter.StartAttackMission);
             string report = $"Бой {side} на {side}: обе стороны — {troop.Name} ({troopId}).";
             EquestriaCrashLog.Log("крупный бой: " + report);
             return report;
         }
 
-        // Чью посадку шлема настраивают команды — расу ИГРОКА. Раньше обе команды правили дракона
-        // намертво, и подобрать числа для грифона было нечем. Вне кампании (и у человека) остаётся
-        // дракон: с него всё начиналось, и в пользовательском бою настраивать больше нечего.
+        // Whose helmet fit the commands tune: the PLAYER's race. Previously both commands edited the dragon
+        // hard-coded, and there was no way to pick the numbers for a griffon. Outside a campaign (and for a human) it stays
+        // the dragon: everything started with it, and in a custom battle there is nothing else to tune.
         private static string TunedRace()
         {
             if (Campaign.Current != null && Hero.MainHero != null && Hero.MainHero.CharacterObject != null)
@@ -232,7 +232,7 @@ namespace EquestriaMod
             return "dragon";
         }
 
-        // equestria.helmet_offset <вправо> <вперёд> <вверх> — сдвиг шлема в метрах, на лету
+        // equestria.helmet_offset <right> <forward> <up>: helmet shift in metres, on the fly
         [CommandLineFunctionality.CommandLineArgumentFunction("helmet_offset", "equestria")]
         public static string SetOffset(List<string> args)
         {
@@ -252,7 +252,7 @@ namespace EquestriaMod
                 + "Сдвиг применяется сразу, в окне снаряжения — на следующем кадре.";
         }
 
-        // equestria.helmet_scale <число> | <вбок> <вперёд> <вверх> — размер шлема на лету
+        // equestria.helmet_scale <number> | <side> <forward> <up>: helmet size on the fly
         [CommandLineFunctionality.CommandLineArgumentFunction("helmet_scale", "equestria")]
         public static string SetScale(List<string> args)
         {
@@ -267,7 +267,7 @@ namespace EquestriaMod
                     numbers.Add(value);
                 }
             }
-            // одно число — поровну по всем осям, три — по осям врозь
+            // one number: equal on all axes; three: per axis separately
             if (numbers.Count != 1 && numbers.Count != 3)
             {
                 return "Укажите один множитель или три — вбок, вперёд и вверх, например "

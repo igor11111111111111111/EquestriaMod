@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-"""Реплики на других языках из русских файлов.
+"""Dialogue lines in other languages from the Russian files.
 
-  py tools/make_dialogue.py [папка Module]
+  py tools/make_dialogue.py [Module folder]
 
-Исходник — Module/ModuleData/Languages/RU/eq_bandits_rus.xml, eq_lords_rus.xml, eq_npc_rus.xml:
-они пишутся руками, там порядок, группы и подстановки. Скрипт читает их и для каждого другого языка
-кладёт такие же файлы (eq_bandits_eng.xml и т. д.):
-  - перенаправления ванильных id на переменные ({EQV_...}) — как есть, они от языка не зависят;
-  - фразы — из tools/dialogue_en.py по id строки.
-Английский здесь — настоящий язык с папкой EN: у этих строк нет базового текста в XML, код строит
-TextObject("{=eq_...}") без текста по умолчанию, и без английского файла такой ключ пуст. Остальные
-языки получают заготовку с английским текстом. Чего нет в dialogue_en.py — остаётся русским и
-печатается списком; такие строки надо перевести, иначе они и в английской игре будут русскими.
+Source: Module/ModuleData/Languages/RU/eq_bandits_rus.xml, eq_lords_rus.xml, eq_npc_rus.xml:
+they are written by hand and hold the order, groups and substitutions. The script reads them and for
+each other language writes the same files (eq_bandits_eng.xml etc.):
+  - redirects of vanilla ids to variables ({EQV_...}) - as is, they do not depend on the language;
+  - phrases - from tools/dialogue_en.py by string id.
+English here is a real language with an EN folder: these strings have no base text in XML, the code builds
+TextObject("{=eq_...}") with no default text, and without the English file such a key is empty. The other
+languages get a stub with the English text. Whatever is missing from dialogue_en.py stays Russian and
+is printed as a list; such strings must be translated, otherwise they will be Russian in the English game too.
 """
 import os
 import re
@@ -35,7 +35,7 @@ def log(*a):
 
 
 def read(name):
-    """[(id, русский текст)], {id: комментарий-заголовок группы перед ним}, комментарий файла."""
+    """[(id, Russian text)], {id: group header comment before it}, file comment."""
     path = os.path.join(RU, "%s_rus.xml" % name)
     parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
     root = ET.parse(path, parser).getroot()
@@ -48,7 +48,7 @@ def read(name):
                 groups[node.get("id")] = pending
                 pending = None
             pairs.append((node.get("id"), node.get("text") or ""))
-    # заголовок файла — первый комментарий верхнего уровня, он объясняет устройство групп
+    # the file header is the first top-level comment; it explains how the groups are organised
     raw = open(path, encoding="utf-8").read()
     m = re.search(r"<!--(.*?)-->", raw, re.S)
     header = " ".join(m.group(1).split()) if m else name
@@ -78,8 +78,9 @@ def main():
             os.makedirs(folder, exist_ok=True)
             with open(os.path.join(folder, "%s_%s.xml" % (name, suffix)), "w", encoding="utf-8") as f:
                 f.write(lang.strings_file(language, english, comment, groups))
-    # language_data.xml — всем, кроме EN: английскую папку игра не читает (см. EquestriaEnglishTexts.cs),
-    # её файлы подкладывает сам мод, а второе объявление языка English игре ни к чему
+    # language_data.xml - for all except EN: the game does not read the English folder (see
+    # EquestriaEnglishTexts.cs), the mod supplies its files itself, and a second English language
+    # declaration is of no use to the game
     for code, language, suffix in lang.LANGUAGES:
         lang.index(DATA, code, language, suffix)
     log("строк в каждом языке: %d, языков кроме русского: %d" % (total, len(targets)))

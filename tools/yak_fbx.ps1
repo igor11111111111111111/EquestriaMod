@@ -1,12 +1,12 @@
-﻿# Экспорт FBX яка из поправленной модели — перед tools\yak_material.ps1.
+﻿# FBX export of the yak from the fixed model - before tools\yak_material.ps1.
 #
 #   .\tools\yak_fbx.ps1
 #
-# Зовёт tools\yak_edit_export.py в assets\yak\eq_yak.blend: экспортирует скелет (bip01_notused) и
-# семь частей (body/tail/gloves/legs/horn/hair/head) из коллекции «Meshy Highland Hugger» в
-# assets\yak\eq_yak.fbx — теми же настройками, что и основной конвейер tools\make_yak_model.py
-# (оси X/-Y, без анимации). Дальше руками: импорт этого FBX в Modding Kit (Resource Browser ->
-# Import), затем .\tools\yak_material.ps1.
+# Calls tools\yak_edit_export.py in assets\yak\eq_yak.blend: exports the skeleton (bip01_notused) and
+# seven parts (body/tail/gloves/legs/horn/hair/head) from the collection «Meshy Highland Hugger» to
+# assets\yak\eq_yak.fbx - with the same settings as the main pipeline tools\make_yak_model.py
+# (axes X/-Y, no animation). Then by hand: import this FBX into the Modding Kit (Resource Browser ->
+# Import), then .\tools\yak_material.ps1.
 param([string]$Blender = "D:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe")
 
 $ErrorActionPreference = "Stop"

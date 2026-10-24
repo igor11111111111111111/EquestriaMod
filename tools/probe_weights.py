@@ -1,12 +1,12 @@
-# Разведка куска WGHT (веса слоёв рельефа) в terrain.bin.
+# Probing the WGHT chunk (terrain layer weights) in terrain.bin.
 #
-#   python probe_weights.py <terrain.bin> [ещё один для сравнения]
+#   python probe_weights.py <terrain.bin> [another one for comparison]
 #
-# Что выяснилось по байтам: кусок устроен так —
-#   таблица смещений картинок (по 4 байта на узел рельефа),
-#   затем 10 служебных чисел (в них длина без сжатия и длина сжатого потока),
-#   затем ОДИН поток LZ4, в котором лежат все PNG подряд.
-# Смещения из таблицы указывают внутрь распакованного потока.
+# What the bytes revealed: the chunk is laid out like this —
+#   a table of image offsets (4 bytes per terrain node),
+#   then 10 service numbers (among them the uncompressed length and the compressed stream length),
+#   then ONE LZ4 stream containing all the PNGs in a row.
+# The offsets from the table point into the decompressed stream.
 import os
 import struct
 import sys
@@ -17,7 +17,7 @@ import terrain_bin as tb  # noqa: E402
 
 
 def header_of(chunk):
-    """Возвращает (смещения картинок, начало потока LZ4)."""
+    """Returns (image offsets, start of the LZ4 stream)."""
     offsets = [struct.unpack_from("<I", chunk.data, 0)[0]]
     position = 4
     while True:
@@ -26,7 +26,7 @@ def header_of(chunk):
             break
         offsets.append(value)
         position += 4
-    # сразу после таблицы идут 10 служебных чисел, среди них длина без сжатия и длина потока
+    # right after the table come 10 service numbers, among them the uncompressed length and the stream length
     extra = struct.unpack_from("<10I", chunk.data, position)
     return offsets, position + 40, extra
 

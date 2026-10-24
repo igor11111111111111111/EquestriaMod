@@ -9,22 +9,22 @@ using TaleWorlds.Core;
 
 namespace EquestriaMod
 {
-    // Патчи Harmony: подмена методов игры на лету там, где официального крючка нет.
+    // Harmony patches: replacing game methods on the fly where there is no official hook.
     //
-    // Библиотека едет вместе с модом (0Harmony.dll кладётся рядом с нашей DLL), отдельный модуль
-    // Bannerlord.Harmony ставить не нужно.
+    // The library ships with the mod (0Harmony.dll is placed next to our DLL); the separate
+    // Bannerlord.Harmony module does not need to be installed.
     //
-    // Правило: сначала ищем законный способ — XML, поведение кампании, модель, XSLT. Патч ставим
-    // только когда упёрлись. Каждый патч привязан к сигнатуре метода игры и переживает не всякое
-    // обновление, поэтому их должно быть мало и каждый должен быть объяснён.
+    // Rule: first we look for a legitimate way: XML, a campaign behaviour, a model, XSLT. A patch is applied
+    // only when we hit a wall. Each patch is tied to a game method signature and does not survive every
+    // update, so there must be few of them and each must be explained.
     public static class EquestriaPatches
     {
         private const string Id = "com.equestria.bannerlord";
 
         private static Harmony _harmony;
 
-        // Доступ для патчей, которые нельзя поставить ни в Apply(), ни в ApplyLate() — см.
-        // RaceAssimilationTooltipPatch (ставится лениво на первом тике кампании, не здесь).
+        // Access for patches that can be applied neither in Apply() nor in ApplyLate(); see
+        // RaceAssimilationTooltipPatch (applied lazily on the first campaign tick, not here).
         public static Harmony Instance => _harmony;
 
         public static void Apply()
@@ -38,10 +38,10 @@ namespace EquestriaMod
                 _harmony = new Harmony(Id);
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 EquestriaLoadingScreen.Apply(_harmony);
-                // Надпись о сборке шейдеров на самом загрузочном экране (см. класс)
+                // The shader compilation label on the loading screen itself (see the class)
                 EquestriaLoadingNote.Apply(_harmony);
                 EquestriaEnglishTexts.Apply(_harmony);
-                // Видео на фоне главного меню — только наше (см. класс)
+                // The video in the main menu background: only ours (see the class)
                 EquestriaMenuVideo.Apply(_harmony);
                 var names = _harmony.GetPatchedMethods()
                     .Select(m => m.DeclaringType.Name + "." + m.Name).ToList();
@@ -52,11 +52,11 @@ namespace EquestriaMod
 
         private static bool _lateApplied;
 
-        // Патчи на игровые классы боя (Agent, MBSoundEvent) ставим позже — когда игра уже
-        // загрузила свои данные, в том числе анимации. Если патчить их при загрузке мода,
-        // Harmony раньше времени запускает статическую инициализацию этих классов, и таблица
-        // действий строится без анимаций пони: в окнах просмотра (отряд, инвентарь) все пони
-        // лежали набок. Вызывается при показе главного меню.
+        // Patches on the battle game classes (Agent, MBSoundEvent) are applied later, when the game has already
+        // loaded its data, including animations. If they are patched at mod load,
+        // Harmony triggers the static initialization of these classes too early, and the action table
+        // is built without the pony animations: in the preview windows (party, inventory) all ponies
+        // lay on their side. Called when the main menu is shown.
         public static void ApplyLate()
         {
             if (_lateApplied || _harmony == null)
@@ -66,54 +66,54 @@ namespace EquestriaMod
             _lateApplied = true;
             EquestriaCrashLog.Try("поздние патчи Harmony", () =>
             {
-                // Части тела вне миссий (портреты, карта, цирюльник): меш вешаем отдельной дочерней
-                // сущностью, скелет не трогаем. Патч ставим именно здесь, а не при загрузке мода:
-                // ранний патч AgentVisuals запускает статическую инициализацию класса до того, как
-                // игра прочитала анимации, и все пони в окнах лежат набок (проверено 2026-09-18,
-                // ключ /eqnoparts для сравнения). В миссиях нужен скиннинг — там OnAgentBuild.
+                // Body parts outside missions (portraits, map, barber): the mesh is hung as a separate child
+                // entity, the skeleton is not touched. The patch is applied exactly here, not at mod load:
+                // an early AgentVisuals patch triggers the static initialization of the class before
+                // the game has read the animations, and all ponies in windows lie on their side (verified 2026-09-18,
+                // the /eqnoparts switch for comparison). In missions skinning is needed: there it is OnAgentBuild.
                 EquestriaBodyParts.ApplyVisuals(_harmony);
-                // Шлем под крупную голову расы — сюда же: цепляется к той же сборке внешности
+                // The helmet for the race's large head goes here too: it hooks into the same visuals assembly
                 EquestriaHelmetFit.Apply(_harmony);
-                // Кнопки "Сплошная/Полосатая" поверх экрана внешности пони
+                // The "Solid/Striped" buttons on top of the pony appearance screen
                 EquestriaHairStyleView.Apply(_harmony);
-                // Портреты "родителей"/детства/юности в мастере создания персонажа — третий
-                // независимый путь сборки AgentVisuals, тоже нуждается в EquestriaBodyParts.Attach
+                // The "parents"/childhood/youth portraits in the character creation wizard: the third
+                // independent AgentVisuals assembly path, it also needs EquestriaBodyParts.Attach
                 EquestriaNarrativeCreationFix.Apply(_harmony);
-                // Магия: пока целимся заклинанием, ЛКМ не бьёт кулаком
+                // Magic: while aiming a spell, LMB does not punch
                 EquestriaSpellCombatPatch.Apply(_harmony);
                 MuteVanillaOrderShouts.Apply(_harmony);
                 MuteVanillaOrderNods.Apply(_harmony);
                 EquestriaGreetings.ApplyVoice(_harmony);
                 EquestriaMusic.Apply(_harmony);
-                // Свиток полёта в слоте коня: не даёт движку завести агента-коня (src/EquestriaFlightScroll.cs)
+                // The flight scroll in the horse slot: prevents the engine from creating a horse agent (src/EquestriaFlightScroll.cs)
                 EquestriaFlightScroll.Apply(_harmony);
                 EquestriaCrashLog.Log("Harmony: поздние патчи (голос приказов, голос приветствий, музыка) применены");
             });
         }
     }
 
-    // Ванильный кэш расстояний между поселениями нам не подходит.
+    // The vanilla settlement distance cache does not suit us.
     //
-    // При запуске кампании SettlementPositionScript обходит все включённые модули и берёт у
-    // последнего, у кого есть файл ModuleData/DistanceCaches/settlements_distance_cache_*.bin.
-    // Такой файл есть у SandBox, и он посчитан для Кальрадии: внутри имена поселений, которых в
-    // нашем мире больше нет. При чтении игра ищет каждое по имени, не находит и падает на пустой
-    // ссылке в NavigationCacheElement.GetHashCode.
+    // On campaign start SettlementPositionScript goes through all enabled modules and takes it from
+    // the last one that has a ModuleData/DistanceCaches/settlements_distance_cache_*.bin file.
+    // SandBox has such a file, and it is computed for Calradia: inside are names of settlements that
+    // no longer exist in our world. On reading, the game looks each one up by name, does not find it and crashes on a null
+    // reference in NavigationCacheElement.GetHashCode.
     //
-    // Законного способа отказаться от чужого кэша нет — отсюда патч. Говорим «файла нет» для всех
-    // модулей, кроме нашего, и игра честно считает расстояния сама при старте кампании.
+    // There is no legitimate way to refuse someone else's cache, hence the patch. We say "no file" for all
+    // modules except ours, and the game honestly computes the distances itself at campaign start.
     //
-    // Свой кэш. На карте 1024 м с 122 крепостями расчёт соседства идёт минут шесть, поэтому
-    // посчитанный кэш сохраняем в наш ModuleData/DistanceCaches (DistanceCacheSaveOurs ниже).
-    // Игра при чтении кэша НЕ сверяет его с картой, а устаревший кэш ломает расстояния, поэтому
-    // рядом лежит отметка — хэш сетки проходимости и списка поселений. Не совпала — делаем вид,
-    // что файла нет: игра пересчитает, а мы сохраним заново.
+    // Our own cache. On a 1024 m map with 122 fortresses the neighbourhood computation takes about six minutes, so
+    // the computed cache is saved to our ModuleData/DistanceCaches (DistanceCacheSaveOurs below).
+    // When reading the cache the game does NOT check it against the map, and a stale cache breaks distances, so
+    // next to it lies a stamp: a hash of the navigation grid and the settlement list. If it does not match, we pretend
+    // there is no file: the game recomputes, and we save it again.
     [HarmonyPatch(typeof(SettlementPositionScript), "GetSettlementsDistanceCacheFileForCapability")]
     public static class DistanceCacheFromOurModuleOnly
     {
         internal const string OurModule = "EquestriaMod";
 
-        // Путь, куда сохранить кэш после расчёта (задаётся, когда нашего кэша нет или он устарел)
+        // Path where to save the cache after computation (set when our cache is missing or stale)
         internal static string PendingSavePath;
 
         private static bool Prefix(string moduleId, ref string filePath, ref bool __result)
@@ -124,7 +124,7 @@ namespace EquestriaMod
                 __result = false;
                 return false;
             }
-            return true;  // наш модуль проверяем как обычно, а отметку — в Postfix
+            return true;  // our module is checked as usual, and the stamp in the Postfix
         }
 
         private static void Postfix(string moduleId, ref string filePath, ref bool __result)
@@ -139,7 +139,7 @@ namespace EquestriaMod
             {
                 if (found != stamp)
                 {
-                    DistanceCacheStamp.Write(filePath, stamp);   // отметка старого образца — переписываем
+                    DistanceCacheStamp.Write(filePath, stamp);   // an old-style stamp: rewrite it
                 }
                 PendingSavePath = null;
                 return;
@@ -153,7 +153,7 @@ namespace EquestriaMod
         }
     }
 
-    // Сохранение посчитанного кэша в наш модуль (см. выше).
+    // Saving the computed cache into our module (see above).
     [HarmonyPatch(typeof(SettlementPositionScript), "ReadNavigationCacheForNavigationTypeOnGameLoad")]
     public static class DistanceCacheSaveOurs
     {
@@ -183,9 +183,9 @@ namespace EquestriaMod
         private const string Navmesh = "SceneObj/Main_map/navmesh.bin";
         private const string Settlements = "ModuleData/equestria_settlements.xml";
 
-        // Хэш того, от чего кэш зависит на самом деле: сетка проходимости и у каждого поселения —
-        // id и координаты (в том числе ворот). Раньше хэшировался весь файл поселений, и любая
-        // правка названия или описания (например, перевода) стоила пересчёта в шесть-девять минут.
+        // A hash of what the cache actually depends on: the navigation grid and, for each settlement,
+        // the id and coordinates (including the gates). Previously the whole settlements file was hashed, and any
+        // edit of a name or description (for example, a translation) cost a six-to-nine-minute recomputation.
         internal static string Current()
         {
             using (var sha = System.Security.Cryptography.SHA1.Create())
@@ -207,8 +207,8 @@ namespace EquestriaMod
             }
         }
 
-        // Отметка старого образца (весь файл поселений целиком). Принимаем её один раз, чтобы
-        // смена способа не вызвала лишний пересчёт, и переписываем по-новому.
+        // An old-style stamp (the whole settlements file). We accept it once, so that
+        // changing the method does not cause an extra recomputation, and rewrite it the new way.
         internal static string Legacy()
         {
             using (var sha = System.Security.Cryptography.SHA1.Create())
@@ -243,16 +243,16 @@ namespace EquestriaMod
         }
     }
 
-    // Ванильная предыстория Кальрадии нам не нужна и мешает.
+    // The vanilla Calradia backstory is not needed and gets in the way.
     //
-    // BackstoryCampaignBehavior при создании новой игры расставляет отношения между конкретными
-    // ванильными лордами: ссора lord_1_7 с lord_1_1, убийство dead_lord_2_2, притязание на town_V6
-    // и так далее. Все эти имена прописаны прямо в коде. Мы этих героев удалили, HeroObject у них
-    // пустой — и первое же обращение роняет кампанию.
+    // BackstoryCampaignBehavior, when creating a new game, sets up relations between specific
+    // vanilla lords: a quarrel of lord_1_7 with lord_1_1, the murder of dead_lord_2_2, a claim on town_V6
+    // and so on. All these names are hardcoded. We removed these heroes, their HeroObject is
+    // null, and the very first access crashes the campaign.
     //
-    // Содержимое всё равно про имперскую гражданскую войну, к Эквестрии отношения не имеет.
-    // Отключаем целиком. Свою предысторию — ссоры принцесс, раскол Сталлионграда — напишем потом
-    // отдельным поведением.
+    // The content is about the imperial civil war anyway and has nothing to do with Equestria.
+    // We disable it entirely. Our own backstory (the princesses' quarrels, the Stalliongrad split) will be written later
+    // as a separate behaviour.
     [HarmonyPatch(typeof(BackstoryCampaignBehavior), nameof(BackstoryCampaignBehavior.OnNewGameCreated))]
     public static class SkipCalradianBackstory
     {
@@ -263,19 +263,19 @@ namespace EquestriaMod
         }
     }
 
-    // Страховка от пустого снаряжения.
+    // Insurance against empty equipment.
     //
-    // Helpers.EquipmentHelper.AssignHeroEquipmentFromEquipment берёт набор снаряжения и сразу
-    // читает его свойства, не проверяя на пустоту. Пустой набор прилетает, когда для культуры героя
-    // не нашлось подходящего шаблона — на этом мы уже дважды теряли запуск игры.
+    // Helpers.EquipmentHelper.AssignHeroEquipmentFromEquipment takes an equipment set and immediately
+    // reads its properties without a null check. An empty set arrives when no suitable template was found
+    // for the hero's culture; we have already lost a game launch to this twice.
     //
-    // Шаблоны мы завели все восемь, но при перекройке мира лордов и культур станет много, и одна
-    // забытая строчка в XML снова уронила бы кампанию без всякого объяснения. Теперь вместо падения
-    // герой просто останется в чём был, а в журнал ляжет его имя — сразу видно, кому чего не хватает.
+    // We created all eight templates, but when the world is redrawn there will be many lords and cultures, and one
+    // forgotten line in XML would again crash the campaign without any explanation. Now instead of a crash
+    // the hero just stays in what he had, and his name goes into the log: you can see at once who is missing what.
     [HarmonyPatch(typeof(EquipmentHelper), nameof(EquipmentHelper.AssignHeroEquipmentFromEquipment))]
     public static class AssignHeroEquipmentGuard
     {
-        // Возврат false отменяет исходный метод.
+        // Returning false cancels the original method.
         private static bool Prefix(Hero hero, Equipment equipment)
         {
             if (equipment != null)

@@ -1,11 +1,11 @@
-# Карта мира Эквуса в одном месте: высоты, суша, типы местности и города — всё из assets/map
-# (их собирает tools/make_equus_map.py по референсу Equestria at War).
+# The Equus world map in one place: heights, land, terrain types and cities - all from assets/map
+# (built by tools/make_equus_map.py from the Equestria at War reference).
 #
-# Отсюда берут данные генераторы поселений, сущностей сцены и раскраски рельефа, чтобы город
-# стоял ровно на той высоте, что и земля под ним, и не оказался в море.
+# The settlement, scene entity and terrain painting generators take their data from here, so that a
+# town stands at exactly the same height as the ground under it and does not end up in the sea.
 #
-# Оси: x — на восток, y — на север, в метрах карты (0..MAP_SIZE). Картинки в assets/map лежат
-# сверху вниз (первая строка — север), поэтому при чтении строки переворачиваются.
+# Axes: x - east, y - north, in map metres (0..MAP_SIZE). The images in assets/map are stored
+# top to bottom (first row is north), so rows are flipped on reading.
 import json
 import math
 import os
@@ -16,7 +16,7 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIR = os.path.join(ROOT, "assets", "map")
 
-# Номера TaleWorlds.Core.TerrainType (как в eq_map_terrain.png)
+# TaleWorlds.Core.TerrainType numbers (as in eq_map_terrain.png)
 PLAIN, DESERT, SNOW, FOREST, STEPPE, MOUNTAIN, LAKE, WATER, RIVER, SWAMP = 1, 2, 3, 4, 5, 7, 8, 10, 11, 15
 
 _cache = {}
@@ -33,14 +33,14 @@ MAP_SIZE = float(info()["map_size"])
 
 
 def _image(name):
-    """Картинка как массив, строка 0 — юг (y = 0)."""
+    """Image as an array, row 0 is south (y = 0)."""
     if name not in _cache:
         _cache[name] = np.asarray(Image.open(os.path.join(DIR, name)))[::-1]
     return _cache[name]
 
 
 def heights():
-    """Высоты в метрах, (SAMPLES x SAMPLES), строка 0 — юг. Так же их пересчитал импорт в редакторе."""
+    """Heights in metres, (SAMPLES x SAMPLES), row 0 is south. The editor import converted them the same way."""
     if "heights" not in _cache:
         raw = _image("eq_map_heightmap.png").astype(np.float32) / 65535.0
         lo, hi = info()["min_height"], info()["max_height"]
@@ -63,12 +63,12 @@ def _index(x, y, size):
 
 
 def height(x, y):
-    """Билинейная интерполяция между 4 соседними отсчётами (сетка — 1 м/пиксель). Раньше брался
-    ближайший пиксель без интерполяции — на ровном месте незаметно, но на каменистой осыпи/склоне
-    (резкий перепад между соседними отсчётами) высота скакала на десятки сантиметров, и
-    расставленные map_props.py предметы повисали в воздухе или садились мимо земли (замечено в
-    игре 07.10.2026). Та же интерполяция, что использует сам движок между отсчётами heightmap при
-    построении рельефа — методом ближайшего пикселя он не строит ступеньки.
+    """Bilinear interpolation between 4 neighbouring samples (grid is 1 m/pixel). Previously the
+    nearest pixel was taken without interpolation - unnoticeable on flat ground, but on a rocky scree/slope
+    (a sharp drop between neighbouring samples) the height jumped by tens of centimetres, and
+    props placed by map_props.py hung in the air or sank off the ground (noticed in game on
+    07.10.2026). The same interpolation the engine itself uses between heightmap samples when
+    building the terrain - it does not build steps the nearest-pixel way.
     """
     h = heights()
     size = h.shape[0]
@@ -92,13 +92,13 @@ def is_land(x, y):
 
 
 def solid_ground(x, y, margin=4.0):
-    """Точка на суше, и вокруг неё (margin м) тоже суша — поселение не повиснет над берегом."""
+    """The point is on land, and the area around it (margin m) is land too - a settlement will not hang over the shore."""
     return all(is_land(x + dx, y + dy) for dx, dy in
                ((0, 0), (margin, 0), (-margin, 0), (0, margin), (0, -margin)))
 
 
 def nearest_ground(x, y, margin=4.0, limit=40.0):
-    """Ближайшая к (x, y) точка твёрдой суши (по спирали), либо None."""
+    """The point of solid land nearest to (x, y) (searched in a spiral), or None."""
     if solid_ground(x, y, margin):
         return x, y
     step = 1.0

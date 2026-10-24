@@ -4,11 +4,11 @@ using TaleWorlds.Core;
 
 namespace EquestriaMod
 {
-    // Свитки полёта в обозе — это «кони» для карты (10.10.2026): «пешие воины на конях» в скорости
-    // отряда (DefaultPartySpeedCalculatingModel берёт ItemRoster.NumberOfMounts). Движок считает
-    // NumberOfMounts сам и только по предметам с HorseComponent (ездовые, не вьючные), а у свитка
-    // компонента нет — потому патчим оба места, где ведётся счётчик: пополнение/убыль ростера и
-    // полный пересчёт после загрузки сохранения. Как у ванильного коня — только без модификатора.
+    // Flight scrolls in the baggage are "horses" for the map (10.10.2026): "foot soldiers on horses" in party
+    // speed (DefaultPartySpeedCalculatingModel uses ItemRoster.NumberOfMounts). The engine computes
+    // NumberOfMounts itself and only from items with a HorseComponent (riding, not pack animals), while the
+    // scroll has no component - so we patch both places where the counter is kept: roster additions/removals and
+    // the full recount after a save is loaded. Like a vanilla horse - only without a modifier.
     [HarmonyPatch(typeof(ItemRoster), "OnRosterUpdated")]
     internal static class EquestriaScrollMountsOnUpdate
     {
@@ -57,10 +57,10 @@ namespace EquestriaMod
 
 namespace EquestriaMod
 {
-    // Забой в инвентаре (10.10.2026, нашёл пользователь): InventoryLogic.IsSlaughterable разрешает
-    // забить ЛЮБОЙ предмет типа Horse — значит, и повозку (вьючная телега), и свиток полёта (а у него
-    // нет HorseComponent, SlaughterItem читает MeatCount — краш). Запрещаем обоим. Патчим и
-    // IsSlaughterable, и вызывающий CanSlaughterItem: первый маленький, JIT может его встроить.
+    // Slaughter in the inventory (10.10.2026, found by the user): InventoryLogic.IsSlaughterable allows
+    // slaughtering ANY item of type Horse - so both the cart (pack wagon) and the flight scroll (which has
+    // no HorseComponent; SlaughterItem reads MeatCount - crash). We forbid both. We patch both
+    // IsSlaughterable and its caller CanSlaughterItem: the former is small, the JIT may inline it.
     [HarmonyPatch(typeof(TaleWorlds.CampaignSystem.Inventory.InventoryLogic), "IsSlaughterable")]
     internal static class EquestriaNoSlaughterCarts
     {

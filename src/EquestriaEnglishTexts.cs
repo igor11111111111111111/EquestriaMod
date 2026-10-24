@@ -6,20 +6,20 @@ using TaleWorlds.Localization;
 
 namespace EquestriaMod
 {
-    // Английский текст реплик — из ModuleData\Languages\EN\*.xml, руками мода.
+    // English dialogue text — from ModuleData\Languages\EN\*.xml, loaded by the mod itself.
     //
-    // Для английского игра не читает языковые файлы вовсе и даже не заглядывает в словарь переводов:
-    // и в LocalizedTextManager.LoadLanguage, и в MBTextManager.GetLocalizedText стоит проверка
-    // «язык English — берём текст по умолчанию из самой строки» (проверено по IL 19.09.2026).
-    // У наших реплик текста по умолчанию нет: код строит TextObject("{=eq_surrender_1}") с одним
-    // ключом, а ванильные строки (ji2eenPE и прочие) переводятся на переменные {EQV_...} только
-    // языковым файлом. Поэтому в английской игре реплики были бы пусты, а разбойники говорили бы
-    // по-кальрадийски.
+    // For English the game does not read language files at all and does not even look into the translation
+    // dictionary: both LocalizedTextManager.LoadLanguage and MBTextManager.GetLocalizedText have a check
+    // "language is English — take the default text from the string itself" (checked in IL 19.09.2026).
+    // Our lines have no default text: the code builds TextObject("{=eq_surrender_1}") with just a
+    // key, and vanilla strings (ji2eenPE and others) are switched to {EQV_...} variables only by the
+    // language file. So in an English game the lines would be empty, and bandits would talk
+    // in Calradian terms.
     //
-    // Делаем для английского то же, что игра делает для остальных языков, только сами: читаем наши
-    // EN-файлы в таблицу и перехватываем GetLocalizedText — если язык английский и ключ наш, отдаём
-    // текст из таблицы. Это горячий путь (каждая строка игры), поэтому проверки самые дешёвые: первые
-    // два символа «{=», поиск «}», один поиск в словаре.
+    // We do for English what the game does for the other languages, only ourselves: read our
+    // EN files into a table and intercept GetLocalizedText — if the language is English and the key is
+    // ours, return the text from the table. This is a hot path (every string in the game), so the checks
+    // are the cheapest possible: the first two characters "{=", a search for "}", one dictionary lookup.
     public static class EquestriaEnglishTexts
     {
         private const string English = "English";

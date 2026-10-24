@@ -1,7 +1,7 @@
-﻿// Выгрузка мешей из упакованных ассетов Bannerlord (.tpac) в FBX через библиотеку TpacTool (hunharibo, MIT).
-//   tpac_export list   <папка с tpac> <фильтр>             — найти метамеши и скелеты по имени
-//   tpac_export export <папка с tpac> <меш1,меш2,...> <папка вывода> — по FBX со скелетом human_skeleton
-//                                                                      и текстурами в <вывод>\<меш>\
+﻿// Exports meshes from packed Bannerlord assets (.tpac) to FBX via the TpacTool library (hunharibo, MIT).
+//   tpac_export list   <tpac folder> <filter>             - find metameshes and skeletons by name
+//   tpac_export export <tpac folder> <mesh1,mesh2,...> <output folder> - one FBX each with the human_skeleton
+//                                                                      skeleton and textures in <output>\<mesh>\
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +14,12 @@ namespace TpacExport
 {
     internal static class Program
     {
-        // OBJ читается только с точкой в дробях, а система здесь русская
+        // OBJ is read only with a dot in decimals, and the system here is Russian
         private static readonly System.Globalization.CultureInfo Culture =
             System.Globalization.CultureInfo.InvariantCulture;
 
-        // Свойства объекта через рефлексию: простые значения печатаются, списки — длиной и первыми элементами,
-        // вложенные объекты — на два уровня вглубь.
+        // Object properties via reflection: simple values are printed, lists - by length and first elements,
+        // nested objects - two levels deep.
         private static void Dump(object obj, string indent, int depth)
         {
             if (obj == null || depth > 2)
@@ -55,9 +55,9 @@ namespace TpacExport
             }
         }
 
-        // Правка флагов шейдера: аргумент вида flags=+self_illumination,-use_double_colormap...
-        // Плюс добавляет флаг, минус снимает. Всё остальное у клона остаётся от исходника —
-        // в том числе разметка вершин (скиннинг), без которой броня перестала бы гнуться.
+        // Editing shader flags: an argument like flags=+self_illumination,-use_double_colormap...
+        // Plus adds a flag, minus removes it. Everything else on the clone stays from the source -
+        // including the vertex layout (skinning), without which the armour would stop bending.
         private static void EditFlags(Material material, string[] args)
         {
             var spec = args.FirstOrDefault(a => a.StartsWith("flags="));
@@ -93,8 +93,8 @@ namespace TpacExport
             }
         }
 
-        // GUID материала считаем от имени: повторный запуск даёт тот же идентификатор,
-        // и меши, уже привязанные к нашему материалу, не теряют его.
+        // The material GUID is derived from the name: a rerun gives the same identifier,
+        // and meshes already bound to our material do not lose it.
         private static Guid StableGuid(string name)
         {
             using (var md5 = System.Security.Cryptography.MD5.Create())
@@ -103,8 +103,8 @@ namespace TpacExport
             }
         }
 
-        // На какие ассеты ссылается этот: отдельный список пакета плюс GUID'ы, встреченные в
-        // неразобранных метаданных (у частиц разбора нет, а текстуры там именно так и лежат).
+        // Which assets this one references: the package's separate list plus GUIDs found in
+        // unparsed metadata (particles have no parser, and that is exactly where textures sit).
         private static IEnumerable<Guid> References(AssetItem asset)
         {
             var guids = new List<Guid>();
@@ -121,11 +121,11 @@ namespace TpacExport
             }
             catch (NotImplementedException)
             {
-                // разобранный тип (материал, меш) — у него зависимости и так в списке выше
+                // a parsed type (material, mesh) - its dependencies are already in the list above
             }
-            // Только метаданные. Тело ассета не трогаем: у неразобранных типов чтение поля Data
-            // сбивает ленивую загрузку, и при сохранении пакет падает на пустом буфере
-            // (проверено на частицах 2026-09-24). Что внутри тела — смотрим уже по готовому файлу.
+            // Metadata only. We do not touch the asset body: for unparsed types reading the Data field
+            // breaks lazy loading, and on save the package crashes on an empty buffer
+            // (verified on particles 2026-09-24). What is inside the body - we look at the finished file.
             ScanForGuids(metadata, guids);
             return guids.Where(g => g != Guid.Empty && g != asset.Guid).Distinct();
         }
@@ -137,7 +137,7 @@ namespace TpacExport
                 return;
             }
             var buffer = new byte[16];
-            for (var i = 0; i + 16 <= data.Length; i += 4)   // ссылки выровнены по 4 байта
+            for (var i = 0; i + 16 <= data.Length; i += 4)   // references are aligned to 4 bytes
             {
                 Array.Copy(data, i, buffer, 0, 16);
                 var guid = new Guid(buffer);
@@ -156,20 +156,20 @@ namespace TpacExport
                 return 1;
             }
 
-            // Папок с ассетами можно указать несколько через «;»: так материал клонируется из
-            // ванильного пакета, а текстуры к нему берутся из нашего.
+            // Several asset folders can be given separated by «;»: that way a material is cloned from a
+            // vanilla package, and its textures are taken from ours.
             var manager = new AssetManager();
             foreach (var dir in args[1].Split(';'))
             {
                 Console.WriteLine($"loading {dir} ...");
                 manager.Load(new DirectoryInfo(dir));
             }
-            DefaultDependenceResolver.Instance = manager; // ссылки мешей на материалы и текстуры ищутся здесь
+            DefaultDependenceResolver.Instance = manager; // mesh references to materials and textures are resolved here
             Console.WriteLine($"packages: {manager.LoadedPackages.Count}, assets: {manager.LoadedAssets.Count}");
 
             if (args[0] == "diag")
             {
-                // какие материалы нужны мешу и загружены ли они; сколько ассетов каждого типа прочитано
+                // which materials a mesh needs and whether they are loaded; how many assets of each type were read
                 foreach (var group in manager.LoadedAssets.GroupBy(a => a.GetType().Name).OrderBy(g => g.Key))
                     Console.WriteLine($"type {group.Key}: {group.Count()}");
                 var mesh = manager.LoadedAssets.OfType<Metamesh>().FirstOrDefault(a => a.Name == args[2]);
@@ -185,7 +185,7 @@ namespace TpacExport
                 return 0;
             }
 
-            // tpac_export info <папка с tpac> <меш1,меш2,...> — всё, что лежит в меше: флаги, потоки вершин, морфы
+            // tpac_export info <tpac folder> <mesh1,mesh2,...> - everything in a mesh: flags, vertex streams, morphs
             if (args[0] == "info")
             {
                 foreach (var name in args[2].Split(','))
@@ -193,7 +193,7 @@ namespace TpacExport
                     var mesh = manager.LoadedAssets.OfType<Metamesh>().FirstOrDefault(a => a.Name == name);
                     if (mesh == null)
                     {
-                        // не меш — любой ассет с таким именем (материал, текстура, шейдер)
+                        // not a mesh - any asset with that name (material, texture, shader)
                         var any = manager.LoadedAssets.Where(x => x.Name == name).ToList();
                         if (any.Count == 0)
                             Console.WriteLine($"asset not found: {name}");
@@ -230,10 +230,10 @@ namespace TpacExport
                 return 0;
             }
 
-            // tpac_export texture <папка с tpac> <фильтр,фильтр,...> <папка вывода> [.png/.dds] — текстуры
-            // Фильтров можно перечислить несколько через запятую: редакторские пакеты игры
-            // (Modules\Native\EmAssetPackages — только там у ванильных текстур есть сами пиксели)
-            // читаются секунд двадцать, и повторять это на каждое имя незачем.
+            // tpac_export texture <tpac folder> <filter,filter,...> <output folder> [.png/.dds] - textures
+            // Several filters can be listed separated by commas: the game's editor packages
+            // (Modules\Native\EmAssetPackages - only there do vanilla textures have the actual pixels)
+            // take some twenty seconds to read, and there is no point repeating that for every name.
             if (args[0] == "texture" && args.Length >= 4)
             {
                 var filters = args[2].ToLowerInvariant().Split(',')
@@ -260,14 +260,14 @@ namespace TpacExport
                 return failed;
             }
 
-            // Материалы. Собирать их в редакторе — десятки кликов на каждый, поэтому клонируем
-            // ванильный материал в свой пакет: имя новое, текстуры подменяем по номеру слота.
-            //   mat-info  <папка с tpac> <имя или часть имени>
-            //   mat-clone <папка с tpac> <исходный материал> <выходной .tpac> <новое имя> [слот=текстура ...]
+            // Materials. Building them in the editor takes dozens of clicks each, so we clone
+            // a vanilla material into our own package: a new name, textures swapped by slot number.
+            //   mat-info  <tpac folder> <name or part of name>
+            //   mat-clone <tpac folder> <source material> <output .tpac> <new name> [slot=texture ...]
             if (args[0] == "mat-info" && args.Length >= 3)
             {
-                // Имён можно перечислить несколько через запятую: каждый запуск заново читает
-                // полторы сотни ванильных пакетов, и звать его на каждый материал — минуты.
+                // Several names can be listed separated by commas: every run rereads
+                // a hundred and fifty vanilla packages, and calling it for each material takes minutes.
                 var needles = args[2].ToLowerInvariant().Split(',')
                     .Select(n => n.Trim()).Where(n => n.Length > 0).ToArray();
                 foreach (var mat in manager.LoadedAssets.OfType<Material>()
@@ -287,10 +287,10 @@ namespace TpacExport
                 return 0;
             }
 
-            // Правка флагов шейдера у клона: аргумент flags=+имя,-имя.
-            // Нужна броне улья: чтобы она светилась, материалу надо добавить self_illumination и
-            // снять use_double_colormap_with_mask_texture — обе настройки читают ОДИН слот
-            // текстуры (первый), и вместе они не работают.
+            // Editing shader flags on a clone: argument flags=+name,-name.
+            // Needed by the hive armour: to make it glow, the material has to get self_illumination added and
+            // use_double_colormap_with_mask_texture removed - both settings read the SAME texture
+            // slot (the first), and they do not work together.
             if (args[0] == "mat-clone" && args.Length >= 5)
             {
                 var source = manager.LoadedAssets.OfType<Material>().FirstOrDefault(m => m.Name == args[2]);
@@ -305,7 +305,7 @@ namespace TpacExport
                 {
                     if (args[i].StartsWith("flags="))
                     {
-                        continue;   // разбирается ниже, в EditFlags
+                        continue;   // parsed below, in EditFlags
                     }
                     var parts = args[i].Split('=');
                     if (parts.Length != 2 || !int.TryParse(parts[0], out var slot))
@@ -333,7 +333,7 @@ namespace TpacExport
                 return 0;
             }
 
-            // Материалы мешей: mesh-mats <папка> <меш1,меш2,...> — что на каком меше стоит.
+            // Mesh materials: mesh-mats <folder> <mesh1,mesh2,...> - which material is on which mesh.
             if (args[0] == "mesh-mats" && args.Length >= 3)
             {
                 foreach (var name in args[2].Split(','))
@@ -352,10 +352,10 @@ namespace TpacExport
                 return 0;
             }
 
-            // Пакетное клонирование материалов: один проход по ассетам вместо запуска на каждый.
-            //   mat-batch <папка с tpac> <папка вывода> <префикс> <материал1,материал2,...>
-            // Для каждого материала пишется <папка вывода>/<префикс><имя>_mtl.tpac; diffuse (слот 0)
-            // подменяется на текстуру <префикс><имя>_d, если она уже импортирована в модуль.
+            // Batch material cloning: one pass over the assets instead of a run per material.
+            //   mat-batch <tpac folder> <output folder> <prefix> <material1,material2,...>
+            // For each material <output folder>/<prefix><name>_mtl.tpac is written; the diffuse (slot 0)
+            // is swapped for the texture <prefix><name>_d if it has already been imported into the module.
             if (args[0] == "mat-batch" && args.Length >= 5)
             {
                 var outDir = Path.GetFullPath(args[2]);
@@ -372,8 +372,8 @@ namespace TpacExport
                         continue;
                     }
                     var newName = prefix + name;
-                    // имя нашей текстуры берём от текущей diffuse материала (имена материала и
-                    // текстуры у ванили совпадают не всегда: bandit_leather_mat -> bandit_leather_d)
+                    // the name of our texture is taken from the material's current diffuse (material and
+                    // texture names do not always match in vanilla: bandit_leather_mat -> bandit_leather_d)
                     var texName = prefix + name + "_d";
                     if (source.Textures.TryGetValue(0, out var current) && current.TryGetItem(out var currentTex))
                     {
@@ -386,9 +386,9 @@ namespace TpacExport
                     {
                         source.Textures[0] = new AssetDependence<Texture>(texture);
                     }
-                    // Карта свечения в слоте 1 (там же, где у ванили маска цвета клана): ставим её
-                    // только когда свечение просят флагом — иначе в слоте должна остаться
-                    // ванильная маска цвета клана.
+                    // Glow map in slot 1 (the same slot where vanilla has the clan colour mask): we set it
+                    // only when glow is requested by a flag - otherwise the slot must keep the
+                    // vanilla clan colour mask.
                     var wantGlow = args.Any(a => a.StartsWith("flags=") && a.Contains("+self_illumination"));
                     var selfName = wantGlow && texName.EndsWith("_d")
                         ? texName.Substring(0, texName.Length - 2) + "_self" : null;
@@ -410,9 +410,9 @@ namespace TpacExport
                 return missing;
             }
 
-            // Перепривязка материалов у наших мешей: mesh-rebind <папка игры+мода> <пакет.tpac> <префикс>
-            // Для каждого меша eq_pony_<имя> берём материалы ванильного меша <имя> и ставим наши
-            // <префикс><материал>. Нужна, когда материалы пересозданы после импорта FBX.
+            // Rebinding materials on our meshes: mesh-rebind <game+mod folder> <package.tpac> <prefix>
+            // For each mesh eq_pony_<name> we take the materials of the vanilla mesh <name> and set our
+            // <prefix><material>. Needed when the materials were recreated after an FBX import.
             if (args[0] == "mesh-rebind" && args.Length >= 4)
             {
                 var packagePath = Path.GetFullPath(args[2]);
@@ -462,15 +462,15 @@ namespace TpacExport
                 return 0;
             }
 
-            // Копия ванильного меша под своим именем:
-            //   mesh-copy <папки с tpac> <пакет.tpac> <приставка> <меш1,меш2,...>
-            // Меш кладётся в наш пакет как <приставка><имя> со своим guid, а материалы подменяются
-            // на наши — <приставка><ванильный материал>. Так броня улья получает свои текстуры и
-            // свечение, а ванильные ассеты остаются нетронутыми (их правит только редактор).
+            // A copy of a vanilla mesh under our own name:
+            //   mesh-copy <tpac folders> <package.tpac> <prefix> <mesh1,mesh2,...>
+            // The mesh goes into our package as <prefix><name> with its own guid, and the materials are swapped
+            // for ours - <prefix><vanilla material>. That way the hive armour gets its own textures and
+            // glow, while the vanilla assets stay untouched (only the editor edits them).
             if (args[0] == "mesh-copy" && args.Length >= 5)
             {
                 var prefix = args[3];
-                // fallback=<материал> — чем закрывать подмеши с пустым материалом
+                // fallback=<material> - what to fill submeshes with an empty material with
                 var spareName = args.FirstOrDefault(a => a.StartsWith("fallback="));
                 var spare = spareName == null ? null : manager.LoadedAssets.OfType<Material>()
                     .FirstOrDefault(m => m.Name == spareName.Substring("fallback=".Length));
@@ -492,9 +492,9 @@ namespace TpacExport
                         Console.WriteLine("metamesh not found: " + name);
                         return 2;
                     }
-                    // Первый разобранный материал меша — им же закрываем подмеши без материала:
-                    // у ванильных рукавиц mail_mitten_e/f/h материал пустой (дефект самой игры),
-                    // и меш с пустым материалом движок не рисует.
+                    // The mesh's first parsed material - also used to fill submeshes without a material:
+                    // the vanilla mittens mail_mitten_e/f/h have an empty material (a defect of the game itself),
+                    // and the engine does not draw a mesh with an empty material.
                     Material fallback = null;
                     foreach (var sub in mesh.Meshes)
                     {
@@ -512,8 +512,8 @@ namespace TpacExport
                         }
                         else
                         {
-                            // сначала материал этого же меша, потом — общий запасной из аргумента
-                            // fallback=<имя>: у рукавиц пустые ВСЕ подмеши, брать неоткуда
+                            // first the material of this same mesh, then the shared spare one from the argument
+                            // fallback=<name>: on the mittens ALL submeshes are empty, there is nothing to take from
                             ours = fallback ?? spare;
                             if (ours == null)
                             {
@@ -538,10 +538,10 @@ namespace TpacExport
                 return 0;
             }
 
-            // Один материал на все меши с общим началом имени:
-            //   mesh-setmat <папка с tpac> <пакет .tpac> <начало имени меша> <материал>
-            // Так привязывается своя модель расы после импорта FBX (у неё пять мешей eq_yak_*,
-            // и все носят один материал eq_yak_body).
+            // One material for all meshes with a common name prefix:
+            //   mesh-setmat <tpac folder> <package .tpac> <mesh name prefix> <material>
+            // This is how our own race model is bound after an FBX import (it has five meshes eq_yak_*,
+            // and all of them wear one material eq_yak_body).
             if (args[0] == "mesh-setmat" && args.Length >= 5)
             {
                 var packagePath = Path.GetFullPath(args[2]);
@@ -574,10 +574,10 @@ namespace TpacExport
                 return 0;
             }
 
-            // tpac_export obj <папка с tpac> <меш1,меш2,...> <файл.obj> — только вершины и грани
-            // нулевого LOD. Нужна там, где FBX не годится: у ванильных тела и головы лежат морфы,
-            // и импортёр Blender на них падает (assert в blen_read_shapes). Этим достаётся образец
-            // для подгонки моделей рас под доспех: body_male_a -> assets\human_ref\human.obj.
+            // tpac_export obj <tpac folder> <mesh1,mesh2,...> <file.obj> - only the vertices and faces
+            // of LOD zero. Needed where FBX does not work: the vanilla body and head carry morphs,
+            // and the Blender importer crashes on them (assert in blen_read_shapes). This extracts the reference
+            // for fitting race models to armour: body_male_a -> assets\human_ref\human.obj.
             if (args[0] == "obj" && args.Length >= 4)
             {
                 var lines = new List<string>();
@@ -598,8 +598,8 @@ namespace TpacExport
                         lines.Add($"o {sub.Name}");
                         foreach (var p in data.Positions)
                             lines.Add($"v {p.X.ToString(Culture)} {p.Y.ToString(Culture)} {p.Z.ToString(Culture)}");
-                        // грань ссылается на Vertices, а те — на Positions: у ванильных мешей
-                        // вершин больше, чем точек (швы развёртки), поэтому индекс через Vertices
+                        // a face refers to Vertices, and those to Positions: vanilla meshes have
+                        // more vertices than points (UV seams), hence the index goes through Vertices
                         foreach (var f in data.Faces)
                             lines.Add(string.Format("f {0} {1} {2}",
                                 data.Vertices[f.V0].PositionIndex + shift,
@@ -614,8 +614,8 @@ namespace TpacExport
                 return 0;
             }
 
-            // tpac_export assets <папка с tpac> <фильтр имени или ".", можно с типом: particle:.>
-            // — все ассеты любого типа: тип, имя, GUID. list показывает только меши и скелеты.
+            // tpac_export assets <tpac folder> <name filter or ".", optionally with a type: particle:.>
+            // - all assets of any type: type, name, GUID. list shows only meshes and skeletons.
             if (args[0] == "assets")
             {
                 var filter = args[2].ToLowerInvariant();
@@ -640,13 +640,13 @@ namespace TpacExport
                 return 0;
             }
 
-            // tpac_export copy-assets <папка-источник> <имя1,имя2,...> <out.tpac>
-            // — переносит ассеты в свой пакет вместе с текстурами, на которые они ссылаются.
+            // tpac_export copy-assets <source folder> <name1,name2,...> <out.tpac>
+            // - moves assets into our own package together with the textures they reference.
             //
-            // Содержимое частиц TpacTool не разбирает (класс Particle пустой), но ссылки на чужие
-            // ассеты пакет хранит отдельным списком (UnknownDependences) — по нему и тянем текстуры,
-            // а на всякий случай ещё ищем GUID'ы в сырых метаданных. Сами данные не трогаются:
-            // ассет перекладывается в новый пакет как есть.
+            // TpacTool does not parse particle contents (the Particle class is empty), but the package keeps
+            // references to other assets in a separate list (UnknownDependences) - we pull the textures by it,
+            // and just in case we also search for GUIDs in the raw metadata. The data itself is not touched:
+            // the asset is moved into the new package as is.
             if (args[0] == "copy-assets" && args.Length >= 4)
             {
                 var wanted = args[2].Split(',').Select(n => n.Trim()).Where(n => n.Length > 0).ToList();

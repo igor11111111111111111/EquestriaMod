@@ -1,4 +1,4 @@
-# Обзор структуры ванильного skins.xml: расы, атрибуты skin, дочерние элементы и примеры записей.
+# Overview of the vanilla skins.xml structure: races, skin attributes, child elements and sample entries.
 import sys
 import xml.etree.ElementTree as ET
 
@@ -15,6 +15,6 @@ for race in root:
             print(f"    <{child.tag}> attrs={child.attrib} children={len(items)}")
             for s in sample:
                 print("       ", s.replace("\n", " "))
-        break  # подробно только первый skin; остальные — атрибуты
+        break  # only the first skin in detail; for the rest, attributes
     for skin in list(race)[1:]:
         print("  SKIN", skin.attrib.get("name"), {k: skin.attrib[k] for k in ("gender", "mesh_maturity_type", "skeleton", "body_meta_mesh", "face_meta_mesh", "min_scale") if k in skin.attrib})

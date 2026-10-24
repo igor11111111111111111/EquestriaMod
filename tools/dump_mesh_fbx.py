@@ -1,5 +1,5 @@
-# Обзор FBX с мешами: объекты, габариты в мире, скелет, группы вершин, материалы.
-# blender --background --factory-startup --python dump_mesh_fbx.py -- <file.fbx> [png превью]
+# Overview of an FBX with meshes: objects, world bounds, skeleton, vertex groups, materials.
+# blender --background --factory-startup --python dump_mesh_fbx.py -- <file.fbx> [png preview]
 import sys
 
 import bpy

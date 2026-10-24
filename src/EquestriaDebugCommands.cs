@@ -16,8 +16,8 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Отладочные команды для проверки лордов Эквестрии на карте. В ванильной консоли нет ни телепорта,
-    // ни вызова разговора, поэтому делаем свои.
+    // Debug commands for checking Equestria's lords on the map. The vanilla console has neither a teleport
+    // nor a way to start a conversation, so we make our own.
     public static class EquestriaDebugCommands
     {
         private const string ClanId = "clan_equestria_royal";
@@ -32,26 +32,26 @@ namespace EquestriaMod
             var name = args.Count > 0 ? string.Join(" ", args) : null;
             if (name == null)
             {
-                // Без имени: лидер нашего клана, а если в этой кампании его нет (быстрый тест) —
-                // любой живой лорд с отрядом, лишь бы было с кем поговорить
+                // Without a name: the leader of our clan, and if this campaign has none (quick test),
+                // any living lord with a party, as long as there is someone to talk to
                 return ClanHeroes().FirstOrDefault()
                     ?? Hero.AllAliveHeroes.FirstOrDefault(h => h.IsLord && h.PartyBelongedTo != null
                         && h != Hero.MainHero && h.Clan != Clan.PlayerClan);
             }
-            // С именем — ищем среди ВСЕХ живых лордов, а не только своего клана: по имени часто
-            // проверяют конкретного перса из другого дома (например, лор-цвет лорда — см.
-            // EquestriaBodyParts.LoreColors), а не обязательно кого-то из clan_equestria_royal.
-            // Консоль принимает только латиницу — имя на русском (локализация) с неё не ввести,
-            // поэтому ищем ещё и по StringId персонажа (id="eq_..." из equestria_lords.xml,
-            // он всегда латиницей): equestria.talk_to_lord eq_posey_shy сработает, даже если
-            // игра на русском и в консоли "Поузи Шай" не напечатать.
+            // With a name, search among ALL living lords, not only our clan: by name people often
+            // check a specific character from another house (e.g. a lord's lore colour, see
+            // EquestriaBodyParts.LoreColors), not necessarily someone from clan_equestria_royal.
+            // The console accepts only Latin letters: a Russian name (localisation) cannot be typed into it,
+            // so we also search by the character's StringId (id="eq_..." from equestria_lords.xml,
+            // it is always Latin): equestria.talk_to_lord eq_posey_shy works even if
+            // the game is in Russian and "Posey Shy" cannot be typed in the console.
             var needle = name.ToLower();
             return Hero.AllAliveHeroes.FirstOrDefault(h => h.IsLord
                 && (h.Name.ToString().ToLower().Contains(needle)
                     || (h.CharacterObject?.StringId?.ToLower().Contains(needle) ?? false)));
         }
 
-        // equestria.list_lords — кто в клане, где находится и есть ли отряд
+        // equestria.list_lords: who is in the clan, where they are and whether they have a party
         [CommandLineFunctionality.CommandLineArgumentFunction("list_lords", "equestria")]
         public static string ListLords(List<string> args)
         {
@@ -71,7 +71,7 @@ namespace EquestriaMod
             return lines.Count > 0 ? string.Join("\n", lines) : "Clan " + ClanId + " has no living heroes.";
         }
 
-        // equestria.goto_lord [имя] — перенести отряд игрока к лорду (по умолчанию к лидеру клана)
+        // equestria.goto_lord [name]: move the player's party to a lord (by default to the clan leader)
         [CommandLineFunctionality.CommandLineArgumentFunction("goto_lord", "equestria")]
         public static string GotoLord(List<string> args)
         {
@@ -89,11 +89,11 @@ namespace EquestriaMod
             {
                 return hero.Name + " has no party on the map.";
             }
-            MobileParty.MainParty.Position = target.Position;  // CampaignVec2, в 1.4.8 Position2D нет
+            MobileParty.MainParty.Position = target.Position;  // CampaignVec2, there is no Position2D in 1.4.8
             return $"Teleported to {hero.Name} at {target.GetPosition2D.x:F1}, {target.GetPosition2D.y:F1}.";
         }
 
-        // equestria.talk_to_lord [имя] — открыть разговор с лордом, где бы он ни был
+        // equestria.talk_to_lord [name]: open a conversation with a lord wherever he is
         [CommandLineFunctionality.CommandLineArgumentFunction("talk_to_lord", "equestria")]
         public static string TalkToLord(List<string> args)
         {
@@ -112,12 +112,12 @@ namespace EquestriaMod
             return "Talking to " + hero.Name + ".";
         }
 
-        // equestria.companions [сколько] — набрать в отряд случайных спутников (по умолчанию 100)
-        // из всех шаблонов странников всех культур; среди них попадаются и канонные второстепенные
-        // персонажи (шаблоны spc_eq_*: Лира, Оцеллус, Гэллус...), но каждый не больше одного раза.
-        // Главных героев канона (Твайлайт, Эпплджек...) команда не трогает: они лорды своих кланов,
-        // и спутником герой может быть только вместо этого — мир бы остался без них.
-        // Предел размера отряда не проверяется — это проверочная команда.
+        // equestria.companions [count]: recruit random companions into the party (100 by default)
+        // from all wanderer templates of all cultures; among them are also canon secondary
+        // characters (spc_eq_* templates: Lyra, Ocellus, Gallus...), but each at most once.
+        // The command does not touch the main canon heroes (Twilight, Applejack...): they are lords of their clans,
+        // and a hero can be a companion only instead of that; the world would be left without them.
+        // The party size limit is not checked: this is a test command.
         [CommandLineFunctionality.CommandLineArgumentFunction("companions", "equestria")]
         public static string Companions(List<string> args)
         {
@@ -138,7 +138,7 @@ namespace EquestriaMod
                 {
                     if (!usedCanon.Add(template))
                     {
-                        continue;   // канонный — только один раз
+                        continue;   // a canon one only once
                     }
                     canon++;
                 }
@@ -149,7 +149,7 @@ namespace EquestriaMod
                 + $"Героев в отряде: {MobileParty.MainParty.MemberRoster.TotalHeroes}.";
         }
 
-        // internal: тем же способом набирает спутников смотр рас (EquestriaRaceParty)
+        // internal: the race showcase (EquestriaRaceParty) recruits companions the same way
         internal static Hero CreateWanderer(CharacterObject template)
         {
             Settlement home = Settlement.All.FirstOrDefault(s => s.IsTown && s.Culture == template.Culture)
@@ -158,8 +158,8 @@ namespace EquestriaMod
             return HeroCreator.CreateSpecialHero(template, home, null, null, age);
         }
 
-        // Забрать героя в отряд игрока. asCompanion — сделать спутником клана игрока (для странников);
-        // лорды остаются в своих кланах, только едут с игроком.
+        // Take a hero into the player's party. asCompanion makes him a companion of the player's clan (for wanderers);
+        // lords stay in their clans and only travel with the player.
         internal static void JoinParty(Hero hero, bool asCompanion)
         {
             var own = hero.PartyBelongedTo;
@@ -185,9 +185,9 @@ namespace EquestriaMod
             TaleWorlds.CampaignSystem.Actions.AddHeroToPartyAction.Apply(hero, MobileParty.MainParty, false);
         }
 
-        // equestria.meet <часть имени или id> | all — «познакомиться» с героем без встречи: в
-        // энциклопедии открываются портрет, возраст, занятие и отношения (Hero.SetHasMet). all — со
-        // всеми живыми героями разом. В ванили такой команды нет (10.10.2026).
+        // equestria.meet <part of a name or id> | all: "meet" a hero without an encounter: the
+        // encyclopedia then shows the portrait, age, occupation and relations (Hero.SetHasMet). all: with
+        // all living heroes at once. Vanilla has no such command (10.10.2026).
         [CommandLineFunctionality.CommandLineArgumentFunction("meet", "equestria")]
         public static string Meet(List<string> args)
         {
@@ -217,9 +217,9 @@ namespace EquestriaMod
                 : $"Знакомы теперь со всеми: {heroes.Count} героев.";
         }
 
-        // equestria.hero_info <часть имени или id> — что игра на самом деле знает о герое: раса,
-        // возраст, ключ внешности, снаряжение боевое и гражданское. Для сравнения тех, кто в окне
-        // отряда рисуется, с теми, у кого окно пустое.
+        // equestria.hero_info <part of a name or id>: what the game actually knows about a hero: race,
+        // age, appearance key, battle and civilian equipment. For comparing those who are drawn in the
+        // party screen with those whose screen is empty.
         [CommandLineFunctionality.CommandLineArgumentFunction("hero_info", "equestria")]
         public static string HeroInfo(List<string> args)
         {
@@ -244,11 +244,11 @@ namespace EquestriaMod
                 + $"  быт: {Items(hero.CivilianEquipment)}";
         }
 
-        // equestria.fight_bandits [банда] [сколько] — создать рядом отряд разбойников и сразу вступить с ним в бой.
-        //   банда: looters (по умолчанию), sea_raiders, mountain_bandits, forest_bandits,
+        // equestria.fight_bandits [gang] [count]: spawn a bandit party nearby and immediately fight it.
+        //   gang: looters (default), sea_raiders, mountain_bandits, forest_bandits,
         //          desert_bandits, steppe_bandits
-        //   сколько: во сколько раз увеличить отряд (1..10), по умолчанию 1
-        // Консоль открывается Alt+~ (нужен запуск с включённым режимом разработчика).
+        //   count: how many times to enlarge the party (1..10), 1 by default
+        // The console opens with Alt+~ (requires launching with developer mode enabled).
         [CommandLineFunctionality.CommandLineArgumentFunction("fight_bandits", "equestria")]
         public static string FightBandits(List<string> args)
         {
@@ -274,7 +274,7 @@ namespace EquestriaMod
                 return "У банды " + clanId + " нет шаблона отряда.";
             }
 
-            // Рядом с игроком, чуть в стороне — иначе отряд появится прямо в нём.
+            // Next to the player, slightly to the side; otherwise the party appears right on top of him.
             var near = new CampaignVec2(MobileParty.MainParty.GetPosition2D + new Vec2(0.6f, 0.6f), true);
             Settlement home = Settlement.All.Where(s => s.IsTown || s.IsVillage)
                 .OrderBy(s => s.GetPosition2D.DistanceSquared(near.ToVec2())).FirstOrDefault();
@@ -282,7 +282,7 @@ namespace EquestriaMod
             MobileParty bandits = BanditPartyComponent.CreateLooterParty(id, clan, home, false,
                 clan.DefaultPartyTemplate, near);
 
-            // Шаблон даёт скромный отряд — по желанию умножаем.
+            // The template gives a modest party; multiply it if requested.
             if (scale > 1)
             {
                 foreach (var element in bandits.MemberRoster.GetTroopRoster().ToList())
@@ -302,45 +302,45 @@ namespace EquestriaMod
             return $"Бой с «{clan.Name}»: {size} бойцов.";
         }
 
-        // Двуручные мечи (а не топоры — те бывают дробящими, не рубящими, и не подходят под
-        // детект отрубания, который требует DamageType.Cut). Все шесть реально существуют
-        // (проверено — используются battania-войсками в equestria_troops.xml).
+        // Two-handed swords (not axes: those can be blunt rather than cutting and do not fit
+        // the severing detection, which requires DamageType.Cut). All six really exist
+        // (checked: used by battania troops in equestria_troops.xml).
         private static readonly string[] TwoHandedSwords =
         {
             "battania_2hsword_1_t2", "battania_2hsword_2_t3", "battania_2hsword_3_t3",
             "battania_2hsword_4_t4", "battania_2hsword_5_t4", "battania_2hsword_6",
         };
 
-        // Раса -> войско для equestria.dismember_test: по одному рослому Infantry-бойцу тир 21-26
-        // на расу (сверено с equestria_troops.xml), чтобы было у кого отрубать руки/ноги — для
-        // этого нужен race с уже разрезанными на _l/_r gloves/legs (EquestriaDismemberment.RaceInfo).
+        // Race -> troop for equestria.dismember_test: one tall Infantry fighter of tier 21-26
+        // per race (checked against equestria_troops.xml), so there is someone to sever arms/legs from; for
+        // that a race with gloves/legs already cut into _l/_r is needed (EquestriaDismemberment.RaceInfo).
         private static readonly Dictionary<string, string> DismemberTestTroopByRace = new Dictionary<string, string>
         {
             { "pony", "embers_of_flame_tier_3" },        // Golden Horseshoe Veteran
             { "changeling", "aserai_veteran_infantry" }, // Hive Veteran
-            { "dragon", "vlandian_sergeant" },            // Dragon Warrior (вландийская ветка)
-            { "griffon", "khuzait_darkhan" },             // Griffonstone Axebearer (хузаитская ветка)
-            { "hippogriff", "eq_hg_sturgian_veteran_warrior" }, // Surf Veteran (копии стургийской ветки)
-            { "yak", "sturgian_veteran_warrior" },        // Yakyakistan Axebearer (стургийская ветка)
-            { "deer", "battanian_oathsworn" },            // Guard of Deer Grove (баттанийская ветка)
+            { "dragon", "vlandian_sergeant" },            // Dragon Warrior (Vlandian branch)
+            { "griffon", "khuzait_darkhan" },             // Griffonstone Axebearer (Khuzait branch)
+            { "hippogriff", "eq_hg_sturgian_veteran_warrior" }, // Surf Veteran (copies of the Sturgian branch)
+            { "yak", "sturgian_veteran_warrior" },        // Yakyakistan Axebearer (Sturgian branch)
+            { "deer", "battanian_oathsworn" },            // Guard of Deer Grove (Battanian branch)
         };
 
-        // equestria.dismember_test [сколько на сторону] [раса] — бой "по пояс в крови" для проверки
-        // отрубания (EquestriaDismemberment.cs): столько же бойцов выбранной расы (по умолчанию
-        // пони) в своём отряде и у врага. По умолчанию 100 на сторону. Раса — ключ из
-        // DismemberTestTroopByRace (pony/changeling/dragon/griffon/hippogriff/yak/deer), по
-        // просьбе пользователя 07.10.2026 (раньше бой всегда был пони-онли).
-        // Вражеский отряд — контейнер бандитского клана (гарантированно враждебен любому), но состав
-        // полностью свой, не бандитский шаблон.
+        // equestria.dismember_test [count per side] [race]: a "knee-deep in blood" battle for testing
+        // severing (EquestriaDismemberment.cs): the same number of fighters of the chosen race (pony by
+        // default) in your party and the enemy's. 100 per side by default. The race is a key from
+        // DismemberTestTroopByRace (pony/changeling/dragon/griffon/hippogriff/yak/deer), at the
+        // user's request 07.10.2026 (previously the battle was always pony-only).
+        // The enemy party is a container of a bandit clan (guaranteed hostile to anyone), but the roster
+        // is entirely our own, not a bandit template.
         //
-        // Не один на всех одинаковый комплект (как раньше) — по просьбе пользователя 07.10.2026
-        // добавляем войску НЕСКОЛЬКО вариантов снаряжения (разный двуручный меч + случайная броня
-        // по слотам, тот же пул, что у EquestriaRaceParty.Dress), а дальше это уже штатное
-        // поведение движка: обычным войскам при спавне случайно достаётся один из вариантов
-        // BattleEquipments (так и ваниль делает бойцам с несколькими EquipmentRoster в XML).
-        // Доступа на добавление варианта в публичном API нет — добираемся до приватного списка
-        // MBEquipmentRoster._equipments рефлексией (тот же приём, что уже используется в проекте
-        // для AgentVisuals.GetEntity и т.п.).
+        // Not one identical kit for everyone (as before): at the user's request 07.10.2026
+        // the troop gets SEVERAL equipment variants (a different two-handed sword + random armour
+        // per slot, the same pool as EquestriaRaceParty.Dress), and from there it is the engine's standard
+        // behaviour: on spawn ordinary troops randomly get one of the
+        // BattleEquipments variants (vanilla does the same for fighters with several EquipmentRoster in XML).
+        // The public API has no way to add a variant, so we reach the private list
+        // MBEquipmentRoster._equipments via reflection (the same trick already used in the project
+        // for AgentVisuals.GetEntity etc.).
         [CommandLineFunctionality.CommandLineArgumentFunction("dismember_test", "equestria")]
         public static string DismembermentTestBattle(List<string> args)
         {
@@ -375,8 +375,8 @@ namespace EquestriaMod
 
             MobileParty.MainParty.MemberRoster.AddToCounts(troop, perSide);
 
-            // Герою — тоже двуручный меч (по просьбе пользователя 07.10.2026), чтобы и его удары
-            // попадали под детект отрубания, не только у войск.
+            // The hero gets a two-handed sword too (at the user's request 07.10.2026), so that his hits
+            // also fall under the severing detection, not only the troops'.
             if (Hero.MainHero != null)
             {
                 var swords = TwoHandedSwords.Select(id => MBObjectManager.Instance.GetObject<ItemObject>(id))
@@ -414,10 +414,10 @@ namespace EquestriaMod
         private static readonly FieldInfo EquipmentsListField =
             AccessTools.Field(typeof(MBEquipmentRoster), "_equipments");
 
-        /// <summary>Добавляет count случайных вариантов снаряжения (двуручный меч + броня по
-        /// слотам) войску troop — движок дальше сам раздаёт их бойцам случайно при спавне, как
-        /// у любого ванильного войска с несколькими EquipmentRoster. Возвращает сообщение об
-        /// ошибке, либо null при успехе.</summary>
+        /// <summary>Adds count random equipment variants (two-handed sword + armour per
+        /// slot) to the troop; the engine then hands them out to fighters randomly on spawn, as
+        /// for any vanilla troop with several EquipmentRoster. Returns an error message,
+        /// or null on success.</summary>
         private static string AddRandomEquipmentVariants(CharacterObject troop, int count)
         {
             var swords = TwoHandedSwords.Select(id => MBObjectManager.Instance.GetObject<ItemObject>(id))
@@ -439,9 +439,9 @@ namespace EquestriaMod
             {
                 var equipment = new Equipment(Equipment.EquipmentType.Battle);
                 equipment[EquipmentIndex.Weapon0] = new EquipmentElement(swords[MBRandom.RandomInt(swords.Count)]);
-                // Полуголые в лёгкой броне (по просьбе пользователя 07.10.2026) — только лёгкий
-                // торс (ткань/кожа, не кольчуга/латы), ноги/руки/голова голые: и отрубание виднее
-                // на глаз, и сам крой брони не мешает разрезу.
+                // Half-naked in light armour (at the user's request 07.10.2026): only a light
+                // torso (cloth/leather, not mail/plate), legs/arms/head bare: severing is easier to see
+                // by eye, and the armour cut itself does not get in the way of the cut.
                 SetRandomArmor(equipment, EquipmentIndex.Body, ItemObject.ItemTypeEnum.BodyArmor, lightOnly: true);
                 equipments.Add(equipment);
             }

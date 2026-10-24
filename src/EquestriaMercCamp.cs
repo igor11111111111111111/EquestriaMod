@@ -21,101 +21,101 @@ using TaleWorlds.SaveSystem;
 
 namespace EquestriaMod
 {
-    // Лагеря наёмников у столиц держав: место, где можно купить войска наёмных рот.
+    // Mercenary camps by the realms' capitals: a place where you can buy troops of mercenary companies.
     //
-    // В ванили роты нанимаются только целиком и только как клан-наёмник державы, а их войска
-    // (jawwal_tier_1 и прочие 42 записи, у нас переименованные — см. MERC_NAMES в
-    // tools/make_troops.py) игроку недоступны вовсе. Здесь они продаются поштучно.
+    // In vanilla, companies are hired only as a whole and only as a mercenary clan of a realm, and their troops
+    // (jawwal_tier_1 and the other 42 entries, renamed in our mod, see MERC_NAMES in
+    // tools/make_troops.py) are not available to the player at all. Here they are sold one by one.
     //
-    // Как устроено:
-    //   1. у ворот каждой столицы стоит отряд-лагерь (CustomPartyComponent), он не ходит и ни с кем
-    //      не воюет; палатки рядом с ним ставит tools/map_props.py по тем же точкам (CampSpots);
-    //   2. при встрече с ним в меню появляется строка «Нанять наёмников», а в разговоре — свои
-    //      ответы вместо ванильной заглушки;
-    //   3. она открывает обычное окно передачи войск: слева товар, справа отряд игрока, внизу
-    //      счётчик «Вы заплатите».
+    // How it works:
+    //   1. at the gates of every capital stands a camp party (CustomPartyComponent); it does not move and
+    //      does not fight anyone; the tents next to it are placed by tools/map_props.py at the same points (CampSpots);
+    //   2. on meeting it, the menu gets the line "Hire mercenaries", and the conversation gets
+    //      its own answers instead of the vanilla stub;
+    //   3. that line opens the regular troop transfer window: goods on the left, the player's party on the right,
+    //      and the "You will pay" counter at the bottom.
     //
-    // Лагеря независимы: у каждого свой прилавок и своё доверие к игроку, то есть и своя скидка.
+    // The camps are independent: each has its own stall and its own trust in the player, and thus its own discount.
     //
-    // Про деньги. Движок сам считает золото только в двух случаях: выкуп пленных и квестовое
-    // жалованье (PartyScreenLogic, ветки TransferableWithTrade и QuestTroopManage). Квестовая
-    // считает наоборот — долг за тех, кого ОСТАВИЛИ, — поэтому цену ведём сами: на каждую
-    // передачу пересчитываем стоимость набранного и кладём её в CurrentData.PartyGoldChangeAmount,
-    // а событие PartyGoldChange дёргаем через отражение (наружу оно не открыто). Дальше движок
-    // сам показывает сумму внизу окна, не даёт увести войск больше, чем есть денег, и по кнопке
-    // «Готово» списывает золото.
+    // About money. The engine counts gold by itself only in two cases: ransoming prisoners and quest
+    // wages (PartyScreenLogic, branches TransferableWithTrade and QuestTroopManage). The quest one
+    // counts the other way round, a debt for those who were LEFT, so we keep the price ourselves: on every
+    // transfer we recompute the cost of what was taken and put it into CurrentData.PartyGoldChangeAmount,
+    // and raise the PartyGoldChange event via reflection (it is not exposed). After that the engine
+    // itself shows the sum at the bottom of the window, does not let you take more troops than you have money for, and on the
+    // "Done" button deducts the gold.
     public class EquestriaMercCampBehavior : CampaignBehaviorBase
     {
-        // Где стоят лагеря: столица державы -> точка у её ворот. Места подобраны по gate_pos из
-        // equestria_settlements.xml — на суше и не ближе семи метров к любому поселению.
+        // Where the camps are: realm capital -> a point by its gates. The spots were picked by gate_pos from
+        // equestria_settlements.xml: on land and no closer than seven metres to any settlement.
         private static readonly Dictionary<string, Vec2> CampSpots = new Dictionary<string, Vec2>
         {
-            { "town_empire_0", new Vec2(543.5f, 502.5f) },    // Кантерлот, Солнечная Эквестрия
-            { "town_empire_7", new Vec2(426.8f, 448.0f) },    // Лас-Пегасус, Лунная Эквестрия
-            { "town_empire_14", new Vec2(533.7f, 454.1f) },   // Понивилль, Держава Дружбы
-            { "town_empire_20", new Vec2(666.5f, 642.7f) },   // Кристальный Город, Кристальная империя
-            { "town_vlandia_0", new Vec2(986.8f, 812.9f) },   // Грифонстоун, Грифония
-            { "town_battania_0", new Vec2(182.7f, 564.5f) },  // Гора Арис, Гиппогриффия
-            { "town_nord_0", new Vec2(101.9f, 648.2f) },      // Оленья Роща, Оления
-            { "town_sturgia_0", new Vec2(721.1f, 297.6f) },   // Логово Лорда Драконов, Драконьи земли
-            { "town_khuzait_0", new Vec2(555.7f, 772.2f) },   // Яктаун, Яководье
-            { "town_aserai_0", new Vec2(285.3f, 800.8f) },    // Весалиполис, Ульи чейнджлингов
+            { "town_empire_0", new Vec2(543.5f, 502.5f) },    // Canterlot, Solar Equestria
+            { "town_empire_7", new Vec2(426.8f, 448.0f) },    // Las Pegasus, Lunar Equestria
+            { "town_empire_14", new Vec2(533.7f, 454.1f) },   // Ponyville, Realm of Friendship
+            { "town_empire_20", new Vec2(666.5f, 642.7f) },   // Crystal City, Crystal Empire
+            { "town_vlandia_0", new Vec2(986.8f, 812.9f) },   // Griffonstone, Griffonia
+            { "town_battania_0", new Vec2(182.7f, 564.5f) },  // Mount Aris, Hippogriffia
+            { "town_nord_0", new Vec2(101.9f, 648.2f) },      // Deer Grove, Deerland
+            { "town_sturgia_0", new Vec2(721.1f, 297.6f) },   // Lair of the Dragon Lord, Dragon Lands
+            { "town_khuzait_0", new Vec2(555.7f, 772.2f) },   // Yaktown, Yak Lands
+            { "town_aserai_0", new Vec2(285.3f, 800.8f) },    // Vesalipolis, Changeling Hives
         };
 
-        // В самом отряде-лагере стоит один хозяин: он и на карте виден, и в списке сторон боя не
-        // выглядит войском. Товар в отряде не лежит вовсе — он отдельным прилавком (см. _stocks).
+        // The camp party itself holds a single keeper: he is visible on the map and does not look like
+        // an army in the list of battle sides. The goods are not in the party at all: they are a separate stall (see _stocks).
         private const int GuardCount = 1;
-        private const float PriceFactor = 0.75f;    // наёмник дешевле ополченца своей ступени
-        // Товар копится сам: в начале игры лагерь пуст, каждый день приходят вольные бойцы, но
-        // больше предела в лагере не задерживается. И предел, и приход растут с доверием: где
-        // игрока знают, туда охотнее идут наниматься.
-        //   предел  = 30 + доверие          (130 при полном доверии)
-        //   приход  = 4 + доверие / 10      (14 в день при полном)
+        private const float PriceFactor = 0.75f;    // a mercenary is cheaper than a militiaman of the same tier
+        // The goods accumulate by themselves: at the start of the game the camp is empty, free fighters come every day, but
+        // no more than the limit stay in the camp. Both the limit and the inflow grow with trust: where
+        // the player is known, people are more willing to come and hire on.
+        //   limit   = 30 + trust            (130 at full trust)
+        //   inflow  = 4 + trust / 10        (14 a day at full)
         private const int StockLimitBase = 30;
         private const int ComeADayBase = 4;
         private const int RelationPerCome = 10;
-        // И уходит: без этого лагерь однажды забивался доверху теми, кого никто не берёт (дорогими
-        // третьими ступенями), новым бойцам не оставалось места, и прилавок замирал навсегда.
-        // Уходит доля прилавка, а не просто пара бойцов: при постоянном числе уход сравнялся бы с
-        // приходом и лагерь бы топтался около нуля, а долей он наполняется до предела и там
-        // обновляется (при 10% в день — примерно треть состава за неделю).
+        // And they leave: without this, the camp once filled up to the top with those nobody takes (expensive
+        // third tiers), no room was left for new fighters, and the stall froze forever.
+        // A share of the stall leaves, not just a couple of fighters: with a constant number, the outflow would equal
+        // the inflow and the camp would hover around zero, while with a share it fills up to the limit and
+        // refreshes there (at 10% a day, roughly a third of the roster per week).
         private const float LeaveShare = 0.1f;
-        // Каким приходить: 60% младшая ступень роты, 30% средняя, 10% старшая. Ступень берётся из
-        // ванильного id войска (клан_tier_N), он же определяет и цену.
+        // Which ones arrive: 60% the company's junior tier, 30% middle, 10% senior. The tier is taken from
+        // the vanilla troop id (clan_tier_N), which also determines the price.
         private static readonly float[] ComeShare = { 60f, 30f, 10f };
-        // За своих бойцов, приведённых в лагерь, дают половину цены найма. Полную платить нельзя:
-        // наёмник первой ступени растёт до третьей, и на разнице получалась бы денежная мельница.
-        // А вот отменить свою же покупку в этом заходе можно без потерь — это просто откат.
+        // For your own fighters brought to the camp you get half the hiring price. Paying the full price is not possible:
+        // a first-tier mercenary grows to the third, and the difference would make a money mill.
+        // But cancelling your own purchase within this visit is possible without losses: it is just a rollback.
         private const float SellBackFactor = 0.5f;
-        // Доверие лагеря к игроку: 0 в начале игры, 100 предел. Каждые три единицы дают процент
-        // скидки, то есть при полном доверии наём дешевле на 33%. Растёт от потраченного: единица
-        // за каждые четыреста монет, остаток не пропадает и копится до следующей. У каждого лагеря
-        // доверие своё: где покупаешь, там и ценят.
+        // The camp's trust in the player: 0 at the start of the game, 100 is the limit. Every three points give a percent
+        // of discount, i.e. at full trust hiring is 33% cheaper. It grows from money spent: one point
+        // per every four hundred coins, the remainder is not lost and accumulates towards the next. Each camp has
+        // its own trust: where you buy, there you are valued.
         private const int RelationMax = 100;
         private const int RelationPerPercent = 3;
         private const int CoinsPerPoint = 400;
 
-        // Лагеря лежат в сохранении несколькими списками, а не одним списком своих объектов:
-        // собственный класс движку пришлось бы объявлять отдельно (SaveableTypeDefiner), а списки
-        // и словари готовых типов он везёт сам. Порядок во всех списках общий.
-        // НО не все: List<TroopRoster> движок 1.4.8 не знает — сохранение падало с «Невозможно
-        // создать сохранение» (Cant find definition for List`1[TroopRoster], найдено 10.10.2026).
-        // Объявлен ниже, в EquestriaMercCampTypeDefiner.
+        // The camps are stored in the save as several lists, not as one list of our own objects:
+        // an own class would have to be declared to the engine separately (SaveableTypeDefiner), while lists
+        // and dictionaries of ready-made types it handles itself. The order is shared across all lists.
+        // BUT not all: List<TroopRoster> is unknown to engine 1.4.8; saving failed with "Cannot
+        // create save" (Cant find definition for List`1[TroopRoster], found 10.10.2026).
+        // Declared below, in EquestriaMercCampTypeDefiner.
         private List<string> _townIds = new List<string>();
         private List<MobileParty> _parties = new List<MobileParty>();
         private List<TroopRoster> _stocks = new List<TroopRoster>();
         private List<int> _relations = new List<int>();
         private List<int> _spents = new List<int>();
 
-        // Старые поля одиночного лагеря: остались ради сохранений, сделанных до появления
-        // остальных девяти. При загрузке их содержимое переезжает в списки (см. Migrate).
+        // Old fields of the single camp: kept for saves made before the other nine
+        // appeared. On load their contents move into the lists (see Migrate).
         private MobileParty _camp;
         private TroopRoster _stock;
         private int _relation;
         private int _spent;
 
-        private int _open = -1;                             // с каким лагерем сейчас идёт торг
-        private Dictionary<CharacterObject, int> _onOpen;   // сколько чего было, когда открыли окно
+        private int _open = -1;                             // which camp the bargaining is with right now
+        private Dictionary<CharacterObject, int> _onOpen;   // how many of what there was when the window was opened
 
         public override void RegisterEvents()
         {
@@ -132,7 +132,7 @@ namespace EquestriaMod
             dataStore.SyncData("_eqMercStocks", ref _stocks);
             dataStore.SyncData("_eqMercRelations", ref _relations);
             dataStore.SyncData("_eqMercSpents", ref _spents);
-            // Одиночный лагерь из старых сохранений
+            // A single camp from old saves
             dataStore.SyncData("_eqMercCamp", ref _camp);
             dataStore.SyncData("_eqMercStock", ref _stock);
             dataStore.SyncData("_eqMercRelation", ref _relation);
@@ -144,7 +144,7 @@ namespace EquestriaMod
             _spents = _spents ?? new List<int>();
         }
 
-        // ---- лагеря на карте
+        // ---- camps on the map
 
         private int Count => _townIds.Count;
 
@@ -185,7 +185,7 @@ namespace EquestriaMod
                     var party = Create(home, spot.Value);
                     if (at >= 0)
                     {
-                        _parties[at] = party;       // отряд потерялся (старое сохранение), ставим заново
+                        _parties[at] = party;       // the party got lost (old save), place it again
                     }
                     else
                     {
@@ -202,8 +202,8 @@ namespace EquestriaMod
             });
         }
 
-        // Сохранение из времён единственного лагеря под Кантерлотом: переносим отряд, прилавок и
-        // доверие в списки, чтобы игрок не потерял ни закупленное, ни заработанную скидку.
+        // A save from the times of the only camp near Canterlot: we move the party, the stall and
+        // the trust into the lists, so that the player loses neither the purchases nor the earned discount.
         private void Migrate()
         {
             if (_camp == null && _stock == null)
@@ -242,17 +242,17 @@ namespace EquestriaMod
             return party;
         }
 
-        /// <summary>Это один из наших лагерей? Нужно модели голода (см. EquestriaCampFoodModel).</summary>
+        /// <summary>Is this one of our camps? Needed by the starvation model (see EquestriaCampFoodModel).</summary>
         internal static bool IsCampParty(MobileParty party)
         {
             var behaviour = Campaign.Current?.GetCampaignBehavior<EquestriaMercCampBehavior>();
             return behaviour != null && behaviour.IndexOfParty(party) >= 0;
         }
 
-        // Хозяин лагеря: ровно один и всегда здоровый. Без присмотра отряд голодал (еды ему никто
-        // не возит) и к утру все двенадцать «хозяев» лежали ранеными — видно на карте 25.09.2026.
-        // Еду отключает EquestriaCampFoodModel, а раненых лечим здесь: тот же приём, что у игры,
-        // — заменить роспись на здоровую.
+        // The camp keeper: exactly one and always healthy. Left unattended, the party starved (nobody
+        // brings it food) and by morning all twelve "keepers" lay wounded; seen on the map 25.09.2026.
+        // Food is disabled by EquestriaCampFoodModel, and the wounded are healed here: the same trick as the game's,
+        // replace the roster with a healthy one.
         private static void Keeper(MobileParty party)
         {
             var roster = party.MemberRoster;
@@ -269,8 +269,8 @@ namespace EquestriaMod
             roster.AddToCounts(keeper, GuardCount);
         }
 
-        // Лагерь никуда не идёт и никого не преследует: без этого отряд с обычным ИИ уходит
-        // «домой» в столицу и исчезает из виду.
+        // The camp goes nowhere and chases no one: without this a party with regular AI goes
+        // "home" to the capital and disappears from view.
         private static void Park(MobileParty party, Vec2 spot)
         {
             Keeper(party);
@@ -278,26 +278,26 @@ namespace EquestriaMod
             party.Ai.SetDoNotMakeNewDecisions(true);
             party.SetMoveModeHold();
             party.IgnoreByOtherPartiesTill(CampaignTime.Never);
-            party.SetPartyUsedByQuest(true);      // чтобы лордские отряды не считали его добычей
-            // Лагерь ни за кого не воюет. Три отдельные защиты, потому что в игре три разных пути
-            // угодить в чужой бой:
-            //   ShouldJoinPlayerBattles — по нему игра набирает соседей в бой ИГРОКА. Наш отряд
-            //     не лордский, не разбойничий и не дозорный, так что и без этого не позовут, но
-            //     ставим явно: список условий в DefaultEncounterModel может поменяться с патчем;
-            //   Aggressiveness = 0 — лагерь сам ни на кого не бросается (AiEngagePartyBehavior
-            //     берёт только отряды с задиристостью выше 0.1);
-            //   IgnoreByOtherPartiesTill (выше) — чужой ИИ не выбирает его целью вовсе.
-            // Плюс avoidHostileActions при создании: с ним встреча с лагерем вообще освобождена
-            // от враждебных действий (DefaultEncounterModel.IsEncounterExemptFromHostileActions).
+            party.SetPartyUsedByQuest(true);      // so that lord parties do not consider it prey
+            // The camp fights for no one. Three separate protections, because the game has three different ways
+            // to get dragged into someone else's battle:
+            //   ShouldJoinPlayerBattles: the game uses it to gather neighbours into the PLAYER's battle. Our party
+            //     is not a lord's, not a bandit's and not a patrol, so it would not be called even without this, but
+            //     we set it explicitly: the condition list in DefaultEncounterModel may change with a patch;
+            //   Aggressiveness = 0: the camp does not attack anyone by itself (AiEngagePartyBehavior
+            //     takes only parties with aggressiveness above 0.1);
+            //   IgnoreByOtherPartiesTill (above): other AI does not pick it as a target at all.
+            // Plus avoidHostileActions at creation: with it, an encounter with the camp is fully exempt
+            // from hostile actions (DefaultEncounterModel.IsEncounterExemptFromHostileActions).
             party.ShouldJoinPlayerBattles = false;
             party.Aggressiveness = 0f;
         }
 
-        // ---- день в лагере
+        // ---- a day in the camp
 
-        // Сперва кто-то уходит, потом приходят новые — и так в каждом лагере отдельно. Прилавок
-        // от этого держится пёстрым и по большей части недорогим, а выкупленные дешёвые быстро
-        // замещаются такими же.
+        // First someone leaves, then new ones arrive, and so in every camp separately. This keeps the stall
+        // varied and mostly inexpensive, and the cheap ones that were bought out are quickly
+        // replaced by similar ones.
         private void OnDailyTick()
         {
             EquestriaCrashLog.Try("лагеря наёмников: день", () =>
@@ -311,7 +311,7 @@ namespace EquestriaMod
                 {
                     if (_parties[at] != null)
                     {
-                        Keeper(_parties[at]);   // хозяин лагеря всегда один и здоровый
+                        Keeper(_parties[at]);   // the camp keeper is always one and healthy
                     }
                     var stock = _stocks[at];
                     if (stock == null)
@@ -322,10 +322,10 @@ namespace EquestriaMod
                     int leaving = LeavingToday(stock.TotalManCount);
                     for (int i = 0; i < leaving; i++)
                     {
-                        // Уходит просто кто попало, без оглядки на ступень. Так и надо: при равном
-                        // уходе и приходе по долям ComeShare состав лагеря сам сходится ровно к этим
-                        // долям. Если бы уходили охотнее дорогие, младшая ступень копилась бы сверх
-                        // своей доли (вышло бы примерно 76/19/5 вместо 60/30/10).
+                        // Just anyone leaves, regardless of tier. That is how it should be: with equal
+                        // outflow and inflow by the ComeShare shares, the camp roster converges exactly to these
+                        // shares by itself. If the expensive ones left more readily, the junior tier would pile up beyond
+                        // its share (it would come out roughly 76/19/5 instead of 60/30/10).
                         var who = PickWeighted(stock.GetTroopRoster()
                             .Select(e => new KeyValuePair<CharacterObject, float>(e.Character, e.Number)));
                         if (who == null)
@@ -340,7 +340,7 @@ namespace EquestriaMod
                     int came = Math.Max(0, Math.Min(room, ComeADayFor(at)));
                     for (int i = 0; i < came; i++)
                     {
-                        // Доли по ступеням: новобранцев большинство, ветеранов единицы (ComeShare).
+                        // Shares by tier: recruits are the majority, veterans are few (ComeShare).
                         var who = PickWeighted(kinds.Select(troop => new KeyValuePair<CharacterObject, float>(
                             troop, ComeShare[Math.Min(ComeShare.Length, TierOf(troop)) - 1])));
                         stock.AddToCounts(who ?? kinds[0], 1);
@@ -354,8 +354,8 @@ namespace EquestriaMod
             });
         }
 
-        // Прилавок из старого сохранения мог набраться до того, как список рот стал строгим:
-        // выметаем всех, кого там быть не должно (см. MercClans).
+        // A stall from an old save could have filled up before the company list became strict:
+        // we sweep out everyone who must not be there (see MercClans).
         private void DropStrangers()
         {
             EquestriaCrashLog.Try("лагеря наёмников: чистка прилавка", () =>
@@ -391,7 +391,7 @@ namespace EquestriaMod
             return town == null ? (at >= 0 && at < Count ? _townIds[at] : "?") : town.Name.ToString();
         }
 
-        /// <summary>Ступень роты по ванильному id (jawwal_tier_2 -> 2); не разобрали — считаем первой.</summary>
+        /// <summary>Company tier from the vanilla id (jawwal_tier_2 -> 2); if not parsed, it counts as the first.</summary>
         private static int TierOf(CharacterObject troop)
         {
             var id = troop?.StringId;
@@ -403,7 +403,7 @@ namespace EquestriaMod
             return 1;
         }
 
-        /// <summary>Случайный боец из пар «боец: вес»; чем больше вес, тем чаще выпадает.</summary>
+        /// <summary>A random fighter from "fighter: weight" pairs; the bigger the weight, the more often it comes up.</summary>
         private static CharacterObject PickWeighted(IEnumerable<KeyValuePair<CharacterObject, float>> rows)
         {
             var list = rows.Where(p => p.Key != null && p.Value > 0f).ToList();
@@ -424,20 +424,20 @@ namespace EquestriaMod
             return list[list.Count - 1].Key;
         }
 
-        // ---- меню и разговор
+        // ---- menu and conversation
 
         private void OnSessionLaunched(CampaignGameStarter starter)
         {
-            // Своего меню не заводим: лагерь — обычный отряд, и игрок приходит в ванильное меню
-            // встречи. Строку найма добавляем туда же, показывая её только у наших лагерей.
+            // We do not create our own menu: the camp is a regular party, and the player comes into the vanilla
+            // encounter menu. The hiring line is added there, shown only at our camps.
             starter.AddGameMenuOption("encounter", "eq_hire_mercenaries",
                 "{=eq_merc_camp_hire_option}Hire mercenaries",
                 HireCondition, HireConsequence, false, 1);
 
-            // Разговор при встрече. Движок всегда заводит его с «вожаком» встреченного отряда, а у
-            // лагеря вожака-героя нет, и старший боец отвечал ванильной заглушкой «Мне запрещено
-            // разговаривать с вами» (видно в игре 25.09.2026). Перебиваем её своей веткой: она
-            // старше по приоритету, поэтому выбирается первой.
+            // The conversation on encounter. The engine always starts it with the "leader" of the encountered party, but
+            // the camp has no hero leader, and the senior fighter answered with the vanilla stub "I am forbidden
+            // to talk to you" (seen in game 25.09.2026). We override it with our own branch: it
+            // has higher priority, so it is chosen first.
             starter.AddDialogLine("eq_merc_camp_empty", "start", "close_window",
                 "{=eq_merc_camp_line_empty}Nothing here. Every blade's been taken — come back in a day or two.",
                 () => TalkIndex() >= 0 && StockCount(TalkIndex()) == 0, LeaveAfterTalk, 201);
@@ -482,7 +482,7 @@ namespace EquestriaMod
             {
                 return false;
             }
-            // Пустой лагерь строку показывает, но серой: иначе игрок не понимает, почему выбора нет.
+            // An empty camp shows the line, but greyed out: otherwise the player does not understand why there is no choice.
             if (StockCount(at) == 0)
             {
                 args.IsEnabled = false;
@@ -507,7 +507,7 @@ namespace EquestriaMod
             return IndexOfParty(MobileParty.ConversationParty);
         }
 
-        // Числа в ответ подставляем переменными: в самой строке они записаны как {EQ_MERC_...}.
+        // Numbers are substituted into the answer as variables: in the string itself they are written as {EQ_MERC_...}.
         private bool DiscountAnswer()
         {
             int at = TalkIndex();
@@ -526,8 +526,8 @@ namespace EquestriaMod
             return true;
         }
 
-        // Окно открываем не из самого разговора, а сразу после него: пока идёт беседа, поверх неё
-        // экран отряда не встаёт.
+        // The window is opened not from the conversation itself but right after it: while the conversation is going on,
+        // the party screen does not come up on top of it.
         private void ShowStockAfterTalk()
         {
             var talk = Campaign.Current?.ConversationManager;
@@ -539,8 +539,8 @@ namespace EquestriaMod
             talk.ConversationEndOneShot += () => OpenHireScreen(at);
         }
 
-        // Разговор кончился, торга не вышло — из встречи тоже уходим, иначе игрок остаётся в меню
-        // боя с лагерем (замечено в игре 25.09.2026).
+        // The conversation is over and no deal came out: we leave the encounter too, otherwise the player stays in the
+        // battle menu with the camp (noticed in game 25.09.2026).
         private void LeaveAfterTalk()
         {
             var talk = Campaign.Current?.ConversationManager;
@@ -551,14 +551,14 @@ namespace EquestriaMod
             talk.ConversationEndOneShot += LeaveEncounter;
         }
 
-        // ---- товар
+        // ---- goods
 
-        // Наёмные роты, чьи войска продаются. Список тот же, что MERC_NAMES в tools/make_troops.py:
-        // там им даны лорные имена, здесь — прилавок. Перечисляем поимённо, потому что вида
-        // «клан_tier_N» в игре не только они: в SandBoxCore/obsolete_characters.xml лежат войска
-        // вырезанных рот (guardians_tier_*, galloglass_tier_*). Клана у них нет, дерева улучшений
-        // тоже, и имена остались английскими — «Guardian Recruit», «Skene», «Kern» (замечено на
-        // прилавке 25.09.2026).
+        // Mercenary companies whose troops are sold. The list is the same as MERC_NAMES in tools/make_troops.py:
+        // there they are given lore names, here they are the stall. We list them by name, because there are others
+        // of the "clan_tier_N" form in the game: SandBoxCore/obsolete_characters.xml holds troops of
+        // cut companies (guardians_tier_*, galloglass_tier_*). They have no clan, no upgrade tree
+        // either, and the names stayed English: "Guardian Recruit", "Skene", "Kern" (noticed on the
+        // stall 25.09.2026).
         private static readonly HashSet<string> MercClans = new HashSet<string>
         {
             "jawwal", "eleftheroi", "hidden_hand", "lakepike", "legion_of_the_betrayed", "ghilman",
@@ -566,7 +566,7 @@ namespace EquestriaMod
             "wolfskins", "brotherhood_of_woods", "forest_people",
         };
 
-        /// <summary>Войска наёмных рот по порядку: рота за ротой, внутри роты по ступеням.</summary>
+        /// <summary>Troops of mercenary companies in order: company after company, within a company by tier.</summary>
         private static List<CharacterObject> Kinds()
         {
             var result = new List<CharacterObject>();
@@ -592,7 +592,7 @@ namespace EquestriaMod
             return result;
         }
 
-        // Цена со скидкой за доверие ЭТОГО лагеря: где чаще тратишь, там и дешевле.
+        // The price with the discount for the trust of THIS camp: where you spend more often, it is cheaper.
         private int Price(CharacterObject troop, int at)
         {
             var model = Campaign.Current?.Models?.PartyWageModel;
@@ -601,25 +601,25 @@ namespace EquestriaMod
             return Math.Max(1, (int)(basic * PriceFactor * (1f - DiscountPercent(at) / 100f)));
         }
 
-        /// <summary>Сколько бойцов помещается в лагере: 30 плюс единица за каждую единицу доверия.</summary>
+        /// <summary>How many fighters fit in the camp: 30 plus one for each point of trust.</summary>
         private int StockLimitFor(int at)
         {
             return StockLimitBase + (at < 0 || at >= Count ? 0 : Math.Max(0, _relations[at]));
         }
 
-        /// <summary>Сколько приходит за день: четверо плюс один за каждые десять единиц доверия.</summary>
+        /// <summary>How many arrive per day: four plus one for every ten points of trust.</summary>
         private int ComeADayFor(int at)
         {
             return ComeADayBase + (at < 0 || at >= Count ? 0 : Math.Max(0, _relations[at]) / RelationPerCome);
         }
 
-        /// <summary>Сколько уходит за день: десятая часть прилавка, но хотя бы один.</summary>
+        /// <summary>How many leave per day: a tenth of the stall, but at least one.</summary>
         private static int LeavingToday(int stock)
         {
             return stock <= 0 ? 0 : Math.Max(1, (int)Math.Round(stock * LeaveShare));
         }
 
-        /// <summary>Скидка в процентах: по одному за каждые три единицы доверия (33% при сотне).</summary>
+        /// <summary>Discount in percent: one per every three points of trust (33% at a hundred).</summary>
         private int DiscountPercent(int at)
         {
             if (at < 0 || at >= Count)
@@ -629,7 +629,7 @@ namespace EquestriaMod
             return Math.Min(RelationMax, Math.Max(0, _relations[at])) / RelationPerPercent;
         }
 
-        // Доверие за покупку: единица за каждые CoinsPerPoint монет, остаток копится дальше.
+        // Trust for a purchase: one point per every CoinsPerPoint coins, the remainder accumulates further.
         private void PayRelation(int at, int coins)
         {
             if (coins <= 0 || at < 0 || at >= Count)
@@ -646,19 +646,19 @@ namespace EquestriaMod
             }
             if (_relations[at] >= RelationMax)
             {
-                _spents[at] = 0;        // дальше копить нечего, предел доверия взят
+                _spents[at] = 0;        // nothing more to accumulate, the trust limit is reached
             }
             EquestriaCrashLog.Log($"лагерь у {TownName(at)}: потрачено {coins}, доверие {_relations[at]}"
                 + (grew > 0 ? $" (+{grew})" : "") + $", до следующей единицы {CoinsPerPoint - _spents[at]}");
         }
 
-        // ---- проверка без похода к лагерю
+        // ---- testing without going to the camp
 
-        // equestria.merc_camp              — открыть окно найма ближайшего лагеря
-        // equestria.merc_camp list         — показать все лагеря: товар, доверие, скидка
-        // equestria.merc_camp day [N]      — прогнать N дней во всех лагерях
-        // equestria.merc_camp relation [N] — выставить доверие ближайшему лагерю
-        // equestria.merc_camp goto [N]     — перенести отряд игрока к лагерю (без числа — к первому)
+        // equestria.merc_camp              - open the hiring window of the nearest camp
+        // equestria.merc_camp list         - show all camps: goods, trust, discount
+        // equestria.merc_camp day [N]      - run N days in all camps
+        // equestria.merc_camp relation [N] - set the trust of the nearest camp
+        // equestria.merc_camp goto [N]     - move the player's party to a camp (without a number, to the first)
         [CommandLineFunctionality.CommandLineArgumentFunction("merc_camp", "equestria")]
         public static string Console(List<string> args)
         {
@@ -718,7 +718,7 @@ namespace EquestriaMod
             return $"окно найма открыто: лагерь у {behaviour.TownName(near)}";
         }
 
-        /// <summary>Ближайший к игроку лагерь; -1, если их нет вовсе.</summary>
+        /// <summary>The camp nearest to the player; -1 if there are none at all.</summary>
         private int Nearest()
         {
             int best = -1;
@@ -740,7 +740,7 @@ namespace EquestriaMod
             return best;
         }
 
-        // ---- окно найма
+        // ---- hiring window
 
         private void OpenHireScreen(int at)
         {
@@ -755,8 +755,8 @@ namespace EquestriaMod
                     _stocks[at] = TroopRoster.CreateDummyTroopRoster();
                 }
                 _open = at;
-                // Что и сколько лежало на прилавке к моменту открытия: по разнице с этим считается
-                // цена, а при отмене окна движок сам вернёт роспись обратно.
+                // What and how much was on the stall at the moment of opening: the price is computed by the difference with this,
+                // and when the window is cancelled the engine itself returns the roster back.
                 _onOpen = new Dictionary<CharacterObject, int>();
                 foreach (var element in _stocks[at].GetTroopRoster())
                 {
@@ -778,13 +778,13 @@ namespace EquestriaMod
         private bool IsTransferable(CharacterObject character, PartyScreenLogic.TroopType type,
             PartyScreenLogic.PartyRosterSide side, PartyBase leftOwnerParty)
         {
-            // Своих войск в лагерь не отдаём: продавать некому. Обратно вернуть купленное можно —
-            // это те же наёмники, и в лагере они снова оказываются на продаже.
+            // We do not take the player's own troops into the camp: there is no one to sell them to. Returning what was bought is possible:
+            // these are the same mercenaries, and in the camp they go on sale again.
             return side == PartyScreenLogic.PartyRosterSide.Left
                 || (_onOpen != null && _onOpen.ContainsKey(character));
         }
 
-        // Счётчик денег: на каждую передачу пересчитываем, сколько стоит всё унесённое.
+        // Money counter: on every transfer we recompute how much everything taken costs.
         private void HookGold()
         {
             var logic = (Game.Current?.GameStateManager?.ActiveState as PartyState)?.PartyScreenLogic;
@@ -812,7 +812,7 @@ namespace EquestriaMod
                 {
                     _onOpen.TryGetValue(troop, out int was);
                     int taken = was - left.GetTroopCount(troop);
-                    // Унёс — платит полную цену; привёл своих — получает половину (см. SellBackFactor).
+                    // Took them: pays the full price; brought their own: gets half (see SellBackFactor).
                     total += taken >= 0 ? taken * Price(troop, _open)
                         : (int)(taken * Price(troop, _open) * SellBackFactor);
                 }
@@ -821,8 +821,8 @@ namespace EquestriaMod
             });
         }
 
-        // Событие PartyGoldChange открыто только на подписку, поэтому дёргаем его через поле:
-        // у события-поля в C# оно называется так же. Без этого надпись внизу окна не обновляется.
+        // The PartyGoldChange event is exposed only for subscription, so we raise it via the field:
+        // for a field-like event in C# the field has the same name. Without this the label at the bottom of the window does not update.
         private static void RaiseGoldChanged(PartyScreenLogic logic)
         {
             var field = typeof(PartyScreenLogic).GetField("PartyGoldChange",
@@ -831,22 +831,22 @@ namespace EquestriaMod
             (field?.GetValue(logic) as Delegate)?.DynamicInvoke();
         }
 
-        // После торга игроку нечего делать в меню встречи: там осталась бы «Атака!» по лагерю,
-        // у которого он только что купил бойцов. Закрываем встречу и возвращаем на карту.
+        // After bargaining the player has nothing to do in the encounter menu: "Attack!" would be left there against the camp
+        // from which he has just bought fighters. We close the encounter and return to the map.
         private static void LeaveEncounter()
         {
             EquestriaCrashLog.Try("лагерь наёмников: выход из встречи", () =>
             {
                 if (PlayerEncounter.Current == null)
                 {
-                    return;             // окно открывали командой из консоли, встречи нет
+                    return;             // the window was opened by a console command, there is no encounter
                 }
                 PlayerEncounter.LeaveEncounter = true;
                 PlayerEncounter.Finish(true);
             });
         }
 
-        /// <summary>Цена бойца для строки окна; 0 — торг сейчас не идёт или боец не наш.</summary>
+        /// <summary>Fighter price for the window row; 0 means no bargaining is going on now or the fighter is not ours.</summary>
         internal static int PriceInList(CharacterObject troop)
         {
             var behaviour = Campaign.Current?.GetCampaignBehavior<EquestriaMercCampBehavior>();
@@ -861,8 +861,8 @@ namespace EquestriaMod
             TroopRoster leftPrisonRoster, PartyBase rightOwnerParty, TroopRoster rightMemberRoster,
             TroopRoster rightPrisonRoster, bool fromCancel)
         {
-            // Сам прилавок не трогаем: окно работало прямо с ним, и то, что игрок унёс, из него уже
-            // вычтено (а при отмене возвращено движком).
+            // The stall itself is not touched: the window worked directly with it, and what the player took has already been
+            // subtracted from it (and on cancel returned by the engine).
             int at = _open;
             int hired = 0;
             int paid = 0;
@@ -879,14 +879,14 @@ namespace EquestriaMod
                 + $" {StockCount(at)}" + (fromCancel ? " (отменено)" : ""));
             _onOpen = null;
             _open = -1;
-            // Доверие растёт только за покупки: проданные лагерю бойцы его не прибавляют.
+            // Trust grows only from purchases: fighters sold to the camp do not add to it.
             PayRelation(at, paid);
             LeaveEncounter();
         }
     }
 
-    // Лагеря не едят: возить им припасы некому, а голодный отряд игра каждый день ранит и в конце
-    // концов распускает. Перекрываем только один ответ модели, остальное считает ванильная.
+    // Camps do not eat: there is no one to bring them supplies, and the game wounds a starving party every day and
+    // eventually disbands it. We override only one answer of the model, the rest is computed by the vanilla one.
     public class EquestriaCampFoodModel : DefaultMobilePartyFoodConsumptionModel
     {
         public override bool DoesPartyConsumeFood(MobileParty mobileParty)
@@ -896,9 +896,9 @@ namespace EquestriaMod
         }
     }
 
-    // Цена рядом с числом бойцов. Своей колонки у окна отряда нет, поэтому дописываем цену в ту
-    // же строку, где стоит количество: «5 · 450». Пишем только в левом списке и только когда идёт
-    // торг с лагерем — в обычном окне отряда строка остаётся ванильной.
+    // The price next to the number of fighters. The party window has no column of its own, so we append the price to the
+    // same line where the count is: «5 · 450». We write only in the left list and only while
+    // bargaining with a camp is going on; in the regular party window the line stays vanilla.
     [HarmonyPatch(typeof(PartyCharacterVM), "get_TroopNum")]
     public static class EquestriaMercPriceTag
     {
@@ -916,9 +916,9 @@ namespace EquestriaMod
         }
     }
 
-    // Объявление для системы сохранений: List<TroopRoster> (запасы лагерей наёмников) в 1.4.8 не
-    // объявлен ни движком, ни песочницей. Движок сам находит наследников SaveableTypeDefiner во всех
-    // загруженных сборках. Базовый номер — свой, далёкий от ванильных (у тех 10 000…~400 000).
+    // Declaration for the save system: List<TroopRoster> (mercenary camp stocks) is declared in 1.4.8
+    // neither by the engine nor by the sandbox. The engine itself finds SaveableTypeDefiner subclasses in all
+    // loaded assemblies. The base number is our own, far from the vanilla ones (theirs are 10 000…~400 000).
     public class EquestriaMercCampTypeDefiner : SaveableTypeDefiner
     {
         public EquestriaMercCampTypeDefiner() : base(4_217_000)

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-"""Точечная правка нормалей: сверка с эталоном (старый автонарезанный кусок), а не угадывание.
+"""Targeted normal fix: comparison against a reference (the old auto-cut piece), not guessing.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_normals2.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_fix_normals2.py
 
-Предыдущая попытка (recalc «наружу» по всей сетке, потом слепая инверсия) угадывала неверно:
-у открытых кусков (руки, ноги, тело без замкнутого объёма) Recalculate Normals у Blender сам не
-знает, какая сторона на самом деле наружу, и для части кусков угадал в другую сторону, а сплошная
-инверсия потом перевернула вперемешку и то, что было верно.
+The previous attempt (recalc "outside" over the whole mesh, then a blind inversion) guessed wrong:
+for open pieces (arms, legs, a body without a closed volume) Blender's Recalculate Normals does not
+itself know which side is really outside, and for some pieces it guessed the other way, and the blanket
+inversion then flipped a mix of pieces, including the ones that were correct.
 
-Здесь вместо угадывания — сравнение по грани с донором (коллекция «Пони - части», тот же кусок с
-суффиксом .001: он с самой сборки не трогался руками и его ориентация верна). Для каждой грани новой
-части ищем ближайшую по центру грань донора и переворачиваем свою, только если её нормаль смотрит
-в ПРОТИВОПОЛОЖНУЮ сторону от нормали донора. Совпадающие грани не трогаем.
+Here, instead of guessing, each face is compared with a donor (collection "Pony - parts", the same
+piece with the .001 suffix: it has not been touched by hand since the build itself and its orientation
+is right). For each face of the new part we find the donor face with the nearest centre and flip ours
+only if its normal points in the OPPOSITE direction from the donor's normal. Matching faces are left alone.
 """
 import bmesh
 import bpy

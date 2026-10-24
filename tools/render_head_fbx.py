@@ -1,4 +1,4 @@
-# Крупный план головы и гривы из экспортированного FBX (как его увидит редактор) с текстурой-атласом.
+# Close-up of the head and mane from the exported FBX (as the editor will see it) with the atlas texture.
 # blender --background --factory-startup --python render_head_fbx.py -- <eq_twilight.fbx> <atlas.png> <out_dir>
 import os
 import sys

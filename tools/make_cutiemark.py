@@ -1,11 +1,11 @@
-# Рисует кьютимарку в развёртке нашей модели: накладки (tattoo_materials) движок кладёт по UV тела,
-# а ванильные татуировки нарисованы под человеческую развёртку и ложатся криво.
+# Paints a cutie mark in our model's UV layout: the engine places overlays (tattoo_materials) by the
+# body UV, while vanilla tattoos are drawn for the human layout and land crooked.
 #
 # blender --background <eq_twilight.blend> --python make_cutiemark.py -- <out_dir>
 #
-# Результат: <out_dir>\textures\eq_cutiemark_star.png — прозрачная текстура с меткой на боку.
-# Дальше в редакторе: импортировать текстуру и создать материал eq_cutiemark_star (шейдер pbr_shading,
-# текстура в слот DiffuseMap), затем вписать его имя в TATTOO_MATERIALS (tools\make_pony_race.py).
+# Result: <out_dir>\textures\eq_cutiemark_star.png — a transparent texture with the mark on the flank.
+# Then in the editor: import the texture and create the eq_cutiemark_star material (pbr_shading shader,
+# texture in the DiffuseMap slot), then add its name to TATTOO_MATERIALS (tools\make_pony_race.py).
 import os
 import sys
 
@@ -15,7 +15,7 @@ import numpy as np
 OUT = sys.argv[sys.argv.index("--") + 1]
 TEX_DIR = os.path.join(OUT, "textures")
 os.makedirs(TEX_DIR, exist_ok=True)
-SIZE = 4096  # как атлас модели: бок занимает малую часть развёртки, иначе метка мыльная
+SIZE = 4096  # same as the model atlas: the flank is a small part of the layout, otherwise the mark is blurry
 NAME = "eq_cutiemark_star"
 
 
@@ -27,7 +27,7 @@ body = bpy.data.objects["eq_twilight_body"]
 uv = body.data.uv_layers.active.data
 pts = np.array([tuple(body.matrix_world @ v.co) for v in body.data.vertices])
 
-# бок и бедро: сторона +X, высота чуть ниже таза, середина по глубине
+# flank and thigh: +X side, height just below the pelvis, middle in depth
 z_lo, z_hi = np.percentile(pts[:, 2], [12, 32])
 flank = []
 for poly in body.data.polygons:
@@ -43,14 +43,14 @@ lo, hi = np.percentile(flank, 5, axis=0), np.percentile(flank, 95, axis=0)
 center, half = (lo + hi) / 2, (hi - lo) / 2
 log(f"flank uv {np.round(lo, 3)}..{np.round(hi, 3)} ({len(flank)} loops)")
 
-# Фон белый, а не прозрачный: ванильные накладки идут в режиме modulate (умножение), и чёрный фон
-# закрасил бы всё тело. Белый = «не меняем», альфа остаётся на случай, если движок смешивает по ней.
+# The background is white, not transparent: vanilla overlays use modulate (multiply) mode, and a black
+# background would paint over the whole body. White = "no change"; alpha stays in case the engine blends by it.
 img = np.zeros((SIZE, SIZE, 4), dtype=np.float32)
 img[..., :3] = 1.0
 yy, xx = np.mgrid[0:SIZE, 0:SIZE]
 u, v = xx / SIZE, yy / SIZE
 
-# шестиконечная звезда Twilight: две наложенные звезды по углу вокруг центра метки
+# Twilight's six-pointed star: two overlaid angular stars around the mark centre
 radius = float(min(half) * 0.5)
 
 
@@ -76,7 +76,7 @@ out_img.file_format = "PNG"
 out_img.save()
 log(f"written {out_img.filepath_raw} (метка радиусом {radius:.3f} UV в центре {np.round(center, 3)})")
 
-# превью: кладём метку поверх атласа и рендерим бок пони — видно, куда попала кьютимарка
+# preview: put the mark over the atlas and render the pony's flank — shows where the cutie mark landed
 atlas = bpy.data.images.get("eq_twilight_body_d")
 if atlas is not None:
     px = np.empty(len(atlas.pixels), dtype=np.float32)

@@ -1,13 +1,13 @@
-# Вписывает в сцену карты мира сущности поселений.
+# Writes the settlement entities into the world map scene.
 #
-# В Bannerlord у каждого поселения на карте есть своя сущность в scene.xscene с именем, равным
-# идентификатору поселения (у ванили это, например, <game_entity name="town_ES1">). Без неё игра
-# падает при создании карты: ей нечего показать для поселения из settlements.xml.
+# In Bannerlord every settlement on the map has its own entity in scene.xscene named after the
+# settlement id (in vanilla, for example, <game_entity name="town_ES1">). Without it the game
+# crashes when creating the map: it has nothing to show for a settlement from settlements.xml.
 #
-# blender --background --factory-startup --python make_map_entities.py -- <папка Module мода> [размер карты]
+# blender --background --factory-startup --python make_map_entities.py -- <mod Module folder> [map size]
 #
-# Скрипт делает резервную копию scene.xscene и переписывает список сущностей: свои добавляет,
-# старые с теми же именами убирает. Редактор в это время должен быть закрыт.
+# The script backs up scene.xscene and rewrites the entity list: adds ours and removes old ones
+# with the same names. The editor must be closed at that time.
 import os
 import shutil
 import sys
@@ -20,9 +20,9 @@ import map_props  # noqa: E402
 import settlement_visuals  # noqa: E402
 
 ARGS = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")]
-# --bare: сущности поселений без моделей. Нужно только на время построения сетки проходимости:
-# выбор граней в редакторе («Terrain height») упирается в модели городов, и грани под ними
-# не размечаются. После сохранения сетки скрипт запускается снова, без ключа.
+# --bare: settlement entities without models. Needed only while building the navmesh:
+# face selection in the editor ("Terrain height") hits the town models, and the faces under them
+# do not get marked. After saving the navmesh the script is run again, without the flag.
 BARE = "--bare" in sys.argv
 MOD = ARGS[0]
 MAP_SIZE = float(ARGS[1]) if len(ARGS) > 1 else equus_map.MAP_SIZE
@@ -58,9 +58,9 @@ min_h, max_h = float(terrain.get("min_height")), float(terrain.get("max_height")
 log(f"рельеф: {terrain.get('node_dimension_x')}x{terrain.get('node_dimension_y')} узлов, "
     f"высоты {min_h:.2f}..{max_h:.2f}")
 
-# Вода на карте мира должна быть выключена. У ванильной Main_map water_exists="false", а море
-# нарисовано самим рельефом: включённая вода тянет за собой water_prefabs и водяной зонд, на чём
-# игра падает при создании карты (в редакторе сцена при этом открывается нормально).
+# Water on the world map must be off. The vanilla Main_map has water_exists="false", and the sea is
+# drawn by the terrain itself: enabled water pulls in water_prefabs and a water probe, on which the
+# game crashes when creating the map (while the scene opens fine in the editor).
 WATER = {
     "water_exists": "false",
     "water_level": "-100.000",
@@ -73,35 +73,35 @@ if water is not None:
             prop.set("value", WATER[prop.get("name")])
     log("вода выключена (как на ванильной карте мира)")
 
-# ВАЖНО: terrain_render_version="1" (как в ванильной Main_map) руками не проставляем и стираем,
-# если осталось от прошлых попыток. Пробовали — игра стала падать ещё раньше, прямо на
-# rglTerrain_shader_generator::clear. Версия отрисовщика должна совпадать с тем, как редактор
-# собрал terrain.bin и ShaderCache; поменять её в одном лишь XML нельзя, данные рельефа
-# останутся от версии 0.
+# IMPORTANT: terrain_render_version="1" (as in the vanilla Main_map) is not set by hand, and is erased
+# if left over from earlier attempts. We tried — the game started crashing even earlier, right at
+# rglTerrain_shader_generator::clear. The renderer version must match how the editor built
+# terrain.bin and ShaderCache; it cannot be changed in the XML alone, the terrain data would
+# remain from version 0.
 if "terrain_render_version" in terrain.attrib:
     del terrain.attrib["terrain_render_version"]
     terrain.set("use_dynamic_weather_effects", "false")
     terrain.set("dynamic_flowmap_texture_name", "")
     log("снята неудачная правка версии отрисовщика рельефа")
 
-# Дальность отрисовки рельефа. Редактор создаёт рельеф со своими значениями по умолчанию, а на
-# карте мира камера отъезжает далеко, и с ними вылезали две болячки:
-#   lod_multiplier = 1 — соседние узлы рельефа уходили на разные уровни детализации, и по их
-#       границе появлялась складка («линия холмиком» вдоль чанков) при отдалении камеры;
-#   vista_layer_detail_distance = 35 м — дальше 35 м с узла снимались детальные текстуры слоёв,
-#       из-за чего узлы отличались по яркости и карта шла квадратами.
-# Ставим ванильные значения карты мира (lod_multiplier 3, дальность 10000 м).
+# Terrain draw distance. The editor creates terrain with its own defaults, but on the world map
+# the camera pulls far back, and with those defaults two problems showed up:
+#   lod_multiplier = 1 — neighbouring terrain nodes went to different detail levels, and a crease
+#       appeared along their border ("a ridge line" along the chunks) when the camera zoomed out;
+#   vista_layer_detail_distance = 35 m — beyond 35 m the detail layer textures were dropped from a
+#       node, so nodes differed in brightness and the map looked checkered.
+# We set the vanilla world map values (lod_multiplier 3, distance 10000 m).
 TERRAIN_VIEW = {"lod_multiplier": "3.000", "vista_layer_detail_distance": "10000.000"}
 for prop, value in TERRAIN_VIEW.items():
     if terrain.get(prop) != value:
         terrain.set(prop, value)
 log("дальность отрисовки рельефа: " + ", ".join("%s=%s" % kv for kv in TERRAIN_VIEW.items()))
 
-# Слои рельефа: чем покрашена земля. Редактор создаёт слой-заглушку с сеткой (editor_grid_8_s) —
-# из-за неё карта выглядит однообразным песком. Сами веса слоёв (что где покрашено) лежат в
-# двоичном terrain.bin и из XML недоступны, но НАБОР слоёв задаётся здесь. Берём его целиком с
-# ванильной карты мира: слой 0 становится травой (им у нас залито всё), а остальные — лес, скалы,
-# снег и прочее — остаются наготове, чтобы рисовать ими в редакторе.
+# Terrain layers: what the ground is painted with. The editor creates a placeholder layer with a grid
+# (editor_grid_8_s) — because of it the map looks like uniform sand. The layer weights themselves
+# (what is painted where) are in the binary terrain.bin and not reachable from XML, but the SET of
+# layers is defined here. We take it whole from the vanilla world map: layer 0 becomes grass (we fill
+# everything with it), and the rest — forest, rocks, snow and so on — stay ready for painting in the editor.
 VANILLA_SCENE = os.path.join(
     ARGS[2] if len(ARGS) > 2 else
     r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord",
@@ -112,7 +112,7 @@ def copy_vanilla_layers():
     if not os.path.exists(VANILLA_SCENE):
         log("ванильная сцена не найдена, слои рельефа оставлены как есть")
         return
-    # Ванильная сцена — 19 МБ, разбирать её целиком незачем: вырезаем нужный кусок по тексту.
+    # The vanilla scene is 19 MB, no need to parse it whole: cut out the needed piece by text.
     with open(VANILLA_SCENE, encoding="utf-8") as f:
         text = f.read()
     start = text.find("<layers", text.find("<terrain "))
@@ -132,8 +132,8 @@ def copy_vanilla_layers():
 
 copy_vanilla_layers()
 
-# Глубокая вода — девятый слой: копия речного с тёмно-синим оттенком (режим 2 — умножение
-# цвета, так в ванили затемнены леса). paint_terrain.py смешивает его со светлой водой по глубине.
+# Deep water is the ninth layer: a copy of the river layer with a dark blue tint (mode 2 — color
+# multiply, that is how vanilla darkens forests). paint_terrain.py blends it with light water by depth.
 DEEP_WATER = "deep_water"
 DEEP_TINT = os.environ.get("EQ_DEEP_TINT", "0.140, 0.300, 0.600")
 DEEP_MODE = os.environ.get("EQ_DEEP_MODE", "2")
@@ -156,29 +156,29 @@ def add_deep_water_layer():
 
 add_deep_water_layer()
 
-# Цветные текстуры вместо картографических. Текстуры *_mainmap у ванильной карты окрашивает
-# подложка виртуальной текстуры (TileSets), которой у нашей карты нет, — без неё земля выходит
-# почти белой. Берём обычные текстуры земли из боевых сцен (empire_village_g, battania_village),
-# а растительность слоёв — мелкие картографические деревья — оставляем.
-# слой -> (диффуз, нормали, блеск)
+# Color textures instead of the map-style ones. The vanilla map's *_mainmap textures are tinted by
+# the virtual texture underlay (TileSets), which our map does not have — without it the ground comes
+# out almost white. We take regular ground textures from battle scenes (empire_village_g,
+# battania_village), and keep the layers' vegetation — the small map-style trees.
+# layer -> (diffuse, normals, gloss)
 LAYER_TEXTURES = {
     "default": ("grass_a_d", "grass_a_n", "grass_a_s"),
     "flora_forest": ("forest_a_d", "forest_a_n", "forest_a_s"),
     "rock": ("rock_cliff_b_d", "rock_cliff_b_n", "rock_cliff_b_s"),
-    # Ниже — перекрашенные слои под типы местности карты Эквуса (см. paint_terrain.py)
-    "grass": ("snow_a_d", "snow_a_n", "snow_a_s"),                           # север, вершины
-    "dirt": ("ground_earth", "ground_earth_bump", "ground_earth_s"),         # холмы, степь
-    "dirt2": ("desert_floor_a", "desert_floor_c_n", "desert_floor_c_s"),     # пустоши
-    "forest2": ("ground_mud_b_d", "ground_mud_b_n", "ground_mud_b_s"),       # болота
-    "river": ("water_ground", "none", "gloss_s"),                            # море, озёра, реки
-    "deep_water": ("water_ground", "none", "gloss_s"),                       # глубокое море
+    # Below — layers repainted for the Equus map terrain types (see paint_terrain.py)
+    "grass": ("snow_a_d", "snow_a_n", "snow_a_s"),                           # north, peaks
+    "dirt": ("ground_earth", "ground_earth_bump", "ground_earth_s"),         # hills, steppe
+    "dirt2": ("desert_floor_a", "desert_floor_c_n", "desert_floor_c_s"),     # wastelands
+    "forest2": ("ground_mud_b_d", "ground_mud_b_n", "ground_mud_b_s"),       # swamps
+    "river": ("water_ground", "none", "gloss_s"),                            # sea, lakes, rivers
+    "deep_water": ("water_ground", "none", "gloss_s"),                       # deep sea
 }
 
-# Текстура слоя повторяется каждые 5 м (scale в слое), и на ровных местах этот повтор виден
-# сеткой: карта нормалей даёт у каждой плитки свой бугорок с тенью, а при отдалении камеры
-# бугорки складываются в светлые и тёмные квадраты. У ванильной карты мира повтор такой же,
-# но его перекрывает виртуальная текстура (TileSets "WorldMap"), которой у нас нет. Поэтому
-# у больших ровных слоёв карту нормалей снимаем — рельеф на карте мира и так даёт сам ландшафт.
+# The layer texture repeats every 5 m (scale in the layer), and on flat areas this repeat shows as a
+# grid: the normal map gives each tile its own bump with a shadow, and when the camera zooms out the
+# bumps add up to light and dark squares. The vanilla world map has the same repeat, but it is covered
+# by the virtual texture (TileSets "WorldMap"), which we do not have. So for the large flat layers we
+# drop the normal map — on the world map the landscape itself provides the relief anyway.
 FLAT_LAYERS = ("default", "grass", "dirt", "dirt2", "forest2")
 
 
@@ -188,7 +188,7 @@ def recolor_layers():
     for layer in layers.findall("layer"):
         textures = LAYER_TEXTURES.get(layer.get("name"))
         for season in layer:
-            # «Смешивание с мешами» — режим картографического отрисовщика; у обычных сцен выключен.
+            # "Mesh blending" is a mode of the map renderer; it is off in regular scenes.
             season.set("is_mesh_blend_layer", "false")
             if season.tag != "summer" or textures is None:
                 continue
@@ -211,9 +211,9 @@ for _layer in terrain.find("layers").findall("layer"):
             _season.set("albedo_factor_color", DEEP_TINT)
             _season.set("albedo_factor_mode", DEEP_MODE)
 
-# references.txt рядом со сценой — список ресурсов, которые игра подгружает для неё: первая строка
-# число записей, дальше "mesh имя" / "texture имя". Редактор пишет его сам; мы меняем слои из кода,
-# поэтому дописываем туда их текстуры и растительность, иначе они могут не загрузиться.
+# references.txt next to the scene is the list of resources the game loads for it: the first line is
+# the number of entries, then "mesh name" / "texture name". The editor writes it itself; we change the
+# layers from code, so we add their textures and vegetation there, otherwise they may not load.
 REFERENCES = os.path.join(os.path.dirname(SCENE), "references.txt")
 
 
@@ -231,8 +231,8 @@ def update_references():
     for mesh in terrain.find("layers").iter("mesh"):
         if mesh.get("name"):
             entries.add("mesh " + mesh.get("name"))
-    # Модели сущностей (дома, стены, башни поселений). Без этого списка сцена не подгружает их
-    # ресурсы: у поселений на карте видны только названия и декали.
+    # Entity models (settlement houses, walls, towers). Without this list the scene does not load their
+    # resources: only names and decals are visible for settlements on the map.
     for component in scene_root.iter("meta_mesh_component"):
         if component.get("name"):
             entries.add("mesh " + component.get("name"))
@@ -262,8 +262,8 @@ def collect(root, only_hideouts=False):
         wanted[s.get("id")] = (kind, float(x), float(y))
 
 
-# Логова разбойников остаются ванильными: их описание берём из игры, а координаты — из нашего
-# файла, где они переставлены на нашу карту.
+# Bandit hideouts stay vanilla: their description is taken from the game, and the coordinates from
+# our file, where they are moved onto our map.
 VANILLA_SETTLEMENTS = os.path.join(
     ARGS[2] if len(ARGS) > 2 else
     r"D:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord",
@@ -273,14 +273,14 @@ if os.path.exists(VANILLA_SETTLEMENTS):
 
 ours = ET.parse(SETTLEMENTS).getroot()
 collect(ours)
-# Переопределения координат (у них нет Components) — накладываем поверх.
+# Coordinate overrides (they have no Components) — applied on top.
 for s in ours:
     if s.get("id") in wanted and s.get("posX") is not None and s.find("Components") is None:
         kind, _x, _y = wanted[s.get("id")]
         wanted[s.get("id")] = (kind, float(s.get("posX")), float(s.get("posY")))
 
-# Убираем ВСЕ прежние сущности поселений, а не только совпавшие по имени: после перекройки мира
-# старые идентификаторы исчезают, и оставшиеся сущности ссылались бы в пустоту.
+# Remove ALL previous settlement entities, not only those matching by name: after the world is
+# reshaped the old ids disappear, and leftover entities would point to nothing.
 removed = 0
 for e in list(entities):
     scripts = e.find("scripts")
@@ -290,19 +290,19 @@ for e in list(entities):
         entities.remove(e)
         removed += 1
 
-# Плоскость-подложка, которую редактор кладёт в каждую новую сцену (editor_plane_low, 20x20 м,
-# растянута в 20 раз, на высоте 1 м). На карте она лежала выше морского дна и закрывала море
-# ровной «плитой» с прямыми краями. У ванильной карты её нет.
+# The ground plane the editor puts into every new scene (editor_plane_low, 20x20 m, scaled 20 times,
+# at a height of 1 m). On the map it lay above the sea floor and covered the sea with a flat "slab"
+# with straight edges. The vanilla map does not have it.
 for e in list(entities):
     if e.get("name") == "ground_plane":
         entities.remove(e)
         removed += 1
         log("убрана подложка редактора ground_plane")
 
-# Границы карты. SandBox.MapScene.Load() берёт их без всякой проверки:
+# Map borders. SandBox.MapScene.Load() takes them without any check:
 #   GameEntity a = _scene.GetFirstEntityWithName("border_min");
-#   MatrixFrame f = a.GetGlobalFrame();      <- если сущности нет, тут NullReferenceException
-# Именно на этом падала карта. Высота border_max задаёт верхний предел камеры.
+#   MatrixFrame f = a.GetGlobalFrame();      <- if the entity is missing, NullReferenceException here
+# That is exactly where the map crashed. The height of border_max sets the camera's upper limit.
 BORDERS = {
     "border_min": (0.0, 0.0, 0.0),
     "border_max": (MAP_SIZE, MAP_SIZE, 300.0),
@@ -318,11 +318,11 @@ for bname, (bx, by, bz) in BORDERS.items():
     })
 log(f"границы карты: border_min 0,0 — border_max {MAP_SIZE:.0f},{MAP_SIZE:.0f}")
 
-# Служебные скрипты карты мира. Это обычные сущности сцены, но без них кампания не работает:
-# SettlementPositionScript при запуске регистрирует кэш расстояний между поселениями, и пока его
-# нет, DefaultMapDistanceModel.GetDistance падает на пустой ссылке (проверки там нет). Остальные
-# отвечают за цветокоррекцию карты, оптимизацию памяти городов и осадные машины на карте.
-# Имена и переменные взяты один в один из ванильной Main_map.
+# Service scripts of the world map. These are ordinary scene entities, but the campaign does not work
+# without them: SettlementPositionScript registers the settlement distance cache at startup, and while
+# it is missing DefaultMapDistanceModel.GetDistance fails on a null reference (there is no check). The
+# others handle map color grading, town memory optimisation and siege engines on the map.
+# Names and variables are copied one to one from the vanilla Main_map.
 SCRIPTS = [
     ("settlements_scripts", "SettlementPositionScript", {
         "_partyNavigationModelOverriddenClassName": "DefaultPartyNavigationModel",
@@ -372,10 +372,10 @@ for index, (ename, script_name, variables) in enumerate(SCRIPTS):
 log(f"служебные скрипты карты: {len(SCRIPTS)} шт. "
     f"({', '.join(s for _n, s, _v in SCRIPTS)})")
 
-# Погода на карте. Этот готовый объект из модуля SandBox несёт скрипт SnowAndRainTextureDefiner,
-# который задаёт размер погодной сетки (32x32). Без него размер остаётся нулевым, массив погоды
-# получается пустым, и игра валится на выходе за границы массива, едва начав расставлять отряды
-# лордов. В ванильной сцене он вставлен ровно так же — ссылкой на готовый объект.
+# Weather on the map. This prefab from the SandBox module carries the SnowAndRainTextureDefiner script,
+# which sets the weather grid size (32x32). Without it the size stays zero, the weather array is empty,
+# and the game crashes with an out-of-bounds index as soon as it starts placing lord parties. In the
+# vanilla scene it is inserted exactly the same way — as a reference to the prefab.
 WEATHER_PREFAB = "MapSnowAndRainDefiner"
 for e in list(entities):
     if e.get("prefab") == WEATHER_PREFAB:
@@ -387,15 +387,15 @@ ET.SubElement(e, "transform", {
 })
 log("погодный объект " + WEATHER_PREFAB + " добавлен (сетка погоды 32x32)")
 
-# Модели поселений — у ванильных поселений того же вида и культуры (см. settlement_visuals.py).
+# Settlement models — from vanilla settlements of the same kind and culture (see settlement_visuals.py).
 DONORS = settlement_visuals.load_donors(ARGS[2] if len(ARGS) > 2 else None)
-# Логова разбойников берут модель своего ванильного логова с тем же id (settlement_visuals)
+# Bandit hideouts take the model of their vanilla hideout with the same id (settlement_visuals)
 HIDEOUTS = settlement_visuals.load_hideouts(ARGS[2] if len(ARGS) > 2 else None)
 
-# Уровни сцены. Модели поселений разложены по уровням: level_1..level_3 — стадии развития,
-# looted — разорённая деревня, siege — осада. Уровни должны быть объявлены в сцене так же, как у
-# ванильной карты: иначе SettlementVisual.OnStartup получает неизвестный номер уровня и падает
-# (KeyNotFoundException) при открытии карты.
+# Scene levels. Settlement models are split into levels: level_1..level_3 are development stages,
+# looted is a raided village, siege is a siege. The levels must be declared in the scene the same way
+# as on the vanilla map: otherwise SettlementVisual.OnStartup gets an unknown level number and crashes
+# (KeyNotFoundException) when the map opens.
 VANILLA_LEVELS = [("base", 1), ("level_1", 2), ("level_2", 4), ("level_3", 8),
                   ("civilian", 16), ("siege", 32), ("looted", 64)]
 levels = scene_root.find("levels")
@@ -432,8 +432,8 @@ for sid, (kind, x, y) in wanted.items():
 
 log(f"сущностей: удалено старых {removed}, добавлено {len(wanted)}, с моделями {dressed}")
 
-# Точка появления игрока (sp_player). Нужна и игре, и генератору сетки проходимости в редакторе:
-# сетка строится от неё по всей связной суше. Ставим у ворот столицы Эквестрии.
+# Player spawn point (sp_player). Needed both by the game and by the navmesh generator in the editor:
+# the navmesh is built from it over all connected land. Placed at the gates of Equestria's capital.
 capital = wanted.get("town_empire_0")
 if capital:
     px, py = equus_map.nearest_ground(capital[1] + 6.0, capital[2] - 6.0) or (capital[1], capital[2])
@@ -447,13 +447,13 @@ if capital:
     })
     log(f"точка игрока у столицы: {px:.0f}, {py:.0f}")
 
-# Предметы окружения: валуны, скалы, рощицы, коряги (см. map_props.py). С ключом --bare их нет:
-# при построении сетки проходимости в редакторе лишние модели мешают выбирать грани.
+# Environment props: boulders, rocks, groves, snags (see map_props.py). With --bare there are none:
+# when building the navmesh in the editor extra models get in the way of selecting faces.
 if BARE:
     log("предметы окружения пропущены (--bare)")
 else:
     map_props.place(entities, wanted, log)
-    # Мосты на пересечениях дорог с реками — той же связкой, что у ванили (см. map_bridges.py).
+    # Bridges where roads cross rivers — with the same setup as vanilla (see map_bridges.py).
     map_bridges.place(entities, log, MOD)
 
 update_references()

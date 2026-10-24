@@ -1,10 +1,10 @@
-﻿# Снимки карты мира в нескольких точках за один запуск игры.
+﻿# Screenshots of the world map at several points in a single game launch.
 #
 #   .\tools\tour.ps1 -Points "614,600;544,600" -Out C:\temp\tour
 #
-# Мод (ключ /eqgoto со списком точек, src/EquestriaLongRun.cs) переносит отряд игрока по точкам
-# каждые 14 с и пишет в журнал «обход: точка N»; скрипт после каждой отметки снимает экран
-# в <Out>\point_N.png. В конце игра закрывается.
+# The mod (the /eqgoto key with a list of points, src/EquestriaLongRun.cs) moves the player's party
+# through the points every 14 s and logs "tour: point N"; after each mark the script takes a screenshot
+# to <Out>\point_N.png. At the end the game is closed.
 param(
     [Parameter(Mandatory)] [string]$Points,
     [Parameter(Mandatory)] [string]$Out,

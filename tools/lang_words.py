@@ -1,56 +1,56 @@
 # -*- coding: utf-8 -*-
-"""Английский для русских строк мода. Отсюда берётся базовый текст XML (tools/lang.py).
+"""English for the mod's Russian strings. The base XML text comes from here (tools/lang.py).
 
-Два словаря:
-  PHRASES — целая строка: имена, у которых есть канонное английское написание, и предложения.
-  WORDS   — отдельные слова: из них складываются придуманные имена («Медовый Ручей»).
+Two dictionaries:
+  PHRASES - a whole string: names that have a canon English spelling, and sentences.
+  WORDS   - single words: invented names are built from them (e.g. "Honey Creek").
 
-Строка ищется сначала целиком в PHRASES, потом по словам в WORDS. Чего нет ни там, ни там,
-остаётся русским и печатается в отчёте сборки — по нему словарь и пополняется.
+A string is looked up first as a whole in PHRASES, then word by word in WORDS. Whatever is in neither
+stays Russian and is printed in the build report - the dictionary is extended from it.
 """
 
-# ------------------------------------------------------------------ слова для составных имён
-# Прилагательные названий деревень и крепостей (VILLAGE_WORDS в make_world.py) и существительные
-# к ним (VILLAGE_NOUNS, FORT_NOUNS). Формы рода дают одно и то же английское слово.
+# ------------------------------------------------------------------ words for compound names
+# Adjectives of village and fortress names (VILLAGE_WORDS in make_world.py) and the nouns
+# for them (VILLAGE_NOUNS, FORT_NOUNS). Gender forms give one and the same English word.
 WORDS = {
-    # Эквестрия
+    # Equestria
     "Клеверный": "Clover", "Медовый": "Honey", "Солнечный": "Sunny", "Яблочный": "Apple",
     "Росистый": "Dewy", "Радужный": "Rainbow", "Тихий": "Quiet", "Ясный": "Clear",
     "Звёздный": "Star", "Ромашковый": "Daisy", "Пряничный": "Gingerbread", "Лунный": "Moon",
-    # Чейнджлинги
+    # Changelings
     "Хитиновый": "Chitin", "Сумрачный": "Dusk", "Жужжащий": "Buzzing", "Пустой": "Hollow",
     "Тёмный": "Dark", "Кислый": "Sour", "Зелёный": "Green", "Смоляной": "Tar",
     "Мёртвый": "Dead", "Чёрный": "Black", "Коконный": "Cocoon",
-    # Гиппогрифы
+    # Hippogriffs
     "Приливный": "Tide", "Коралловый": "Coral", "Жемчужный": "Pearl", "Туманный": "Misty",
     "Перьевой": "Feather", "Морской": "Sea", "Бирюзовый": "Turquoise", "Солёный": "Salt",
     "Раковинный": "Shell", "Ветреный": "Windy", "Серебряный": "Silver", "Небесный": "Sky",
-    # Драконы
+    # Dragons
     "Угольный": "Coal", "Пепельный": "Ash", "Огненный": "Fire", "Дымный": "Smoke",
     "Серный": "Sulphur", "Лавовый": "Lava", "Каменный": "Stone", "Жаркий": "Scorch",
     "Чешуйчатый": "Scale", "Рубиновый": "Ruby", "Обсидиановый": "Obsidian",
     "Вулканический": "Volcano",
-    # Яки
+    # Yaks
     "Ячий": "Yak", "Снежный": "Snow", "Ледяной": "Ice", "Громовой": "Thunder",
     "Мшистый": "Moss", "Горный": "Mountain", "Буйный": "Wild", "Рогатый": "Horn",
     "Белый": "White", "Суровый": "Grim", "Высокий": "High",
-    # Грифоны
+    # Griffons
     "Грифоний": "Gryphon", "Орлиный": "Eagle", "Золотой": "Gold", "Скалистый": "Cliff",
     "Ледовый": "Frost", "Пограничный": "Border", "Вольный": "Free", "Когтистый": "Talon",
-    # Олени (прежде цилини — держава стала Оленией)
+    # Deer (formerly qilin - the realm became Olenia)
     "Осенний": "Autumn", "Кленовый": "Maple", "Янтарный": "Amber", "Цветущий": "Blossom",
     "Молчаливый": "Silent", "Сияющий": "Shining", "Рыжий": "Russet",
-    # существительные
+    # nouns
     "Луг": "Meadow", "Ручей": "Creek", "Холм": "Hill", "Брод": "Ford", "Дол": "Vale",
     "Бор": "Pinewood", "Яр": "Bluff", "Хутор": "Croft", "Родник": "Spring", "Выселок": "Hamlet",
     "Кряж": "Ridge", "Утёс": "Crag", "Застава": "Watch", "Твердыня": "Hold",
     "Перевал": "Pass", "Оплот": "Bastion",
 
-    # Угодья вокруг поселений: английское название — это и есть тип области в XML
+    # Lands around settlements: the English name is the area type in the XML
     "Закоулок": "Backstreet", "Пустырь": "Clearing", "Набережная": "Waterfront",
     "Выгон": "Pasture", "Чаща": "Thicket", "Топь": "Bog",
 
-    # Слоги имён пони (NAMES в world_data.py): почти все — английские слова, записанные кириллицей
+    # Syllables of pony names (NAMES in world_data.py): almost all are English words written in Cyrillic
     "Санни": "Sunny", "Мун": "Moon", "Стар": "Star", "Эппл": "Apple", "Клауд": "Cloud",
     "Свифт": "Swift", "Голден": "Golden", "Брайт": "Bright", "Сильвер": "Silver",
     "Дасти": "Dusty", "Хани": "Honey", "Роуз": "Rose", "Свит": "Sweet", "Лили": "Lily",
@@ -74,7 +74,7 @@ WORDS = {
     "Сильверстрим": "Silverstream", "Йона": "Yona", "Шай": "Shy", "Пэнтс": "Pants",
     "Мейрпоза": "Mareposa", "Меткоискательница": "Cutie Mark Crusader",
 
-    # Слоги имён грифонов и гиппогрифов
+    # Syllables of griffon and hippogriff names
     "Гильда": "Gilda", "Грета": "Greta", "Гровер": "Grover", "Гровера": "Grover",
     "Гюстав": "Gustave", "Гюстава": "Gustave", "Грифф": "Gruff", "Гюнтер": "Gunther",
     "Генрих": "Heinrich", "Вильгельм": "Wilhelm", "Эрвин": "Erwin", "Готфрид": "Gottfried",
@@ -95,7 +95,7 @@ WORDS = {
     "Блоссом": "Blossom", "Трейл": "Trail", "Скалл": "Skull", "Идол": "Idol",
     "Фоллс": "Falls", "Холлоу": "Hollow", "Шоалс": "Shoals", "Джанкшн": "Junction",
 
-    # Слова, из которых собраны названия держав, титулы и описания
+    # Words from which realm names, titles and descriptions are built
     "Эквестрия": "Equestria", "Эквестрии": "Equestria", "Солнечная": "Solar",
     "Лунная": "Lunar", "Дружбы": "Friendship", "Кристальная": "Crystal",
     "Кристальной": "Crystal", "Кристальное": "Crystal", "Кристальный": "Crystal",
@@ -130,13 +130,13 @@ WORDS = {
     "Бывший": "Former",
     "Пир": "Pear", "Пингвинья": "Penguin", "Арктик": "Arctic",
 
-    # Дописанные кланы (tools/world_fill.py): слово перед именем и запасные слоги имён
+    # Added clans (tools/world_fill.py): the word before the name and spare name syllables
     "Клан": "Clan", "Коппер": "Copper", "Айрон": "Iron", "Ноубл": "Noble", "Стил": "Steel",
     "Винд": "Wind", "Флауэр": "Flower", "Дью": "Dew",
-    # когда имена в пуле кончаются, к имени добавляется прозвище
+    # when the names in the pool run out, a nickname is added to the name
     "Младший": "the Younger", "Старший": "the Elder", "Второй": "the Second", "Третий": "the Third",
     "Лавендер": "Lavender", "Черри": "Cherry", "Дейзи": "Daisy", "Виолет": "Violet",
-    # драконы
+    # dragons
     "Бэйзальт": "Basalt", "Игнис": "Ignis", "Крэг": "Crag", "Молтен": "Molten",
     "Обсидиан": "Obsidian", "Пирит": "Pyrite", "Смог": "Smog", "Тиндер": "Tinder",
     "Фёрнас": "Furnace", "Чар": "Char", "Шейл": "Shale", "Эмбер-Кло": "Ember-Claw",
@@ -150,8 +150,8 @@ WORDS = {
     "Зольник": "Ashpit", "Жар": "Heat", "Искра": "Spark", "Синдра": "Cindra", "Лава": "Lava",
     "Зола": "Ash", "Магма": "Magma", "Фларэ": "Flare", "Опалина": "Opaline", "Вспышка": "Flash",
     "Пепелина": "Ashlyn", "Руби": "Ruby", "Гарнет": "Garnet", "Жарина": "Zharina", "Тлея": "Smoulder",
-    # олени Олении: имя северное, второе слово — родовое прозвище (world_data.NAMES["nord"]).
-    # Без этих строк имена писались бы побуквенно: «Йельцек» вышел бы Yeltsek вместо Jelzek.
+    # deer of Olenia: a northern first name, the second word is a family nickname (world_data.NAMES["nord"]).
+    # Without these entries names would be spelled letter by letter: the Russian spelling of Jelzek would come out Yeltsek.
     "Йохан": "Johan", "Бенджен": "Benjen", "Хьялмар": "Hjalmar", "Эйнар": "Einar",
     "Торвин": "Torvin", "Свейн": "Svein", "Ярве": "Jarve", "Алмо": "Almo",
     "Рейно": "Reino", "Тапио": "Tapio", "Вилле": "Ville", "Ансси": "Anssi",
@@ -165,11 +165,11 @@ WORDS = {
     "Корпи": "Korpi", "Виронен": "Vironen", "Аалто": "Aalto", "Хирви": "Hirvi",
 }
 
-# Канонные английские написания. Их обязательно держать здесь: иначе имя запишется латиницей
-# побуквенно и выйдет Kanterlot вместо Canterlot. Что записалось побуквенно — видно в отчёте
-# сборки (tools/lang_missing.txt, нижний раздел).
+# Canon English spellings. They must be kept here: otherwise the name is spelled in Latin
+# letter by letter and comes out Kanterlot instead of Canterlot. What got spelled letter by letter is shown in the
+# build report (tools/lang_missing.txt, bottom section).
 CANON = {
-    # города и земли
+    # towns and lands
     "Кантерлот": "Canterlot", "Понивилль": "Ponyville", "Клаудсдейл": "Cloudsdale",
     "Мейнхеттен": "Manehattan", "Филлидельфия": "Fillydelphia", "Лас-Пегасус": "Las Pegasus",
     "Балтимейр": "Baltimare", "Ванхувер": "Vanhoover", "Эпплуза": "Appleloosa",
@@ -186,7 +186,7 @@ CANON = {
     "Наш Городок": "Our Town", "Горы Макинтоша": "Macintosh Hills",
     "Верхний Макинтош": "Upper Macintosh", "Величественные Сады": "Grand Gardens",
     "Гранд Пир": "Grand Pear", "Акадия Бэй": "Acadia Bay",
-    # отряды и рода
+    # troops and families
     "Вандерболты": "Wonderbolts", "Алмазные Псы": "Diamond Dogs", "Дезертиры": "Deserters",
     "Мародёры": "Looters", "Тимбервульфы": "Timberwolves",
     "Воинство Короля Шторма": "The Storm King's Host",
@@ -194,7 +194,7 @@ CANON = {
     "Зебры Зебрики": "Zebras of Zebrica", "Драконье Пламя": "Dragonfire",
     "Чёрные Яки": "Black Yaks", "Лунные Волки": "Moon Wolves", "Лесной Народ": "Forest Folk",
     "Рота Золотой Подковы": "The Golden Horseshoe Company",
-    # короткие имена кланов (short_name): ими игра подписывает отряды на карте
+    # short clan names (short_name): the game labels parties on the map with them
     "Воинство Шторма": "The Storm Host", "Стервятники": "Vultures", "Равные": "The Equals",
     "Флим и Флэм": "Flim and Flam", "Абиссинцы": "Abyssinians",
     "Вольные клинки": "Free Blades", "Золотая Подкова": "Golden Horseshoe",
@@ -220,7 +220,7 @@ CANON = {
     "Дом Солнца": "House of the Sun", "Дом Ночи": "House of Night",
     "Дом Ново": "House of Novo", "Дом Сиспрея": "House of Seaspray",
     "Грифонстоунский Род": "House of Griffonstone", "Джаки-клан": "Jaki Clan",
-    # герои
+    # heroes
     "Селестия": "Celestia", "Луна": "Luna", "Твайлайт Спаркл": "Twilight Sparkle",
     "Кейденс": "Cadance", "Шайнинг Армор": "Shining Armor", "Флурри Харт": "Flurry Heart",
     "Спайк": "Spike", "Рэйнбоу Дэш": "Rainbow Dash", "Эпплджек": "Applejack",
@@ -246,7 +246,7 @@ CANON = {
     "Резерфорд": "Rutherford", "Принц Резерфорд": "Prince Rutherford", "Йона": "Yona",
     "Отем Блейз": "Autumn Blaze", "Рейн Шайн": "Rain Shine", "Даск Шайн": "Dusk Shine",
     "Меткоискатели": "Cutie Mark Crusaders", "Элементы Гармонии": "Elements of Harmony",
-    # канонные спутники (world_data.CANON_COMPANIONS)
+    # canon companions (world_data.CANON_COMPANIONS)
     "Лира Хартстрингс": "Lyra Heartstrings", "Бон Бон": "Bon Bon", "Октавия Мелоди": "Octavia Melody",
     "Винил Скрэтч": "Vinyl Scratch", "Дерпи Хувс": "Derpy Hooves", "Доктор Хувз": "Doctor Whooves",
     "Чирайли": "Cheerilee", "Зекора": "Zecora", "Чиз Сэндвич": "Cheese Sandwich",
@@ -257,7 +257,7 @@ CANON = {
     "Кэррот Топ": "Carrot Top", "Нёрс Редхарт": "Nurse Redheart", "Мэр Мэйр": "Mayor Mare",
     "Гэллус": "Gallus", "Джимми Мор": "Gimme Moar", "Хейвен Бэй": "Haven Bay", "Салина Блу": "Salina Blue",
     "Билли": "Billy", "Крэкл": "Crackle", "Оцеллус": "Ocellus",
-    # лорные имена второго плана (NAMES, четвёртый элемент)
+    # secondary lore names (NAMES, fourth element)
     "Кэррамел": "Caramel", "Дэвенпорт": "Davenport", "Лаки Кловер": "Lucky Clover", "Ноутворти": "Noteworthy",
     "Мистер Кейк": "Mr. Cake", "Хойти Тойти": "Hoity Toity", "Джет Сет": "Jet Set", "Бёрнт Оук": "Burnt Oak",
     "Голден Харвест": "Golden Harvest", "Шайнинг Стар": "Shining Star", "Комет Тейл": "Comet Tail",
@@ -280,12 +280,12 @@ CANON = {
 }
 
 
-# ------------------------------------------------------------------ целые строки
-# Здесь всё, что по словам не собрать: описания героев и держав, названия отрядов наёмников,
-# прозвища спутников. Канонные имена берутся английские (Wonderbolts, Idol of Boreas,
-# Sweet Apple Acres), а не записанные латиницей русские.
+# ------------------------------------------------------------------ whole strings
+# Everything that cannot be built from words: hero and realm descriptions, mercenary party names,
+# companion nicknames. Canon names are taken in English (Wonderbolts, Idol of Boreas,
+# Sweet Apple Acres), not Russian ones spelled in Latin.
 PHRASES = {
-    # ---- заклинания (tools/make_spells.py)
+    # ---- spells (tools/make_spells.py)
     "Огненный шар": "Fireball",
     "Сгусток пламени: взрывается там, куда попал, и обжигает всех вокруг. "
     "Драконы плюются им от рождения, единороги учатся годами.":
@@ -299,7 +299,7 @@ PHRASES = {
     "Заклинание ещё не готово": "Spell is not ready yet",
     "Заклинаний нет": "No spells known",
     "ЛКМ — пустить, ПКМ — отмена": "Left click to cast, right click to cancel",
-    # ---- наёмники, вольные роты и прочие отряды
+    # ---- mercenaries, free companies and other parties
     "Абиссинские наёмники": "Abyssinian Mercenaries",
     "Бизоны вождя Тандерхувса": "Chief Thunderhooves' Buffalo",
     "Вольные клинки Клюгтауна": "Free Blades of Klugetown",
@@ -315,7 +315,7 @@ PHRASES = {
     "Гиацинтовые холмы": "Hyacinth Hills",
     "Обитель отшельника": "Hermit's Retreat",
 
-    # ---- описания дописанных лордов (tools/world_fill.py, TEXTS)
+    # ---- descriptions of added lords (tools/world_fill.py, TEXTS)
     "Знатный пони Эквестрии.": "A noble pony of Equestria.",
     "Знатная пони Эквестрии.": "A noble mare of Equestria.",
     "Жеребёнок из знатного рода.": "A foal of a noble house.",
@@ -336,7 +336,7 @@ PHRASES = {
     "Чейнджлинг из знатного улья.": "A changeling of a noble hive.",
     "Личинка знатного улья.": "A grub of a noble hive.",
 
-    # ---- строки, написанные руками (окно создания героя, гвардия, народности)
+    # ---- hand-written strings (character creation screen, guard, peoples)
     "Вы родились пони — единорогом, пегасом или земным пони. Судьба привела вашу семью в земли "
     "Империи, где вы и выросли: ваше детство и юность пройдут по имперскому укладу.":
         "You were born a pony — a unicorn, a pegasus or an earth pony. Fate brought your family to "
@@ -349,7 +349,7 @@ PHRASES = {
     "Дракон": "Dragon",
     "Гиппогриф": "Hippogriff",
 
-    # ---- войска: грифоны (Грифонстоун)
+    # ---- troops: griffons (Griffonstone)
     "Птенец Грифонстоуна": "Griffonstone Fledgling",
     "Грифон с арбалетом": "Gryphon Crossbowman",
     "Скальный арбалетчик": "Cliff Crossbowman",
@@ -375,7 +375,7 @@ PHRASES = {
     "Пехотинец Грифонстоуна": "Griffonstone Infantryman",
     "Бывалый ополченец Грифонстоуна": "Veteran Griffonstone Militia",
     "Бывалый ополченец-арбалетчик": "Veteran Militia Crossbowman",
-    # грифоны на хузаитской ветке (поменялись с яками 10.10.2026, make_troops.SWAP_CULTURES)
+    # griffons on the khuzait branch (swapped with yaks 10.10.2026, make_troops.SWAP_CULTURES)
     "Грифон-боец": "Gryphon Fighter",
     "Грифон-налётчик": "Gryphon Raider",
     "Небесный стрелок Грифонстоуна": "Griffonstone Sky Archer",
@@ -389,7 +389,7 @@ PHRASES = {
     "Ополченец-лучник Грифонстоуна": "Griffonstone Militia Archer",
     "Бывалый ополченец-лучник Грифонстоуна": "Veteran Griffonstone Militia Archer",
 
-    # ---- войска: гиппогрифы (гора Арис и Сиквестрия)
+    # ---- troops: hippogriffs (Mount Aris and Seaquestria)
     "Доброволец горы Арис": "Mount Aris Volunteer",
     "Воин горы Арис": "Mount Aris Warrior",
     "Обученный воин Ариса": "Trained Warrior of Aris",
@@ -415,7 +415,7 @@ PHRASES = {
     "Бывалый ополченец горы Арис": "Veteran Mount Aris Militia",
     "Бывалый ополченец-лучник горы Арис": "Veteran Mount Aris Militia Archer",
 
-    # ---- войска: драконы (Драконьи Земли)
+    # ---- troops: dragons (Dragon Lands)
     "Юный дракон": "Young Dragon",
     "Драконий боец": "Dragon Fighter",
     "Драконий воин": "Dragon Warrior",
@@ -441,7 +441,7 @@ PHRASES = {
     "Бывалый ополченец Драконьих Земель": "Veteran Dragon Lands Militia",
     "Бывалый ополченец-лучник Драконьих Земель": "Veteran Dragon Lands Militia Archer",
 
-    # ---- войска: яки (Якьякистан)
+    # ---- troops: yaks (Yakyakistan)
     "Молодой як": "Young Yak",
     "Як-боец": "Yak Fighter",
     "Як-налётчик": "Yak Raider",
@@ -466,7 +466,7 @@ PHRASES = {
     "Ополченец-лучник Якьякистана": "Yakyakistan Militia Archer",
     "Бывалый ополченец Якьякистана": "Veteran Yakyakistan Militia",
     "Бывалый ополченец-лучник Якьякистана": "Veteran Yakyakistan Militia Archer",
-    # яки на вландийской ветке (поменялись с грифонами 10.10.2026, make_troops.SWAP_CULTURES)
+    # yaks on the vlandian branch (swapped with griffons 10.10.2026, make_troops.SWAP_CULTURES)
     "Як с арбалетом": "Yak Crossbowman",
     "Арбалетчик ледника": "Glacier Crossbowman",
     "Бывалый арбалетчик ледника": "Hardened Glacier Crossbowman",
@@ -481,7 +481,7 @@ PHRASES = {
     "Бывалый ополченец-арбалетчик Якьякистана": "Veteran Yakyakistan Militia Crossbowman",
     "Пехотинец Якьякистана": "Yakyakistan Infantryman",
 
-    # ---- войска: олени (Оления)
+    # ---- troops: deer (Olenia)
     "Молодой олень": "Young Stag",
     "Лесной боец": "Woodland Fighter",
     "Оленийский воин": "Olenian Warrior",
@@ -507,7 +507,7 @@ PHRASES = {
     "Бывалый ополченец Олении": "Veteran Olenian Militia",
     "Бывалый ополченец-лучник Олении": "Veteran Olenian Militia Archer",
 
-    # ---- обмен ветками 10.10.2026 (make_troops.ROSTER_OF): новые имена
+    # ---- branch swap 10.10.2026 (make_troops.ROSTER_OF): new names
     "Гарпунщик прибоя": "Surf Harpooner",
     "Тяжёлый гарпунщик Ариса": "Heavy Aris Harpooner",
     "Ярость прибоя": "Fury of the Surf",
@@ -539,7 +539,7 @@ PHRASES = {
     "Рогатый налётчик": "Antlered Raider",
     "Застрельщик Олении": "Olenian Skirmisher",
 
-    # ---- войска (tools/make_troops.py)
+    # ---- troops (tools/make_troops.py)
     "Эквестрийский новобранец": "Equestrian Recruit",
     "Бывалый ополченец": "Seasoned Militia",
     "Бывалый ополченец-стрелок": "Seasoned Militia Archer",
@@ -579,7 +579,7 @@ PHRASES = {
     "Авангард королевы": "Queen's Vanguard",
     "Крылатый ловчий королевы": "Queen's Winged Catcher",
     "Меткий плевун королевы": "Queen's True Spitter",
-    # однословные и дефисные названия иначе записались бы латиницей побуквенно
+    # single-word and hyphenated names would otherwise be spelled in Latin letter by letter
     "Единорог-стрелок": "Unicorn Archer",
     "Единорог-чародей": "Unicorn Spellcaster",
     "Пегас-разведчик": "Pegasus Scout",
@@ -613,7 +613,7 @@ PHRASES = {
     "Адмирал Короля Шторма": "Storm King Admiral",
     "Вождь Бизоньих Набегов": "Buffalo Raid Chief",
 
-    # ---- вещи расы (грива, хвост, рог): у них нет ванильного оригинала
+    # ---- race items (mane, tail, horn): they have no vanilla original
     "Пони: грива": "Pony: mane",
     "Пони: хвост": "Pony: tail",
     "Чейнджлинг: рог и гребень": "Changeling: horn and crest",
@@ -623,7 +623,7 @@ PHRASES = {
     "Олень: хвост": "Deer: tail",
     "Як: хвост": "Yak: tail",
 
-    # ---- прозвища спутников в тавернах
+    # ---- companion nicknames in taverns
     "{FIRSTNAME} — Лётчица над Лавой": "{FIRSTNAME} the Lava Flyer",
     "{FIRSTNAME} — Охотник за Сокровищами": "{FIRSTNAME} the Treasure Hunter",
     "{FIRSTNAME} — Резчик по Рогу": "{FIRSTNAME} the Horn Carver",
@@ -682,7 +682,7 @@ PHRASES = {
     "{FIRSTNAME} — Шериф": "{FIRSTNAME} the Sheriff",
     "{FIRSTNAME} — Штормовой Лётчик": "{FIRSTNAME} the Storm Flyer",
 
-    # ---- державы
+    # ---- realms
     "Пони Эквестрии: земные пони, пегасы и единороги под рукой принцесс-аликорнов.":
         "The ponies of Equestria: earth ponies, pegasi and unicorns under the alicorn princesses.",
     "Сердце Эквестрии под рукой принцессы Селестии, что поднимает солнце. Кантерлот, старая знать "
@@ -740,7 +740,7 @@ PHRASES = {
         "The scorched south-east of volcanoes and jungle. Dragons respect only strength, but their "
         "Dragon Lord Ember is learning that friendship has claws too.",
 
-    # ---- города и крепости
+    # ---- towns and fortresses
     "Столица Солнечной Эквестрии, белокаменный город на склоне горы.":
         "Capital of Solar Equestria, a white-stone city on the mountainside.",
     "Город, который не спит.": "The city that never sleeps.",
@@ -773,7 +773,7 @@ PHRASES = {
     "Деревня «равных», где когда-то все носили одинаковые метки.":
         "The village of the Equals, where everypony once wore the same mark.",
 
-    # ---- герои Эквестрии
+    # ---- heroes of Equestria
     "Старшая сестра, поднимающая солнце. Правит Эквестрией тысячу лет.":
         "The elder sister who raises the sun. She has ruled Equestria for a thousand years.",
     "Младшая сестра, хранительница ночи и снов. Вернулась после тысячи лет изгнания.":
@@ -885,7 +885,7 @@ PHRASES = {
         "A strongpony with a shovel who saved his village from a volcano.",
     "Задира, втайне сочиняющий стихи.": "A bully who secretly writes poetry.",
 
-    # ---- Кристальная Империя
+    # ---- Crystal Empire
     "Бывший король-тиран. Его сторонники ждут возвращения.":
         "The former tyrant king. His followers await his return.",
     "Кристальная целительница, подруга детства Сомбры.":
@@ -896,7 +896,7 @@ PHRASES = {
     "Предводительница северных кристальных родов.":
         "Chieftain of the northern crystal houses.",
 
-    # ---- чейнджлинги
+    # ---- changelings
     "Королева ульев, мастерица подмены.": "Queen of the hives, a master of disguise.",
     "Вождь отколовшихся чейнджлингов, выбравших дружбу.":
         "Leader of the breakaway changelings who chose friendship.",
@@ -905,7 +905,7 @@ PHRASES = {
     "Хивесмаршал, полководец роя.": "Hive marshal, war leader of the swarm.",
     "Командующий войском королевы Ново.": "Commander of Queen Novo's host.",
 
-    # ---- грифоны
+    # ---- griffons
     "Король Грифонстоуна, потомок легендарного короля Гровера.":
         "King of Griffonstone, descendant of the legendary King Grover.",
     "Резкая грифонша, давняя подруга Рэйнбоу Дэш.":
@@ -928,7 +928,7 @@ PHRASES = {
     "Старый полководец, хозяин восточных перевалов.":
         "An old war leader, master of the eastern passes.",
 
-    # ---- гиппогрифы
+    # ---- hippogriffs
     "Правительница гиппогрифов и морских пони, хранительница Жемчужины.":
         "Ruler of the hippogriffs and seaponies, keeper of the Pearl.",
     "Принцесса, мечтающая о жизни над волнами.":
@@ -944,7 +944,7 @@ PHRASES = {
     "Командир летучих дозоров.": "Commander of the flying patrols.",
     "Командир воздушной кавалерии.": "Commander of the air cavalry.",
 
-    # ---- олени (Оления)
+    # ---- deer (Olenia)
     "Йохан Йельцек": "Johan Jelzek", "Аслауг Йельцек": "Aslaug Jelzek",
     "Королева Вельвет": "Queen Velvet", "Хьялмар Вельвет": "Hjalmar Velvet",
     "Бенджен Кудлинен": "Benjen Kudlinen", "Ильта Кудлинен": "Ilta Kudlinen",
@@ -960,7 +960,7 @@ PHRASES = {
         "Elder of the Council of Seven, keeper of the forest laws.",
     "Лучшая следопытка оленьих троп.": "The finest tracker of the deer trails.",
 
-    # ---- драконы
+    # ---- dragons
     "Лорд драконов, получившая Скипетр в Состязании.":
         "The Dragon Lord, who won the Scepter in the Gauntlet of Fire.",
     "Бывший лорд драконов, отец Эмбер.": "The former Dragon Lord, Ember's father.",
@@ -971,7 +971,7 @@ PHRASES = {
     "Хитрый старый дракон, мастер уговоров.":
         "A cunning old dragon, a master of persuasion.",
 
-    # ---- яки
+    # ---- yaks
     "Принц яков, громкий и честный.": "A yak prince, loud and honest.",
     "Принц отколовшейся ветви яков.": "Prince of a breakaway yak line.",
     "Старейшина, помнящий все обиды яков наперечёт.":
@@ -981,8 +981,8 @@ PHRASES = {
 }
 
 
-# Канонные имена раскладываем по словарям: одно слово ищется в составных именах (WORDS),
-# несколько — только целой строкой (PHRASES).
+# Canon names are distributed between the dictionaries: a single word is looked up in compound names (WORDS),
+# several words - only as a whole string (PHRASES).
 for _ru, _en in CANON.items():
     if " " in _ru:
         PHRASES.setdefault(_ru, _en)

@@ -1,13 +1,13 @@
-"""Грива как у королевы Кризалис — настоящая причёска (слот волос в редакторе внешности), не предмет.
+"""A mane like Queen Chrysalis's - a real hairstyle (hair slot in the appearance editor), not an item.
 
-Запуск (headless Blender, на готовой пони):
+Run (headless Blender, on the finished pony):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python make_changeling_hair.py -- ../assets/changeling_hair
 
-Общее для причёсок (голова, уши, зона глаз, веса, экспорт) — tools/hair_common.py.
-Грива собрана из сплошных слоёв-оболочек: соседние линии прядей образуют полосы, каждая полоса — своя
-«карточка» ванильной текстуры прядей (assets/reference/vanilla_hair/female_hair_cards.json), корень сверху
-карточки, кончики снизу. Нормали смотрят наружу от головы и спины, как у ванильных причёсок.
-Пряди обходят уши (вырез) и глаза (EyeZone: всё, что попадает перед глазом, сдвигается к его краю).
+Shared hairstyle code (head, ears, eye zone, weights, export) is in tools/hair_common.py.
+The mane is built from solid shell layers: neighbouring strand lines form strips, each strip is its own
+"card" of the vanilla strand texture (assets/reference/vanilla_hair/female_hair_cards.json), root at the top
+of the card, tips at the bottom. Normals face outward from the head and back, as in vanilla hairstyles.
+Strands go around the ears (a cutout) and the eyes (EyeZone: anything in front of an eye is pushed to its edge).
 """
 import json
 import math
@@ -23,9 +23,9 @@ from hair_common import (HERE, MeshBuilder, direction, export, hair_line, hairli
 
 OUT = os.path.abspath(sys.argv[sys.argv.index("--") + 1])
 CARDS = json.load(open(os.path.join(HERE, "..", "assets", "reference", "vanilla_hair", "female_hair_cards.json")))["cards"]
-CARDS = [c for c in CARDS if c["density"] > 0.5]  # тонкие одиночные пряди не берём
+CARDS = [c for c in CARDS if c["density"] > 0.5]  # thin single strands are not used
 
-# Варианты: длина гривы за спиной, длина прядей у морды (0 — без них), прядь на одну сторону
+# Variants: mane length behind the back, length of the strands at the muzzle (0 - none), strand to one side
 VARIANTS = {
     "eq_hair_chrysalis_short": {"back": 0.10, "front": 0.0, "side": None},
     "eq_hair_chrysalis_medium": {"back": 0.30, "front": 0.16, "side": None},
@@ -69,10 +69,10 @@ def build(name, back, front, side):
             lines.append(hair_line(hairline_dir(a, lift), exit_dir, hang, offset, down, 0.5, N_SCALP, n_hang))
         hair.shell(lines, first_card)
 
-    # основная масса и внешний слой поверх неё
+    # main mass and the outer layer on top of it
     layer(np.linspace(-1.0, 1.0, 25), 0.006, 1.0, 0.0, 0)
     layer(np.linspace(-0.85, 0.85, 19), 0.02, 1.06, -4.0, 2)
-    # пряди у морды: от линии волос перед ушами — назад за глаз и вниз, на грудь
+    # strands at the muzzle: from the hairline in front of the ears - back past the eye and down onto the chest
     if front > 0:
         for sgn in ((side,) if side else (-1.0, 1.0)):
             n_hang = max(2, int(front / 0.02))
@@ -90,14 +90,14 @@ def build(name, back, front, side):
 
 objects = [build(name, **v) for name, v in VARIANTS.items()]
 
-# ---------------------------------------------------------------- подгонка под голову расы
-# Грива строится по голове ПОНИ (hair_common берёт её скальп по клетке атласа SKIN_CELL, а у новой
-# модели чейнджлинга свой атлас, и по нему скальп не найти). Череп у новой головы меньше и уже,
-# поэтому грива-капюшон висела вокруг него с зазором — «парит над головой» (замечено в игре
-# 24.09.2026). Ужимаем её к середине черепа и подаём вперёд.
-FIT_SCALE = 0.92                    # во сколько раз ужать гриву к середине черепа
-FIT_ABOUT = Vector((0.0, 0.02, 1.70))   # середина черепа новой головы
-FIT_SHIFT = Vector((0.0, -0.035, -0.01))  # вперёд к затылку и чуть вниз
+# ---------------------------------------------------------------- fitting to the race's head
+# The mane is built on the PONY head (hair_common finds its scalp by the atlas cell SKIN_CELL, while the new
+# changeling model has its own atlas, and the scalp cannot be found by it). The new head's skull is smaller and
+# narrower, so the hood-mane hung around it with a gap - "floating above the head" (noticed in game
+# 24.09.2026). We shrink it toward the middle of the skull and move it forward.
+FIT_SCALE = 0.92                    # how much to shrink the mane toward the middle of the skull
+FIT_ABOUT = Vector((0.0, 0.02, 1.70))   # middle of the new head's skull
+FIT_SHIFT = Vector((0.0, -0.035, -0.01))  # forward toward the back of the head and slightly down
 
 for ob in objects:
     for v in ob.data.vertices:

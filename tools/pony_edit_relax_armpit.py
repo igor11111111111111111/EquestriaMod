@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Разгладить смятый участок вершин под мышкой на eq_pony_body — те же symptoms, что и наверху руки
-(пользователь сам поправил 2 вершины сверху; тут кластер побольше, снизу).
+"""Smooth out the crumpled patch of vertices under the armpit on eq_pony_body — the same symptoms as at
+the top of the arm (the user fixed 2 vertices at the top himself; here the cluster is bigger, at the bottom).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_armpit.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_relax_armpit.py
 
-Вершины в этой зоне сильно смещены относительно своих соседей (замерено: до 0.11 м) — видимо,
-след прежних правок руки/зеркалирования. Плавно подтягиваем каждую такую вершину к среднему её
-соседей несколько раз подряд — соседи (не смятые вершины) служат якорем и не двигаются.
+Vertices in this zone are strongly offset relative to their neighbours (measured: up to 0.11 m) —
+apparently a trace of earlier arm/mirroring edits. We gently pull each such vertex toward the mean of its
+neighbours several times in a row — the neighbours (non-crumpled vertices) act as anchors and do not move.
 """
 import numpy as np
 import bpy

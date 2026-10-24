@@ -1,19 +1,19 @@
-# Запись высот карты мира прямо в terrain.bin — без кнопки Import HeightMap в редакторе.
+# Writing the world map heights straight into terrain.bin - without the Import HeightMap button in the editor.
 #
-#   py -3 tools\write_terrain_heights.py <папка Module мода>
+#   py -3 tools\write_terrain_heights.py <mod Module folder>
 #
-# Берёт assets/map/eq_map_heightmap.png (его собирает make_equus_map.py) и переписывает в
-# Main_map/terrain.bin два куска:
-#   HGHT — по узлу рельефа 16-битная серая картинка 65x65: 0..65535 = min_height..max_height
-#          из <terrain> в scene.xscene;
-#   NRML — по узлу RGBA-картинка 65x65 с нормалями: R = nx·127,5+127,5, G = ny·127,5+127,5,
-#          B = 63, A = 0 (так пишет редактор; сверено с его файлом, расхождение ~1 из 255).
-# Кусок PHYM (физические материалы) от высот не зависит и не трогается. В scene.xscene
-# обновляются min_height/max_height узлов.
+# Takes assets/map/eq_map_heightmap.png (built by make_equus_map.py) and rewrites two chunks in
+# Main_map/terrain.bin:
+#   HGHT - per terrain node a 16-bit grey 65x65 image: 0..65535 = min_height..max_height
+#          from <terrain> in scene.xscene;
+#   NRML - per node an RGBA 65x65 image with normals: R = nx·127.5+127.5, G = ny·127.5+127.5,
+#          B = 63, A = 0 (that is how the editor writes it; checked against its file, difference ~1 in 255).
+# The PHYM chunk (physics materials) does not depend on heights and is not touched. In scene.xscene
+# the nodes' min_height/max_height are updated.
 #
-# Порядок узлов в terrain.bin — построчно с юга (узел i: столбец i % N, строка i // N), первая
-# строка картинки — южный край узла. Размер рельефа (узлы, шаг) должен совпадать с картой высот:
-# сам рельеф создаётся в редакторе один раз (16x16 узлов по 64 м, высоты -3..32).
+# Node order in terrain.bin is row by row from the south (node i: column i % N, row i // N); the first
+# image row is the node's southern edge. The terrain size (nodes, step) must match the heightmap:
+# the terrain itself is created in the editor once (16x16 nodes of 64 m, heights -3..32).
 import os
 import struct
 import sys
@@ -28,10 +28,10 @@ import terrain_bin as tb  # noqa: E402
 MOD = sys.argv[1]
 SCENE = os.path.join(MOD, "SceneObj", "Main_map", "scene.xscene")
 TERRAIN = os.path.join(MOD, "SceneObj", "Main_map", "terrain.bin")
-# Отсчётов на участок: 2^LEVEL + 1. Столько же ставится в heightmap_level/normalmap_level узла.
-# 64 (уровень 6) давало ячейку в 1 м, и на КАЖДОЙ границе участков была видна полоса ровно в одну
-# ячейку — её и принимали за «границы чанков» (померено по снимку игры: шаг 63.5 м при масштабе
-# 8.5 пикселя на метр, ширина полосы 1.3 м). У ванильной карты ячейка 0.21 м, и полосы не видно.
+# Samples per node: 2^LEVEL + 1. The same goes into the node's heightmap_level/normalmap_level.
+# 64 (level 6) gave a 1 m cell, and on EVERY node border a stripe exactly one cell wide was visible -
+# that is what was taken for "chunk borders" (measured from a game screenshot: step 63.5 m at a scale
+# of 8.5 pixels per metre, stripe width 1.3 m). The vanilla map has a 0.21 m cell, and no stripe is visible.
 LEVEL = int(os.environ.get("EQ_TERRAIN_LEVEL", "8"))
 PER_NODE = 1 << LEVEL
 
@@ -76,8 +76,8 @@ def main():
     if PER_NODE == 64:
         heights = source.astype(np.float64)
     else:
-        # Сглаженное уплотнение: вдвое-вчетверо мельче исходной карты. Линейное тут не годится —
-        # оно склеивает поверхность из плоских кусков, и на стыках исходной сетки появляются грани.
+        # Smooth upsampling: two to four times finer than the source map. Linear is no good here -
+        # it glues the surface together from flat pieces, and edges appear at the source grid seams.
         side = n * PER_NODE + 1
         from PIL import Image as _Image
         heights = np.asarray(_Image.fromarray(source, mode="F").resize((side, side), _Image.BICUBIC),
@@ -131,16 +131,16 @@ def main():
     tb.write(TERRAIN, version, chunks)
     log("записан %s: %d узлов, высоты %.2f..%.2f" % (TERRAIN, count, heights.min(), heights.max()))
 
-    # height_complexity — единственная оставшаяся настройка участка, которая может заставить
-    # движок дробить соседние участки по-разному; по данным у нас швов нет (высоты на общих
-    # кромках совпадают бит в бит, нормали и веса тоже), а линии по сетке в игре видны.
-    # Формула ванили не восстанавливается (лучшая корреляция с мерами рельефа 0.61), поэтому
-    # ставим всем участкам ОДНО значение: какой бы смысл в него ни вкладывался, разнобоя между
-    # соседями не будет. Прежние значения были от 0 до 2.78, причём 29 участков объявляли себя
-    # ровными при перепаде до 2 м.
-    # 2.784 — наибольшее из прежних значений на нашей карте, то есть «участок сложный, как самый
-    # сложный из тех, что игра уже рисовала». Меньше ставить незачем: чем выше, тем подробнее
-    # движок дробит участок, а разнобоя между соседями при одинаковом значении нет в любом случае.
+    # height_complexity is the only remaining node setting that can make the engine subdivide
+    # neighbouring nodes differently; by the data we have no seams (heights on shared edges match
+    # bit for bit, normals and weights too), yet grid lines are visible in game.
+    # The vanilla formula cannot be recovered (best correlation with terrain measures 0.61), so
+    # we give all nodes ONE value: whatever meaning it carries, neighbours will not differ.
+    # The previous values ranged from 0 to 2.78, and 29 nodes declared themselves flat with
+    # a height difference of up to 2 m.
+    # 2.784 is the largest of the previous values on our map, i.e. "the node is as complex as the most
+    # complex one the game has already drawn". No reason to set less: the higher it is, the finer the
+    # engine subdivides the node, and with equal values neighbours do not differ in any case.
     complexity = os.environ.get("EQ_NODE_COMPLEXITY", "2.784")
     for node in terrain.find("nodes").findall("node"):
         low, high = ranges[(int(node.get("idx")), int(node.get("idy")))]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""То же самое для eq_pony_gloves: заменить правую кисть зеркальной копией левой.
+"""The same for eq_pony_gloves: replace the right hand with a mirrored copy of the left one.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_gloves.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_gloves.py
 """
 import re
 

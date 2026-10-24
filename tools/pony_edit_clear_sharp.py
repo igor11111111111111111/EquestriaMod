@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Снять все пометки Mark Sharp со всех восьми частей в eq_pony_edit.blend.
+"""Remove all Mark Sharp marks from all eight parts in eq_pony_edit.blend.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_clear_sharp.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_clear_sharp.py
 
-Sharp-ребро ломает освещение жёстко независимо от Shade Smooth и от того, как ровно лежат
-вершины — ещё один независимый источник видимых складок вдобавок к смятым вершинам и весам.
+A sharp edge breaks the shading hard regardless of Shade Smooth and of how evenly the
+vertices lie: one more independent source of visible creases on top of crumpled vertices and weights.
 """
 import bpy
 

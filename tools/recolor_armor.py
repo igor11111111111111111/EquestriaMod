@@ -1,18 +1,18 @@
-"""Перекраска ванильной брони под хитин чейнджлингов.
+"""Recolouring vanilla armour into changeling chitin.
 
-  py -3 tools/recolor_armor.py [пакет]      пакет по умолчанию — changeling
+  py -3 tools/recolor_armor.py [package]      default package - changeling
 
-Откуда что берётся:
-  - меши и текстуры пакета выгружены утилитой tpac_export в assets/reference/vanilla_armor/<меш>/;
-  - у каждой ванильной брони есть diffuse (_d) и маска цвета клана (_c): красный канал — первый цвет
-    клана, зелёный — второй. По ней движок красит ткань и канты, поэтому «чёрное с бирюзовыми и
-    зелёными полосками» получается само, если цвета клана заданы (tools/world_data.py, улей).
+Where things come from:
+  - the package's meshes and textures were dumped by the tpac_export tool into assets/reference/vanilla_armor/<mesh>/;
+  - every vanilla armour has a diffuse (_d) and a clan colour mask (_c): the red channel is the clan's first
+    colour, green the second. The engine paints cloth and trims by it, so "black with turquoise and
+    green stripes" comes out by itself if the clan colours are set (tools/world_data.py, the hive).
 
-Что делает скрипт:
-  1. diffuse переводит в хитин: почти чёрная основа, к светам — холодный бирюзовый отблеск;
-  2. места из маски оставляет нейтрально-светлыми, чтобы цвет клана ложился чисто, а не поверх песка;
-  3. кладёт результат в assets/pony_armor_changeling/textures/<имя>_d.png — эти текстуры
-     импортируются в редакторе, нормали и блики берём ванильные (они не красятся).
+What the script does:
+  1. turns the diffuse into chitin: an almost black base, with a cold turquoise sheen toward the highlights;
+  2. leaves the masked areas neutral light so the clan colour lies cleanly, not on top of sand;
+  3. puts the result into assets/pony_armor_changeling/textures/<name>_d.png - these textures
+     are imported in the editor; normals and specular are taken from vanilla (they are not recoloured).
 """
 import os
 import sys
@@ -28,24 +28,24 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "assets", "reference", "vanilla_armor")
 OUT = os.path.join(ROOT, "assets", f"pony_armor_{PACK}", "textures")
 
-# Хитин: от почти чёрного к бирюзовому отблеску (цвета согласованы с моделью чейнджлинга,
-# tools/make_changeling.py — там та же палитра у тела).
+# Chitin: from almost black to a turquoise sheen (colours are matched to the changeling model,
+# tools/make_changeling.py - the body there has the same palette).
 CHITIN = [
     (0.00, (0.012, 0.014, 0.018)),
     (0.35, (0.045, 0.060, 0.075)),
     (0.70, (0.090, 0.200, 0.215)),
     (1.00, (0.330, 0.720, 0.700)),
 ]
-# Участки из маски _c движок в наших проверках так и не покрасил цветами фракции (ни в разговоре,
-# ни при кричащих цветах клана и культуры), поэтому цвет улья впекаем прямо в текстуру: ткань и
-# канты — тёмная бирюза с зелёным подсветом, а не нейтральная подложка.
+# In our tests the engine never painted the areas from the _c mask with faction colours (neither in a
+# conversation nor with garish clan and culture colours), so we bake the hive colour straight into the texture:
+# cloth and trims are a dark turquoise with a green glow, not a neutral underlay.
 TRIM = [
     (0.00, (0.010, 0.030, 0.030)),
     (0.40, (0.020, 0.110, 0.105)),
     (0.75, (0.045, 0.300, 0.260)),
     (1.00, (0.180, 0.620, 0.420)),
 ]
-PREFIX = "eq_ch_"  # наши текстуры и материалы: eq_ch_<ванильное имя>
+PREFIX = "eq_ch_"  # our textures and materials: eq_ch_<vanilla name>
 
 
 def log(*a):
@@ -64,7 +64,7 @@ def ramp(t, stops):
 
 
 def find_textures():
-    """{имя текстуры без _d: (путь к diffuse, путь к маске или None)}"""
+    """{texture name without _d: (path to diffuse, path to mask or None)}"""
     found = {}
     for row in armor_catalog.pieces(PACK):
         folder = os.path.join(SRC, row["mesh"])
@@ -101,7 +101,7 @@ def main():
     textures = find_textures()
     log(f"текстур в пакете {PACK}: {len(textures)}")
     for base, (diffuse, mask) in sorted(textures.items()):
-        # префикс обязателен: иначе имя совпадёт с ванильной текстурой и материал возьмёт не ту
+        # the prefix is mandatory: otherwise the name matches the vanilla texture and the material picks the wrong one
         out = os.path.join(OUT, PREFIX + base + "_d.png")
         recolor(diffuse, mask).save(out)
         log(f"  {base}: маска {'есть' if mask else 'нет'} -> {os.path.basename(out)}")

@@ -1,15 +1,15 @@
-"""Своя музыка мода: копирует треки и собирает Module/Music/soundtrack.xml.
+"""The mod's own music: copies the tracks and builds Module/Music/soundtrack.xml.
 
-  py -3 tools/make_music.py [папка Module] [папка с треками]
+  py -3 tools/make_music.py [Module folder] [tracks folder]
 
-Как устроена музыка в Bannerlord (проверено 2026-09-17 по коду и ванильным файлам):
-  - движок (psai) собирает музыку из всех модулей, у которых в ModuleData/project.mbproj есть строка
+How music works in Bannerlord (checked 2026-09-17 against the code and vanilla files):
+  - the engine (psai) gathers music from all modules whose ModuleData/project.mbproj has the line
     <file id="soln_soundtrack" name="Music/soundtrack.xml" type="soundtrack" /> (MBMusicManager);
-  - номера тем в soundtrack.xml должны быть СВОБОДНЫМИ: тема с ванильным номером роняет игру при загрузке,
-    поэтому у нас 41..48, а подмену ванильной темы на нашу делает src/EquestriaMusic.cs;
-  - сегмент ссылается на файл через <Path>имя.wav</Path>, а лежит рядом Music/PC/имя.ogg;
-  - psai нужны длина трека в сэмплах и частота дискретизации — читаем их прямо из ogg.
-Таверна своей темы не имеет: там играют живые музыканты (SettlementMusiciansCampaignBehavior).
+  - theme numbers in soundtrack.xml must be FREE: a theme with a vanilla number crashes the game on load,
+    so ours are 41..48, and src/EquestriaMusic.cs swaps the vanilla theme for ours;
+  - a segment refers to its file via <Path>name.wav</Path>, while next to it lies Music/PC/name.ogg;
+  - psai needs the track length in samples and the sample rate — we read them straight from the ogg.
+The tavern has no theme of its own: live musicians play there (SettlementMusiciansCampaignBehavior).
 """
 import json
 import os
@@ -19,19 +19,20 @@ import sys
 import tempfile
 
 BLENDER = os.environ.get("EQ_BLENDER", r"D:\Program Files (x86)\Steam\steamapps\common\Blender\blender.exe")
-# Целевая средняя громкость (rms) готовых треков: все треки подтягиваются к ней (tools/music_gain.py).
-# Для сравнения: главная тема ванильной игры — 0.21, самый тихий трек набора был 0.02.
+# Target average loudness (rms) of the finished tracks: all tracks are brought to it (tools/music_gain.py).
+# For comparison: the vanilla main theme is 0.21, the quietest track of the set was 0.02.
 TARGET_RMS = 0.30
-# Битрейт готовых треков: он же задаёт вес музыки в моде (96 кбит/с — примерно 45 МБ на нынешние 21 трек).
+# Bitrate of the finished tracks: it also sets the size of the music in the mod (96 kbit/s — about 45 MB
+# for the current 21 tracks).
 BITRATE = 96000
 
 MOD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Module")
 SRC = sys.argv[2] if len(sys.argv) > 2 else r"C:\SteamLibrary\steamapps\workshop\content\394360\1826643372\music"
 
-# Номера тем — СВОИ (41..48), не ванильные: если номер повторяет ванильный, игра падает при загрузке
-# (проверено 2026-09-18). Ванильную тему на нашу подменяет src/EquestriaMusic.cs в момент запуска музыки.
-# тема -> (наш номер темы, тип psai, треки). Тип: 1 — карта, 3 — бой, 5 — короткая вставка, 7 — меню.
+# Theme numbers are OUR OWN (41..48), not vanilla: if a number repeats a vanilla one, the game crashes on
+# load (checked 2026-09-18). src/EquestriaMusic.cs swaps the vanilla theme for ours when the music starts.
+# theme -> (our theme number, psai type, tracks). Type: 1 — map, 3 — battle, 5 — short stinger, 7 — menu.
 THEMES = {
     "Главное меню": (41, 7, ["Zykrath_Blessing_From_The_Stars"]),
     "Карта спокойная": (42, 1, [
@@ -52,7 +53,8 @@ THEMES = {
     "Победа": (47, 5, ["Neighsayer_Equestrias_Finest"]),
     "Поражение": (48, 5, ["DST-Darkess_extended"]),
 }
-# Настройки тем взяты у ванильных: карта — длинные фазы и паузы, бой — без пауз, вставки — короткие.
+# Theme settings are taken from the vanilla ones: map — long phases and pauses, battle — no pauses,
+# stingers — short.
 THEME_SETTINGS = {
     1: dict(intensity=0.01, phase=15, rest=(30, 90), priority=1),
     3: dict(intensity=0.5, phase=30, rest=(0, 0), priority=3),
@@ -66,7 +68,7 @@ def log(*a):
 
 
 def ogg_info(path):
-    """(частота дискретизации, длина в сэмплах) из ogg: заголовок Vorbis и granule последней страницы."""
+    """(sample rate, length in samples) from an ogg: the Vorbis header and the granule of the last page."""
     with open(path, "rb") as f:
         data = f.read(65536)
         i = data.find(b"\x01vorbis")

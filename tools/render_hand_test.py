@@ -1,4 +1,4 @@
-# Крупный план правой кисти: покой и сгиб finger0 по трём осям (какая ось сгибает пальцы).
+# Close-up of the right hand: rest and finger0 bent around three axes (which axis bends the fingers).
 # blender --background <eq_twilight.blend> --python render_hand_test.py -- <out_dir>
 import os
 import sys

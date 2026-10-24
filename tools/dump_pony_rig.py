@@ -1,5 +1,5 @@
-# Имена костей MMD (в виде escape-последовательностей, чтобы консоль не портила) и проверка
-# совпадения костей с сеткой в мировых координатах.
+# MMD bone names (as escape sequences so the console does not mangle them) and a check that
+# the bones match the mesh in world coordinates.
 import sys
 import bpy
 from mathutils import Vector

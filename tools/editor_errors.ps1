@@ -1,12 +1,12 @@
-﻿# Запуск редактора со СНЯТИЕМ ТЕКСТА всех всплывающих окон.
+﻿# Launching the editor with CAPTURE OF THE TEXT of all popup windows.
 #
-#   .\tools\editor_errors.ps1                 запустить, собрать текст окон, закрыть их
-#   .\tools\editor_errors.ps1 -Timeout 600    ждать дольше
+#   .\tools\editor_errors.ps1                 launch, collect the window text, close the windows
+#   .\tools\editor_errors.ps1 -Timeout 600    wait longer
 #
-# Зачем отдельно от tools/editor.ps1: тот молча жмёт кнопки по списку известных заголовков, и
-# текст ошибки («RGL CONTENT WARNING: ... meta mesh ... not found») пропадает не прочитанным.
-# Здесь каждое окно сначала читается целиком (заголовок + все надписи внутри), пишется в журнал,
-# и только потом закрывается — так видно ВСЕ ошибки подряд, а не первую.
+# Why separately from tools/editor.ps1: that one silently presses buttons from a list of known titles, and
+# the error text («RGL CONTENT WARNING: ... meta mesh ... not found») is lost unread.
+# Here each window is first read in full (title + all labels inside), written to the log,
+# and only then closed: this way ALL errors are visible in a row, not just the first.
 param(
     [int]$Timeout = 300,
     [string]$Log = ""
@@ -44,7 +44,7 @@ public static class DlgRead {
         GetClassName(h, sb, 256);
         return sb.ToString();
     }
-    // Все видимые окна верхнего уровня: указатель -> "класс|заголовок"
+    // All visible top-level windows: handle -> "class|title"
     public static Dictionary<IntPtr, string> Windows() {
         var result = new Dictionary<IntPtr, string>();
         EnumWindows((h, p) => {
@@ -56,7 +56,7 @@ public static class DlgRead {
         }, IntPtr.Zero);
         return result;
     }
-    // Надписи и кнопки внутри окна — здесь и лежит сам текст ошибки
+    // Labels and buttons inside the window: this is where the error text itself is
     public static List<string> Contents(IntPtr dialog) {
         var lines = new List<string>();
         EnumChildWindows(dialog, (h, p) => {
@@ -66,7 +66,7 @@ public static class DlgRead {
         }, IntPtr.Zero);
         return lines;
     }
-    // Жмём первую существующую кнопку (1 OK, 2 Отмена/ОК, 6 Да, 7 Нет)
+    // Press the first button that exists (1 OK, 2 Cancel/OK, 6 Yes, 7 No)
     public static int Click(IntPtr dialog, int[] ids) {
         foreach (var id in ids) {
             var button = GetDlgItem(dialog, id);
@@ -80,7 +80,7 @@ public static class DlgRead {
 }
 "@
 
-# Порядок кнопок: «Нет» для вопросов о безопасном режиме и падении, «ОК» для предупреждений.
+# Button order: "No" for questions about safe mode and the crash, "OK" for warnings.
 $ByTitle = [ordered]@{
     '^Safe Mode$'           = @(7)
     '^\*_\*$'               = @(7)
@@ -114,7 +114,7 @@ $found = 0
 while (((Get-Date) - $started).TotalSeconds -lt $Timeout) {
     foreach ($entry in [DlgRead]::Windows().GetEnumerator()) {
         $class, $title = $entry.Value.Split('|', 2)
-        if ($class -ne "#32770") { continue }          # только диалоговые окна
+        if ($class -ne "#32770") { continue }          # dialog windows only
         $key = "$title|" + ([DlgRead]::Contents($entry.Key) -join "~")
         if ($seen.ContainsKey($key)) { continue }
         $seen[$key] = $true

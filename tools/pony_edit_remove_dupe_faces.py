@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Удалить три лишних дублирующих треугольника у корня крыла (см. debug_notch.py в scratchpad).
+"""Remove three extra duplicate triangles at the wing root (see debug_notch.py in scratchpad).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_remove_dupe_faces.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_remove_dupe_faces.py
 
-Под каждым из них уже есть готовая, полностью сшитая поверхность — сами треугольники лишние
-(мусор от Bridge/Merge при ручной перекройке), их свободный край и читался как дыра.
+Under each of them there is already a finished, fully stitched surface - the triangles themselves are extra
+(junk from Bridge/Merge during manual re-cutting), and their free edge was what read as a hole.
 """
 import bmesh
 import bpy

@@ -1,9 +1,9 @@
-"""Рендер одного предмета на модели — чтобы посмотреть вещь без соседних мешей.
+"""Render a single item on the model - to look at the item without neighbouring meshes.
 
   blender --background ../assets/changeling/eq_changeling.blend --python preview_item.py -- eq_chrysalis_crown
 
-Скрывает все меши, кроме головы, тела и названного предмета, и кладёт снимки в
-<папка blend>/preview/<предмет>_(front|side|three).png
+Hides all meshes except the head, the body and the named item, and puts the shots in
+<blend folder>/preview/<item>_(front|side|three).png
 """
 import os
 import sys
@@ -22,7 +22,7 @@ for ob in bpy.data.objects:
     ob.hide_render = not (ob.name == ITEM or ob.name.endswith(KEEP_SUFFIX))
 
 scene = bpy.context.scene
-# свет и фон: в сохранённом .blend их может не быть — иначе кадр выходит чёрным
+# light and background: the saved .blend may not have them - otherwise the frame comes out black
 world = bpy.data.worlds.new("preview") if scene.world is None else scene.world
 world.use_nodes = False
 world.color = (0.55, 0.55, 0.60)

@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
-r"""Лист значков для знамён: assets/banner_icons/eq_banner_icons_d.png.
+r"""Icon sheet for banners: assets/banner_icons/eq_banner_icons_d.png.
 
-  py -3 tools/make_banner_icons.py             собрать лист из гербов
-  py -3 tools/make_banner_icons.py --test      заглушка: белый лист с чёрной каёмкой в каждой клетке
-  py -3 tools/make_banner_icons.py --numbers   то же, но с номером клетки — проверить порядок
+  py -3 tools/make_banner_icons.py             build the sheet from the coats of arms
+  py -3 tools/make_banner_icons.py --test      placeholder: a white sheet with a black border in every cell
+  py -3 tools/make_banner_icons.py --numbers   the same, but with the cell number - to check the order
 
-Размер и раскладка не наши, а игровые (замерено по ванильным листам 25.09.2026):
-  * лист 2048x2048 пикселей;
-  * на листе 4x4 значка, то есть клетка 512x512;
-  * номер клетки — это texture_index в Module/ModuleData/equestria_banner_icons.xml, считается
-    слева направо и сверху вниз, от 0 до 15. Больше шестнадцати значков в лист не положить,
-    нужен второй материал.
-Ванильные листы сжаты в BC7, но нам достаточно отдать в редактор обычный PNG — сжатие он сделает
-сам.
+The size and layout are not ours but the game's (measured on vanilla sheets 25.09.2026):
+  * the sheet is 2048x2048 pixels;
+  * the sheet holds 4x4 icons, i.e. a 512x512 cell;
+  * the cell number is the texture_index in Module/ModuleData/equestria_banner_icons.xml, counted
+    left to right and top to bottom, from 0 to 15. More than sixteen icons do not fit on a sheet,
+    a second material is needed.
+Vanilla sheets are BC7-compressed, but it is enough for us to give the editor a plain PNG - it does the
+compression itself.
 
-Гербы кладутся по одному файлу в assets/banner_icons/src/, имена — по порядку клеток
-(01_equestria.png, 02_lunar.png и так далее; сортировка по имени). Каждый герб — СИЛУЭТ на
-прозрачном фоне: цвет знамя берёт из своего ключа, а всё непрозрачное заливает этим цветом.
-Рисовать чёрную обводку или заливку внутри бесполезно — цвет всё равно будет один (проверено в
-игре 25.09.2026: белый квадрат с чёрной каёмкой вышел на знамени ровным пятном без каёмки).
-Детали внутри герба делаются дырками, то есть прозрачностью.
+Coats of arms go one file each into assets/banner_icons/src/, named in cell order
+(01_equestria.png, 02_lunar.png and so on; sorted by name). Each coat of arms is a SILHOUETTE on a
+transparent background: the banner takes the colour from its own key and fills everything opaque with it.
+Drawing a black outline or a fill inside is pointless - there will be only one colour anyway (tested in
+game 25.09.2026: a white square with a black border came out on the banner as a flat spot without the border).
+Details inside a coat of arms are made with holes, i.e. transparency.
 
-Подробности про знамёна — docs/banners.md.
+Details about banners - docs/banners.md.
 """
 import os
 import sys
@@ -31,10 +31,10 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "assets", "banner_icons")
 SRC = os.path.join(OUT, "src")
-SHEET = 2048          # размер листа, пикселей
-CELLS = 4             # клеток по стороне
-BORDER = 24           # толщина каёмки заглушки, пикселей
-MARGIN = 16           # отступ значка от края клетки, чтобы соседи не слипались
+SHEET = 2048          # sheet size, pixels
+CELLS = 4             # cells per side
+BORDER = 24           # placeholder border thickness, pixels
+MARGIN = 16           # icon margin from the cell edge, so neighbours do not stick together
 
 
 def log(*a):
@@ -42,15 +42,15 @@ def log(*a):
 
 
 def test_cell(sheet, index, cell, numbers):
-    """Клетка-заглушка: белый квадрат с чёрной каёмкой, по желанию с номером."""
+    """Placeholder cell: a white square with a black border, optionally with a number."""
     draw = ImageDraw.Draw(sheet)
     x = (index % CELLS) * cell
     y = (index // CELLS) * cell
     box = [x + MARGIN, y + MARGIN, x + cell - MARGIN - 1, y + cell - MARGIN - 1]
     draw.rectangle(box, fill=(255, 255, 255, 255), outline=(0, 0, 0, 255), width=BORDER)
     if numbers:
-        # Номер — дыркой в квадрате: цвет знамя всё равно зальёт своим, а прозрачное не рисует.
-        # Рисуем крупно, прямоугольниками, чтобы не зависеть от шрифтов в системе.
+        # The number is a hole in the square: the banner fills it with its colour anyway, transparent is not drawn.
+        # We draw it large, with rectangles, so as not to depend on system fonts.
         digits = str(index)
         size = cell // 3
         thick = max(8, size // 8)
@@ -62,7 +62,7 @@ def test_cell(sheet, index, cell, numbers):
     return sheet
 
 
-# Отрезки семисегментного знака: (сегмент -> координаты в долях клетки)
+# Segments of a seven-segment digit: (segment -> coordinates in fractions of a cell)
 _SEGMENTS = {
     "0": "abcdef", "1": "bc", "2": "abdeg", "3": "abcdg", "4": "bcfg",
     "5": "acdfg", "6": "acdefg", "7": "abc", "8": "abcdefg", "9": "abcdfg",
@@ -70,7 +70,7 @@ _SEGMENTS = {
 
 
 def draw_digit(draw, digit, x, y, size, thick):
-    """Цифра семью отрезками — прозрачными, то есть вырезанными из квадрата."""
+    """A digit from seven segments - transparent, i.e. cut out of the square."""
     w, h = size * 0.6, size * 0.9
     x += size * 0.2
     y += size * 0.05
@@ -89,7 +89,7 @@ def draw_digit(draw, digit, x, y, size, thick):
 
 
 def art_cell(sheet, index, cell, path):
-    """Клетка из готового герба: вписываем силуэт в клетку, ничего не подкрашивая."""
+    """A cell from a finished coat of arms: fit the silhouette into the cell without tinting anything."""
     art = Image.open(path).convert("RGBA")
     side = cell - MARGIN * 2
     art.thumbnail((side, side), Image.LANCZOS)

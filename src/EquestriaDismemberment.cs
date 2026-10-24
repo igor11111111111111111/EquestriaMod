@@ -8,8 +8,8 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Зоны костей — перенос DismembermentPlus.DataHelpers.HumanBoneHelper.cs без изменений
-    // (те же индексы HumanBone).
+    // Bone zones: a port of DismembermentPlus.DataHelpers.HumanBoneHelper.cs without changes
+    // (the same HumanBone indices).
     internal static class EquestriaDismembermentBoneZones
     {
         internal static bool IsHeadZone(this HumanBone bone) => bone == HumanBone.Neck || bone == HumanBone.Head;
@@ -21,46 +21,47 @@ namespace EquestriaMod
         internal static bool IsThighZoneR(this HumanBone bone) => bone == HumanBone.ThighR;
     }
 
-    // Отрубание конечностей — перенос механики мода DismembermentPlus (nexusmods.com/
-    // mountandblade2bannerlord/mods/2190, декомпилировано 07.10.2026) на наши расы. Хук
-    // OnRegisterBlow и зоны костей (HumanBone) переносятся без изменений — индексы те же, что мы
-    // используем в именах костей наших рас (bip01_l_thigh_1, bip01_l_clavicle_14 — цифра в конце и
-    // есть индекс HumanBone), раса на человеческом скелете, зона удара не меняется в принципе.
+    // Severing limbs: a port of the DismembermentPlus mod's mechanics (nexusmods.com/
+    // mountandblade2bannerlord/mods/2190, decompiled 07.10.2026) to our races. The OnRegisterBlow
+    // hook and the bone zones (HumanBone) are ported without changes: the indices are the same ones we
+    // use in our races' bone names (bip01_l_thigh_1, bip01_l_clavicle_14: the trailing number is
+    // the HumanBone index), the race is on the human skeleton, the hit zone does not change at all.
     //
-    // 07.10.2026: расширено с пони на все расы. Голова у каждой расы — отдельный объект
-    // (eq_<раса>_head), новых ассетов не требовала ни для кого (сверено с tools/export_*.py —
-    // голова отдельным мешем экспортирована у всех семи рас). Руки/ноги — другая история: у пони
-    // eq_pony_gloves/eq_pony_legs разрезаны на _l/_r (tools/pony_edit_split_limbs.py), у остальных
-    // рас эта половина всё ещё одним куском — пока не разрежем так же (Blender, по расе отдельно),
-    // отрубание руки/ноги для них просто не срабатывает (RaceInfo.LimbsSplit=false, см. ниже).
+    // 07.10.2026: extended from ponies to all races. Every race's head is a separate object
+    // (eq_<race>_head), it needed no new assets for anyone (checked against tools/export_*.py:
+    // the head is exported as a separate mesh for all seven races). Arms/legs are another story: for the pony
+    // eq_pony_gloves/eq_pony_legs are cut into _l/_r (tools/pony_edit_split_limbs.py), for the other
+    // races this half is still one piece; until we cut them the same way (Blender, per race),
+    // severing an arm/leg simply does not trigger for them (RaceInfo.LimbsSplit=false, see below).
     public class EquestriaDismemberment : MissionBehavior
     {
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
 
-        // Краш (0xc0000005) был не из-за самого ActivateRagdoll(), а из-за наших же добавленных
-        // SetLinearVelocity/SetAngularVelocity/SetVelocityLimits сверху — в оригинальном
-        // DismembermentPlus (декомпилирован, DismembermentPlusMissionLogic.GetDismemberedEntity)
-        // таких вызовов нет вообще, и крашей там нет. Сверка с их кодом нашла реальное отличие:
-        // перед включением физики они явно выставляют entity.BodyFlag = BodyFlags.None и особый
-        // entity.EntityFlags (у нас оба стояли на дефолте после CreateEmptyDynamic). Повторяем их
-        // конфигурацию в SpawnFlyingPart — настоящий рэгдолл, без собственной подмены физики.
+        // The crash (0xc0000005) was not caused by ActivateRagdoll() itself but by our own added
+        // SetLinearVelocity/SetAngularVelocity/SetVelocityLimits on top: the original
+        // DismembermentPlus (decompiled, DismembermentPlusMissionLogic.GetDismemberedEntity)
+        // has no such calls at all, and no crashes. Comparing with their code found the real difference:
+        // before enabling physics they explicitly set entity.BodyFlag = BodyFlags.None and a special
+        // entity.EntityFlags (ours were both at the default after CreateEmptyDynamic). We repeat their
+        // configuration in SpawnFlyingPart: a real ragdoll, without our own physics substitution.
         private static readonly EntityFlags DismemberedPartFlags =
             EntityFlags.Ignore | EntityFlags.NonModifiableFromEditor | EntityFlags.NotAffectedBySeason
             | EntityFlags.DontCheckHandness | EntityFlags.RecordToSceneReplay | EntityFlags.DontSaveToScene;
 
-        // Включение физики откладываем на ActivateDelay секунд после создания сущности — см.
-        // комментарий в SpawnFlyingPart. Пока сущность ждёт, она просто висит в правильной позе
-        // без физики (не ничем не хуже застывшего кадра смерти).
+        // Enabling physics is delayed by ActivateDelay seconds after the entity is created: see the
+        // comment in SpawnFlyingPart. While the entity waits, it just hangs in the correct pose
+        // without physics (no worse than a frozen death frame).
         private const float ActivateDelay = 0.35f;
         private static readonly List<(GameEntity Entity, float TimeLeft)> _pendingRagdoll =
             new List<(GameEntity, float)>();
 
-        // Отрубленная часть раньше жила вечно — ни разу не вызывали entity.Remove(), сущность со
-        // своим скелетом и скопированными текстурами просто копилась в сцене. В бою 100 на 100 со
-        // 100%-м шансом это десятки лишних полноразмерных сущностей за один бой — похоже, отсюда и
-        // "Недостаточно ресурсов памяти для завершения операции" у видеокарты (замечено
-        // пользователем 07.10.2026 после серии тестовых боёв). Убираем часть через FlyingLifetime
-        // секунд после того, как она улеглась — глазом уже не видно, а раньше её и не было видно.
+        // A severed part used to live forever: entity.Remove() was never called, the entity with
+        // its skeleton and copied textures just piled up in the scene. In a 100 vs 100 battle with
+        // a 100% chance that is dozens of extra full-size entities per battle; this is probably where
+        // the GPU's ("Not enough memory resources
+        // to complete the operation") came from (noticed by
+        // the user 07.10.2026 after a series of test battles). The part is removed FlyingLifetime
+        // seconds after it has settled: the eye no longer notices, and before that it was not visible anyway.
         private const float FlyingLifetime = 20f;
         private static readonly List<(GameEntity Entity, float TimeLeft)> _flyingLifetimes =
             new List<(GameEntity, float)>();
@@ -106,15 +107,15 @@ namespace EquestriaMod
             }
         }
 
-        // 07.10.2026: 100% в пределах тех же условий (добивающий рубящий свайп в нужную зону) —
-        // чтобы эффект было хорошо видно в тестовом бою, не теряясь в случайности.
+        // 07.10.2026: 100% within the same conditions (a finishing cutting swing into the right zone),
+        // so that the effect is clearly visible in a test battle and not lost to chance.
         private const float HeadChance = 1.0f;
         private const float ArmChance = 1.0f;
         private const float LegChance = 1.0f;
 
-        /// <summary>Что лететь с головой/рукой/ногой у конкретной расы — сверено с
-        /// EquestriaBodyParts.PartByRace/EarMeshByRace/HairReferenceByRace (та же разбивка на
-        /// рог/уши/грива по расам), null — у расы такой части просто нет.</summary>
+        /// <summary>What flies off with the head/arm/leg for a given race: checked against
+        /// EquestriaBodyParts.PartByRace/EarMeshByRace/HairReferenceByRace (the same split into
+        /// horn/ears/mane per race); null means the race simply has no such part.</summary>
         private sealed class RaceInfo
         {
             public string HeadMesh;
@@ -158,8 +159,8 @@ namespace EquestriaMod
                 foreach (var pair in InfoByRace)
                 {
                     int race = TaleWorlds.Core.FaceGen.GetRaceOrDefault(pair.Key);
-                    // GetRaceOrDefault отдаёт 0 (человек) для неизвестной расы — такую не путаем
-                    // с людьми, им отрубание не нужно.
+                    // GetRaceOrDefault returns 0 (human) for an unknown race; do not confuse it
+                    // with humans, they do not need severing.
                     if (race != 0)
                     {
                         _infoByRaceId[race] = pair.Value;
@@ -214,8 +215,8 @@ namespace EquestriaMod
             {
                 return;
             }
-            // Руки/ноги разрезаны на _l/_r только у пони (tools/pony_edit_split_limbs.py) — у
-            // остальных рас такого ассета пока нет, без него половину просто некому лететь.
+            // Arms/legs are cut into _l/_r only for the pony (tools/pony_edit_split_limbs.py): the
+            // other races have no such asset yet, and without it there is no half to fly off.
             if (!info.LimbsSplit)
             {
                 return;
@@ -253,11 +254,11 @@ namespace EquestriaMod
                 return;
             }
             HideWholePart(skeleton, info.HeadMesh);
-            // Рог, уши и грива — отдельные меши, пристёгнутые к кости (как хвост/крылья), а не
-            // часть меша головы (EquestriaBodyParts.cs PartByRace) — без этого оставались висеть на
-            // обезглавленном теле (замечено пользователем 07.10.2026, грива — 07.10.2026 отдельно).
-            // Прячем и уносим вместе с головой — всё анатомически её часть. Не у каждой расы есть
-            // все три (griffon — только уши, hippogriff — вообще ничего), пропускаем то, чего нет.
+            // Horn, ears and mane are separate meshes attached to a bone (like the tail/wings), not
+            // part of the head mesh (EquestriaBodyParts.cs PartByRace); without this they stayed hanging on
+            // the beheaded body (noticed by the user 07.10.2026, the mane separately on 07.10.2026).
+            // Hide them and carry them off with the head: anatomically they are all part of it. Not every
+            // race has all three (griffon has only ears, hippogriff nothing at all); skip what is missing.
             var extras = new List<string>();
             if (info.HornMesh != null) { extras.AddRange(HideWithVariants(skeleton, info.HornMesh)); }
             if (info.EarsMesh != null) { HideWholePart(skeleton, info.EarsMesh); extras.Add(info.EarsMesh); }
@@ -266,9 +267,9 @@ namespace EquestriaMod
             victim.CreateBloodBurstAtLimb((sbyte)headBone, 0.5f + MBRandom.RandomFloat * 0.5f);
         }
 
-        /// <summary>Рука/нога: гасим целую исходную деталь (eq_pony_gloves/eq_pony_legs, обе
-        /// стороны разом — уцелевшую половину отдельно на живом скелете НЕ показываем, см. ниже
-        /// почему), отрубленную половину уносит отдельная сущность с рэгдоллом.</summary>
+        /// <summary>Arm/leg: hide the whole original part (eq_pony_gloves/eq_pony_legs, both
+        /// sides at once; the surviving half is NOT shown separately on the live skeleton, see below
+        /// why), the severed half is carried off by a separate entity with a ragdoll.</summary>
         private static void DismemberLimb(Agent victim, HumanBone bone, string wholeMeshName, bool severedIsLeft)
         {
             Skeleton skeleton = victim.AgentVisuals?.GetSkeleton();
@@ -276,32 +277,32 @@ namespace EquestriaMod
             {
                 return;
             }
-            // Раньше тут же добавляли "уцелевшую" половину (skeleton.AddComponent) прямо на живой,
-            // активно анимируемый скелет жертвы — после первого же боя с этим кодом движок крашился
-            // (0xc0000005 в TaleWorlds.Native.dll, тот же почерк, что и с каналом анимации крыльев).
-            // Отрубание головы, которое только прячет меш и ничего не добавляет на живой скелет,
-            // крашей не давало — значит дело именно в AddComponent на живом. Поэтому жертва теряет
-            // обе стороны детали целиком; отрубленная половина всё равно летит отдельной сущностью
-            // (это уже безопасный путь, как у головы).
+            // Previously the "surviving" half was added right here (skeleton.AddComponent) onto the live,
+            // actively animated skeleton of the victim; after the very first battle with this code the engine crashed
+            // (0xc0000005 in TaleWorlds.Native.dll, the same signature as with the wing animation channel).
+            // Beheading, which only hides the mesh and adds nothing to the live skeleton,
+            // caused no crashes, so the problem is exactly AddComponent on a live one. So the victim loses
+            // both sides of the part entirely; the severed half still flies as a separate entity
+            // (that is already the safe path, like the head's).
             HideWholePart(skeleton, wholeMeshName);
             string flyName = wholeMeshName + (severedIsLeft ? "_l" : "_r");
-            // Цвет берём с ЦЕЛОГО имени (eq_pony_gloves), а не с разрезанного (eq_pony_gloves_l) —
-            // на живом скелете меш так и остаётся одним целым куском под целым именем (разрезан
-            // только набор СТАТИЧЕСКИХ ассетов для отрубленной половины, не сама экипировка на
-            // жертве), поэтому поиск по flyName ничего не находил и отрубленная рука/нога
-            // оставалась дефолтного (белого) цвета — голова красилась верно, т.к. у неё имя без
-            // суффикса совпадает буквально (замечено пользователем 08.10.2026).
+            // The colour is taken from the WHOLE name (eq_pony_gloves), not from the cut one (eq_pony_gloves_l):
+            // on the live skeleton the mesh stays one whole piece under the whole name (only the set
+            // of STATIC assets for the severed half is cut, not the equipment itself on the
+            // victim), so searching by flyName found nothing and the severed arm/leg
+            // stayed the default (white) colour; the head was tinted correctly because its name without
+            // a suffix matches literally (noticed by the user 08.10.2026).
             SpawnFlyingPart(victim, bone, flyName, wholeMeshName);
             victim.CreateBloodBurstAtLimb((sbyte)bone, 0.5f + MBRandom.RandomFloat * 0.5f);
         }
 
-        /// <summary>Прячет меш(и), чьё имя ТОЧНО равно partName (без учёта суффикса копии вида
-        /// ".001") — важно не задеть eq_pony_gloves_l/_r префиксным совпадением с eq_pony_gloves.
-        /// internal — тем же приёмом прячет ноги EquestriaFlightScroll (свиток полёта).</summary>
-        /// <summary>Прячет часть и её варианты <c>имя_2..имя_9</c> (рога и косы оленихи, 10.10.2026:
-        /// видны только выбранные, см. EquestriaBodyParts.DeerAntlerVariant) и возвращает имена тех,
-        /// что были видны, — их и уносит отрубленная голова. Если не было видно ни одного (под
-        /// шлемом коса не строится) — пустой список; у частей без вариантов — само имя, как раньше.</summary>
+        /// <summary>Hides the mesh(es) whose name is EXACTLY partName (ignoring a copy suffix like
+        /// ".001"); it is important not to hit eq_pony_gloves_l/_r by a prefix match with eq_pony_gloves.
+        /// internal: EquestriaFlightScroll (the flight scroll) hides the legs with the same trick.</summary>
+        /// <summary>Hides a part and its variants <c>name_2..name_9</c> (the doe's antlers and braids, 10.10.2026:
+        /// only the chosen ones are visible, see EquestriaBodyParts.DeerAntlerVariant) and returns the names of those
+        /// that were visible: the severed head carries them off. If none was visible (under a
+        /// helmet the braid is not built), an empty list; for parts without variants, the name itself, as before.</summary>
         private static List<string> HideWithVariants(Skeleton skeleton, string partName)
         {
             var names = new List<string> { partName };
@@ -345,10 +346,10 @@ namespace EquestriaMod
             }
         }
 
-        /// <summary>Переносит цвет (Mesh.Color/Color2 — например, тон гривы, который красится не
-        /// в материале, а в самом экземпляре меша) с живого скелета на свежую копию. Без этого
-        /// копия MetaMesh.GetCopy выходит дефолтного цвета — грива у отрубленной головы бледнеет
-        /// (замечено пользователем 07.10.2026).</summary>
+        /// <summary>Copies the colour (Mesh.Color/Color2, e.g. the mane tone, which is tinted not
+        /// in the material but in the mesh instance itself) from the live skeleton to the fresh copy. Without this
+        /// the MetaMesh.GetCopy copy comes out in the default colour: the severed head's mane fades
+        /// (noticed by the user 07.10.2026).</summary>
         private static void CopyMeshColorIfAny(Skeleton sourceSkeleton, string partName, MetaMesh target)
         {
             foreach (var mesh in sourceSkeleton.GetAllMeshes())
@@ -375,13 +376,13 @@ namespace EquestriaMod
             }
         }
 
-        /// <summary>Отдельная сущность с рэгдоллом для отрубленной части — meshName и любые
-        /// extraMeshNames (например, рог вместе с головой) ставятся на один и тот же клон скелета,
-        /// чтобы улетали вместе. colorSourceName — чьё имя искать на ЖИВОМ скелете жертвы при
-        /// переносе цвета (CopyMeshColorIfAny), если оно отличается от meshName — у руки/ноги
-        /// meshName это разрезанный ассет (eq_pony_gloves_l), а на живом скелете деталь остаётся
-        /// целой под именем без суффикса (eq_pony_gloves); по умолчанию (null) берётся meshName —
-        /// верно для головы, где имя совпадает буквально.</summary>
+        /// <summary>A separate entity with a ragdoll for the severed part: meshName and any
+        /// extraMeshNames (e.g. the horn together with the head) are put on the same skeleton clone,
+        /// so that they fly off together. colorSourceName is the name to look for on the victim's LIVE skeleton when
+        /// copying the colour (CopyMeshColorIfAny), if it differs from meshName: for an arm/leg
+        /// meshName is the cut asset (eq_pony_gloves_l), while on the live skeleton the part stays
+        /// whole under the name without a suffix (eq_pony_gloves); by default (null) meshName is used,
+        /// which is right for the head, where the name matches literally.</summary>
         private static void SpawnFlyingPart(Agent victim, HumanBone bone, string meshName,
             string colorSourceName = null, params string[] extraMeshNames)
         {
@@ -394,42 +395,42 @@ namespace EquestriaMod
             GameEntity entity = GameEntity.CreateEmptyDynamic(Mission.Current.Scene, true);
             entity.Name = entity.GetGuid();
             entity.Skeleton = Skeleton.CreateFromModel("human_skeleton");
-            // Скорость небольшая (0.3), не 1 и не 0. Со speed=1 все отрубленные части системно
-            // летели в одну сторону — в сторону, куда боец был развёрнут в момент удара (в линейном
-            // бою почти все бойцы с одной стороны смотрят на противника одинаково, поэтому снос
-            // получался не случайным, а "в сторону другой площадки", замечено пользователем
-            // 07.10.2026) — а полная заморозка (0) не давала вообще никакого видимого толчка
-            // (по просьбе пользователя добавить немного импульса). За ActivateDelay секунд до
-            // включения физики успевает чуть доиграть, рэгдолл подхватывает это небольшое движение.
-            // Не трогаем entity.ApplyLocalImpulseToDynamicBody/SetLinearVelocity и т.п. намеренно —
-            // вся эта группа функций (пишет/толкает "тело" сущности после ActivateRagdoll()) уже
-            // дважды крашила движок на других вызовах (см. DismemberedPartFlags), рисковать третьим
-            // не стали.
+            // The speed is small (0.3), not 1 and not 0. With speed=1 all severed parts systematically
+            // flew in one direction, the way the fighter was facing at the moment of the hit (in a line
+            // battle almost all fighters on one side face the enemy the same way, so the drift
+            // was not random but "towards the other side of the field", noticed by the user
+            // 07.10.2026), while a full freeze (0) gave no visible push at all
+            // (at the user's request to add a little impulse). Within ActivateDelay seconds before
+            // physics is enabled it plays a little further, and the ragdoll picks up this small motion.
+            // entity.ApplyLocalImpulseToDynamicBody/SetLinearVelocity etc. are left alone on purpose:
+            // this whole group of functions (writes to/pushes the entity's "body" after ActivateRagdoll()) has already
+            // crashed the engine twice on other calls (see DismemberedPartFlags), we did not risk
+            // a third.
             MBSkeletonExtensions.SetAnimationAtChannel(entity.Skeleton,
                 victim.AgentVisuals.GetSkeleton().GetAnimationAtChannel(0), 0, 0.3f, -1f, 0f);
-            // Ставим корень новой сущности прямо в глобальный кадр жертвы (её собственное
-            // положение/поворот), а НЕ в вычисленную мировую позицию кости. Раньше ставили именно
-            // в позицию кости — а скелет новой сущности, получив ту же анимацию/позу, САМ заново
-            // проходит всю цепочку кость-от-корня и прибавляет то же смещение ЕЩЁ РАЗ (корень уже
-            // был в точке кости, а потом к ней добавился путь корень→кость снова) — отрубленная
-            // часть оказывалась сдвинута на расстояние "корень-кость" сверх нужного. Для головы
-            // (верх всей цепочки позвоночника) это смещение самое большое — отсюда и "сильно
-            // смещается вверх" (замечено пользователем 07.10.2026). Если просто повторить
-            // собственный кадр жертвы, скелет сам точно воспроизводит позу — без лишнего сложения.
+            // Put the new entity's root right at the victim's global frame (its own
+            // position/rotation), NOT at the computed world position of the bone. Previously it was put exactly
+            // at the bone position, and the new entity's skeleton, given the same animation/pose, ITSELF
+            // walks the whole bone-from-root chain again and adds the same offset ONCE MORE (the root was
+            // already at the bone point, and then the root→bone path was added to it again): the severed
+            // part ended up shifted by the "root-bone" distance beyond what is needed. For the head
+            // (the top of the whole spine chain) this offset is the largest, hence "shifts far
+            // upwards" (noticed by the user 07.10.2026). If you simply repeat the victim's
+            // own frame, the skeleton reproduces the pose exactly by itself, without the extra addition.
             MatrixFrame globalFrame = victim.AgentVisuals.GetGlobalFrame();
             entity.SetGlobalFrame(ref globalFrame, true);
             Skeleton victimSkeleton = victim.AgentVisuals.GetSkeleton();
             entity.Skeleton.AddComponent(mesh);
             CopyMeshColorIfAny(victimSkeleton, colorSourceName ?? meshName, mesh);
-            // Кровь прямо на срезе отрубленной части, в момент её создания (по просьбе
-            // пользователя 08.10.2026) — тот же эффект, что и на культе жертвы (psys_game_blood_
-            // sword_exit, уже усилен в 4 раза, см. equestria_more_blood.xml), но
-            // CreateBloodBurstAtLimb зовётся только у Agent, а у отрубленной части его нет, своя
-            // голая GameEntity со своим скелетом — поэтому цепляем частицу напрямую на кость её
-            // собственного скелета (ParticleSystem.CreateParticleSystemAttachedToBone), а не через
-            // Agent API. Индекс кости тот же HumanBone — оба скелета собраны из одной модели
-            // "human_skeleton", нумерация совпадает (как и везде в этом файле, см. (sbyte)bone
-            // выше).
+            // Blood right on the cut of the severed part, at the moment it is created (at the user's
+            // request 08.10.2026): the same effect as on the victim's stump (psys_game_blood_
+            // sword_exit, already boosted 4 times, see equestria_more_blood.xml), but
+            // CreateBloodBurstAtLimb exists only on Agent, and the severed part has none, it is its own
+            // bare GameEntity with its own skeleton; so the particle is attached directly to a bone of its
+            // own skeleton (ParticleSystem.CreateParticleSystemAttachedToBone), not through the
+            // Agent API. The bone index is the same HumanBone: both skeletons are built from one model
+            // "human_skeleton", the numbering matches (as everywhere in this file, see (sbyte)bone
+            // above).
             MatrixFrame boneLocalFrame = MatrixFrame.Identity;
             ParticleSystem.CreateParticleSystemAttachedToBone(
                 "psys_game_blood_sword_exit", entity.Skeleton, (sbyte)bone, ref boneLocalFrame);
@@ -446,19 +447,19 @@ namespace EquestriaMod
             }
             entity.BodyFlag = BodyFlags.None;
             entity.EntityFlags = DismemberedPartFlags;
-            // SetMaxDepenetrationVelocity крашило так же, как SetLinearVelocity/SetVelocityLimits
-            // раньше (0xc0000005, 07.10.2026) — подтверждает первоначальную догадку: ЛЮБАЯ функция
-            // из GameEntityPhysicsExtensions, трогающая "тело" сущности после ActivateRagdoll(), не
-            // годится для рэгдолла (там нет одного тела — только по костям). BodyFlag/EntityFlags
-            // были настоящей причиной ОТДЕЛЬНОГО более раннего краша, но это не делает остальные
-            // функции этой группы безопасными — больше их не трогаем.
+            // SetMaxDepenetrationVelocity crashed the same way as SetLinearVelocity/SetVelocityLimits
+            // before (0xc0000005, 07.10.2026), which confirms the original guess: ANY function
+            // from GameEntityPhysicsExtensions that touches the entity's "body" after ActivateRagdoll() is not
+            // fit for a ragdoll (there is no single body there, only per bone). BodyFlag/EntityFlags
+            // were the real cause of a SEPARATE earlier crash, but that does not make the other
+            // functions of this group safe; we do not touch them any more.
             //
-            // Позиция (см. лог выше) верна и сразу после ActivateRagdoll не меняется — разлёт
-            // происходит позже, внутри самой симуляции. Похоже на "взрыв рэгдолла" от начального
-            // перекрытия: новая часть появляется прямо там же, где труп бойца, который в этот
-            // момент часто сам ещё рэгдоллится — капсулы костей накладываются друг на друга.
-            // Без доступа к подрезке скорости откладываем включение физики на ActivateDelay секунд:
-            // труп успевает разлететься/улечься, перекрытие в момент активации меньше.
+            // The position (see the log above) is correct and does not change right after ActivateRagdoll: the scatter
+            // happens later, inside the simulation itself. It looks like a "ragdoll explosion" from initial
+            // overlap: the new part appears right where the fighter's corpse is, which at that
+            // moment is often still ragdolling itself, and the bone capsules overlap each other.
+            // Without access to velocity clamping, enabling physics is delayed by ActivateDelay seconds:
+            // the corpse has time to fly apart/settle, and the overlap at activation is smaller.
             _pendingRagdoll.Add((entity, ActivateDelay));
         }
     }

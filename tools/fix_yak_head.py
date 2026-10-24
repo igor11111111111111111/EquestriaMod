@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Як: верх головы и зазор с гривой — правка готового assets/yak/eq_yak.blend.
+"""Yak: top of the head and the gap with the mane - a fix to the finished assets/yak/eq_yak.blend.
 
-Запуск: blender --background assets/yak/eq_yak.blend --python tools/fix_yak_head.py
+Run: blender --background assets/yak/eq_yak.blend --python tools/fix_yak_head.py
 
-Исходный файл яка (FBX генератора) не сохранился, поэтому tools/make_yak_model.py на нём не
-перезапустить. Та же правка, что сделана в make_deer_model.py / make_dragon.py / make_griffon.py /
-make_hippogriff.py, применяется к уже разрезанным частям: в голове затягиваем полигонами
-место, где отрезана грива (без неё под шлемом на макушке была дыра), и утапливаем вершины головы,
-которые лежат вплотную к гриве, — иначе поверхности мерцают друг сквозь друга.
+The yak's source file (the generator's FBX) was not kept, so tools/make_yak_model.py cannot be
+rerun on it. The same fix as in make_deer_model.py / make_dragon.py / make_griffon.py /
+make_hippogriff.py is applied to the already cut parts: in the head we fill with polygons
+the spot where the mane was cut off (without it there was a hole on the crown under a helmet), and sink the
+head vertices that lie right against the mane - otherwise the surfaces flicker through each other.
 """
 import os
 
@@ -16,9 +16,9 @@ import bpy
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 
-NEAR_RING = 0.012       # контур считается «гривным», если так близко к гриве
-SEPARATE_NEAR = 0.025   # головы ближе этого к гриве утапливаем вглубь (метры)
-SEPARATE_PUSH = 0.010   # и на столько, у самой гривы
+NEAR_RING = 0.012       # a contour counts as a "mane" one if it is this close to the mane
+SEPARATE_NEAR = 0.025   # head vertices closer than this to the mane are sunk inward (metres)
+SEPARATE_PUSH = 0.010   # and by this much, right at the mane
 
 head = bpy.data.objects["eq_yak_head"]
 hair = bpy.data.objects["eq_yak_hair"]
@@ -82,7 +82,7 @@ for v in bm.verts:
         continue
     delta = v.normal * (SEPARATE_PUSH * (0.4 + 0.6 * (1.0 - hit[3] / SEPARATE_NEAR)))
     v.co -= delta
-    for layer in shape_layers:      # ключи мимики хранят абсолютные координаты — двигаем и их
+    for layer in shape_layers:      # facial keys store absolute coordinates - move them too
         v[layer] -= delta
     pushed += 1
 print("[yak-fix] голова отодвинута от гривы вглубь: %d вершин" % pushed)

@@ -1,36 +1,38 @@
-# Сводка по сетке проходимости карты мира (Module\SceneObj\Main_map\navmesh.bin). Только чтение.
+# Summary of the world map navigation mesh (Module\SceneObj\Main_map\navmesh.bin). Read-only.
 #
-#   py -3 tools\make_navmesh.py [путь к navmesh.bin]
+#   py -3 tools\make_navmesh.py [path to navmesh.bin]
 #
-# Заодно проверяет поселения из ModuleData/equestria_settlements.xml: стоят ли они и их ворота на
-# сухопутных гранях и связаны ли по суше со столицей (town_empire_0).
+# Also checks the settlements from ModuleData/equestria_settlements.xml: whether they and their gates
+# stand on land faces and are connected by land to the capital (town_empire_0).
 #
-# Сетку (вершины и грани) строит редактор Modding Kit, а типы местности граней ставит
-# tools/tag_navmesh.py. Раньше считалось, что файл, записанный кодом, игра отвергает, — но тогда
-# настоящей причиной неподвижных отрядов был тип грани 0 (см. EquestriaPartyNavigationModel),
-# а байты 32..48 заголовка — просто мусор из памяти редактора, не контрольная сумма.
+# The mesh (vertices and faces) is built by the Modding Kit editor, and the terrain types of the faces
+# are set by tools/tag_navmesh.py. It used to be believed that the game rejects a file written by code —
+# but the real cause of the motionless parties back then was face type 0 (see
+# EquestriaPartyNavigationModel), and header bytes 32..48 are just junk from the editor's memory, not
+# a checksum.
 #
-# Как перестроить сетку:
-#   1. tools\editor.ps1 — открыть редактор.
-#   2. File -> Open Scene, путь вписать через
+# How to rebuild the mesh:
+#   1. tools\editor.ps1 — open the editor.
+#   2. File -> Open Scene, enter the path via
 #      tools\file_dialog.ps1 -Title "Open Scene" -Path "...\Modules\EquestriaMod\SceneObj\Main_map\scene.xscene"
-#   3. Значок «N» на панели (Navigation Mesh) -> Generation Tools -> Generate Grids ->
-#      «Clear old faces?» -> Yes. Для генерации в сцене нужна точка появления sp_player — она стоит
-#      в центре карты.
-#   4. File -> Save Navigation Mesh. Сцену сохранять не нужно.
+#   3. The «N» icon on the toolbar (Navigation Mesh) -> Generation Tools -> Generate Grids ->
+#      «Clear old faces?» -> Yes. Generation needs a sp_player spawn point in the scene — it is
+#      in the centre of the map.
+#   4. File -> Save Navigation Mesh. The scene does not need to be saved.
 #
-# Признаки плохой сетки: лорды стоят с занятием Hold и дерутся на месте; отряд игрока не едет в
-# город по приказу (/eqlongrun пишет «проверка пути» в Module\eq_exceptions.log).
+# Signs of a bad mesh: lords stand with the Hold activity and fight in place; the player's party does
+# not go to a town when ordered (/eqlongrun writes "path check" to
+# Module\eq_exceptions.log).
 #
-# Формат (разобран по ванильному Main_map):
-#   "RNM1", размер сжатого, 3, 0, размер распакованного, 0, размер сжатого, 0, 16 служебных байт,
-#   дальше поток LZ4. Внутри:
-#     "NMG9", число вершин, вершины по три float (x, y, высота);
-#     число рёбер, ребро — 6 int32: (-1, вершина от, вершина до, -1, -1, 0);
-#     число граней, грань: число углов, номера углов, номера рёбер, 5 int32, байт.
-#         Третье из пяти чисел — тип местности (TaleWorlds.Core.TerrainType: 1 равнина, 4 лес,
-#         7 горы, 10 вода). Редактор оставляет 0, и игра с этим работает;
-#     хвост: число 32 и 256 нулевых байт.
+# Format (worked out from vanilla Main_map):
+#   "RNM1", compressed size, 3, 0, uncompressed size, 0, compressed size, 0, 16 service bytes,
+#   then an LZ4 stream. Inside:
+#     "NMG9", vertex count, vertices as three floats (x, y, height);
+#     edge count, an edge is 6 int32: (-1, vertex from, vertex to, -1, -1, 0);
+#     face count, a face: corner count, corner indices, edge indices, 5 int32, a byte.
+#         The third of the five numbers is the terrain type (TaleWorlds.Core.TerrainType: 1 plain,
+#         4 forest, 7 mountains, 10 water). The editor leaves 0, and the game works with that;
+#     tail: the number 32 and 256 zero bytes.
 import collections
 import os
 import struct
@@ -84,8 +86,8 @@ def main():
     check_settlements(path, vertices, face_list)
 
 
-# Проходимые для обычных отрядов типы (DefaultPartyNavigationModel.IsTerrainTypeValidForDefault);
-# 0 — «не задан», его считает равниной наша EquestriaPartyNavigationModel.
+# Types passable for normal parties (DefaultPartyNavigationModel.IsTerrainTypeValidForDefault);
+# 0 is "not set", our EquestriaPartyNavigationModel treats it as plain.
 PASSABLE = {0, 1, 2, 3, 4, 5, 6, 15, 16, 17, 20}
 
 
@@ -94,7 +96,7 @@ def check_settlements(path, vertices, faces):
     xml = os.path.join(os.path.dirname(path), "..", "..", "ModuleData", "equestria_settlements.xml")
     if not os.path.exists(xml):
         return
-    # сетка у нас из четырёхугольников по осям: ищем грань по рамке её вершин
+    # our mesh is made of axis-aligned quads: find a face by the bounding box of its vertices
     boxes = []
     by_edge = collections.defaultdict(list)
     for index, (verts, face_edges, kind) in enumerate(faces):
@@ -111,7 +113,7 @@ def check_settlements(path, vertices, faces):
     def face_at(x, y):
         return grid.get((int(x // cell), int(y // cell)))
 
-    # связность суши
+    # land connectivity
     land = [kind in PASSABLE for _v, _e, kind in faces]
     component = [-1] * len(faces)
     current = 0

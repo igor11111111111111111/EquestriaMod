@@ -1,8 +1,8 @@
-# Генерирует культуру "equestria" из ванильной имперской (все ссылки на бойцов, горожан, шаблоны отрядов
-# остаются имперскими — пока у Эквестрии нет своих). Культура не основная: кампания не строит на неё
-# королевства и поселения, она нужна для выбора происхождения «Пони» при создании героя.
+# Generates the "equestria" culture from the vanilla imperial one (all references to troops, townsfolk and
+# party templates stay imperial until Equestria has its own). Not a main culture: the campaign builds no
+# kingdoms or settlements on it; it is needed to pick the "Pony" origin during character creation.
 #
-# py tools/make_equestria_culture.py <папка Modules игры> <папка Module мода>
+# py tools/make_equestria_culture.py <the game's Modules folder> <the mod's Module folder>
 import copy
 import os
 import sys
@@ -17,8 +17,8 @@ CHANGES = {
     "name": "{=eq_culture_equestria}Эквестрия",
     "text": "{=eq_culture_equestria_text}Пони Эквестрии — народ единорогов, пегасов и земных пони.",
     "is_main_culture": "false",
-    "color": "0xff9b59b6",   # фиолетовый, как у Твайлайт
-    "color2": "0xffF4B6E6",  # розовый
+    "color": "0xff9b59b6",   # purple, like Twilight's
+    "color2": "0xffF4B6E6",  # pink
 }
 
 root = ET.parse(os.path.join(GAME_MODULES, "SandBoxCore", "ModuleData", "spcultures.xml")).getroot()

@@ -1,18 +1,18 @@
-﻿# Запуск редактора Modding Kit одной командой — без лаунчера и без щелчков по окнам.
+﻿# Launches the Modding Kit editor with one command - no launcher and no clicking on windows.
 #
-#   .\tools\editor.ps1                 собрать мод, открыть редактор, дождаться окна Edit Mode
-#   .\tools\editor.ps1 -Shot shot.png  то же, и снимок экрана, когда редактор открылся
+#   .\tools\editor.ps1                 build the mod, open the editor, wait for the Edit Mode window
+#   .\tools\editor.ps1 -Shot shot.png  the same, plus a screenshot once the editor has opened
 #
-# Что происходит вместо ручных шагов:
-#   лаунчер              -> Bannerlord.exe из Win64_Shipping_wEditor запускается напрямую
-#   кнопка «Редактор»    -> мод видит ключ /eqeditor и сам нажимает пункт меню Editor
-#   "Safe Mode"          -> Нет       (и заранее ставим safely_exited = 1)
+# What happens instead of the manual steps:
+#   launcher             -> Bannerlord.exe from Win64_Shipping_wEditor is started directly
+#   button "Editor"    -> the mod sees the /eqeditor switch and clicks the Editor menu item itself
+#   "Safe Mode"          -> No        (and we set safely_exited = 1 beforehand)
 #   "Mod change detected"-> OK
 #   "RGL WARNING"        -> OK
-#   "*_*" (application faced a problem) -> Нет
+#   "*_*" (application faced a problem) -> No
 #   "Always Ignore?"     -> OK
 #
-# Уже открытый редактор закрывается: запущенный держит DLL мода, и сборка не может её обновить.
+# An already open editor is closed: a running one holds the mod DLL, and the build cannot update it.
 param(
     [int]$Timeout = 300,
     [string]$Shot = ""
@@ -51,7 +51,7 @@ public static class EditorWin {
         return result;
     }
 
-    // Нажимает первую существующую кнопку из списка номеров (1 OK, 2 Отмена, 6 Да, 7 Нет).
+    // Presses the first button that exists from the list of ids (1 OK, 2 Cancel, 6 Yes, 7 No).
     public static int Click(IntPtr dialog, int[] ids) {
         foreach (var id in ids) {
             var button = GetDlgItem(dialog, id);
@@ -66,10 +66,10 @@ public static class EditorWin {
 "@
 
 $IDOK = 1; $IDCANCEL = 2; $IDYES = 6; $IDNO = 7
-# заголовок (регулярное выражение) -> кнопки по порядку предпочтения
+# title (regular expression) -> buttons in order of preference
 $Dialogs = [ordered]@{
     '^Safe Mode$'            = @($IDNO)
-    # у окна-уведомления единственная кнопка «ОК» имеет номер 2 (IDCANCEL), а не 1
+    # on the notification window the only button "OK" has id 2 (IDCANCEL), not 1
     '^Mod change detected$'  = @($IDOK, $IDCANCEL)
     'RGL WARNING'            = @($IDOK, $IDCANCEL, $IDYES)
     '^\*_\*$'                = @($IDNO)
@@ -88,7 +88,7 @@ function Save-Screenshot($path) {
     $bitmap.Dispose()
 }
 
-# ---------------------------------------------------------------- закрыть открытый редактор
+# ---------------------------------------------------------------- close the open editor
 $running = Get-Process -ErrorAction SilentlyContinue | Where-Object {
     $_.Path -and $_.Path.StartsWith($EditorBin, [StringComparison]::OrdinalIgnoreCase)
 }
@@ -98,11 +98,11 @@ if ($running) {
     Start-Sleep -Seconds 2
 }
 
-# ---------------------------------------------------------------- сборка (кладёт DLL и в папку редактора)
+# ---------------------------------------------------------------- build (also puts the DLL into the editor folder)
 & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ModRoot "run.ps1") -NoLaunch | ForEach-Object { Write-Host $_ }
 if ($LASTEXITCODE -ne 0) { Write-Host "ИТОГ: СБОРКА НЕ ПРОШЛА" -ForegroundColor Red; exit 2 }
 
-# ---------------------------------------------------------------- запуск
+# ---------------------------------------------------------------- launch
 $engineConfig = "$env:USERPROFILE\Documents\Mount and Blade II Bannerlord\Configs\engine_config.txt"
 if (Test-Path $engineConfig) {
     $text = [IO.File]::ReadAllText($engineConfig)
@@ -113,7 +113,7 @@ Write-Host "== запуск редактора" -ForegroundColor Cyan
 Start-Process -FilePath (Join-Path $EditorBin "Bannerlord.exe") -ArgumentList $gameArgs -WorkingDirectory $EditorBin
 $started = Get-Date
 
-# ---------------------------------------------------------------- окна и ожидание
+# ---------------------------------------------------------------- windows and waiting
 $handled = @{}
 $result = "timeout"
 while (((Get-Date) - $started).TotalSeconds -lt $Timeout) {

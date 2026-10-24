@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Дополнение держав до ванильной плотности: кланы, лорды и их семьи сверх написанных руками.
+"""Fills kingdoms up to vanilla density: clans, lords and their families beyond the hand-written ones.
 
-В ванили на державу приходится 8–11 знатных кланов и по 5 лордов на клан; у нас руками написано
-по 3–7 кланов и по 3 лорда. Мало отрядов на карте, вялые войны, а гибель пары лордов стирает клан.
-Здесь к каждой державе дописываются кланы и лорды с именами из пулов культуры:
-  - кланов в державе становится max(MIN_CLANS, крепостей - 6): у 15 крепостей — 9 кланов;
-  - в написанном руками клане взрослых доводится до ADULTS: добавляются родичи;
-  - дописанный клан — глава, супруг(а), брат и сестра главы, один-два жеребёнка четы;
-  - потом всем дописанным дают семьи: родителей (большей частью уже покойных — причина смерти
-    в описании, как в ванили: «пал в бою», «умер от старости»), супругов и детей.
-Канонные герои не трогаются: ни браков, ни детей им не выдумываем (у Селестии или Рэйнбоу Дэш
-это спорило бы с лором), только родителей — и то не правителям и не старикам. Всё детерминировано
-(seed), пересборка даёт тот же мир.
+In vanilla a kingdom has 8-11 noble clans and 5 lords per clan; we have 3-7 clans and 3 lords each
+written by hand. Too few parties on the map, sluggish wars, and the death of a couple of lords wipes out a clan.
+Here clans and lords with names from the culture's pools are added to every kingdom:
+  - a kingdom gets max(MIN_CLANS, fortresses - 6) clans: with 15 fortresses, 9 clans;
+  - in a hand-written clan the number of adults is brought up to ADULTS: relatives are added;
+  - an added clan is a leader, a spouse, the leader's brother and sister, one or two foals of the couple;
+  - then all added heroes get families: parents (mostly already dead, with the cause of death
+    in the description, as in vanilla: "fell in battle", "died of old age"),
+    spouses and children.
+Canon heroes are not touched: we invent neither marriages nor children for them (for Celestia or Rainbow Dash
+that would contradict the lore), only parents, and not for rulers or the old. Everything is deterministic
+(seed): a rebuild gives the same world.
 
-Описание героя здесь — пара (русский, английский): собирается из шаблона с именами, и словарю
-tools/lang_words.py такое предложение не перевести, поэтому английский складывается тут же.
+A hero description here is a pair (Russian, English): it is assembled from a template with names, and the
+tools/lang_words.py dictionary cannot translate such a sentence, so the English is put together right here.
 """
 import random
 
@@ -23,20 +24,20 @@ from world_data import NAMES
 
 SEED = 20260919
 MIN_CLANS = 8
-ADULTS = 4            # взрослых лордов в клане, не меньше
+ADULTS = 4            # adult lords per clan, at least
 ADULT_AGE = 18
-DEAD_PARENT = 0.7     # доля покойных среди дописанных родителей
-SPOUSE_CHANCE = 0.55  # у дописанного взрослого без пары
+DEAD_PARENT = 0.7     # share of the dead among the added parents
+SPOUSE_CHANCE = 0.55  # for an added adult without a partner
 
-# Как называется клан у культуры: (слово перед именем, откуда имя)
+# What a clan is called in a culture: (word before the name, where the name comes from)
 CLAN_STYLE = {
-    # У оленей имя — «имя + родовое прозвище», поэтому дом зовётся по прозвищу: Дом Йельцека
+    # Deer names are "name + family nickname", so the house is named after the nickname: House of Jelzek
     "empire": ("Дом", "pair"), "battania": ("Дом", "pair"), "nord": ("Дом", "surname"),
     "vlandia": ("Род", "surname"), "sturgia": ("Клан", "given"), "khuzait": ("Клан", "given"),
     "aserai": ("Улей", "given"),
 }
 
-# Кто такие в этой культуре: (мужчина, женщина, дитя) — для описаний
+# Who they are in this culture: (man, woman, child), for descriptions
 FOLK = {
     "empire": ("пони", "пони", "жеребёнок", "pony", "mare", "foal"),
     "battania": ("гиппогриф", "гиппогрифка", "птенец", "hippogriff", "hippogriff", "fledgling"),
@@ -47,7 +48,7 @@ FOLK = {
     "aserai": ("чейнджлинг", "чейнджлинг", "личинка", "changeling", "changeling", "grub"),
 }
 
-# Причины смерти: (для него, для неё, английский). {K} — название державы.
+# Causes of death: (for him, for her, English). {K} is the kingdom name.
 CAUSES = [
     ("Погиб в бою под знамёнами державы «{K}».", "Погибла в бою под знамёнами державы «{K}».",
      "Fell in battle under the banners of {K}."),
@@ -69,19 +70,19 @@ CULTURE_CAUSE = {
              "Froze to death in the northern woods."),
 }
 
-GENERATED = set()     # id дописанных героев — только им выдумываем семьи
+GENERATED = set()     # ids of the added heroes; only for them do we invent families
 
 
 def _pool(culture, sex):
     spec = NAMES.get(culture, NAMES["empire"])[sex]
-    extras = list(spec[3]) if len(spec) > 3 else []   # лорные имена целиком
+    extras = list(spec[3]) if len(spec) > 3 else []   # lore names, whole
     if spec[0] == "составное":
         return ["%s %s" % (a, b) for a in spec[1] for b in spec[2]] + extras
     return list(spec[1]) + extras
 
 
 class _Names:
-    """Выдаёт имена без повторов: ни с каноном, ни между дописанными."""
+    """Hands out names without repeats: neither with the canon nor among the added ones."""
 
     def __init__(self, kingdoms, rng):
         self.used = set()
@@ -100,7 +101,7 @@ class _Names:
             self.pools[key] = pool
         pool = self.pools[key]
         if not pool:
-            # Пул исчерпан: берём имя повторно, но с прозвищем — «Санни Дэш Младший»
+            # The pool is exhausted: reuse a name, but with a nickname: "Sunny Dash Junior"
             base = self.rng.choice(_pool(culture, sex))
             suffixes = (("Младший", "Старший", "Второй", "Третий") if sex == "m"
                         else ("Младшая", "Старшая", "Вторая", "Третья"))
@@ -138,7 +139,7 @@ def _alive_adults(clan):
 
 
 class _Kingdom:
-    """Всё, что нужно для одной державы: имена, счётчик id, тексты."""
+    """Everything needed for one kingdom: names, the id counter, texts."""
 
     def __init__(self, k, names, rng):
         self.k = k
@@ -159,7 +160,7 @@ class _Kingdom:
             clan.setdefault("dead", []).append(hid)
         return hid
 
-    # -- описания
+    # -- descriptions
     def noble(self, sex):
         m, f, c, em, ef, ec = self.folk
         return (("Знатный %s державы «%s»." if sex == "m" else "Знатная %s державы «%s».")
@@ -172,8 +173,8 @@ class _Kingdom:
                 "A %s of %s." % (ec, lang.en(clan["name"])))
 
     def relative(self, role_ru, role_en, of_ru, of_en, cause=None, kin=None):
-        """kin — (слово, имя): «сын — Флэш Сентри». Так по-русски не нужен родительный падеж:
-        имена вроде «Вильгельм» пришлось бы склонять, а «Спитфайр» — нет, и угадывать не будем."""
+        """kin is (word, name): "son: Flash Sentry". This way Russian needs no genitive case:
+        names like "Wilhelm" would have to be declined in Russian, but "Spitfire" would not, and we will not guess."""
         ru = "%s %s." % (role_ru, of_ru) if kin is None else "%s; %s — %s." % (role_ru, kin[0], kin[1])
         en = "%s of %s." % (role_en, of_en)
         if cause:
@@ -195,7 +196,7 @@ class _Kingdom:
 
 
 def _parents(kd, clan, child_hid, child_name_ru, child_name_en, child_age, is_leader, child_sex):
-    """Отец и мать героя; большей частью покойные. Возвращает (отец, мать)."""
+    """The hero's father and mother; mostly dead. Returns (father, mother)."""
     rng = kd.rng
     of_ru = "главы рода «%s»" % clan["name"] if is_leader else child_name_ru
     of_en = "the head of %s" % lang.en(clan["name"]) if is_leader else child_name_en
@@ -206,7 +207,7 @@ def _parents(kd, clan, child_hid, child_name_ru, child_name_en, child_age, is_le
         dead = age >= 66 or rng.random() < DEAD_PARENT
         text = kd.relative(role_ru, role_en, of_ru, of_en, kd.cause(sex, age) if dead else None, kin)
         ids.append(kd.hero(clan, sex, age, text[0], text[1], dead))
-    # родители — супруги, иначе живому из них ниже подберут новую пару
+    # the parents are spouses, otherwise a new partner would be found below for the living one
     clan.setdefault("marriages", []).append((ids[0], ids[1]))
     return ids[0], ids[1]
 
@@ -230,7 +231,7 @@ def _spouse_and_children(kd, clan, hid, name_ru, name_en, sex, age):
 
 
 def _families(kingdoms, names, rng, log):
-    """Родители, супруги и дети — дописанным героям; канонным — только родители."""
+    """Parents, spouses and children for the added heroes; for canon ones, only parents."""
     added = dead = 0
     for k in kingdoms:
         kd = _Kingdom(k, names, rng)
@@ -242,8 +243,8 @@ def _families(kingdoms, names, rng, log):
             leader = clan["heroes"][0][0]
             ruling = clan.get("ruling", False)
             before = len(clan["heroes"])
-            # Родители — группами: дописанные взрослые одного клана считаются братьями и сёстрами
-            # главы (в дописанном клане) или друг друга (в канонном), у них одни родители.
+            # Parents in groups: the added adults of one clan count as brothers and sisters of the
+            # leader (in an added clan) or of each other (in a canon one); they share the same parents.
             sibling_group = [h for h in list(clan["heroes"])
                              if h[0] in GENERATED and h[3] >= ADULT_AGE and h[0] not in has_parents
                              and h[0] not in married]
@@ -256,7 +257,7 @@ def _families(kingdoms, names, rng, log):
                 for h in sibling_group:
                     clan.setdefault("children", []).append((h[0], parents[0], parents[1]))
                     has_parents.add(h[0])
-            # Канонным героям — родители, кроме правителей и стариков
+            # Parents for canon heroes, except rulers and the old
             for h in list(clan["heroes"]):
                 if h[0] in GENERATED or h[0] in has_parents or h[3] >= 50:
                     continue
@@ -266,7 +267,7 @@ def _families(kingdoms, names, rng, log):
                                    child_sex=h[2])
                 clan.setdefault("children", []).append((h[0], parents[0], parents[1]))
                 has_parents.add(h[0])
-            # Супруги и дети — дописанным взрослым без пары (родители выше уже женаты друг на друге)
+            # Spouses and children for added adults without a partner (the parents above are already married to each other)
             married = set(x for pair in clan.get("marriages", []) for x in pair)
             for h in list(clan["heroes"]):
                 if h[0] not in GENERATED or h[0] in married or h[3] < ADULT_AGE + 2:
@@ -281,20 +282,20 @@ def _families(kingdoms, names, rng, log):
 
 
 def fill(kingdoms, forts, log=print):
-    """Дописывает кланы, лордов и семьи прямо в список держав. forts — {id державы: крепостей}."""
+    """Adds clans, lords and families right into the kingdom list. forts is {kingdom id: fortresses}."""
     rng = random.Random(SEED)
     names = _Names(kingdoms, rng)
     taken_clans = set(c["name"] for k in kingdoms for c in k["clans"])
     added_clans = added_lords = 0
     for k in kingdoms:
         kd = _Kingdom(k, names, rng)
-        # 1. Написанные руками кланы доводим до ADULTS взрослых
+        # 1. Bring the hand-written clans up to ADULTS adults
         for clan in k["clans"]:
             while _alive_adults(clan) < ADULTS:
                 sex = rng.choice("mf")
                 kd.hero(clan, sex, rng.randint(24, 45), *kd.noble(sex))
                 added_lords += 1
-        # 2. Кланов в державе — до целевого числа
+        # 2. Clans in the kingdom: up to the target number
         target = max(MIN_CLANS, forts.get(k["kingdom"], 0) - 6)
         while len(k["clans"]) < target:
             clan = {"id": "clan_%s_g%d" % (kd.tag, len(k["clans"]) + 1),
@@ -307,7 +308,7 @@ def fill(kingdoms, forts, log=print):
             k["clans"].append(clan)
             added_clans += 1
             added_lords += 3
-            # супруг(а) и дети главы — всегда, чтобы у клана было будущее
+            # the leader's spouse and children, always, so that the clan has a future
             _spouse_and_children(kd, clan, leader, clan["heroes"][0][1], clan["heroes"][0][1],
                                  leader_sex, clan["heroes"][0][3])
         log("%s: кланов %d, героев %d" % (k["short"], len(k["clans"]),

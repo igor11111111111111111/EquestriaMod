@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Продублировать, отзеркалить и заменить правую руку левой (в одном сеансе bmesh).
+"""Duplicate, mirror and replace the right arm with the left one (in one bmesh session).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_arm.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_mirror_arm.py
 
-Старые вершины правой руки запоминаются ДО дублирования — если определять «что удалить» заново
-после дублирования и переименования групп, дубликат от старого правого не отличить (у обоих
-теперь имена костей "_r_" и один и тот же диапазон координат — доказано на практике 28.09.2026).
-Зеркалим в МИРОВЫХ координатах (у объекта нетривиальный transform — отрицательный масштаб по X
-плюс поворот, локальное «просто X * -1» даёт перекос).
+The old right-arm vertices are remembered BEFORE duplicating: if "what to delete" is determined again
+after duplicating and renaming the groups, the duplicate cannot be told from the old right one (both
+now have "_r_" bone names and the same coordinate range; proven in practice 28.09.2026).
+Mirroring is done in WORLD coordinates (the object has a non-trivial transform: a negative X scale
+plus a rotation, so a local "just X * -1" gives a skew).
 """
 import re
 
@@ -68,7 +68,7 @@ left_verts = [v for v in bm.verts if dominant(v) in L]
 left_vset = set(left_verts)
 left_faces = [f for f in bm.faces if sum(1 for v in f.verts if v in left_vset) * 2 >= len(f.verts)]
 
-# старую правую руку запоминаем СЕЙЧАС, до дублирования — потом эти же BMVert можно удалить
+# the old right arm is remembered NOW, before duplicating; later these same BMVerts can be deleted
 old_right_verts = [v for v in bm.verts if dominant(v) in R]
 old_right_set = set(old_right_verts)
 old_right_faces = [f for f in bm.faces if any(v in old_right_set for v in f.verts)]
@@ -77,13 +77,13 @@ left_faces = [f for f in left_faces if f not in old_right_face_set]
 edge_set = [e for e in bm.edges if e.verts[0] in left_vset and e.verts[1] in left_vset]
 print("[mirror] левых вершин:", len(left_verts), "старых правых вершин:", len(old_right_verts))
 
-# 1. удаляем старую правую руку
+# 1. delete the old right arm
 bmesh.ops.delete(bm, geom=old_right_faces, context="FACES")
 loose = [v for v in old_right_verts if v.is_valid and not v.link_faces]
 bmesh.ops.delete(bm, geom=loose, context="VERTS")
 print("[mirror] удалено старых граней:", len(old_right_faces), "висящих вершин:", len(loose))
 
-# 2. дублируем и зеркалим левую руку (left_verts/left_faces всё ещё валидны — их не трогали)
+# 2. duplicate and mirror the left arm (left_verts/left_faces are still valid: they were not touched)
 ret = bmesh.ops.duplicate(bm, geom=left_verts + left_faces + edge_set)
 new_verts = [g for g in ret["geom"] if isinstance(g, bmesh.types.BMVert)]
 new_faces = [g for g in ret["geom"] if isinstance(g, bmesh.types.BMFace)]
@@ -114,7 +114,7 @@ for v in new_verts:
 if missing_role:
     print("[mirror] без зеркала (оставлено как есть — общие кости):", missing_role)
 
-# 3. сшиваем зеркальную копию со швом, что остался на теле после удаления старой руки
+# 3. weld the mirrored copy to the seam left on the body after deleting the old arm
 before_merge = len(bm.verts)
 bmesh.ops.remove_doubles(bm, verts=list(bm.verts), dist=0.006)
 print("[mirror] слито у шва:", before_merge - len(bm.verts))

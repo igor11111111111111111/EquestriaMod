@@ -1,21 +1,21 @@
-# Форма мира в одном месте: и картинка высот для редактора, и координаты поселений считаются отсюда,
-# иначе город встанет не на ту высоту и повиснет в воздухе или утонет.
+# The shape of the world in one place: both the heightmap for the editor and the settlement coordinates are computed
+# from here, otherwise a town ends up at the wrong height and hangs in the air or sinks.
 import numpy as np
 
-SEA_LEVEL = 0.35        # доля высоты, ниже неё — вода
-PLAIN = 0.45            # равнина, на которой стоят поселения
-MOUNTAIN = 0.85         # вершины гор
+SEA_LEVEL = 0.35        # fraction of height, below it - water
+PLAIN = 0.45            # the plain on which settlements stand
+MOUNTAIN = 0.85         # mountain peaks
 SEED = 20260916
 
-# Площадки под поселения: доля от размера карты (x, y) и радиус ровного места
+# Areas for settlements: fraction of the map size (x, y) and the radius of the flat area
 PLATEAUS = [
-    (0.38, 0.42, 0.045),   # Кантерлот
-    (0.58, 0.58, 0.035),   # Понивилль
+    (0.38, 0.42, 0.045),   # Canterlot
+    (0.58, 0.58, 0.035),   # Ponyville
 ]
 
 
 def height_field(size):
-    """Нормированная карта высот 0..1, начало координат в левом нижнем углу карты."""
+    """Normalized heightmap 0..1, origin at the lower left corner of the map."""
     yy, xx = np.mgrid[0:size, 0:size]
     u, v = xx / (size - 1), yy / (size - 1)
 
@@ -55,7 +55,7 @@ def height_field(size):
 
 
 def sample(field, u, v):
-    """Высота (0..1) в точке по долям карты."""
+    """Height (0..1) at a point given in map fractions."""
     size = field.shape[0]
     x = int(np.clip(u * (size - 1), 0, size - 1))
     y = int(np.clip(v * (size - 1), 0, size - 1))
@@ -63,7 +63,7 @@ def sample(field, u, v):
 
 
 def to_meters(norm_value, field, min_height, max_height):
-    """Перевод нормированной высоты в метры так же, как это сделал импорт в редакторе."""
+    """Converts a normalized height to meters the same way the editor import did."""
     lo, hi = float(field.min()), float(field.max())
     if hi - lo < 1e-6:
         return min_height

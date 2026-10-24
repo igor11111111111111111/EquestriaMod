@@ -1,23 +1,23 @@
-# Анатомические карты чужих моделей: где у них суставы.
+# Anatomy maps of third-party models: where their joints are.
 #
-# Модели грифона и яка сгенерированы по референсам и приходят четвероногими, без скелета и в
-# произвольной ориентации. Автоматически разобрать, где нога, а где хвост, надёжно нельзя,
-# поэтому суставы сняты руками по ортографическим видам с координатной сеткой
-# (tools/preview_model.py + подпись координат) и записаны сюда.
+# The griffon and yak models are generated from references and arrive as quadrupeds, with no skeleton
+# and in arbitrary orientation. Telling a leg from a tail automatically cannot be done reliably,
+# so the joints were taken by hand from orthographic views with a coordinate grid
+# (tools/preview_model.py + coordinate labels) and recorded here.
 #
-# Координаты — в системе самой модели (метры, Z вверх), до всякого поворота. Поворот "yaw"
-# применяется первым и разворачивает модель мордой в -Y, как смотрит персонаж Bannerlord.
+# Coordinates are in the model's own space (metres, Z up), before any rotation. The "yaw" rotation
+# is applied first and turns the model to face -Y, the way a Bannerlord character faces.
 #
-# Ключи суставов — это кости ванильного скелета (bip01_*), к которым они привязываются:
-#   pelvis, spine, spine1, spine2, neck, head, head_end — позвоночник от таза до макушки;
-#   l/r_clavicle, l/r_upperarm, l/r_forearm, l/r_hand, l/r_hand_end — передние лапы (станут руками);
-#   l/r_thigh, l/r_calf, l/r_foot, l/r_toe, l/r_toe_end — задние лапы (станут ногами).
-# Всё остальное (хвост, крылья, рога) двигается вместе с ближайшей костью — отдельными костями
-# в скелете Bannerlord их нет.
+# The joint keys are the vanilla skeleton bones (bip01_*) they are bound to:
+#   pelvis, spine, spine1, spine2, neck, head, head_end - the spine from the pelvis to the crown;
+#   l/r_clavicle, l/r_upperarm, l/r_forearm, l/r_hand, l/r_hand_end - front legs (will become arms);
+#   l/r_thigh, l/r_calf, l/r_foot, l/r_toe, l/r_toe_end - hind legs (will become legs).
+# Everything else (tail, wings, horns) moves with the nearest bone - the Bannerlord skeleton has
+# no separate bones for them.
 
 GRIFFON = {
     "name": "griffon",
-    "yaw": 0.0,              # модель уже смотрит в -Y (клюв на -Y)
+    "yaw": 0.0,              # the model already faces -Y (beak towards -Y)
     "target_tris": 12000,
     "joints": {
         "pelvis": (0.00, 0.06, -0.05),
@@ -50,22 +50,22 @@ GRIFFON = {
         "r_toe": (0.14, -0.14, -0.50),
         "r_toe_end": (0.14, -0.24, -0.52),
     },
-    # части, которые в игре станут отдельными предметами (вершины выбираются по координатам модели)
+    # parts that will become separate items in game (vertices are selected by model coordinates)
     "extras": {
-        # крылья: всё, что выше спины и дальше 0.22 от середины по X
+        # wings: everything above the back and further than 0.22 from the middle in X
         "wings": {"min_z": 0.06, "min_y": -0.42},
-        # хвост: всё позади таза
+        # tail: everything behind the pelvis
         "tail": {"min_y": 0.28},
     },
-    # крылья и хвост двигаются одной костью целиком: иначе при переносе позы их растягивает
-    # между лапами и они превращаются в лапшу
+    # wings and tail move with a single bone as a whole: otherwise retargeting the pose stretches them
+    # between the legs and they turn into noodles
     "rigid": {"wings": "spine2", "tail": "pelvis"},
-    # Детали, которые пересаживаются на антро-тело пони (tools/make_creature_parts.py).
-    #   rule   — какие вершины модели берём (координаты модели, после разворота мордой в -Y);
-    #   bone   — на какую кость садится деталь;
-    #   size/by — до какого размера по оси её масштабировать;
-    #   rotate — поворот детали вокруг своей середины (тангаж, крен, рыскание, градусы);
-    #   anchor — какая точка детали совмещается с костью; offset — сдвиг от кости.
+    # Parts grafted onto the anthro pony body (tools/make_creature_parts.py).
+    #   rule   - which model vertices to take (model coordinates, after turning to face -Y);
+    #   bone   - which bone the part sits on;
+    #   size/by - what size along which axis to scale it to;
+    #   rotate - rotation of the part around its middle (pitch, roll, yaw, degrees);
+    #   anchor - which point of the part is aligned with the bone; offset - shift from the bone.
     "graft": {
         "head": {"rule": {"max_y": -0.55}, "bone": "head", "size": 0.52, "by": "z",
                  "rotate": (0, 0, 0), "anchor": "bottom", "offset": (0, -0.01, -0.28),
@@ -75,19 +75,19 @@ GRIFFON = {
         "tail": {"rule": {"min_y": 0.28}, "bone": "pelvis", "size": 0.50, "by": "y",
                  "rotate": (-15, 0, 0), "anchor": "front", "offset": (0, 0.10, 0.00), "tris": 1500},
     },
-    # Области тела: какая часть модели какими костями двигается. Без этого вершина цепляется
-    # за случайную ближайшую кость (живот — за лапу, перо — за руку) и при переносе позы
-    # вытягивается в шип.
+    # Body regions: which part of the model moves with which bones. Without this a vertex grabs
+    # a random nearest bone (the belly a leg, a feather an arm) and is stretched into a spike
+    # when the pose is retargeted.
     "regions": {
-        "arms": {"max_y": -0.42, "max_z": 0.06},      # передние лапы, станут руками
-        "legs": {"min_y": -0.22, "max_z": 0.02},      # задние лапы, станут ногами
-        "head": {"max_y": -0.50, "min_z": 0.08},      # голова с шеей
+        "arms": {"max_y": -0.42, "max_z": 0.06},      # front legs, will become arms
+        "legs": {"min_y": -0.22, "max_z": 0.02},      # hind legs, will become legs
+        "head": {"max_y": -0.50, "min_z": 0.08},      # head with neck
     },
 }
 
 YAK = {
     "name": "yak",
-    "yaw": -90.0,            # модель смотрит в +X, разворачиваем мордой в -Y
+    "yaw": -90.0,            # the model faces +X, turn it to face -Y
     "target_tris": 14000,
     "joints": {
         "pelvis": (-0.30, 0.00, 0.38),
@@ -121,7 +121,7 @@ YAK = {
         "r_toe_end": (-0.24, 0.13, 0.01),
     },
     "extras": {
-        # хвост яка — сзади, выше ног
+        # the yak's tail is at the back, above the legs
         "tail": {"max_x": -0.44, "min_z": 0.20},
     },
     "rigid": {"tail": "pelvis"},
@@ -129,8 +129,8 @@ YAK = {
         "head": {"rule": {"max_y": -0.02}, "bone": "head", "size": 0.50, "by": "z",
                  "rotate": (0, 0, 0), "anchor": "bottom", "offset": (0, 0.02, -0.30),
                  "tris": 4000},
-        # хвост яка — короткий обрубок, масштабируем по ширине: по толщине он почти плоский
-        # и масштаб «по высоте» раздувал его в лопату
+        # the yak's tail is a short stub, scale it by width: in thickness it is almost flat
+        # and scaling "by height" inflated it into a shovel
         "tail": {"rule": {"min_y": 0.45, "min_z": 0.25, "max_z": 0.36}, "bone": "pelvis",
                  "size": 0.18, "by": "x", "rotate": (0, 0, 0), "anchor": "middle",
                  "offset": (0, 0.16, 0.10), "tris": 1200},
@@ -144,7 +144,7 @@ YAK = {
 
 CREATURES = {"griffon": GRIFFON, "yak": YAK}
 
-# Кость скелета Bannerlord для каждого сустава карты. Имена сверены с human_skeleton.fbx.
+# The Bannerlord skeleton bone for each joint of the map. Names checked against human_skeleton.fbx.
 BONES = {
     "pelvis": "bip01_pelvis_0", "spine": "bip01_spine_9", "spine1": "bip01_spine1_10",
     "spine2": "bip01_spine2_11", "neck": "bip01_neck_12", "head": "bip01_head_13",
@@ -161,7 +161,7 @@ BONES = {
     "r_toe": "bip01_r_toe0_8", "r_toe_end": "bip01_toe0_nub_notused",
 }
 
-# Цепочки «кость -> следующий сустав»: по ним строятся хвосты костей временного скелета.
+# "bone -> next joint" chains: the bone tails of the temporary skeleton are built from them.
 CHAINS = [
     ["pelvis", "spine", "spine1", "spine2", "neck", "head", "head_end"],
     ["l_clavicle", "l_upperarm", "l_forearm", "l_hand", "l_hand_end"],
@@ -170,20 +170,20 @@ CHAINS = [
     ["r_thigh", "r_calf", "r_foot", "r_toe", "r_toe_end"],
 ]
 
-# Оснащённая модель грифона (Meshy, скелет из 27 костей). Здесь записано, куда должна смотреть
-# каждая кость в стойке: спина вверх, передние лапы в стороны руками, задние вниз ногами,
-# хвост назад-вниз. Модель смотрит в -Y, «frontleg» без приставки — левая сторона (+X).
+# The rigged griffon model (Meshy, 27-bone skeleton). This records where each bone should point
+# in the stance: back up, front legs out to the sides as arms, hind legs down as legs,
+# tail back and down. The model faces -Y; "frontleg" without a prefix is the left side (+X).
 GRIFFON["rigged_yaw"] = 0.0
 GRIFFON["tpose"] = {
-    # Корпус поднимаем поворотом самого таза: туловище четвероногого висит в основном на этой
-    # кости, и поворот груди его не двигает. После этого ноги, руки и хвост доворачиваются
-    # по месту, каждый своей целью.
+    # The torso is raised by rotating the pelvis itself: a quadruped's trunk hangs mostly on this
+    # bone, and rotating the chest does not move it. After that the legs, arms and tail are turned
+    # into place, each towards its own target.
     "Hips": {"rotate": (-90.0, 0.0, 0.0)},
     "head": {"ref": "headend", "dir": (0.0, -0.75, 0.55)},
     "earend": {"dir": (0.25, -0.2, 1.0)},
     "R_earend": {"dir": (-0.25, -0.2, 1.0)},
 
-    # передние лапы становятся руками: разводим в стороны
+    # front legs become arms: spread them out to the sides
     "frontleg": {"ref": "frontleg0", "dir": (1.0, 0.0, -0.05)},
     "frontleg0": {"ref": "frontleg1", "dir": (1.0, 0.0, -0.05)},
     "frontleg1": {"ref": "frontleg2", "dir": (1.0, 0.0, 0.0)},
@@ -193,7 +193,7 @@ GRIFFON["tpose"] = {
     "R_frontleg1": {"ref": "R_frontleg2", "dir": (-1.0, 0.0, 0.0)},
     "R_frontleg2": {"dir": (-1.0, 0.0, -0.15)},
 
-    # задние лапы выпрямляются ногами вниз
+    # hind legs straighten down as legs
     "backleg": {"ref": "backleg0", "dir": (0.05, 0.0, -1.0)},
     "backleg0": {"ref": "backleg1", "dir": (0.0, 0.0, -1.0)},
     "backleg1": {"ref": "backleg2", "dir": (0.0, 0.0, -1.0)},
@@ -203,7 +203,7 @@ GRIFFON["tpose"] = {
     "R_backleg1": {"ref": "R_backleg2", "dir": (0.0, 0.0, -1.0)},
     "R_backleg2": {"dir": (0.0, -1.0, -0.3)},
 
-    # хвост назад и вниз
+    # tail back and down
     "tail": {"ref": "tailstart", "dir": (0.0, 1.0, -0.35)},
     "tailstart": {"ref": "tail1", "dir": (0.0, 1.0, -0.45)},
     "tail1": {"ref": "tail2", "dir": (0.0, 1.0, -0.55)},
@@ -211,7 +211,7 @@ GRIFFON["tpose"] = {
     "tail3": {"dir": (0.0, 1.0, -0.75)},
 }
 
-# Какая кость зверя какой кости Bannerlord соответствует (для переноса весов).
+# Which creature bone corresponds to which Bannerlord bone (for weight transfer).
 GRIFFON["bone_map"] = {
     "Hips": "pelvis", "chest": "spine1",
     "head": "neck", "headend": "head", "earend": "head", "R_earend": "head",
@@ -223,10 +223,10 @@ GRIFFON["bone_map"] = {
     "tail": "pelvis", "tailstart": "pelvis", "tail1": "pelvis", "tail2": "pelvis", "tail3": "pelvis",
 }
 
-# Доворот костей зверя к костям Bannerlord: какая кость к какой и по какому суставу считать
-# направление. Хвост, уши и крылья сюда не входят — они должны остаться в стойке.
+# Turning the creature bones onto the Bannerlord bones: which bone to which, and by which joint to
+# measure the direction. Tail, ears and wings are not included - they must stay in the stance.
 GRIFFON["retarget"] = {
-    # таз: направление «таз -> поясница» у Bannerlord вертикальное, по нему и ставим корпус
+    # pelvis: the "pelvis -> lower back" direction is vertical in Bannerlord, so the torso is set by it
     "Hips": {"key": "pelvis", "ref": "chest"},
     "chest": {"key": "spine1", "ref": "head"},
     "head": {"key": "neck", "ref": "headend"},

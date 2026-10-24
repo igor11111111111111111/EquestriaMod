@@ -1,15 +1,16 @@
-"""Убирает с модели пони мелкие звёзды кьютимарки.
+"""Removes the small cutie mark stars from the pony model.
 
-Кьютимарка (tools/convert_twilight.py, build_cutiemarks) — геометрия в меше хвоста: большая звезда
-на бедре и три маленьких вокруг. Вся она жёстко привязана к тазу, поэтому маленькие звёзды, которые
-ложатся уже на ногу, при шаге отрываются от кожи и «летают». Большая сидит на бедре у самого таза
-и держится, её оставляем.
+The cutie mark (tools/convert_twilight.py, build_cutiemarks) is geometry in the tail mesh: a big star
+on the thigh and three small ones around it. All of it is rigidly bound to the pelvis, so the small stars
+that already lie on the leg tear away from the skin when walking and "fly". The big one sits on the thigh
+right by the pelvis and holds; we keep it.
 
-Маленькие звёзды отличаются развёрткой: их грани лежат в столбце атласа u≈0.44 (белый цвет),
-большая звезда — в u≈0.31. Исходные координаты из convert_twilight.py (0.75 и 0.25) в атлас не
-годятся: при упаковке текстур UV сдвигаются, и по ним режется сам хвост (он занимает u≈0.77…0.98).
+The small stars differ by their UVs: their faces lie in the atlas column u≈0.44 (white colour),
+the big star in u≈0.31. The original coordinates from convert_twilight.py (0.75 and 0.25) are no good
+for the atlas: texture packing shifts the UVs, and cutting by them cuts the tail itself
+(it spans u≈0.77…0.98).
 
-Запуск (файл перезаписывается, рядом кладётся копия .before_cutiemark):
+Run (the file is overwritten, a .before_cutiemark copy is put next to it):
   blender --background ../assets/twilight_anthro/export/eq_twilight.blend --python trim_cutiemark.py
 """
 import os
@@ -19,9 +20,9 @@ import bmesh
 import bpy
 
 TAIL = "eq_twilight_tail"
-SMALL_U = 0.44   # столбец атласа, которым покрыты маленькие звёзды
+SMALL_U = 0.44   # atlas column that covers the small stars
 TOL = 0.03
-EXPECT = 72      # 6 звёзд (по три с каждого бока) по 12 треугольников
+EXPECT = 72      # 6 stars (three on each side), 12 triangles each
 
 
 def log(*a):
@@ -46,7 +47,7 @@ cut = before - len(me.polygons)
 log(f"убрано граней: {cut} из {before}, осталось {len(me.polygons)}")
 
 if cut != EXPECT:
-    # лучше ничего не трогать, чем срезать кусок хвоста: проверьте столбец атласа
+    # better to touch nothing than to cut off part of the tail: check the atlas column
     log(f"ожидалось {EXPECT} граней — модель не трогаем")
 else:
     for name, ext in (("eq_twilight.fbx", ".before_cutiemark.fbx"),):
@@ -54,7 +55,7 @@ else:
         if os.path.exists(path):
             shutil.copyfile(path, path.replace(".fbx", ext))
 
-    # экспорт как в convert_twilight.py
+    # export as in convert_twilight.py
     skel = next(o for o in bpy.data.objects if o.type == "ARMATURE")
     items = [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("eq_twilight_")]
     bpy.ops.object.select_all(action="DESELECT")

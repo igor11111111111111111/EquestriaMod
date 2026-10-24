@@ -7,19 +7,19 @@ using TaleWorlds.Localization;
 
 namespace EquestriaMod
 {
-    // Сохраняет расу героев в сейве. В Bannerlord свойство Race персонажа не сохраняется: у обычных
-    // персонажей раса каждый раз берётся из XML, а раса героя игрока после загрузки сбрасывается в человека.
-    // (The Old Realms решает то же своими патчами PreserveRace / RaceFixCampaignBehavior.)
+    // Saves heroes' race in the save file. In Bannerlord a character's Race property is not saved: ordinary
+    // characters take their race from XML every time, and the player hero's race is reset to human after loading.
+    // (The Old Realms solves the same with its own patches PreserveRace / RaceFixCampaignBehavior.)
     public class EquestriaRaceSaveBehavior : CampaignBehaviorBase
     {
-        // id героя -> имя расы из skins.xml; хранятся только нечеловеческие расы
+        // hero id -> race name from skins.xml; only non-human races are stored
         private Dictionary<string, string> _heroRaces = new Dictionary<string, string>();
 
         public override void RegisterEvents()
         {
             CampaignEvents.OnGameLoadedEvent.AddNonSerializedListener(this,
                 _ => EquestriaCrashLog.Try("восстановление рас после загрузки", RestoreRaces));
-            // и в новой игре, и после загрузки: пони со свободной головой получает гриву (см. EquestriaMane)
+            // both in a new game and after loading: a pony with a free head slot gets a mane (see EquestriaMane)
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, _ =>
                 EquestriaCrashLog.Try("выдача гривы и хвоста", () =>
                 {
@@ -88,7 +88,7 @@ namespace EquestriaMod
             }
         }
 
-        // Консоль (Alt+~): equestria.set_player_race pony   /   equestria.set_player_race human
+        // Console (Alt+~): equestria.set_player_race pony   /   equestria.set_player_race human
         [CommandLineFunctionality.CommandLineArgumentFunction("set_player_race", "equestria")]
         public static string SetPlayerRaceCommand(List<string> args)
         {

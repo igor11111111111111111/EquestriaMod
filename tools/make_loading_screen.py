@@ -1,19 +1,19 @@
-"""Картинки загрузочного экрана мода.
+"""Loading screen images of the mod.
 
-  py -3 tools/make_loading_screen.py [папка Module]
+  py -3 tools/make_loading_screen.py [Module folder]
 
-Загрузочные картинки игра берёт из спрайтов категории: GauntletDefaultLoadingWindowManager грузит
-категорию и выбирает часть по номеру от 1 до числа листов. Дописывать части в ванильную категорию
-бесполезно — число листов игра берёт у неё же, поэтому у мода СВОЯ категория, а имя картинки
-подменяет src/EquestriaLoadingScreen.cs, он же и выбирает случайную. Файлы:
-  Module/GUI/EquestriaSpriteData.xml                          — категория, листы и части;
-  Module/GUI/SpriteSheets/ui_eq_loading/ui_eq_loading_<N>.png — листы (по картинке на лист);
-  Module/GUI/SpriteParts/ui_eq_loading/<имя>.png              — исходники частей.
+The game takes loading images from a sprite category: GauntletDefaultLoadingWindowManager loads the
+category and picks a part by number from 1 to the number of sheets. Adding parts to the vanilla
+category is pointless — the game takes the sheet count from it too, so the mod has ITS OWN category,
+and the image name is substituted by src/EquestriaLoadingScreen.cs, which also picks a random one. Files:
+  Module/GUI/EquestriaSpriteData.xml                          — category, sheets and parts;
+  Module/GUI/SpriteSheets/ui_eq_loading/ui_eq_loading_<N>.png — sheets (one image per sheet);
+  Module/GUI/SpriteParts/ui_eq_loading/<name>.png             — part sources.
 
-Добавить картинку — положить файл в assets/loading (png, jpg или jpeg) и запустить скрипт снова.
-Порядок — по имени файла, поэтому имена нумерованные: screen_01, screen_02, ... Картинка приводится
-к 1920x1080 по кадру: масштаб по меньшей стороне и обрезка лишнего, чтобы ничего не растягивало.
-Если папка пуста, рисуется временная заглушка.
+To add an image — put the file into assets/loading (png, jpg or jpeg) and run the script again.
+The order is by file name, so the names are numbered: screen_01, screen_02, ... The image is fitted
+to 1920x1080 by frame: scaled by the smaller side with the excess cropped, so nothing is stretched.
+If the folder is empty, a temporary placeholder is drawn.
 """
 import os
 import sys
@@ -26,7 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 READY = os.path.join(HERE, "..", "assets", "loading")
 SIZE = (1920, 1080)
 CATEGORY = "ui_eq_loading"
-PART = "eq_loading_"       # к имени дописывается номер: eq_loading_01, eq_loading_02, ...
+PART = "eq_loading_"       # a number is appended to the name: eq_loading_01, eq_loading_02, ...
 SUFFIXES = (".png", ".jpg", ".jpeg")
 FONT = r"C:\Windows\Fonts\georgiab.ttf"
 
@@ -36,14 +36,14 @@ def log(*a):
 
 
 def placeholder():
-    """Временная заставка: тёмно-синий фон с лучами, название мода и подпись."""
+    """Temporary splash: dark blue background with rays, the mod name and a caption."""
     img = Image.new("RGB", SIZE, (10, 14, 22))
     draw = ImageDraw.Draw(img)
-    for y in range(SIZE[1]):  # вертикальный градиент
+    for y in range(SIZE[1]):  # vertical gradient
         k = y / SIZE[1]
         draw.line([(0, y), (SIZE[0], y)], fill=(int(10 + 26 * k), int(14 + 30 * k), int(24 + 44 * k)))
     cx, cy = SIZE[0] // 2, int(SIZE[1] * 0.42)
-    for i in range(36):  # мягкое свечение по центру
+    for i in range(36):  # soft glow in the centre
         r = 520 - i * 14
         c = int(26 + i * 1.6)
         draw.ellipse([cx - r, cy - r // 2, cx + r, cy + r // 2], outline=(c, c + 8, c + 18), width=3)
@@ -52,7 +52,7 @@ def placeholder():
     note = ImageFont.truetype(FONT, 34)
     for text, font, y, color in (("Equestria: Fall of Harmony", title, cy - 110, (236, 226, 246)),
                                  ("мод для Mount & Blade II: Bannerlord", sub, cy + 70, (150, 190, 215)),
-                                 # ниже — только логотип игры, поэтому подпись держим над ним
+                                 # below is only the game logo, so the caption is kept above it
                                  ("временная заставка — заменить своей картинкой", note, cy + 210, (110, 125, 145))):
         w = draw.textlength(text, font=font)
         draw.text(((SIZE[0] - w) / 2 + 3, y + 3), text, font=font, fill=(0, 0, 0))
@@ -61,9 +61,9 @@ def placeholder():
 
 
 def fit(img):
-    """Кадрирование под 1920x1080: масштаб «по большему», лишнее срезается поровну с краёв.
+    """Framing to 1920x1080: scale "to cover", the excess is cropped equally from the edges.
 
-    Растягивать нельзя — у наших картинок соотношение чуть шире экранного, и лица поплывут.
+    No stretching — our images have a slightly wider aspect than the screen, and faces would distort.
     """
     scale = max(SIZE[0] / img.width, SIZE[1] / img.height)
     w, h = round(img.width * scale), round(img.height * scale)
@@ -95,7 +95,7 @@ def main():
         images = [placeholder()]
         log("картинок нет — нарисована временная заставка")
 
-    # Старые листы и части убираем: иначе после удаления картинки её лист останется лежать
+    # Remove old sheets and parts: otherwise after an image is deleted its sheet would stay around
     for folder in (sheets, parts):
         for name in os.listdir(folder):
             if name.lower().endswith(".png"):
@@ -106,9 +106,9 @@ def main():
         part = f"{PART}{i:02d}"
         names.append(part)
         img.save(os.path.join(parts, part + ".png"))
-        # Лист читает движок (Texture.LoadTextureFromPath) и раскладывает байты как BGR: если
-        # положить обычный RGB, в игре красный и синий меняются местами. Поэтому пишем с
-        # перестановкой. Лист на картинку свой — так их число ничем не ограничено.
+        # The sheet is read by the engine (Texture.LoadTextureFromPath), which lays the bytes out as BGR:
+        # if a regular RGB is written, red and blue are swapped in game. So we write with the channels
+        # swapped. Each image has its own sheet — that way their number is not limited.
         r, g, b = img.split()
         Image.merge("RGB", (b, g, r)).save(os.path.join(sheets, f"{CATEGORY}_{i}.png"))
 

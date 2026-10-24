@@ -1,13 +1,13 @@
-# Заклинания мода: Module/ModuleData/equestria_spells.xml + переводы.
+# The mod's spells: Module/ModuleData/equestria_spells.xml + translations.
 #
-#   python make_spells.py <папка Module мода>
+#   python make_spells.py <the mod's Module folder>
 #
-# Файл читает сама DLL (EquestriaSpells.cs), а не игра: это не игровой тип объектов, в SubModule.xml
-# его регистрировать не нужно. Названия и описания — через {=ключ}, русский текст кладётся
-# в ModuleData/Languages/<язык>/eq_spells_*.xml (см. tools/lang.py).
+# The file is read by the DLL itself (EquestriaSpells.cs), not by the game: it is not a game object type,
+# so it need not be registered in SubModule.xml. Names and descriptions go through {=key}; the Russian text
+# goes to ModuleData/Languages/<language>/eq_spells_*.xml (see tools/lang.py).
 #
-# Частицы берём ванильные: их имена лежат строками в
-# Native\AssetPackages\particles.tpac (psys_*). Своих частиц у мода пока нет.
+# Particles are vanilla: their names are stored as strings in
+# Native\AssetPackages\particles.tpac (psys_*). The mod has no particles of its own yet.
 import os
 import sys
 
@@ -18,27 +18,27 @@ MOD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Module")
 DATA = os.path.join(MOD, "ModuleData")
 
-# id, название, описание, и числа:
-#   mana      — сколько маны стоит
-#   cooldown  — откат в секундах
-#   damage    — урон в центре взрыва (к краю радиуса падает вдвое)
-#   radius    — радиус взрыва, метры
-#   speed     — скорость снаряда, м/с
-#   life      — сколько секунд летит (speed * life = дальность)
-#   cast      — задержка перед вылетом, секунды (под анимацию броска)
-#   trail     — частицы у летящего снаряда; "prefab:имя" — заготовка из Module/Prefabs
-#   burst     — частицы взрыва
-#   light     — цвет и сила свечения снаряда: r,g,b,интенсивность,радиус (0 = без света)
+# id, name, description, and numbers:
+#   mana      - how much mana it costs
+#   cooldown  - cooldown in seconds
+#   damage    - damage at the centre of the explosion (halves toward the edge of the radius)
+#   radius    - explosion radius, metres
+#   speed     - projectile speed, m/s
+#   life      - how many seconds it flies (speed * life = range)
+#   cast      - delay before launch, seconds (for the throw animation)
+#   trail     - particles on the flying projectile; "prefab:name" is a prefab from Module/Prefabs
+#   burst     - explosion particles
+#   light     - projectile glow colour and strength: r,g,b,intensity,radius (0 = no light)
 SPELLS = [
     dict(id="fireball",
          name="Огненный шар",
          text="Сгусток пламени: взрывается там, куда попал, и обжигает всех вокруг. "
               "Драконы плюются им от рождения, единороги учатся годами.",
          mana=15, cooldown=12, damage=60, radius=4.0, speed=35, life=3.0, cast=0.5,
-         # ВРЕМЕННО, как в The Old Realms: хвост — ванильная psys_game_burning_agent с их
-         # настройкой излучателей (Module/Prefabs/eq_spell_fx.xml), взрыв — их частица
-         # psys_fireball_explosion_1 (перенесена в Module/Assets/spells/eq_spell_fx.tpac).
-         # Заменить на свои, сделанные в редакторе.
+         # TEMPORARY, as in The Old Realms: the trail is vanilla psys_game_burning_agent with their
+         # emitter settings (Module/Prefabs/eq_spell_fx.xml), the explosion is their particle
+         # psys_fireball_explosion_1 (moved to Module/Assets/spells/eq_spell_fx.tpac).
+         # Replace with our own, made in the editor.
          trail="prefab:eq_fireball_trail", burst="psys_fireball_explosion_1",
          light="255,170,0,50,10"),
 ]
@@ -65,7 +65,7 @@ def build():
             % dict(s,
                    name=lang.loc("eq_spell_%s_name" % s["id"], s["name"]),
                    text=lang.loc("eq_spell_%s_text" % s["id"], s["text"])))
-    # Строки самого интерфейса магии (их берёт C# по ключу; в XML заклинаний они не нужны)
+    # Strings of the magic UI itself (C# takes them by key; they are not needed in the spells XML)
     for key, text in [("eq_mana_label", "Мана"),
                       ("eq_mana_hint", "Мана копится в пути по карте и тратится на заклинания."),
                       ("eq_spell_no_mana", "Не хватает маны"),

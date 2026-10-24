@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Довязать веса у частей, перекроенных вручную в assets/pony/eq_pony_edit.blend.
+"""Fill in missing weights on the parts re-cut by hand in assets/pony/eq_pony_edit.blend.
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_rebind.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_rebind.py
 
-Только ДОЛИВАЕТ веса: трогает вершину, только если у неё сейчас вообще нет ни одной группы.
-Уже расставленные веса (в том числе то, что перенеслось через Join из старых кусков) не трогает.
-Донор — старая автоматически нарезанная часть с тем же именем (коллекция «Пони - части», объекты
-eq_pony_<часть>.001): у каждой вершины новой модели берётся набор (кость, вес) с ближайшей по
-мировым координатам вершины донора. Части-подвески (рог, грива, хвост, крылья) у донора и так
-жёстко на одной кости — перенос это просто повторит.
-После переноса — предел 4 кости на вершину и нормализация (как требует движок), как в основном
-конвейере (tools/make_pony_model.py).
+It only FILLS IN weights: it touches a vertex only if it currently has no group at all.
+Weights already in place (including those carried over by Join from the old pieces) are not touched.
+The donor is the old automatically cut part with the same name (collection "Pony - parts", objects
+eq_pony_<part>.001): each vertex of the new model takes the (bone, weight) set of the nearest donor vertex
+in world coordinates. The hanging parts (horn, mane, tail, wings) are rigid on one bone in the donor anyway,
+so the transfer simply repeats that.
+After the transfer: a limit of 4 bones per vertex and normalization (as the engine requires), as in the main
+pipeline (tools/make_pony_model.py).
 """
 import bpy
 from mathutils.kdtree import KDTree

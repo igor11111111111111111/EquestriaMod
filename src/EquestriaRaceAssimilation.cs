@@ -10,56 +10,59 @@ using TaleWorlds.ObjectSystem;
 
 namespace EquestriaMod
 {
-    // Ассимиляция расы захваченных поселений — перенос мода DynaCulture (github.com/Splintertx/
-    // DynaCulture, открытый код, GPL) на эту расовую систему, без его слабых мест.
+    // Race assimilation of captured settlements — a port of the DynaCulture mod (github.com/Splintertx/
+    // DynaCulture, open source, GPL) to this race system, without its weak spots.
     //
-    // КЛЮЧЕВОЙ ФАКТ (подтверждён в tools/make_troops.py, CULTURE_RACE): раса рекрута в этом моде
-    // жёстко запечена в дерево войск КУЛЬТУРЫ при сборке (sturgia=драконы, aserai=чейнджлинги,
-    // vlandia=грифоны, battania=гиппогрифы, khuzait=яки, nord=олени, empire=пони по умолчанию) —
-    // не выбирается на лету. Значит программная смена Settlement.Culture (приём DynaCulture) САМА
-    // ПО СЕБЕ уже меняет расу, которую набирает поселение — дополнительных связей раса↔культура
-    // в этом файле заводить не нужно, работаем напрямую с CultureObject, как и оригинал.
+    // KEY FACT (confirmed in tools/make_troops.py, CULTURE_RACE): in this mod the recruit's race is
+    // hard-baked into the CULTURE's troop tree at build time (sturgia=dragons, aserai=changelings,
+    // vlandia=griffons, battania=hippogriffs, khuzait=yaks, nord=deer, empire=ponies by default) —
+    // it is not chosen on the fly. So changing Settlement.Culture from code (the DynaCulture trick)
+    // BY ITSELF already changes the race the settlement recruits — no extra race<->culture links
+    // are needed in this file, we work directly with CultureObject, like the original.
     //
-    // Отличия от оригинала (разобран целиком 06.10.2026):
-    //  - Один класс логики, не два (в DynaCulture жил мёртвый неймспейс-прототип
-    //    ChangeSettlementCulture.Data рядом с рабочим DynaCulture.Data — наследуем только рабочий).
-    //  - Сохранение — через НАТИВНЫЙ IDataStore.SyncData (см. ниже), а не свой файл на диске по
-    //    имени героя (в оригинале SyncData был пустым, а состояние лежало в отдельном файле —
-    //    хрупко: тёзки, не привязано к слоту сохранения).
-    //  - Без очистки "corrupted troops/recruits" — это обход БАГА ВАНИЛИ, актуального их инструментам
-    //    сборки, у нас не воспроизводился.
-    //  - Применяется ко ВСЕМ державам карты (и ИИ, и игрока), как и оригинал по умолчанию.
+    // Differences from the original (fully analysed 06.10.2026):
+    //  - One logic class, not two (DynaCulture had a dead prototype namespace
+    //    ChangeSettlementCulture.Data next to the working DynaCulture.Data — we inherit only the working one).
+    //  - Saving goes through the NATIVE IDataStore.SyncData (see below), not a custom file on disk keyed
+    //    by the hero's name (in the original SyncData was empty and the state lived in a separate file —
+    //    fragile: namesakes, not tied to the save slot).
+    //  - No "corrupted troops/recruits" cleanup — it is a workaround for a VANILLA BUG relevant to their
+    //    build tools, it did not reproduce for us.
+    //  - Applies to ALL kingdoms on the map (both AI and the player's), like the original by default.
     //
-    // На settlement — не разовый снимок, а СЕТЬ влияний (CurrentInfluences едет к TargetInfluences
-    // по экспоненте, см. RaceAssimilationStatus.OnDailyTick), поэтому смена владельца не переключает
-    // расу мгновенно — поселение должно какое-то время реально находиться под новой властью.
+    // A settlement holds not a one-off snapshot but a NETWORK of influences (CurrentInfluences moves
+    // toward TargetInfluences exponentially, see RaceAssimilationStatus.OnDailyTick), so a change of
+    // owner does not switch the race instantly — the settlement must actually stay under the new rule
+    // for some time.
     //
-    // Настройка — консольными командами equestria.race_assim_* (см.
-    // EquestriaRaceAssimilationCommands.cs), подбирается вживую и потом вписывается в дефолты ниже
-    // руками, тем же приёмом, что и equestria.helmet_scale/helmet_offset у EquestriaHelmetFit.
+    // Tuning — via the equestria.race_assim_* console commands (see
+    // EquestriaRaceAssimilationCommands.cs), tuned live and then written into the defaults below
+    // by hand, the same approach as equestria.helmet_scale/helmet_offset in EquestriaHelmetFit.
     public class EquestriaRaceAssimilation : CampaignBehaviorBase
     {
-        // Подобрано DynaCulture как рабочие дефолты (DefaultDynaCultureSettings.cs) — отправная
-        // точка, уточняется вживую командами ниже.
+        // Picked by DynaCulture as working defaults (DefaultDynaCultureSettings.cs) — a starting
+        // point, refined live with the commands below.
         public static float InfluenceRange = 30f;
-        // Было 45 — по просьбе пользователя 07.10.2026 ("буквально за пару дней много % меняется")
-        // в 10 раз медленнее: rate = influenceSum / AssimilationDelay (OnDailyTick), множитель здесь
-        // делит скорость приближения Current к Target напрямую, без изменения формы кривой.
+        // Was 45 — at the user's request 07.10.2026 (
+        // "a lot of % changes in literally a couple of days") made 10 times slower: rate = influenceSum /
+        // AssimilationDelay (OnDailyTick), the multiplier here divides the speed at which Current
+        // approaches Target directly, without changing the shape of the curve.
         public static int AssimilationDelay = 450;
         public static int OwnerInfluenceStrength = 5;
         public static bool TradeLinkedInfluence = true;
 
-        // Потолок доли доминирующей расы (по просьбе пользователя 07.10.2026: "в идеальном обществе
-        // никогда не будет 100% жить одной народности" — 70-90%, остальное размазано по всем прочим
-        // расам понемногу). Своя добавка поверх DynaCulture — в оригинале потолка не было, Target
-        // мог дойти до чистых 100%. См. применение в RecalculateInfluencers.
+        // Cap on the dominant race's share (at the user's request 07.10.2026:
+        // "in an ideal society 100% will never be of one
+        // people" — 70-90%, the rest spread a little over all the other races). Our own addition on top
+        // of DynaCulture — the original had no cap, Target could reach a pure 100%. See its use in
+        // RecalculateInfluencers.
         public static decimal MaxDominantShare = 0.85m;
 
-        // Все играбельные культуры мира — раса рекрута запечена на культуру намертво при сборке
-        // войск (tools/make_troops.py, CULTURE_RACE), менять/расширять этот список нужно только
-        // вместе с ним. Нужны, чтобы размазать остаток ниже MaxDominantShare по ВСЕМ расам, а не
-        // только по текущим соседям — даже в поселении без единого соседа другой расы должна
-        // появиться минимальная примесь всех остальных.
+        // All playable cultures of the world — the recruit's race is baked into the culture for good
+        // when the troops are built (tools/make_troops.py, CULTURE_RACE), so change/extend this list
+        // only together with it. Needed to spread the remainder below MaxDominantShare over ALL races,
+        // not only over current neighbours — even a settlement without a single neighbour of another
+        // race should get a minimal admixture of all the others.
         internal static readonly string[] AllCultureIds =
             { "empire", "aserai", "vlandia", "battania", "sturgia", "khuzait", "nord" };
 
@@ -74,32 +77,32 @@ namespace EquestriaMod
 
         private static bool _tooltipPatchApplied;
 
-        // Патч подсказки поселения — лениво, здесь, а не в EquestriaPatches.Apply/ApplyLate.
-        // НАЙДЕНО 06.10.2026 (см. память equestria-race-assimilation): TooltipRefresherCollection
-        // .RefreshSettlementTooltip напрямую зовёт CampaignUIHelper, у которой статическое
-        // поле-инициализатор (_partyMoraleStr = GameTexts.FindText("str_party_morale"))
-        // читает таблицу строк ДО того, как она загружена — если патчить (Harmony вынужден
-        // JIT-скомпилировать метод, это запускает статический конструктор типа) на загрузке
-        // мода или даже на главном меню, GameTexts.FindText возвращает null, внутри
-        // CampaignUIHelper падает NullReferenceException, и тип НАВСЕГДА помечается
-        // неинициализированным — родной экран карты (MapBarVM) после этого не строится
-        // вовсе. К первому тику кампании движок уже сам успешно тронул CampaignUIHelper
-        // (иначе мы бы сюда не добрались), и патчить уже безопасно — повторно статический
-        // конструктор уже готового типа не перезапускается.
+        // The settlement tooltip patch — lazily, here, not in EquestriaPatches.Apply/ApplyLate.
+        // FOUND 06.10.2026 (see memory equestria-race-assimilation): TooltipRefresherCollection
+        // .RefreshSettlementTooltip calls CampaignUIHelper directly, whose static field
+        // initializer (_partyMoraleStr = GameTexts.FindText("str_party_morale"))
+        // reads the string table BEFORE it is loaded — if we patch (Harmony has to JIT-compile
+        // the method, which runs the type's static constructor) at mod load or even at the main
+        // menu, GameTexts.FindText returns null, a NullReferenceException is thrown inside
+        // CampaignUIHelper, and the type is marked uninitialized FOREVER — the native map
+        // screen (MapBarVM) is then never built at all. By the first campaign tick the engine
+        // has already touched CampaignUIHelper successfully by itself (otherwise we would not
+        // have got here), and patching is safe — the static constructor of an already
+        // initialized type does not run again.
         //
-        // Раньше (07.10.2026) этот гейт стоял ТОЛЬКО на DailyTickSettlementEvent — тот стреляет раз
-        // в игровые СУТКИ (и вообще не стреляет, пока время на карте не запущено), подсказка не
-        // появлялась почти всю первую игровую сессию (замечено пользователем: навёл на Кантерлот
-        // сразу после .\run.ps1 -QuickStart — пусто). HourlyTickEvent немного быстрее, но тоже ждёт
-        // хода времени. Основной путь теперь — кадровый опрос Tick() (см. ниже, зовёт
-        // SubModule.OnApplicationTick): тот же приём, что уже используют EquestriaRaceParty/
-        // EquestriaShowcase — ждём активную MapState и 2 секунды на "устаканивание" кампании, без
-        // привязки к ходу игрового времени. По безопасности не хуже тикового гейта: за эти 2
-        // секунды родной MapBarVM (который и трогает CampaignUIHelper её же штатным путём) уже
-        // давно построен — те же Equestria* классы годами используют этот самый отступ перед своими
-        // действиями (открытие окон и т.п.) без единого похожего краша. OnHourlyTick оставлен
-        // подстраховкой на случай, если кадровый опрос почему-то не сработает (двойного применения
-        // патча не будет — оба пути идут через общий _tooltipPatchApplied).
+        // Earlier (07.10.2026) this gate sat ONLY on DailyTickSettlementEvent — it fires once per
+        // in-game DAY (and does not fire at all until time on the map is running), so the tooltip
+        // was missing for almost the whole first game session (noticed by the user: hovered over
+        // Canterlot right after .\run.ps1 -QuickStart — empty). HourlyTickEvent is a bit faster but
+        // also waits for time to pass. The main path is now the per-frame poll Tick() (see below,
+        // called from SubModule.OnApplicationTick): the same approach EquestriaRaceParty/
+        // EquestriaShowcase already use — wait for an active MapState and 2 seconds for the campaign
+        // to "settle", without depending on in-game time passing. Safety-wise it is no worse than the
+        // tick gate: within those 2 seconds the native MapBarVM (which touches CampaignUIHelper via its
+        // own normal path) has long been built — the same Equestria* classes have used this very
+        // delay before their actions (opening windows etc.) for years without a single similar crash.
+        // OnHourlyTick is kept as a fallback in case the per-frame poll somehow does not fire (the
+        // patch will not be applied twice — both paths go through the shared _tooltipPatchApplied).
         private void OnHourlyTick()
         {
             TryApplyTooltipPatch();
@@ -108,8 +111,8 @@ namespace EquestriaMod
 
         private static DateTime _mapSeenAt = DateTime.MinValue;
 
-        /// <summary>Зовётся каждый кадр из SubModule.OnApplicationTick — ловит момент старта
-        /// кампании (в т.ч. .\run.ps1 -QuickStart) без ожидания хода игрового времени.</summary>
+        /// <summary>Called every frame from SubModule.OnApplicationTick — catches the moment the
+        /// campaign starts (incl. .\run.ps1 -QuickStart) without waiting for in-game time to pass.</summary>
         public static void Tick()
         {
             if (_tooltipPatchApplied)
@@ -137,11 +140,11 @@ namespace EquestriaMod
 
         private static bool _testVillageSeeded;
 
-        // Тестовая засевка village_empire_0 (Клеверный Дол) при старте кампании — по просьбе
-        // пользователя 07.10.2026: коренная раса 70-90%, остаток размазан случайно по всем
-        // остальным расам, чтобы сразу после .\run.ps1 -QuickStart было видно таблицу в подсказке,
-        // не вводя equestria.race_assim_set руками. Разовая, как и применение патча подсказки —
-        // дальше обычный OnDailyTick сам поведёт Current к настоящей Target как для любой деревни.
+        // Test seeding of village_empire_0 (Clover Dale) at campaign start — at the user's
+        // request 07.10.2026: native race 70-90%, the remainder spread randomly over all the
+        // other races, so that the table in the tooltip is visible right after .\run.ps1 -QuickStart
+        // without typing equestria.race_assim_set by hand. One-off, like applying the tooltip patch —
+        // after that the regular OnDailyTick moves Current toward the real Target as for any village.
         private static void SeedTestVillage()
         {
             if (_testVillageSeeded || Campaign.Current == null || !Campaign.Current.GameStarted)
@@ -203,10 +206,10 @@ namespace EquestriaMod
             }
         }
 
-        // Тик дёргается на КАЖДОЕ поселение КАЖДЫЙ день — исключение здесь без try/catch уронило бы
-        // тик для вообще всех поселений разом (один сломанный Settlement.Find — и всей кампании
-        // конец). Лог — только на подозрительное: не пишем сюда на каждый нормальный тик, иначе
-        // журнал (лимит 8 МБ, см. EquestriaCrashLog) захлебнётся за один игровой год на полной карте.
+        // The tick fires for EVERY settlement EVERY day — an exception here without try/catch would
+        // bring down the tick for all settlements at once (one broken Settlement.Find — and the whole
+        // campaign is done). Log only suspicious things: do not write here on every normal tick,
+        // otherwise the log (8 MB limit, see EquestriaCrashLog) overflows within one game year on the full map.
         private void OnDailyTickSettlement(Settlement settlement)
         {
             try
@@ -240,15 +243,15 @@ namespace EquestriaMod
             }
         }
 
-        // Плоская сериализация (тот же приём, что EquestriaBodyParts.SyncHairLookCache): поселение
-        // -> одна закодированная строка (RaceAssimilationStatus.Encode/Decode), хранится как два
-        // параллельных List<string> — Dictionary<string,string> тоже синкается нативно
-        // (см. EquestriaRaceSaveBehavior._heroRaces), но пара списков проще отлаживать руками.
+        // Flat serialization (the same approach as EquestriaBodyParts.SyncHairLookCache): settlement
+        // -> one encoded string (RaceAssimilationStatus.Encode/Decode), stored as two parallel
+        // List<string> — Dictionary<string,string> also syncs natively
+        // (see EquestriaRaceSaveBehavior._heroRaces), but a pair of lists is easier to debug by hand.
         //
-        // Сброс статического менеджера — ЗДЕСЬ, в ветке загрузки, а не на OnGameLoadedEvent: тот
-        // стреляет ПОСЛЕ SyncData всех поведений, и обнулил бы уже загруженные данные этого самого
-        // вызова. Сброс нужен, чтобы не тащить в новую загруженную игру данные от ПРЕДЫДУЩЕЙ
-        // (играем, выходим в меню, грузим другое сохранение в том же процессе — статик переживёт).
+        // The static manager is reset HERE, in the load branch, not on OnGameLoadedEvent: that one
+        // fires AFTER SyncData of all behaviours and would wipe the data this very call just loaded.
+        // The reset is needed so data from the PREVIOUS game is not carried into the newly loaded one
+        // (we play, exit to the menu, load another save in the same process — the static survives).
         public override void SyncData(IDataStore dataStore)
         {
             if (!dataStore.IsSaving)
@@ -299,10 +302,10 @@ namespace EquestriaMod
         }
     }
 
-    // Статический менеджер — доступ нужен и из CampaignBehaviorBase (тик/сохранение), и из
-    // консольных команд/Harmony-патча подсказки (EquestriaRaceAssimilationCommands.cs), у которых
-    // нет ссылки на экземпляр поведения. Тот же паттерн, что ChangeCultureManager/DynaCultureManager
-    // в оригинале.
+    // Static manager — access is needed both from CampaignBehaviorBase (tick/save) and from the
+    // console commands/Harmony tooltip patch (EquestriaRaceAssimilationCommands.cs), which have
+    // no reference to the behaviour instance. The same pattern as ChangeCultureManager/DynaCultureManager
+    // in the original.
     internal sealed class RaceAssimilationManager
     {
         private static RaceAssimilationManager _instance;
@@ -317,8 +320,8 @@ namespace EquestriaMod
             _instance = null;
         }
 
-        // Устойчиво к новым поселениям, заведённым позже (кампания расширилась и т.п.) — то же,
-        // что DynaCultureManager.Initialize().
+        // Robust to new settlements added later (the campaign was extended etc.) — same as
+        // DynaCultureManager.Initialize().
         public void Initialize()
         {
             int before = InfluenceMap.Count;
@@ -338,26 +341,27 @@ namespace EquestriaMod
         }
     }
 
-    // На одно поселение: сеть влияний (CurrentInfluences едет к TargetInfluences по экспоненте) и
-    // применение победившей расы. Перенос DynaCultureStatus (DynaCulture/Data/DynaCultureStatus.cs)
-    // — комментарии ниже объясняют только то, что отличается от оригинала или не очевидно само по
-    // себе; сама механика разобрана и задокументирована в [[dynaculture-race-assimilation]] (память).
+    // Per settlement: the network of influences (CurrentInfluences moves toward TargetInfluences
+    // exponentially) and applying the winning race. A port of DynaCultureStatus
+    // (DynaCulture/Data/DynaCultureStatus.cs) — the comments below explain only what differs from the
+    // original or is not obvious by itself; the mechanics itself is analysed and documented in
+    // [[dynaculture-race-assimilation]] (memory).
     internal sealed class RaceAssimilationStatus
     {
         private const int BaseInfluence = 1;
 
         private readonly string _settlementId;
 
-        // Раса, с которой поселение родилось — не меняется, используется для бонуса сопротивления
-        // (см. GetInfluenceFromSettlement) и для разрешения ничьей в GetTopCultureId.
+        // The race the settlement was born with — never changes, used for the resistance bonus
+        // (see GetInfluenceFromSettlement) and to break ties in GetTopCultureId.
         public readonly string HomelandCultureId;
 
         public Dictionary<string, decimal> CurrentInfluences = new Dictionary<string, decimal>();
         public Dictionary<string, decimal> TargetInfluences = new Dictionary<string, decimal>();
 
-        // Только для дневной дельты в подсказке (EquestriaRaceAssimilationCommands) — не
-        // сохраняется между сессиями (как и в оригинале не портит механику: первый тик после
-        // загрузки просто покажет дельту 0, GetPreviousInfluenceForCulture откатится на Current).
+        // Only for the daily delta in the tooltip (EquestriaRaceAssimilationCommands) — not
+        // saved between sessions (as in the original, this does not break the mechanics: the first
+        // tick after loading just shows a delta of 0, GetPreviousInfluenceForCulture falls back to Current).
         public Dictionary<string, decimal> PreviousInfluences;
 
         public int DaysSinceTargetsChanged;
@@ -396,7 +400,7 @@ namespace EquestriaMod
 
             if (ExpectedIdKey != TargetInfluencesIdKey)
             {
-                // сосед/владелец поменялся с прошлого тика — считаем дни заново
+                // a neighbour/owner changed since the last tick — restart the day count
                 DaysSinceTargetsChanged = 0;
                 ExpectedIdKey = TargetInfluencesIdKey;
             }
@@ -405,17 +409,17 @@ namespace EquestriaMod
                 DaysSinceTargetsChanged++;
             }
 
-            // Экспоненциальное приближение: каждый день проходим 1/AssimilationDelay доли разницы.
-            // Не линейно — быстрый прогресс вначале, медленно доходит до конца, в упор никогда не
-            // встаёт (намеренно, как в оригинале: имитирует инерцию ассимиляции населения).
+            // Exponential approach: each day we cover 1/AssimilationDelay of the difference.
+            // Not linear — fast progress at first, slowly reaches the end, never quite gets there
+            // (intentional, as in the original: imitates the inertia of population assimilation).
             //
-            // БАГ (найден пользователем 07.10.2026 через equestria.race_assim_set, но воспроизводим
-            // и без него): цикл раньше шёл только по ключам TargetInfluences — расу, у которой
-            // влияние пропало совсем (сосед той расы разрушен/сменил владельца, целевая доля стала
-            // ровно 0 и ключ исчез из Target), никто не трогал. Current у неё замирал навсегда на
-            // последнем значении, а остальные расы продолжали расти к своим целям — сумма долей
-            // уезжала выше 100%. Поэтому идём по ОБЪЕДИНЕНИЮ ключей обоих словарей: для расы, которой
-            // нет в Target, цель считается 0 и она так же экспоненциально угасает, как и остальные.
+            // BUG (found by the user 07.10.2026 via equestria.race_assim_set, but reproducible without
+            // it too): the loop used to go only over the TargetInfluences keys — a race whose influence
+            // vanished completely (that race's neighbour destroyed/changed owner, the target share became
+            // exactly 0 and the key disappeared from Target) was never touched. Its Current froze forever
+            // at the last value, while the other races kept growing toward their targets — the sum of
+            // shares went above 100%. So we iterate over the UNION of both dictionaries' keys: for a race
+            // missing from Target the target is 0, and it decays exponentially like the others.
             decimal rate = Math.Min((decimal)influenceSum / EquestriaRaceAssimilation.AssimilationDelay, 1m);
             foreach (string cultureId in CurrentInfluences.Keys.Union(TargetInfluences.Keys).ToList())
             {
@@ -423,8 +427,8 @@ namespace EquestriaMod
                 decimal target = TargetInfluences.TryGetValue(cultureId, out decimal t) ? t : 0m;
                 CurrentInfluences[cultureId] = current + (target - current) * rate;
             }
-            // Угасание к 0 никогда не даёт отрицательных значений — чистим по порогу, иначе давно
-            // угасшие расы (доля вроде 0.0001%) остаются в словаре навечно.
+            // Decay toward 0 never gives negative values — clean up by a threshold, otherwise long
+            // faded races (a share like 0.0001%) stay in the dictionary forever.
             foreach (string key in CurrentInfluences.Where(p => p.Value < 0.0001m).Select(p => p.Key).ToList())
             {
                 CurrentInfluences.Remove(key);
@@ -442,8 +446,8 @@ namespace EquestriaMod
             return CurrentInfluences.TryGetValue(cultureId, out decimal current) ? current : 0m;
         }
 
-        /// <summary>Пересчитывает цель (TargetInfluences) по текущим соседям/владельцу. Возвращает
-        /// сумму влияния (знаменатель долей) — она же скорость приближения в OnDailyTick.</summary>
+        /// <summary>Recomputes the target (TargetInfluences) from the current neighbours/owner. Returns
+        /// the influence sum (the denominator of the shares) — also the approach speed in OnDailyTick.</summary>
         private int RecalculateInfluencers(bool firstTimeSetup)
         {
             Settlement settlement = Settlement.Find(_settlementId);
@@ -477,9 +481,9 @@ namespace EquestriaMod
             {
                 int influence = GetInfluenceFromSettlement(other, settlement, firstTimeSetup);
                 sum += influence;
-                // Бакет — ТЕКУЩАЯ раса соседа (а не раса его владельца): наполовину
-                // ассимилированный сосед и давит слабее (см. GetInfluenceFromSettlement, вес домножен
-                // на его же GetTopCulturePercent).
+                // The bucket is the neighbour's CURRENT race (not its owner's race): a half-assimilated
+                // neighbour also pushes weaker (see GetInfluenceFromSettlement, the weight is multiplied
+                // by its own GetTopCulturePercent).
                 string cultureId = other.Culture.StringId;
                 influencers[cultureId] = influencers.TryGetValue(cultureId, out int existing)
                     ? existing + influence : influence;
@@ -513,16 +517,17 @@ namespace EquestriaMod
                 }
             }
 
-            // Потолок доминирующей расы (EquestriaRaceAssimilation.MaxDominantShare) — остаток
-            // размазываем по ВСЕМ играбельным расам (не только нынешним соседям), включая те, у
-            // которых пока доли вообще не было: даже чисто монокультурное поселение (сосед и
-            // владелец одной расы, обрезанная доля ушла бы к 100%) получает минимальную примесь
-            // каждой расы мира.
+            // Cap on the dominant race (EquestriaRaceAssimilation.MaxDominantShare) — the remainder is
+            // spread over ALL playable races (not only the current neighbours), including those that
+            // had no share at all yet: even a purely monocultural settlement (neighbour and owner of
+            // one race, the capped share would have gone to 100%) gets a minimal admixture of every
+            // race of the world.
             //
-            // НЕ поровну (по просьбе пользователя 07.10.2026: "2.5% для каждой выглядит странно") —
-            // вес каждой расы берём от СТАБИЛЬНОГО псевдослучайного числа (хэш id поселения + id
-            // расы, не new Random()): у разных поселений остаток размазан по-разному, но у ОДНОГО
-            // и того же поселения веса не тасуются заново на каждом дневном тике без всякой причины.
+            // NOT evenly (at the user's request 07.10.2026:
+            // "2.5% for each looks odd") — each race's weight comes from a STABLE pseudo-random number
+            // (hash of settlement id + race id, not new Random()): different settlements spread the
+            // remainder differently, but for ONE and the same settlement the weights are not reshuffled
+            // on every daily tick for no reason.
             if (TargetInfluences.Count > 0)
             {
                 var top = TargetInfluences.OrderByDescending(p => p.Value).First();
@@ -554,10 +559,10 @@ namespace EquestriaMod
             return sum;
         }
 
-        // Стабильное псевдослучайное число в [0, 1) от строки — тот же приём FNV-1a, что
-        // EquestriaBodyParts.LoreColor (там для цвета героя, здесь для веса расы в остатке
-        // потолка). Не System.Random: его не засеять строкой напрямую, а GetHashCode() в .NET не
-        // детерминирован между запусками процесса.
+        // A stable pseudo-random number in [0, 1) from a string — the same FNV-1a trick as
+        // EquestriaBodyParts.LoreColor (there for the hero's color, here for a race's weight in the
+        // cap remainder). Not System.Random: it cannot be seeded with a string directly, and
+        // GetHashCode() in .NET is not deterministic between process runs.
         private static decimal StableWeight01(string s)
         {
             uint hash = 2166136261;
@@ -572,10 +577,10 @@ namespace EquestriaMod
             return hash / (decimal)uint.MaxValue;
         }
 
-        /// <summary>Вес влияния poselения other на self. Город×3/замок×2/деревня×1, само на себя
-        /// ×2, и ещё ×2 если ВЛАДЕЛЕЦ этого (self) поселения до сих пор той же расы, с которой оно
-        /// родилось (сопротивление смене) — бонус именно по владельцу, не по текущей отображаемой
-        /// расе poselения (та как раз и есть то, что мы постепенно меняем).</summary>
+        /// <summary>Influence weight of settlement other on self. Town×3/castle×2/village×1, on itself
+        /// ×2, and another ×2 if the OWNER of this (self) settlement is still of the race it was born
+        /// with (resistance to change) — the bonus is by owner, not by the settlement's currently
+        /// displayed race (that is exactly what we are gradually changing).</summary>
         private int GetInfluenceFromSettlement(Settlement other, Settlement self, bool firstTimeSetup)
         {
             int influence = BaseInfluence;
@@ -607,8 +612,8 @@ namespace EquestriaMod
             return influence;
         }
 
-        /// <summary>Побеждающая раса: ничья разрешается в пользу родной расы поселения, иначе —
-        /// по алфавиту (тот же порядок, что в оригинале, чтобы результат был детерминирован).</summary>
+        /// <summary>The winning race: a tie is resolved in favour of the settlement's native race,
+        /// otherwise alphabetically (same order as in the original, so the result is deterministic).</summary>
         public string GetTopCultureId()
         {
             KeyValuePair<string, decimal> top = CurrentInfluences.OrderByDescending(p => p.Value).First();
@@ -632,9 +637,9 @@ namespace EquestriaMod
             return CurrentInfluences.TryGetValue(topId, out decimal value) ? value : 0m;
         }
 
-        /// <summary>Если доминирующая раса отличается от текущей Settlement.Culture — переключает
-        /// её по-настоящему (и привязанные деревни тоже). Предохранитель оригинала: не оставлять
-        /// расу вовсе без городов — иначе компаньонам той расы негде заспауниться (краш).</summary>
+        /// <summary>If the dominant race differs from the current Settlement.Culture — really switches
+        /// it (and the bound villages too). The original's safeguard: never leave a race with no towns
+        /// at all — otherwise that race's companions have nowhere to spawn (crash).</summary>
         private void ApplyRace()
         {
             if (CurrentInfluences.Count == 0)
@@ -695,7 +700,7 @@ namespace EquestriaMod
             return settlement.Culture;
         }
 
-        // ---- плоская сериализация под IDataStore (см. EquestriaRaceAssimilation.SyncData) ----
+        // ---- flat serialization for IDataStore (see EquestriaRaceAssimilation.SyncData) ----
 
         public string Encode()
         {

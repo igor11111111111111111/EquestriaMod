@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
-"""Гиппогриф из готовой модели (Т-поза, свой скелет Mixamo) — на скелет пони, по частям, в FBX.
+"""Hippogriff from a ready-made model (T-pose, its own Mixamo skeleton) onto the pony skeleton, in parts, to FBX.
 
-Запуск (headless Blender, открывает готовую пони — в ней скелет и образец привязки):
+Run (headless Blender, opens the finished pony - it holds the skeleton and the binding sample):
   blender --background assets/twilight_anthro/export/eq_twilight.blend --python tools/make_hippogriff.py \
-      -- "<путь к .fbx гиппогрифа>" "<папка вывода>"
+      -- "<path to the hippogriff .fbx>" "<output folder>"
 
-Модель того же вида, что у грифона (tools/make_griffon.py): орлиная голова, крылья растут из рук,
-птичьи лапы. Поэтому скрипт списан с грифоньего целиком, включая подобранные в игре пропорции —
-их проверяем заново по превью и замечаниям.
+The model is the same kind as the griffon (tools/make_griffon.py): eagle head, wings growing from the
+arms, bird feet. So the script is copied wholesale from the griffon one, including the proportions tuned
+in game - we re-check them against previews and feedback.
 
-Части на выходе:
-  eq_hippogriff_body   — туловище и руки (body_meta_mesh)
-  eq_hippogriff_legs   — ноги (legs_mesh)
-  eq_hippogriff_gloves — кисти (hands_mesh)
-  eq_hippogriff_head   — голова с клювом (face_meta_mesh)
-  eq_hippogriff_hair   — перья макушки и затылка (причёска, красится цветом волос)
-  eq_hippogriff_wings  — крылья (предмет)
-  eq_hippogriff_tail   — хвост (предмет)
-Дальше — импорт FBX в Modding Kit руками, потом tools/hippogriff_material.ps1.
+Output parts:
+  eq_hippogriff_body   - torso and arms (body_meta_mesh)
+  eq_hippogriff_legs   - legs (legs_mesh)
+  eq_hippogriff_gloves - hands (hands_mesh)
+  eq_hippogriff_head   - head with beak (face_meta_mesh)
+  eq_hippogriff_hair   - crown and nape feathers (hairstyle, tinted with the hair colour)
+  eq_hippogriff_wings  - wings (item)
+  eq_hippogriff_tail   - tail (item)
+Next: import the FBX into the Modding Kit by hand, then tools/hippogriff_material.ps1.
 """
 import math
 import os
@@ -33,8 +33,8 @@ SRC, OUT = os.path.abspath(args[0]), os.path.abspath(args[1])
 os.makedirs(OUT, exist_ok=True)
 
 RACE = "hippogriff"
-HEIGHT = 2.00          # рост гиппогрифа: родной рост модели, при нём его голова отстоит от кости
-                       # головы пони так же, как у принятого грифона (пони 1.86, грифон 1.95, як 2.05)
+HEIGHT = 2.00          # hippogriff height: the model's native height; at it the head sits as far from the
+                       # pony head bone as on the accepted griffon (pony 1.86, griffon 1.95, yak 2.05)
 MAT = "eq_hippogriff_body"
 
 HEAD_BONES = ("bip01_head_13", "bip01_neck_12")
@@ -57,33 +57,33 @@ for ob in pony.values():
             kb.value = 0.0
 bones = {b.name: (skel.matrix_world @ b.head_local) for b in skel.data.bones}
 
-# ---------------------------------------------------------------- 1. импорт и А-поза
+# ---------------------------------------------------------------- 1. import and A-pose
 before = set(bpy.data.objects)
 bpy.ops.import_scene.fbx(filepath=SRC)
 added = [o for o in bpy.data.objects if o not in before]
 hippo = max((o for o in added if o.type == "MESH"), key=lambda o: len(o.data.vertices))
 source_skel = next((o for o in added if o.type == "ARMATURE"), None)
-for ob in added:            # мусор генератора: шарик-заготовка и прочие мелкие меши
+for ob in added:            # generator junk: the placeholder sphere and other small meshes
     if ob.type == "MESH" and ob is not hippo:
         bpy.data.objects.remove(ob, do_unlink=True)
 log("импортирован %s: %d вершин, свой скелет: %s"
     % (hippo.name, len(hippo.data.vertices), source_skel.name if source_skel else "нет"))
 
-# ---- А-поза ЕГО ЖЕ СКЕЛЕТОМ, а не правкой геометрии
-# Раньше руки переводились из Т-позы в А-позу вручную: вершины руки поворачивались вокруг
-# плеча с плавным набором веса. От этого плечо ломалось, грудь выгибалась, а несимметричность
-# самой модели превращалась в «одна рука вперёд, другая назад» (замечено в игре 24.09.2026:
-# «странно всё выгибаешь»). Теперь делаем как положено: поворачиваем КОСТЬ руки, меш
-# деформируется скиннингом — гладко и одинаково с обеих сторон, — и поза запекается в сетку.
-# Дракону так было нельзя (у него крылья висели на костях рук и уезжали вместе с рукой),
-# а у гиппогрифа крыло — это и есть рука, ему туда и надо.
+# ---- A-pose WITH ITS OWN SKELETON, not by editing geometry
+# Previously the arms were moved from T-pose to A-pose by hand: arm vertices were rotated around the
+# shoulder with a smooth weight ramp. That broke the shoulder, bent the chest, and the model's own
+# asymmetry turned into "one arm forward, the other back" (seen in game 24.09.2026:
+# "you bend everything weirdly"). Now we do it properly: rotate the arm BONE,
+# the mesh deforms by skinning - smoothly and the same on both sides - and the pose is baked into the mesh.
+# This was not possible for the dragon (its wings hung on the arm bones and moved with the arm),
+# but on the hippogriff the wing IS the arm, so that is exactly where it should go.
 ARM_BONE = {1: "mixamorig:LeftArm", -1: "mixamorig:RightArm"}
 HAND_BONE = {1: "mixamorig:LeftHand", -1: "mixamorig:RightHand"}
-POSE_DROP = 27.0     # на сколько градусов ниже горизонта смотрит рука у пони (её А-поза)
+POSE_DROP = 27.0     # how many degrees below horizontal the pony's arm points (its A-pose)
 
 
 def posed_height(mesh):
-    """Высота меша В ТЕКУЩЕЙ ПОЗЕ — по ней считается масштаб посадки."""
+    """Mesh height IN THE CURRENT POSE - the fitting scale is computed from it."""
     deps = bpy.context.evaluated_depsgraph_get()
     shown = mesh.evaluated_get(deps)
     box = [shown.matrix_world @ v.co for v in shown.data.vertices]
@@ -91,13 +91,13 @@ def posed_height(mesh):
 
 
 def pose_arms_like_pony(skel, mesh):
-    """Повернуть кости рук в А-позу, подогнать длину и запечь позу в меш."""
+    """Rotate the arm bones into the A-pose, fit their length and bake the pose into the mesh."""
     target = (bones["bip01_l_hand_19"] - bones["bip01_l_upperarm_twist_15"])
     want = math.radians(POSE_DROP)
 
     bpy.context.view_layer.objects.active = skel
     bpy.ops.object.mode_set(mode="POSE")
-    for pb in skel.pose.bones:           # снять позу анимации, встать в позу привязки
+    for pb in skel.pose.bones:           # clear the animation pose, go to the bind pose
         pb.matrix_basis.identity()
     bpy.context.view_layer.update()
 
@@ -117,9 +117,9 @@ def pose_arms_like_pony(skel, mesh):
         reach[sign] = (pb, here.length, math.degrees(here.angle(aim)))
     bpy.context.view_layer.update()
 
-    # Масштаб посадки считаем ПО ПОЗЕ, а не по исходнику: развёрнутые вниз крылья перестают
-    # быть самой высокой точкой модели, габарит по высоте падает, и посадка увеличивает модель
-    # сильнее. По старому замеру руки выходили в полтора раза длиннее нужного.
+    # The fitting scale is computed FROM THE POSE, not from the source: wings turned downwards stop
+    # being the model's highest point, the height extent drops, and fitting enlarges the model
+    # more. With the old measurement the arms came out one and a half times too long.
     pre_scale = HEIGHT / posed_height(mesh)
     for sign, (pb, was_len, angle) in reach.items():
         k = target.length / max(was_len * pre_scale, 1e-6)
@@ -129,7 +129,7 @@ def pose_arms_like_pony(skel, mesh):
     bpy.ops.object.mode_set(mode="OBJECT")
     bpy.context.view_layer.update()
 
-    # Запекаем позу в сетку: модификатор применяется по текущей позе
+    # Bake the pose into the mesh: the modifier is applied in the current pose
     bpy.ops.object.select_all(action="DESELECT")
     mesh.select_set(True)
     bpy.context.view_layer.objects.active = mesh
@@ -140,12 +140,12 @@ def pose_arms_like_pony(skel, mesh):
 
 own_bones = []
 if source_skel:
-    # В файле лежит анимация бега, и импорт ставит модель в её первый кадр — снимаем.
+    # The file contains a run animation, and import puts the model in its first frame - clear it.
     source_skel.animation_data_clear()
     source_skel.data.pose_position = "REST"
 
-# Сшивка ДО всего остального: генератор отдаёт «суп», соседние треугольники не делят вершины.
-# Заодно после неё номера вершин больше не меняются — на них ниже держится разметка частей.
+# Weld BEFORE everything else: the generator outputs "soup", adjacent triangles do not share vertices.
+# Also, after it the vertex indices no longer change - the part markup below relies on them.
 bpy.ops.object.select_all(action="DESELECT")
 hippo.select_set(True)
 bpy.context.view_layer.objects.active = hippo
@@ -156,10 +156,10 @@ bpy.ops.object.mode_set(mode="OBJECT")
 log("сшито: %d вершин" % len(hippo.data.vertices))
 
 if source_skel:
-    # Кости запоминаем В ПОЗЕ ПОКОЯ — по ним ниже отбираются крылья и хвост. Отбор обязан идти
-    # ДО разворота рук: в А-позе крылья сходятся за спиной, слипаются с воротником шеи и с
-    # перьевыми веерами на бёдрах в один кусок, и разобрать их уже нельзя
-    # (в игре «часть крыльев осталась на теле», 24.09.2026).
+    # Bones are recorded IN THE REST POSE - wings and tail are selected by them below. The selection
+    # must happen BEFORE the arms are turned: in the A-pose the wings meet behind the back and merge
+    # with the neck collar and the feather fans on the thighs into one piece that can no longer be
+    # separated (in game "part of the wings stayed on the body", 24.09.2026).
     own_bones = {b.name: (np.array((source_skel.matrix_world @ b.head_local)[:]),
                           np.array((source_skel.matrix_world @ b.tail_local)[:]))
                  for b in source_skel.data.bones if not b.name.endswith("_end")}
@@ -170,24 +170,26 @@ def coords():
     return np.array([(hippo.matrix_world @ v.co)[:] for v in hippo.data.vertices])
 
 
-# ------------------------------------------------- крылья и хвост: связные куски вдали от костей
-# Приём тот же, что у дракона: перо и хвост торчат далеко от любой кости, а кожа туловища, рук и
-# ног всегда рядом со своей. Берём всё, что дальше FAR_FRAC от костей, и режем на связные куски.
+# ------------------------------------------------- wings and tail: connected pieces far from the bones
+# Same trick as the dragon: feathers and tail stick out far from any bone, while the skin of the torso,
+# arms and legs is always near its own. Take everything farther than FAR_FRAC from the bones and cut it
+# into connected pieces.
 #
-# А вот опознаём куски иначе. У грифона при FAR_FRAC=0.114 их пять (замерено на модели):
-#   732 и 716 вершин, z 1.21..1.97  — крылья;
-#   259 и 219 вершин, z 0.70..1.13  — перьевые пучки на бёдрах, это часть тела;
-#   187 вершин, x около нуля, z 0.08..0.75 — львиный хвост.
-# Ни по величине, ни по середине их не разделить: перо у плеча подклеивает пучки к крылу, и оба
-# «самых крупных куска» приходят вместе с бёдрами, а хвост (187 вершин) не дотягивает до порога
-# крупности. Зато крыло — единственное, что достаёт до макушки: смотрим на ВЕРХ куска.
+# But the pieces are identified differently. On the griffon with FAR_FRAC=0.114 there are five
+# (measured on the model):
+#   732 and 716 vertices, z 1.21..1.97  - wings;
+#   259 and 219 vertices, z 0.70..1.13  - feather tufts on the thighs, part of the body;
+#   187 vertices, x near zero, z 0.08..0.75 - the lion tail.
+# They cannot be told apart by size or by centre: the feather at the shoulder glues the tufts to the
+# wing, so both "largest pieces" come with the thighs, and the tail (187 vertices) falls short of the
+# size threshold. But the wing is the only thing that reaches the crown: look at the TOP of the piece.
 FAR_FRAC = 0.114
-PART_MIN = 0.025      # кусок меньше этой доли вершин — перьевые уши и мелочь: их не трогаем
-WING_TOP = 0.75       # кусок, поднимающийся выше этой доли роста, — крыло
-TAIL_HIGH = 0.45      # хвост ищем ниже этой доли роста
-TAIL_AXIS = 0.12      # и не дальше этой доли роста от оси тела
-# Перо у самого плеча лежит поверх руки и по удалённости не отбирается. Но в родном скиннинге
-# видно, кто есть кто: рука не отходит от своей кости дальше ARM_FAR, а перо — заметно дальше.
+PART_MIN = 0.025      # a piece smaller than this fraction of vertices - feather ears and bits: left alone
+WING_TOP = 0.75       # a piece rising above this fraction of the height is a wing
+TAIL_HIGH = 0.45      # the tail is searched below this fraction of the height
+TAIL_AXIS = 0.12      # and no farther than this fraction of the height from the body axis
+# The feather right at the shoulder lies over the arm and is not selected by distance. But the native
+# skinning shows which is which: the arm never goes farther than ARM_FAR from its bone, the feather much farther.
 ARM_FAR = 0.08
 
 
@@ -210,22 +212,22 @@ if own_bones:
     groups = {g.index: g.name for g in hippo.vertex_groups}
     dominant = np.array([groups[max(v.groups, key=lambda g: g.weight).group] if v.groups else "?"
                          for v in hippo.data.vertices])
-    # Кость, на которой вершина висит В РОДНОМ скиннинге модели. Ниже, после переноса весов
-    # с пони, та же переменная будет уже про пониные кости, а родная нужна для шеи: у модели
-    # она кончается ровно там, где начинается чёрно-жёлтое оперение груди, и никакой рамкой
-    # по высоте и радиусу это не поймать (пробовал — то недобирал, то захватывал грудь).
+    # The bone a vertex hangs on IN THE model's NATIVE skinning. Below, after the weights are transferred
+    # from the pony, the same variable will refer to pony bones, but the native one is needed for the neck:
+    # on the model it ends exactly where the black-and-yellow chest plumage begins, and no height/radius
+    # box can catch that (tried it - it either missed some or grabbed the chest).
     own_dominant = dominant.copy()
     added = np.zeros(len(P), bool)
     for name in own_bones:
-        if "Arm" not in name:          # только кости рук: к ним и подвешены крылья
+        if "Arm" not in name:          # arm bones only: that is what the wings hang on
             continue
         sel = dominant == name
         if sel.any():
             added[sel] |= bone_gap(name, P[sel]) > ARM_FAR * height
     added &= ~far
     far |= added
-    # Где у модели кисть — по её РОДНОЙ кости: ниже по этим вершинам рука совмещается с рукой
-    # скелета. По кончикам когтей мерить нельзя, они длинные.
+    # Where the model's hand is - by its NATIVE bone: below, these vertices align the arm with the
+    # skeleton's arm. Measuring by the claw tips is not possible, they are long.
     own_hand = {i for i, d in enumerate(dominant) if "Hand" in d}
     if added.any():
         pts = P[added]
@@ -254,16 +256,16 @@ if own_bones:
                     stack.append(other)
         chunks.append(chunk)
 
-    # Разбор идёт по Т-позе, пока крылья разведены в стороны: тогда они и перьевые веера на
-    # бёдрах — отдельные куски, а воротник шеи вообще не попадает в «далёкие от костей».
-    # Крылом считаем ВСЕ крупные куски за спиной, кроме одного низкого на оси — это хвост.
+    # Sorting is done in the T-pose while the wings are spread to the sides: then they and the feather
+    # fans on the thighs are separate pieces, and the neck collar does not get into "far from bones" at all.
+    # ALL large pieces behind the back count as wings, except one low piece on the axis - the tail.
     middle_y = float(np.median(P[:, 1]))
     floor = float(P[:, 2].min())
     big = [c for c in sorted(chunks, key=len, reverse=True) if len(c) >= PART_MIN * len(P)]
     for chunk in big:
         mid = P[chunk].mean(0)
         top = float(P[chunk][:, 2].max()) - floor
-        if mid[1] < middle_y:          # всё наше — за спиной; впереди быть нечему
+        if mid[1] < middle_y:          # everything we want is behind the back; nothing should be in front
             log("ВНИМАНИЕ: крупный кусок вдали от костей не опознан, центр (%.2f,%.2f,%.2f)" % tuple(mid))
             continue
         if mid[2] - floor < TAIL_HIGH * height and abs(mid[0]) < TAIL_AXIS * height:
@@ -274,11 +276,11 @@ if own_bones:
             % (len(chunk), *mid, top, name))
         for i in chunk:
             appendage[i] = name
-    # Передняя кромка крыла с когтями лежит вплотную к костям пальцев (в Т-позе кисть и коготь
-    # крыла оказываются в одной точке), поэтому по удалённости она не отбирается и оставалась на
-    # теле торчащими наружу осколками. Но держится она ТОЛЬКО за перепонку: стоит снять крылья,
-    # как она повисает отдельным островком. Поэтому смотрим, на что распадается остаток: большой
-    # кусок — сам дракон, всё прочее рядом с крылом или хвостом возвращаем ему.
+    # The clawed leading edge of the wing lies right against the finger bones (in the T-pose the hand and
+    # the wing claw end up at the same point), so it is not selected by distance and stayed on the body as
+    # shards sticking out. But it is attached ONLY to the membrane: once the wings are removed, it hangs
+    # as a separate island. So we look at what the remainder falls apart into: the big piece is the
+    # dragon itself, everything else near a wing or the tail goes back to it.
     seen = np.zeros(len(P), bool)
     rest = []
     for start in range(len(P)):
@@ -295,7 +297,7 @@ if own_bones:
                     stack.append(other)
         rest.append(island)
     rest.sort(key=len, reverse=True)
-    ISLAND_NEAR = 0.05        # островок дальше этой доли роста от крыла и хвоста — не их
+    ISLAND_NEAR = 0.05        # an island farther than this fraction of the height from wing and tail is not theirs
     for island in rest[1:]:
         pick, gap = None, 1e9
         for name in ("wings", "tail"):
@@ -315,7 +317,7 @@ if own_bones:
     if not found["wings"] or not found["tail"]:
         log("ВНИМАНИЕ: крылья или хвост не найдены — проверьте FAR_FRAC")
 
-# ---- теперь, когда части размечены, ставим руки в А-позу скелетом и снимаем скелет
+# ---- now that the parts are marked, put the arms into the A-pose with the skeleton and remove the skeleton
 if source_skel:
     source_skel.data.pose_position = "POSE"
     pose_arms_like_pony(source_skel, hippo)
@@ -332,9 +334,10 @@ P = coords()
 lo, hi = P.min(0), P.max(0)
 log("исходник: размер %.2f x %.2f x %.2f" % (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]))
 
-# Морда должна смотреть в -Y (как у пони). Морда — самая выступающая по Y точка верхней трети,
-# но СЧИТАТЬ НАДО БЕЗ КРЫЛЬЕВ И ХВОСТА: у гиппогрифа крылья уходят назад дальше, чем клюв вперёд,
-# и по ним модель признавалась уже развёрнутой — в игре он стоял к камере спиной (24.09.2026).
+# The muzzle must face -Y (like the pony). The muzzle is the point of the upper third sticking out most
+# along Y, but IT MUST BE COMPUTED WITHOUT WINGS AND TAIL: the hippogriff's wings reach farther back than
+# the beak forward, and by them the model was judged already turned - in game it stood with its back
+# to the camera (24.09.2026).
 own = np.array([appendage[i] is None for i in range(len(P))])
 top = P[own & (P[:, 2] > lo[2] + 0.6 * (hi[2] - lo[2]))]
 middle_y = (lo[1] + hi[1]) / 2
@@ -357,19 +360,19 @@ hand_pts = P[np.abs(P[:, 0]) > 0.9 * hi[0]]
 log("посажен: рост %.2f, размах %.2f, глубина %.2f; кисти на высоте %.2f (у пони %.2f)"
     % (hi[2] - lo[2], hi[0] - lo[0], hi[1] - lo[1], hand_pts[:, 2].mean(), bones["bip01_l_hand_19"].z))
 
-# ------------------------------------------------- глубина: сажаем по ТОРСУ, а не по габаритам
-# По габаритному ящику сажать нельзя: хвост дракона тянет ящик назад, и туловище уезжает вперёд
-# от позвоночника. Тогда кость позвоночника проходит у самой спины, грудь при любом повороте
-# корпуса ходит ходуном, а руки и ноги висят впереди доспеха.
-# Образец глубины — ВАНИЛЬНЫЙ ЧЕЛОВЕК, а не пони: броня сшита на него, и её посадку задаёт он.
-# Тело человека выгружается из ассетов игры:
-#   tools\tpac_export\bin\Release\tpac_export.exe obj "<игра>\Modules\Native\AssetPackages" \
+# ------------------------------------------------- depth: fit by the TORSO, not by the bounding box
+# Fitting by the bounding box does not work: the dragon's tail pulls the box back, and the torso moves
+# forward of the spine. Then the spine bone runs right along the back, the chest wobbles on any turn of
+# the body, and the arms and legs hang in front of the armour.
+# The depth reference is the VANILLA HUMAN, not the pony: armour is made for it, and it sets the fit.
+# The human body is exported from the game assets:
+#   tools\tpac_export\bin\Release\tpac_export.exe obj "<game>\Modules\Native\AssetPackages" \
 #       body_male_a assets\human_ref\human.obj
-# Ванильные модели смотрят в +Y (наши — в -Y), поэтому образец разворачиваем.
-TORSO_Z = (1.00, 1.35)    # между костями bip01_spine_9 и bip01_spine2_11
-TORSO_HALF = 0.22         # шире этого по X — уже руки
+# Vanilla models face +Y (ours face -Y), so the reference is turned around.
+TORSO_Z = (1.00, 1.35)    # between bones bip01_spine_9 and bip01_spine2_11
+TORSO_HALF = 0.22         # wider than this in X is already the arms
 HUMAN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "human_ref", "human.obj")
-DEPTH_EXTRA = 0.0         # ручная поправка глубины сверх расчётной, если в игре ещё не так
+DEPTH_EXTRA = 0.0         # manual depth correction on top of the computed one, if it is still off in game
 
 
 def torso_y(pts):
@@ -385,7 +388,7 @@ if os.path.exists(HUMAN):
     bpy.ops.wm.obj_import(filepath=HUMAN, forward_axis="Y", up_axis="Z")
     fresh = [o for o in bpy.data.objects if o not in known]
     man = np.vstack([np.array([(o.matrix_world @ v.co)[:] for v in o.data.vertices]) for o in fresh])
-    man[:, :2] *= -1                       # разворот образца лицом в -Y, как у нас
+    man[:, :2] *= -1                       # turn the reference to face -Y, like ours
     target = torso_y(man)
     for ob in fresh:
         bpy.data.objects.remove(ob, do_unlink=True)
@@ -396,24 +399,25 @@ else:
     whose = "пони (нет assets/human_ref/human.obj)"
 mine = torso_y(P[[i for i in range(len(P)) if appendage[i] is None]])
 shift = target - mine + DEPTH_EXTRA
-# Двигаем саму сетку, а не объект: «запекание» сдвига (transform_apply) работает только с
-# выделенным объектом, а импорт образца выделение перехватывает — и тогда объект уезжает, а все
-# последующие правки пишутся в локальные координаты и промахиваются ровно на этот сдвиг.
+# Move the mesh itself, not the object: "baking" the offset (transform_apply) works only on the
+# selected object, and importing the reference steals the selection - then the object moves, and all
+# later edits are written in local coordinates and miss by exactly this offset.
 for v in hippo.data.vertices:
     v.co.y += shift
 log("вся модель сдвинута по глубине на %+.3f м: середина торса была %+.3f, у %s %+.3f"
     % (shift, mine, whose, target))
 
-# Где кончается шея и начинается голова. Линия идёт наклонно вперёд-вниз (под мордой), и
-# отсчитывать её надо ОТ САМОЙ МОДЕЛИ: посадка по торсу сдвинула дракона по глубине, поэтому к
-# мировой отметке прибавляем тот же сдвиг. Нужна она уже здесь: голову нельзя трогать вместе
-# с руками — её бока попадают в ту же зону по X, и правка рук разносила морду в клочья.
-# Линию берём от СОБСТВЕННОЙ кости шеи модели, а не от скелета пони: у гиппогрифа короткая шея,
-# его голова сидит на 12 см ниже пониной кости головы, и по пониной отметке в «голову» попадала
-# одна макушка, а клюв с щеками оставались телу — лицо деформировалось вместе с грудью.
-# Кости модели запомнены до её масштабирования, поэтому умножаем на тот же масштаб.
-# NECK_UP: «часть с телом отрежь повыше шею» (24.09.2026) — с прежней линией воротник из перьев
-# оставался голове и ложился поверх ворота доспеха. Поднимаем разрез, и шея уходит телу.
+# Where the neck ends and the head begins. The line slopes forward-down (under the muzzle), and it must
+# be measured FROM THE MODEL ITSELF: fitting by the torso moved the dragon in depth, so the same offset
+# is added to the world mark. It is needed already here: the head must not be touched together with
+# the arms - its sides fall into the same X zone, and editing the arms tore the muzzle to pieces.
+# The line is taken from the model's OWN neck bone, not from the pony skeleton: the hippogriff has a
+# short neck, its head sits 12 cm below the pony head bone, and by the pony mark only the crown went
+# into the "head" while beak and cheeks stayed with the body - the face deformed along with the chest.
+# The model's bones were recorded before it was scaled, so multiply by the same scale.
+# NECK_UP: ("cut the body part higher up the neck", 24.09.2026) - with
+# the old line the feather collar stayed with the head and lay over the armour collar. Raise the cut,
+# and the neck goes to the body.
 NECK_UP = 0.16
 if "mixamorig:Neck" in own_bones:
     NECK_Z = float(own_bones["mixamorig:Neck"][0][2]) * scale + 0.04 + NECK_UP
@@ -423,13 +427,13 @@ else:
     NECK_Z = bones["bip01_neck_12"].z + 0.06
 JAW_SLOPE, JAW_FROM = 0.45, -0.10 + shift
 
-# ШЕЯ — ГОЛОВЕ. Доспех подменяет собой меш тела, и шея в теле под бронёй пропадала: между клювом
-# и воротом зияла дыра (24.09.2026). Опускать ради этого всю линию разреза нельзя — вместе с шеей
-# в голову уезжают грудь и плечи. Столбик вокруг оси шеи тоже не годится: у модели шея к низу
-# расширяется, узкий столбик её недобирал, широкий захватывал грудь. Берём по скиннингу модели —
-# см. NECK_BONES в part_of.
-                       # с 0.17 столбик до неё не доставал и кусок шеи оставался телу
-                       # на груди — кусок шеи над ним тоже должен принадлежать голове
+# THE NECK GOES TO THE HEAD. Armour replaces the body mesh, and the neck in the body vanished under the
+# armour: a hole gaped between the beak and the collar (24.09.2026). Lowering the whole cut line for this
+# is not an option - the chest and shoulders go into the head along with the neck. A column around the
+# neck axis does not work either: the model's neck widens downwards, a narrow column missed some of it,
+# a wide one grabbed the chest. We go by the model's skinning - see NECK_BONES in part_of.
+                       # with 0.17 the column did not reach it and a piece of the neck stayed with the body
+                       # on the chest - the piece of neck above it must also belong to the head
 
 
 def jaw_z(p):
@@ -440,34 +444,34 @@ def is_head(p):
     return p[2] > jaw_z(p)
 
 
-# ---------------------------------------------- руки из Т-позы на руку пони (поворот + длина)
-# Просто повернуть на 22 градуса мало: рука дракона длиннее пониной на 10%, поэтому локоть
-# приходился на кость предплечья, а кисть — мимо кости кисти, и в игре руки выглядели кривыми.
-# Совмещаем отрезок «плечо — кисть» дракона с таким же отрезком скелета: поворот вокруг плеча
-# плюс масштаб по длине. У самого сустава преобразование набирается плавно (ramp), иначе рвётся.
-SHOULDER_X = 0.16               # плечевой сустав по X (кость плеча модели после посадки)
-ARM_RAMP = 0.18                 # на скольких метрах набирается преобразование
-                                # (у гиппогрифа шире: на узкой полосе плечо ломалось)
-ARM_TIP = 0.9                   # доля размаха, дальше которой — кисть
-HEAD_RAMP = 0.12                # на скольких метрах ниже челюсти рука берёт своё
+# ---------------------------------------------- arms from T-pose onto the pony arm (rotation + length)
+# Just rotating by 22 degrees is not enough: the dragon's arm is 10% longer than the pony's, so the elbow
+# landed on the forearm bone and the hand missed the hand bone, and in game the arms looked crooked.
+# Align the dragon's "shoulder - hand" segment with the same segment of the skeleton: rotation around the
+# shoulder plus scaling along the length. Right at the joint the transform ramps in smoothly, else it tears.
+SHOULDER_X = 0.16               # shoulder joint in X (the model's shoulder bone after fitting)
+ARM_RAMP = 0.18                 # over how many metres the transform ramps in
+                                # (wider for the hippogriff: on a narrow band the shoulder broke)
+ARM_TIP = 0.9                   # fraction of the span beyond which it is the hand
+HEAD_RAMP = 0.12                # how many metres below the jaw the arm takes full effect
 
 P = coords()
 arm_far = np.abs(P[:, 0]) > 0.45
 arm_y = float(np.median([P[i][1] for i in range(len(P)) if arm_far[i] and appendage[i] is None]))
-ARM_BACK = arm_y + 0.12         # дальше назад — крыло, а не рука
+ARM_BACK = arm_y + 0.12         # farther back is the wing, not the arm
 arm_zone = [i for i, p in enumerate(P)
             if abs(p[0]) > SHOULDER_X - ARM_RAMP and p[1] < ARM_BACK and p[2] > 1.0
             and appendage[i] is None and not is_head(P[i])]
 tip = max(abs(P[i][0]) for i in arm_zone)
-# Кисть — по РОДНОЙ кости модели, а не по кончикам когтей: когти у дракона длинные, и по ним
-# рука уезжала далеко в сторону от тела (кисть вставала на |x| 0.83 вместо 0.65).
+# The hand is found by the model's NATIVE bone, not by the claw tips: the dragon's claws are long, and by
+# them the arm went far out to the side of the body (the hand ended up at |x| 0.83 instead of 0.65).
 hand_idx = [i for i in arm_zone if i in own_hand] or \
            [i for i in arm_zone if abs(P[i][0]) > ARM_TIP * tip]
 
-# Плечевой сустав — на оси самой руки, продолженной до SHOULDER_X. По срезу туловища на этой
-# отметке его не найти: там ещё бок, и середина среза гуляет на десяток сантиметров по высоте.
-# Ось считаем по серединам поперечных полос руки (от 0.30 до кончиков), чтобы кисть и локоть
-# не перевешивали, и проводим по ним прямую.
+# The shoulder joint lies on the axis of the arm itself, extended to SHOULDER_X. It cannot be found from
+# a torso slice at that mark: the flank is still there, and the slice centre wanders by ~10 cm in height.
+# The axis is computed from the centres of cross bands of the arm (from 0.30 to the tips), so that the
+# hand and elbow do not outweigh the rest, and a straight line is fitted through them.
 ARM_AXIS_FROM = 0.30
 axis = np.array([[abs(P[i][0]), P[i][1], P[i][2]] for i in arm_zone
                  if abs(P[i][0]) > ARM_AXIS_FROM])
@@ -480,20 +484,20 @@ kz, bz = np.polyfit(middles[:, 0], middles[:, 2], 1)
 S_d = Vector((SHOULDER_X, ky * SHOULDER_X + by, kz * SHOULDER_X + bz))
 H_d = Vector([float(np.mean([abs(P[i][k]) if k == 0 else P[i][k] for i in hand_idx])) for k in range(3)])
 S_p = bones["bip01_l_upperarm_twist_15"]
-# Целим ЗАПЯСТЬЕМ в кость кисти. По кончикам пальцев пони нельзя: её рука длиннее человеческой
-# (пальцы уходят на |x| 0.83, тогда как у ванильного тела рука кончается на 0.60), и дракон
-# получал руки враскоряку. Когти пусть торчат за кость, как пальцы у человека.
+# Aim the WRIST at the hand bone. The pony's fingertips cannot be used: its arm is longer than a human's
+# (fingers reach |x| 0.83, while the vanilla body's arm ends at 0.60), and the dragon got splayed arms.
+# Let the claws stick out past the bone, like a human's fingers.
 H_p = bones["bip01_l_hand_19"]
-# Ровно по кость рука выходит коротковатой: кисть прячется в рукав. Отпускаем её дальше вдоль
-# той же оси и доворачиваем вниз — так она и длиннее, и прижата к телу, а не растопырена.
-# Числа набираются по замечаниям из игры, как и у дракона.
-ARM_REACH = 1.10    # во сколько раз дальше кости кисти уходит запястье («чуть удлини руки»)
-ARM_DROP = 8.0      # на сколько градусов рука дополнительно опускается к телу
-ARM_THICK = 1.00    # во сколько раз толще поперёк оси (само совмещение руку подтачивает)
-HAND_SMALL = 0.72   # во сколько раз уменьшается сама кисть («кисти уменьши», 24.09.2026)
-# «сдвинь ближе к крыльям»: крыло идёт от плеча вверх-назад, а лапа висела вперёд и вниз.
-# Двигаем её к плоскости крыла — назад и вверх вдоль тела.
-HAND_TO_WING = (0.02, 0.02)     # назад (+Y) и вверх (+Z), метры
+# Exactly to the bone the arm comes out a bit short: the hand hides in the sleeve. Let it go further along
+# the same axis and turn it down - that way it is both longer and pressed to the body, not splayed.
+# The numbers are tuned from in-game feedback, as for the dragon.
+ARM_REACH = 1.10    # how many times farther than the hand bone the wrist goes ("lengthen the arms a bit")
+ARM_DROP = 8.0      # how many extra degrees the arm is lowered towards the body
+ARM_THICK = 1.00    # how many times thicker across the axis (the alignment itself thins the arm)
+HAND_SMALL = 0.72   # how many times the hand itself is shrunk ("make the hands smaller", 24.09.2026)
+# "move closer to the wings": the wing goes up-back from the shoulder, while
+# the paw hung forward and down. Move it towards the wing plane - back and up along the body.
+HAND_TO_WING = (0.02, 0.02)     # back (+Y) and up (+Z), metres
 
 reach = (H_p - S_p) * ARM_REACH
 drop = math.radians(ARM_DROP)
@@ -507,19 +511,19 @@ log("  рука: наклон %.0f -> %.0f градусов ниже гориз�
        math.degrees(math.atan2(-(H_p - S_p).z, (H_p - S_p).x)), ARM_THICK * stretch))
 log("  плечо дракона (%.2f,%.2f,%.2f) -> (%.2f,%.2f,%.2f), кисть (%.2f,%.2f,%.2f) -> (%.2f,%.2f,%.2f)"
     % (*S_d, *S_p, *H_d, *(S_p + turn @ ((H_d - S_d) * stretch))))
-# Руку НЕ гнём: она уже стоит в А-позе — её повернул скелет модели (pose_arms_like_pony выше).
-# Здесь остались только замеры: куда попала кисть относительно кости кисти пони.
+# The arm is NOT bent: it is already in the A-pose - the model's skeleton turned it (pose_arms_like_pony above).
+# Only measurements are left here: where the hand ended up relative to the pony hand bone.
 P = coords()
 hands = P[[i for i in hand_idx]]
 log("кисть после позы скелетом (%.2f,%.2f,%.2f), кость кисти пони (%.2f,%.2f,%.2f), в зоне руки %d вершин"
     % (abs(hands[:, 0]).mean(), hands[:, 1].mean(), hands[:, 2].mean(), H_p.x, H_p.y, H_p.z,
        len(arm_zone)))
 
-# ---------------------------------------------------------------- кисть поменьше
-# Лапа у модели крупная, с длинными когтями, и рядом с человеческим рукавом смотрится лопатой.
-# Ужимаем ВОКРУГ ЗАПЯСТЬЯ (кость кисти пони), а не вокруг середины лапы: иначе на стыке
-# с предплечьем открывается щель. Ближе к телу кисть подбирает ARM_DROP выше — он же кладёт
-# всю руку вдоль корпуса, а не в стороны.
+# ---------------------------------------------------------------- smaller hand
+# The model's paw is big, with long claws, and next to a human sleeve it looks like a shovel.
+# Shrink it AROUND THE WRIST (the pony hand bone), not around the paw centre: otherwise a gap opens at the
+# joint with the forearm. ARM_DROP above pulls the hand closer to the body - it also lays the whole arm
+# along the torso rather than out to the sides.
 if HAND_SMALL != 1.0:
     P = coords()
     shrunk = 0
@@ -528,8 +532,8 @@ if HAND_SMALL != 1.0:
         sign = 1.0 if p[0] > 0 else -1.0
         wrist = Vector((H_p.x * sign, H_p.y, H_p.z))
         moved = wrist + (Vector((p[0], p[1], p[2])) - wrist) * HAND_SMALL
-        moved.y += HAND_TO_WING[0]      # к крылу: назад
-        moved.z += HAND_TO_WING[1]      # и вверх
+        moved.y += HAND_TO_WING[0]      # towards the wing: back
+        moved.z += HAND_TO_WING[1]      # and up
         hippo.data.vertices[i].co = moved
         shrunk += 1
     P = coords()
@@ -537,24 +541,25 @@ if HAND_SMALL != 1.0:
     log("кисть ужата в %.2f раза (%d вершин), центр лапы теперь (%.2f,%.2f,%.2f)"
         % (HAND_SMALL, shrunk, abs(hands[:, 0]).mean(), hands[:, 1].mean(), hands[:, 2].mean()))
 
-# ---------------------------------------------------------------- руки вперёд, ноги назад
-# Сбоку видно, что рука висит у самого хвоста, а нога вынесена вперёд — фигура заваливается.
-# Двигаем по глубине навстречу друг другу («сдвинь руки от хвоста, а ноги к хвосту», 24.09.2026).
-# Морда смотрит в -Y, значит вперёд — это минус, к хвосту — плюс.
+# ---------------------------------------------------------------- arms forward, legs back
+# From the side the arm hangs right by the tail and the leg is pushed forward - the figure topples.
+# Move them towards each other in depth ("move the arms away
+# from the tail and the legs towards it", 24.09.2026). The muzzle faces -Y, so forward is minus, towards
+# the tail is plus.
 #
-# Обе подвижки с плавным сходом на нет: рука отпускает у плеча (тот же ramp, что у разворота),
-# нога — у таза. Иначе на суставе рвётся.
-ARM_FORWARD = 0.0       # тело берём как в оригинале — подвижек по глубине нет
-ARM_OUT = 0.0           # и в стороны тоже
-LEG_BACK = 0.0          # и ноги на месте
-LEG_FULL = 0.55         # ниже этой высоты нога двигается целиком
-LEG_FADE = 0.95         # выше этой — уже таз, его не трогаем
+# Both shifts fade out smoothly: the arm lets go at the shoulder (same ramp as the rotation),
+# the leg at the pelvis. Otherwise the joint tears.
+ARM_FORWARD = 0.0       # body taken as in the original - no depth shifts
+ARM_OUT = 0.0           # nor to the sides
+LEG_BACK = 0.0          # and the legs stay in place
+LEG_FULL = 0.55         # below this height the leg moves as a whole
+LEG_FADE = 0.95         # above this it is the pelvis, left alone
 
 P = coords()
 for i in arm_zone:
     p = P[i]
     t = min(1.0, max(0.0, (abs(p[0]) - (SHOULDER_X - ARM_RAMP)) / ARM_RAMP))
-    t = t * t * (3 - 2 * t)          # плавно, иначе на плече излом
+    t = t * t * (3 - 2 * t)          # smoothly, otherwise the shoulder kinks
     t *= min(1.0, (jaw_z(p) - p[2]) / HEAD_RAMP)
     hippo.data.vertices[i].co.y -= ARM_FORWARD * t
     hippo.data.vertices[i].co.x += math.copysign(ARM_OUT * t, p[0])
@@ -574,18 +579,19 @@ for i, p in enumerate(P):
 log("руки сдвинуты вперёд на %.2f м и в стороны на %.2f м (%d вершин), ноги назад на %.2f м (%d вершин)"
     % (ARM_FORWARD, ARM_OUT, len(arm_zone), LEG_BACK, moved_legs))
 
-# ------------------------------------------------------------------- грудная клетка пошире
-# У модели узкая грудь — рядом с широким тазом смотрится трубой. Раздаём её по X, но не одним
-# масштабом: иначе вместе с грудью уедут и руки, и кисти сойдут со своих костей. Внутри туловища
-# ширина растёт пропорционально, снаружи сдвиг сходит на нет к запястью, а по высоте — плавно
-# за пределами рёбер. Крылья и хвост двигаем вместе со всеми, чтобы корни остались на месте.
-# В игре грудь вышла плоской рядом с широкими бёдрами («слишком сильно сплющена грудь по ширине»,
-# 24.09.2026), потом попросили ещё шире и вместе с животом — отсюда 1.45 и полоса до самого таза.
-CHEST_WIDE = 1.0    # грудь не раздаём: от этого торс шёл треугольником
-# Полоса своя, не драконья: грифон ниже (1.95 против 2.10), ключицы у него на 1.41, таз на 0.95.
-CHEST_BAND = (0.95, 1.36)   # рёбра и живот: от таза до ключиц
-CHEST_FADE = 0.13           # на скольких метрах по высоте набирается и спадает
-CHEST_TAPER = 0.45          # на скольких метрах наружу сдвиг сходит на нет
+# ------------------------------------------------------------------- wider rib cage
+# The model has a narrow chest - next to the wide pelvis it looks like a tube. Widen it in X, but not with
+# a single scale: otherwise the arms move along with the chest and the hands leave their bones. Inside the
+# torso the width grows proportionally, outside the shift fades out towards the wrist, and in height it
+# fades smoothly beyond the ribs. Wings and tail move with everything else so their roots stay in place.
+# In game the chest came out flat next to the wide hips (
+# "the chest is squashed too much in width", 24.09.2026), then it was asked to be even wider and together
+# with the belly - hence 1.45 and the band down to the pelvis.
+CHEST_WIDE = 1.0    # the chest is not widened: that made the torso triangular
+# Own band, not the dragon's: the griffon is shorter (1.95 vs 2.10), its collarbones at 1.41, pelvis at 0.95.
+CHEST_BAND = (0.95, 1.36)   # ribs and belly: from pelvis to collarbones
+CHEST_FADE = 0.13           # over how many metres in height it ramps in and out
+CHEST_TAPER = 0.45          # over how many metres outwards the shift fades out
 
 
 def band_weight(z):
@@ -600,7 +606,7 @@ def band_weight(z):
 
 P = coords()
 chest = P[(P[:, 2] > CHEST_BAND[0]) & (P[:, 2] < CHEST_BAND[1]) & (np.abs(P[:, 0]) < 0.35)]
-HALF = float(np.percentile(np.abs(chest[:, 0]), 90))     # полуширина туловища на уровне рёбер
+HALF = float(np.percentile(np.abs(chest[:, 0]), 90))     # torso half-width at rib level
 grow = (CHEST_WIDE - 1.0) * HALF
 for i, p in enumerate(P):
     w = band_weight(p[2])
@@ -616,15 +622,15 @@ wide = P[(P[:, 2] > CHEST_BAND[0]) & (P[:, 2] < CHEST_BAND[1]) & (np.abs(P[:, 0]
 log("грудная клетка: полуширина %.2f -> %.2f (в %.1f раза)"
     % (HALF, float(np.percentile(np.abs(wide[:, 0]), 90)), CHEST_WIDE))
 
-# ------------------------------------------------------------------- верх груди поменьше
-# Раздавать надо рёбра, а не бюст: сверху грудь выпирала и вперёд, и в стороны. Ужимаем верхнюю
-# часть груди по ширине и глубине вокруг её же середины — так низ (рёбра) остаётся широким, а
-# верх подбирается. К плечам сходит на нет, иначе от них оторвутся руки.
-UPPER_SMALL = 1.00          # во сколько раз ужимаем верх груди (1.0 — не трогаем)
-UPPER_BAND = (1.34, 1.58)   # от бюста до ключиц
-UPPER_FADE = 0.10           # на скольких метрах по высоте набирается и спадает
-UPPER_HALF = 0.26           # дальше этого по X — уже плечо, там ужимать нельзя
-UPPER_TAPER = 0.16          # на скольких метрах наружу ужимание сходит на нет
+# ------------------------------------------------------------------- smaller upper chest
+# It is the ribs that should be widened, not the bust: at the top the chest stuck out both forward and to
+# the sides. Shrink the upper chest in width and depth around its own centre - so the bottom (ribs) stays
+# wide and the top is tucked in. Fades out towards the shoulders, otherwise the arms tear off them.
+UPPER_SMALL = 1.00          # how many times the upper chest is shrunk (1.0 - untouched)
+UPPER_BAND = (1.34, 1.58)   # from bust to collarbones
+UPPER_FADE = 0.10           # over how many metres in height it ramps in and out
+UPPER_HALF = 0.26           # beyond this in X it is the shoulder, no shrinking there
+UPPER_TAPER = 0.16          # over how many metres outwards the shrinking fades out
 
 P = coords()
 band = P[(P[:, 2] > UPPER_BAND[0]) & (P[:, 2] < UPPER_BAND[1]) & (np.abs(P[:, 0]) < UPPER_HALF)]
@@ -632,7 +638,7 @@ mid_y = float(np.percentile(band[:, 1], 2) + np.percentile(band[:, 1], 98)) / 2
 
 
 def upper_size():
-    # мерить надо шире полосы ужимания, иначе замер упирается в собственный предел
+    # measure wider than the shrink band, otherwise the measurement hits its own limit
     s = P[(P[:, 2] > UPPER_BAND[0]) & (P[:, 2] < UPPER_BAND[1]) & (np.abs(P[:, 0]) < 0.45)]
     return float(np.percentile(np.abs(s[:, 0]), 90)), float(np.percentile(s[:, 1], 2))
 
@@ -660,7 +666,7 @@ now, now_front = upper_size()
 log("верх груди ужат: полуширина %.2f -> %.2f, вперёд выступал на %.2f -> %.2f"
     % (was, now, was_front, now_front))
 
-# ---------------------------------------------------------------- 2. веса с пони
+# ---------------------------------------------------------------- 2. weights from the pony
 ref_parts = []
 for name in ("eq_twilight_body", "eq_twilight_legs", "eq_twilight_gloves", "eq_twilight_head"):
     src = pony[name]
@@ -679,7 +685,7 @@ ref = bpy.context.view_layer.objects.active
 ref.name = "pony_ref"
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
-for g in list(hippo.vertex_groups):     # чужие группы Mixamo больше не нужны
+for g in list(hippo.vertex_groups):     # the foreign Mixamo groups are no longer needed
     hippo.vertex_groups.remove(g)
 for g in ref.vertex_groups:
     hippo.vertex_groups.new(name=g.name)
@@ -698,8 +704,8 @@ bpy.ops.object.vertex_group_limit_total(limit=4)
 bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 bpy.data.objects.remove(ref)
 
-# Кости кистей — только кистям: у пони кисти висят на высоте живота, и бока корпуса дракона
-# оказываются к ним ближе, чем к её телу (та же беда, что была у яка).
+# Hand bones go to the hands only: the pony's hands hang at belly height, and the sides of the dragon's
+# torso end up closer to them than to its body (the same problem the yak had).
 P = coords()
 HAND_MIN_X = 0.60
 stripped = 0
@@ -716,8 +722,8 @@ for i, p in enumerate(P):
 bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 log("снято весов кистей с корпуса: %d" % stripped)
 
-# Голова жёстко на кости головы — иначе морду ведут кости шеи и груди и она рвётся на стыке.
-# Граница (jaw_z/is_head) задана выше, до правки рук.
+# The head is rigidly on the head bone - otherwise the neck and chest bones drive the muzzle and it tears
+# at the seam. The boundary (jaw_z/is_head) is defined above, before the arm edits.
 BLEND = 0.15
 
 head_group = hippo.vertex_groups["bip01_head_13"]
@@ -734,9 +740,9 @@ for i in range(len(P)):
     front = max(0.0, -p[1] + JAW_FROM)
     d = (NECK_Z - JAW_SLOPE * front) - p[2]
     if d >= BLEND:
-        # Ниже шеи кости головы быть не должно. Перенос весов даёт её гребню на груди: тот
-        # торчит вперёд и вверх, и ближайшей точкой пони оказывается её подбородок. В игре
-        # такая грудь складывалась при каждом повороте головы.
+        # There must be no head bone below the neck. The weight transfer gives it to the crest on the
+        # chest: it sticks forward and up, and the nearest pony point turns out to be its chin. In game
+        # such a chest folded on every head turn.
         if head_group.index in [g.group for g in hippo.data.vertices[i].groups]:
             head_group.remove([i])
             torn += 1
@@ -752,41 +758,42 @@ bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 log("голова жёстко на кости головы: %d вершин, плавная зона: %d, снято весов головы с корпуса: %d"
     % (len(head_idx), blended, torn))
 
-# ------------------------------------------------------------------------ моргание
-# Моргает движок вершинными ключами головы: их ровно 101 (key_000..key_100), и кадры 86, 87, 88 —
-# левый глаз, правый и оба (так же сделано у пони, tools/convert_twilight.py). Без ключей лицо
-# просто застывшее, как у яка.
+# ------------------------------------------------------------------------ blinking
+# The engine blinks with the head's vertex keys: there are exactly 101 (key_000..key_100), and frames 86,
+# 87, 88 are the left eye, the right and both (done the same way for the pony, tools/convert_twilight.py).
+# Without the keys the face is simply frozen, like the yak's.
 #
-# У пони веки — своя геометрия, спрятанная над глазом. У дракона её нет: модель цельная, глаз
-# просто НАРИСОВАН на текстуре. Поэтому закрываем его сжатием: вершины вокруг глаза сводим к его
-# середине по высоте, и нарисованный глаз схлопывается в щёлочку. Этим же приёмом у пони
-# дожимается глазное яблоко, когда движок применяет кадр не на полную силу.
+# The pony's eyelids are separate geometry hidden above the eye. The dragon has none: the model is one
+# piece, the eye is just PAINTED on the texture. So we close it by squashing: vertices around the eye are
+# pulled towards its middle in height, and the painted eye collapses into a slit. The same trick finishes
+# closing the pony's eyeball when the engine applies a frame at less than full strength.
 #
-# Глаза ищем по самой текстуре — это два симметричных тёмных пятна на морде. Пробу цвета берём
-# чуть внутрь грани: развёртка у модели лоскутная, и на самом краю островка уже чернота атласа.
-FACE_KEYS = 101         # столько вершинных ключей у ванильной головы
+# Eyes are found from the texture itself - two symmetrical dark spots on the muzzle. The colour sample is
+# taken slightly inside the face: the model's UV layout is patchy, and right at an island's edge there is
+# already the atlas black.
+FACE_KEYS = 101         # this many vertex keys on the vanilla head
 BLINK_FRAMES = {86: "левый", 87: "правый", 88: "оба"}
-# Порог у грифона НАМНОГО строже драконьих 0.30: у орла бурые перья надбровья темнее 0.3, и по
-# такому порогу самым крупным тёмным пятном выходила бровь — моргание срабатывало выше глаза
-# (замечено в игре 24.09.2026). Чёрный зрачок заметно темнее любого пера, по нему и метим.
+# The griffon threshold is MUCH stricter than the dragon's 0.30: the eagle's brown brow feathers are darker
+# than 0.3, and with that threshold the brow came out as the largest dark spot - the blink fired above the
+# eye (seen in game 24.09.2026). The black pupil is noticeably darker than any feather, so we key on it.
 EYE_DARK = 0.16
-# Зона сжатия — полуоси «дольки» вокруг середины глаза: вбок, вглубь, по высоте. Глаз у грифона
-# миндалевидный и лежит наискось, поэтому вдоль него зона длинная, а по высоте короткая — иначе
-# вместе с глазом схлопываются бровь и щека, и морда складывается гармошкой.
+# Squash zone - half-axes of a "segment" around the eye centre: sideways, in depth, in height. The griffon's
+# eye is almond-shaped and slanted, so the zone is long along it and short in height - otherwise the brow
+# and cheek collapse along with the eye and the muzzle folds like an accordion.
 EYE_ZONE = (0.105, 0.095, 0.055)
-EYE_FULL = 0.80         # внутри этой доли зоны сжимаем полностью, дальше плавно сходит на нет
-EYE_SQUASH = 0.92       # насколько сводим вершины к середине глаза
-EYE_SIDE = 0.02         # ближе этого к оси — не глаз, а клюв
-# Метка садится на ЗРАЧОК, а он у грифона у самого клюва, тогда как сам глаз с белком уходит
-# наружу и чуть назад — закрывалась только половина у носа (замечено в игре 24.09.2026).
-# Поэтому от найденного зрачка отступаем к середине глаза.
-EYE_OUT = 0.035         # наружу, от клюва к виску
-EYE_BACK = 0.030        # и назад: белок у грифона уходит к виску, глаз миндалевидный
+EYE_FULL = 0.80         # inside this fraction of the zone squash fully, beyond it fades out smoothly
+EYE_SQUASH = 0.92       # how much the vertices are pulled towards the eye centre
+EYE_SIDE = 0.02         # closer than this to the axis is the beak, not the eye
+# The mark lands on the PUPIL, and on the griffon it is right by the beak, while the eye itself with the
+# white extends outwards and slightly back - only the half near the nose closed (seen in game 24.09.2026).
+# So we step from the found pupil towards the eye centre.
+EYE_OUT = 0.035         # outwards, from the beak to the temple
+EYE_BACK = 0.030        # and back: the griffon's eye white extends to the temple, the eye is almond-shaped
 
 
 def eye_spots(ob, only=None):
-    """Середины глаз: тёмные пятна на текстуре. only — по каким вершинам искать
-    (на целой модели это вершины головы, иначе тёмные пятна найдутся по всему телу)."""
+    """Eye centres: dark spots on the texture. only - which vertices to search
+    (on the whole model these are the head vertices, otherwise dark spots are found all over the body)."""
     img = next((i for i in bpy.data.images
                 if "texture_0" in i.name.lower() and i.has_data
                 and not any(k in i.name.lower() for k in ("normal", "rough", "metal"))), None)
@@ -835,14 +842,14 @@ def eye_spots(ob, only=None):
         spots.append((P[blob].mean(0), len(blob), float(tone[blob].mean())))
     for centre, size, shade in sorted(spots, key=lambda s: -s[1])[:8]:
         log("  тёмное пятно: %3d вершин, яркость %.2f, на (%.2f,%.2f,%.2f)" % (size, shade, *centre))
-    # Ищем ОДИН глаз и отражаем его на вторую сторону. Искать на каждой стороне отдельно нельзя:
-    # у пёстрой птицы тёмных пятен по голове много (тени перьев, ноздря, край воротника), и на
-    # одной стороне побеждал глаз, а на другой — пятно на шее; глаза выходили на разной высоте
-    # (замерено: 1.61 и 1.33). Отбор: верхняя половина головы, передняя часть, в стороне от оси,
-    # самое тёмное. Голова у модели симметрична, отражение надёжнее второго поиска.
-    # Отметки «перед» и «верхняя половина» считаем ПО ТЕМ ЖЕ вершинам, где ищем (only): если
-    # мерить по всей модели, «верхняя половина» окажется на уровне пояса и фильтр ничего не
-    # отсекает — глаз находился на щеке (проверено 24.09.2026).
+    # Find ONE eye and mirror it to the other side. Searching each side separately does not work: a
+    # mottled bird has many dark spots on the head (feather shadows, nostril, collar edge), and on one
+    # side the eye won while on the other a spot on the neck did; the eyes came out at different heights
+    # (measured: 1.61 and 1.33). Selection: upper half of the head, front part, off the axis, darkest.
+    # The model's head is symmetrical, mirroring is more reliable than a second search.
+    # The "front" and "upper half" marks are computed FROM THE SAME vertices we search (only): measured
+    # over the whole model, the "upper half" ends up at waist level and the filter cuts nothing - the
+    # eye was found on the cheek (checked 24.09.2026).
     field = P[list(only)] if only is not None else P
     front = float(np.percentile(field[:, 1], 45))
     upper = float(field[:, 2].min() + field[:, 2].max()) / 2
@@ -854,7 +861,7 @@ def eye_spots(ob, only=None):
         right = np.array([abs(best[0]), best[1], best[2]])
         out = [right, np.array([-right[0], right[1], right[2]])]
         log("  глаз найден на (%.2f,%.2f,%.2f), вторая сторона отражена" % tuple(right))
-    # от зрачка — к середине глаза (см. EYE_OUT)
+    # from the pupil to the eye centre (see EYE_OUT)
     for spot in out:
         if spot is not None:
             spot[0] += math.copysign(EYE_OUT, spot[0])
@@ -875,13 +882,13 @@ def add_blink(ob, spots=None):
         radius = np.array(EYE_ZONE)
         for side in sides:
             eye = spots[side]
-            # Зона не шар, а «долька» по форме глаза: широкая вбок и вглубь, низкая по высоте.
-            # Шаром не выходило: чтобы дожать наружный угол, радиус приходилось брать таким,
-            # что заодно сминались бровь и щека, и морда складывалась гармошкой.
+            # The zone is not a ball but a "segment" shaped like the eye: wide sideways and in depth,
+            # low in height. A ball did not work: to close the outer corner the radius had to be so big
+            # that the brow and cheek got crushed too, and the muzzle folded like an accordion.
             step = (P - eye) / radius
-            # По высоте — отдельно от «вдоль глаза»: зона выходит лепёшкой, а не мячом.
-            # Если считать все три оси вместе, наружный угол глаза (далеко вбок И чуть выше
-            # середины) выпадает из зоны и остаётся открытым.
+            # Height is handled separately from "along the eye": the zone comes out as a flat cake, not
+            # a ball. If all three axes are combined, the outer eye corner (far to the side AND slightly
+            # above the centre) falls out of the zone and stays open.
             gap = np.maximum(np.sqrt((step[:, 0] ** 2 + step[:, 1] ** 2)), np.abs(step[:, 2]))
             close = gap < 1.0
             fade = np.clip((1.0 - gap[close]) / max(1.0 - EYE_FULL, 1e-6), 0.0, 1.0)
@@ -900,7 +907,7 @@ def add_blink(ob, spots=None):
         % (FACE_KEYS, "/".join(str(k) for k in sorted(BLINK_FRAMES)), EYE_SQUASH, EYE_ZONE[0]))
 
 
-# ---------------------------------------------------------------- 3. разрез на части
+# ---------------------------------------------------------------- 3. cutting into parts
 group_names = {g.index: g.name for g in hippo.vertex_groups}
 dominant = []
 for v in hippo.data.vertices:
@@ -909,63 +916,66 @@ for v in hippo.data.vertices:
 P = coords()
 lo, hi = P.min(0), P.max(0)
 
-# спина: самая задняя точка узкой полосы вдоль позвоночника
+# back: the rearmost point of a narrow band along the spine
 spine = P[(np.abs(P[:, 0]) < 0.10) & (P[:, 2] > 0.9) & (P[:, 2] < 1.3)]
 BACK = float(spine[:, 1].max())
-# Только СВОИ вершины головы: крылья поднимаются выше макушки и заходят за линию челюсти, и
-# если брать их в замер, все отметки головы едут. У гиппогрифа из-за этого граница гривы уехала
-# на морду и в причёску ушла почти вся голова (41 вершина головы против 198 гривы).
+# Only the head's OWN vertices: the wings rise above the crown and cross the jaw line, and if they are
+# included in the measurement all head marks shift. Because of this, on the hippogriff the mane boundary
+# moved onto the muzzle and almost the whole head went into the hairstyle (41 head vertices vs 198 mane).
 head_pts = P[[i for i in range(len(P)) if is_head(P[i]) and appendage[i] is None]]
 HEAD_TOP = float(head_pts[:, 2].max())
 HEAD_BACK = float(head_pts[:, 1].max())
-# Макушка: ниже этой доли высоты головы — уже лицо
+# Crown: below this fraction of the head height it is already the face
 SKULL_PART = 70
 SKULL_TOP = float(np.percentile(head_pts[:, 2], SKULL_PART))
-# ГЛАЗ ЦЕЛИКОМ ОСТАЁТСЯ ГОЛОВЕ. Линия макушки по доле высоты приходилась ровно на глаз, и его
-# верхняя половина уезжала в причёску: в игре при моргании шевелились волосы, а не веко
-# (замечено 24.09.2026). Поэтому поднимаем линию выше глаза с запасом.
-EYE_KEEP = 0.05          # на сколько линия макушки проходит выше самого глаза
+# THE WHOLE EYE STAYS WITH THE HEAD. The crown line by height fraction fell right on the eye, and its upper
+# half went into the hairstyle: in game the hair moved on blinking instead of the eyelid
+# (seen 24.09.2026). So the line is raised above the eye with a margin.
+EYE_KEEP = 0.05          # how far above the eye itself the crown line runs
 eyes_early = eye_spots(hippo, only=[i for i in range(len(P)) if is_head(P[i]) and appendage[i] is None])
 if eyes_early:
     was_top = SKULL_TOP
     SKULL_TOP = max(SKULL_TOP, max(float(e[2]) for e in eyes_early) + EYE_KEEP)
     log("линия макушки поднята с %.2f до %.2f — глаз (%.2f) остаётся голове"
         % (was_top, SKULL_TOP, max(float(e[2]) for e in eyes_early)))
-# Граница гривы по глубине: доля пути от глаз к затылку. Всё дальше неё — грива и затылок,
-# ближе — морда с оборкой (её в волосы брать нельзя, красилась бы цветом волос).
+# Mane boundary in depth: fraction of the way from the eyes to the back of the head. Everything beyond it
+# is mane and nape, closer is the muzzle with its frill (it must not go into the hair, it would be tinted
+# with the hair colour).
 HAIR_FROM_EYES = 0.45
-eye_y = float(np.percentile(head_pts[:, 1], 5))        # перед морды
+eye_y = float(np.percentile(head_pts[:, 1], 5))        # front of the muzzle
 HAIR_BACK = eye_y + (HEAD_BACK - eye_y) * HAIR_FROM_EYES
-# Где проходит разрез между телом и ногами. У пони 0.44 от роста 1.86, но у грифона нога птичья:
-# сустав выше, и при низком разрезе из-под сапога торчала голая лапа («ноги обрезай от тела чуть
-# повыше», 24.09.2026). Поднимаем на ладонь — до середины голени.
+# Where the cut between body and legs runs. The pony has 0.44 of height 1.86, but the griffon has a bird
+# leg: the joint is higher, and with a low cut a bare paw stuck out from under the boot (
+# "cut the legs off the body a bit higher", 24.09.2026). Raise it by a palm - to mid-shin.
 LEG_TOP = 0.55 * HEIGHT / 1.86
 TAIL_Z = bones[PELVIS].z * HEIGHT / 1.86
 log("ориентиры: спина y=%.2f, голова верх %.2f (череп до %.2f), зад головы y=%.2f, "
     "грива от y=%.2f, ноги до %.2f" % (BACK, HEAD_TOP, SKULL_TOP, HEAD_BACK, HAIR_BACK, LEG_TOP))
 
-# ЧЁЛКУ ДОБИРАТЬ НЕ НАДО. Пробовал ловить пряди, оставшиеся на лице, по тому, что прядь — тонкий
-# лист (рядом изнанка со встречной нормалью, KD-дерево): вместе с ними в причёску уезжали чешуя
-# над бровью и куски щеки, а голова усыхала со 322 вершин до 150. Пользователь: «сделай как до
-# этого было, а то вообще плохо получилось с волосами». Остаются две отметки — макушка и затылок.
+# DO NOT COLLECT THE FORELOCK. I tried catching strands left on the face by the fact that a strand is a
+# thin sheet (a back side with an opposite normal nearby, KD-tree): along with them, scales above the brow
+# and pieces of cheek went into the hairstyle, and the head shrank from 322 vertices to 150. The user:
+# ("make it like before, the hair
+# came out really bad"). Two marks remain - the crown and the nape.
 
 
 NECK_BONES = ("mixamorig:Neck", "mixamorig:Head", "mixamorig:HeadTop_End", "headfront")
 
 
 def part_of(i):
-    if appendage[i]:                 # крылья и хвост отобраны выше, по удалённости от костей
+    if appendage[i]:                 # wings and tail were selected above, by distance from the bones
         return appendage[i]
     p = P[i]
-    # Шея — по РОДНОМУ скиннингу модели: всё, что висит на её костях шеи и головы. Доспех
-    # подменяет меш тела, и шея в теле под бронёй пропадала; а рамкой по высоте её не вырезать —
-    # у модели она кончается ровно по границе чёрно-жёлтого оперения груди.
+    # The neck is taken by the model's NATIVE skinning: everything hanging on its neck and head bones.
+    # Armour replaces the body mesh, and the neck in the body vanished under the armour; and a height box
+    # cannot cut it out - on the model it ends exactly at the edge of the black-and-yellow chest plumage.
     if own_dominant[i] in NECK_BONES and not is_head(p):
         return "head"
     if is_head(p):
-        # «Причёска» — рога, гребень на макушке и грива, что спадает с затылка на плечи: на ней
-        # работает цвет волос из окна внешности. Оборку вдоль морды брать нельзя (она красилась
-        # бы заодно с рогами), поэтому граница по глубине: грива вся позади черепа, морда впереди.
+        # The "hairstyle" is the horns, the crest on the crown and the mane falling from the nape onto the
+        # shoulders: the hair colour from the appearance screen works on it. The frill along the muzzle must
+        # not be included (it would be tinted along with the horns), hence the depth boundary: the mane is
+        # entirely behind the skull, the muzzle in front.
         if p[2] > SKULL_TOP or p[1] > HAIR_BACK:
             return "hair"
         return "head"
@@ -983,7 +993,7 @@ for name in labels:
     counts[name] = counts.get(name, 0) + 1
 log("части по вершинам:", counts)
 
-# ---------------------------------------------------------------- 4. материал и текстуры
+# ---------------------------------------------------------------- 4. material and textures
 src_mat = hippo.data.materials[0] if hippo.data.materials else None
 mat = bpy.data.materials.new(MAT)
 mat.use_nodes = True
@@ -1018,10 +1028,10 @@ if src_mat and src_mat.use_nodes:
             elif bsdf and "metal" not in low and "rough" not in low:
                 mat.node_tree.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
 
-# ---------------------------------------------------------------- 5. части отдельными мешами
-PLUG = 0.18        # на сколько корень крыла и хвоста уходит внутрь тела — запас хода при анимации
-SMOOTH_ROUNDS = 18  # столько раз расслабляем гнездо от крыла и хвоста, чтобы спина стала гладкой
-SMOOTH_GROW = 2     # на столько колец вокруг заплатки расходится заглаживание
+# ---------------------------------------------------------------- 5. parts as separate meshes
+PLUG = 0.18        # how far the wing and tail root goes into the body - slack for animation
+SMOOTH_ROUNDS = 18  # this many relax passes on the wing/tail socket so the back becomes smooth
+SMOOTH_GROW = 2     # this many rings around the patch the smoothing spreads to
 SPINE_CHAIN = (PELVIS, "bip01_spine_9", "bip01_spine1_10", "bip01_spine2_11", "bip01_neck_12")
 SPINE_LINE = [(bones[a], bones[b]) for a, b in zip(SPINE_CHAIN[:-1], SPINE_CHAIN[1:])]
 
@@ -1033,8 +1043,8 @@ def closest_on(p, a, b):
     return a + ab * min(1.0, max(0.0, (p - a).dot(ab) / ab.length_squared))
 
 
-SEPARATE_NEAR = 0.025  # головы ближе этого к гриве утапливаем вглубь (метры)
-SEPARATE_PUSH = 0.010  # и на столько, у самых гривы
+SEPARATE_NEAR = 0.025  # head vertices closer than this to the mane are sunk inwards (metres)
+SEPARATE_PUSH = 0.010  # and by this much, right at the mane
 
 parts = {}
 for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
@@ -1049,17 +1059,17 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
     bm = bmesh.new()
     bm.from_mesh(ob.data)
     bm.verts.ensure_lookup_table()
-    was_index = {v: i for i, v in enumerate(bm.verts)}   # номера до удаления — по ним labels
+    was_index = {v: i for i, v in enumerate(bm.verts)}   # indices before deletion - labels use them
     keep_set = set(keep)
     drop = [f for f in bm.faces if sum(1 for v in f.verts if v.index in keep_set) * 2 <= len(f.verts)]
     bmesh.ops.delete(bm, geom=drop, context="FACES")
     loose = [v for v in bm.verts if not v.link_faces]
     bmesh.ops.delete(bm, geom=loose, context="VERTS")
 
-    # Летающие брови. Над глазом у модели отдельный перьевой мазок; разрез оставлял его в части
-    # без опоры, и в игре он висел в воздухе («удали летающие брови», 24.09.2026). Заодно так
-    # уходят все прочие крошки, оставшиеся без соседей. Мелочью считаем кусок меньше FLAKE вершин:
-    # настоящие куски (крыло, гребень, лапа) на порядок крупнее.
+    # Flying eyebrows. Above the eye the model has a separate feather stroke; the cut left it in a part
+    # with no support, and in game it hung in the air ("remove the flying
+    # eyebrows", 24.09.2026). This also removes all other crumbs left without neighbours. A piece smaller
+    # than FLAKE vertices counts as a crumb: real pieces (wing, crest, paw) are an order of magnitude bigger.
     FLAKE = 25
     islands, seen_v = [], set()
     for start in bm.verts:
@@ -1081,19 +1091,19 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
         bmesh.ops.delete(bm, geom=crumbs, context="VERTS")
         log("  %s: снято крошек %d вершин в %d кусках"
             % (name, len(crumbs), sum(1 for i in islands if len(i) < FLAKE)))
-    # Место отрыва закрываем полигонами: иначе на стыке крыльев, хвоста и шеи зияют сквозные
-    # дыры (изнутри грани не рисуются, и в игре там чернота). Закрывать надо ТОЛЬКО срезы:
-    # у крыла и перепонки край свободен по всему обводу, и его заделывать нельзя — затянет
-    # перепонку сплошным полотном. Срез узнаём по тому, что рядом в исходной сетке была
-    # вершина другой части. Развёртку новым граням берём у соседних граней той же вершины,
-    # иначе они тянут цвет из угла текстуры.
+    # Close the tear-off spot with polygons: otherwise see-through holes gape at the joints of wings, tail
+    # and neck (faces are not drawn from inside, and in game it is black there). ONLY the cuts must be
+    # closed: the wing and membrane edge is free all the way round, and it must not be filled - it would
+    # cover the membrane with a solid sheet. A cut is recognised by a vertex of another part being next to
+    # it in the source mesh. UVs for the new faces are taken from neighbouring faces of the same vertex,
+    # otherwise they pull colour from a corner of the texture.
     uv = bm.loops.layers.uv.active
     cut = {v for v in bm.verts if any(labels[o] != name for o in neighbours[was_index[v]])}
 
-    # Крылья и хвост сидят на своей кости, а тело у их корня — на своих (спина у крыла идёт за
-    # ключицей), поэтому при движении шов расходится и в щель видно насквозь. Поэтому у крыла и
-    # хвоста корень продлеваем ВНУТРЬ тела: от среза уводим юбку к позвоночнику. Снаружи её не
-    # видно, а щели она перекрывает с запасом.
+    # Wings and tail sit on their own bone, while the body at their root sits on its own (the back at the
+    # wing follows the collarbone), so in motion the seam opens and you can see through the gap. So the
+    # root of the wing and tail is extended INTO the body: a skirt is led from the cut towards the spine.
+    # It is not visible from outside, and it covers the gaps with a margin.
     if name in ("wings", "tail"):
         seam = [e for e in bm.edges if len(e.link_faces) == 1 and all(v in cut for v in e.verts)]
         if seam:
@@ -1113,7 +1123,7 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
                         near = next((l for l in loop.vert.link_loops if l.face not in skirt), None)
                         if near:
                             loop[uv].uv = near[uv].uv
-            cut.update(fresh)        # дальний край юбки тоже закроем, чтобы карман был глухой
+            cut.update(fresh)        # the far edge of the skirt is closed too, so the pocket is sealed
             log("  %s: корень продлён внутрь тела на %d граней" % (name, len(skirt)))
 
     seen_edge, patched, smooth = set(), 0, set()
@@ -1122,7 +1132,7 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
             continue
         loop_edges, stack = [], [start]
         seen_edge.add(start)
-        while stack:                     # весь связный контур свободного края
+        while stack:                     # the whole connected loop of the free edge
             cur = stack.pop()
             loop_edges.append(cur)
             for v in cur.verts:
@@ -1132,16 +1142,17 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
                         stack.append(e)
         ring = {v for e in loop_edges for v in e.verts}
         if len(ring) < 3 or sum(1 for v in ring if v in cut) < 0.6 * len(ring):
-            continue                     # свободный край самой перепонки — не трогаем
-        # чья это была граница: с крылом и хвостом гнездо потом заглаживаем, а шов с головой,
-        # ногами и кистями трогать нельзя — там стык с соседней частью, он должен остаться
+            continue                     # free edge of the membrane itself - leave it
+        # whose boundary this was: with the wing and tail the socket is smoothed afterwards, but the seam
+        # with the head, legs and hands must not be touched - it joins the neighbouring part and must stay
         touching = [labels[o] for v in ring if v in was_index
                     for o in neighbours[was_index[v]] if labels[o] != name]
         owner = max(set(touching), key=touching.count) if touching else None
         socket = owner in ("wings", "tail")
-        # У самих гривы основание остаётся открытой трубкой. А в голове место под гривеи
-        # заделываем: без гривы (шлем, карта) на макушке зияла дыра между ушами (замечено в
-        # редакторе 26.09.2026). Крышка лежит под гривеи и не мерцает с ними: голова ниже, см. SEPARATE_*.
+        # On the mane itself the base stays an open tube. But in the head the spot under the mane is
+        # filled: without the mane (helmet, map) a hole gaped on the crown between the ears (seen in the
+        # editor 26.09.2026). The cap lies under the mane and does not flicker with it: the head is lower,
+        # see SEPARATE_*.
         if name == "hair":
             continue
         was = set(bm.faces)
@@ -1158,8 +1169,8 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
         if patch:
             bmesh.ops.recalc_face_normals(bm, faces=patch)
             if name == "head":
-                # Голова почти выпуклая: нормаль заплатки обязана смотреть от центра головы,
-                # иначе снаружи (изнанку игра не рисует) на месте заплатки будет дыра.
+                # The head is almost convex: the patch normal must point away from the head centre,
+                # otherwise from outside (the game does not draw back faces) there is a hole at the patch.
                 centre = sum((v.co for v in bm.verts), Vector()) / max(len(bm.verts), 1)
                 for f in patch:
                     if f.normal.dot(f.calc_center_median() - centre) < 0:
@@ -1168,10 +1179,10 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
                 smooth.update(v for f in patch for v in f.verts)
         patched += len(patch)
     if smooth:
-        # Гнездо от крыла и хвоста рваное: заплатка по такому краю выходит мятой. Расслабляем
-        # её вместе с самим краем — спина становится ровной и гладкой, а крыло всё равно садится
-        # поверх и заходит внутрь. Захватываем и кольцо вокруг, иначе заплатка выходит вмятиной,
-        # но не трогаем вершины на свободном крае: там швы с головой, ногами и кистями.
+        # The wing/tail socket is ragged: a patch along such an edge comes out crumpled. Relax it together
+        # with the edge itself - the back becomes even and smooth, and the wing still sits on top and goes
+        # inside. Include a ring around it too, otherwise the patch comes out as a dent, but do not touch
+        # vertices on the free edge: those are the seams with the head, legs and hands.
         for _ in range(SMOOTH_GROW):
             smooth.update(o for v in list(smooth) for e in v.link_edges for o in e.verts
                           if not any(len(x.link_faces) == 1 for x in o.link_edges))
@@ -1182,8 +1193,8 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
     if patched:
         log("  %s: заделано %d граней на месте отрыва" % (name, patched))
     if name == "head":
-        # Где голова касается гривы вплотную, поверхности мерцают друг сквозь друга — одинаковая
-        # глубина. Вершины головы ближе SEPARATE_NEAR к гриве утапливаем вглубь модели.
+        # Where the head touches the mane closely, the surfaces flicker through each other - same depth.
+        # Head vertices closer than SEPARATE_NEAR to the mane are sunk into the model.
         from mathutils.bvhtree import BVHTree
         horn_faces = [f for f in hippo.data.polygons
                       if sum(1 for i in f.vertices if labels[i] == "hair") * 2 > len(f.vertices)]
@@ -1205,12 +1216,12 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
     ob.data.materials.append(mat)
     for poly in ob.data.polygons:
         poly.use_smooth = True
-    if name in ("tail", "wings"):   # предметы целиком на одной кости, как хвост пони
+    if name in ("tail", "wings"):   # items entirely on one bone, like the pony tail
         anchor = PELVIS if name == "tail" else "bip01_spine2_11"
         for g in list(ob.vertex_groups):
             ob.vertex_groups.remove(g)
         ob.vertex_groups.new(name=anchor).add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
-    if name == "hair":              # причёска целиком на голове
+    if name == "hair":              # hairstyle entirely on the head
         for g in list(ob.vertex_groups):
             ob.vertex_groups.remove(g)
         ob.vertex_groups.new(name="bip01_head_13").add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
@@ -1223,7 +1234,7 @@ for name in ("body", "legs", "gloves", "head", "hair", "wings", "tail"):
     log("%s: %d вершин, %d граней" % (ob.name, len(ob.data.vertices), len(ob.data.polygons)))
 bpy.data.objects.remove(hippo)
 
-# ---------------------------------------------------------------- 6. экспорт и превью
+# ---------------------------------------------------------------- 6. export and previews
 bpy.ops.object.select_all(action="DESELECT")
 for ob in [skel, *parts.values()]:
     ob.select_set(True)
@@ -1237,32 +1248,32 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "eq_%s.blend" % RACE))
 prev = os.path.join(OUT, "preview")
 os.makedirs(prev, exist_ok=True)
 scene = bpy.context.scene
-# Ванильный человек НА МЕСТЕ дракона: по нему видно, что вылезает из доспеха и насколько
-# руки и ноги вынесены вперёд. Тот же файл, что и для посадки по глубине.
+# The vanilla human IN PLACE of the dragon: it shows what sticks out of the armour and how far forward
+# the arms and legs are. The same file as for the depth fitting.
 overlay = []
 if os.path.exists(HUMAN):
     known = set(bpy.data.objects)
     bpy.ops.wm.obj_import(filepath=HUMAN, forward_axis="Y", up_axis="Z")
     for ob in [o for o in bpy.data.objects if o not in known]:
-        ob.rotation_euler[2] = math.pi      # ванильные модели смотрят в +Y, наши — в -Y
+        ob.rotation_euler[2] = math.pi      # vanilla models face +Y, ours face -Y
         ob.color = (0.95, 0.35, 0.35, 1.0)
         ob.hide_render = True
         overlay.append(ob)
 for ob in pony.values():
-    ob.location.x -= 2.0        # пони рядом — для сравнения роста
+    ob.location.x -= 2.0        # pony alongside - to compare height
 scene.render.engine = "BLENDER_WORKBENCH"
 scene.display.shading.light = "STUDIO"
 scene.display.shading.color_type = "OBJECT"
-# пони рядом должна быть видна: в исходном файле часть мешей скрыта
+# the pony alongside must be visible: some meshes are hidden in the source file
 for ob in pony.values():
     ob.hide_render = ob.hide_viewport = False
     ob.color = (0.75, 0.70, 0.80, 1.0)
     if ob.name not in bpy.context.scene.collection.objects:
-        try:                     # в исходном файле пони может лежать в отключённой коллекции
+        try:                     # in the source file the pony may be in a disabled collection
             bpy.context.scene.collection.objects.link(ob)
         except RuntimeError:
             pass
-# каждой части дракона свой цвет — так видно, где прошёл разрез
+# each part of the dragon gets its own colour - shows where the cut went
 PART_COLOUR = {"body": (0.80, 0.75, 0.65, 1), "legs": (0.35, 0.55, 0.85, 1),
                "gloves": (0.95, 0.80, 0.25, 1), "head": (0.35, 0.80, 0.45, 1),
                "hair": (0.90, 0.35, 0.75, 1), "wings": (0.55, 0.40, 0.85, 1),
@@ -1275,25 +1286,25 @@ cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
 cam.data.type = "ORTHO"
 scene.collection.objects.link(cam)
 scene.camera = cam
-# Кадр «рост» — рядом с пони для сравнения, остальные без неё: иначе она заслоняет дракона
-# сбоку и не видно, что осталось на спине и где прошёл разрез.
+# The "height" shot is next to the pony for comparison, the rest without it: otherwise it blocks
+# the dragon from the side and you cannot see what is left on the back and where the cut went.
 FRONT = (math.pi / 2, 0, 0)
 for view, loc, rot, span, with_pony, hide in (
         ("рост", (-1.0, -6, 1.05), FRONT, 4.4, True, ()),
         ("front", (0, -6, 1.05), FRONT, 2.6, False, ()),
         ("side", (6, 0, 1.05), (math.pi / 2, 0, math.pi / 2), 2.6, False, ()),
         ("back", (0, 6, 1.05), (math.pi / 2, 0, math.pi), 2.6, False, ()),
-        # крылья и хвост сняты: видно, не осталось ли их кусков на теле и не унесли ли они своё
-        # со спины: там гнёзда от крыльев и хвоста, ради них кадр и нужен
+        # wings and tail removed: shows whether pieces of them were left on the body and whether they took
+        # anything of the body's with them; from the back: the wing and tail sockets, which this shot is for
         ("без крыльев", (0, 6, 1.05), (math.pi / 2, 0, math.pi), 2.6, False, ("wings", "tail")),
         ("одни крылья", (0, -6, 1.05), FRONT, 2.6, False,
          ("body", "legs", "gloves", "head", "hair")),
-        # одна голова — так её показывает модкит: видно, не осталось ли на лице прядей гривы
+        # head only - as the mod kit shows it: shows whether mane strands were left on the face
         ("одна голова", (0, -6, 1.80), FRONT, 0.75, False,
          ("body", "legs", "gloves", "hair", "wings", "tail")),
         ("одна голова сбоку", (6, 0, 1.80), (math.pi / 2, 0, math.pi / 2), 0.75, False,
          ("body", "legs", "gloves", "hair", "wings", "tail")),
-        # поверх ванильного человека: красным то, что вылезает за силуэт, под который сшита броня
+        # over the vanilla human: red shows what sticks out of the silhouette the armour is made for
         ("поверх человека", (0, -6, 1.05), FRONT, 2.6, "поверх", ("wings", "tail")),
         ("поверх человека сбоку", (6, 0, 1.05), (math.pi / 2, 0, math.pi / 2), 2.6, "поверх",
          ("wings", "tail"))):

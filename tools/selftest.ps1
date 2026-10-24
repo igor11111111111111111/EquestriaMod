@@ -1,29 +1,29 @@
-﻿# Самопроверка без участия человека: собрать, запустить быстрый тест, дождаться карты, снять экран.
+﻿# Self-check without a human: build, run a quick test, wait for the map, take a screenshot.
 #
-#   .\tools\selftest.ps1                     полный цикл
-#   .\tools\selftest.ps1 -Timeout 300        ждать карту дольше (после сброса кэша шейдеров)
+#   .\tools\selftest.ps1                     full cycle
+#   .\tools\selftest.ps1 -Timeout 300        wait for the map longer (after a shader cache reset)
 #
-# Что делает по пути:
-#   окно "Mod change detected"    -> OK (уведомление о сбросе кэша шейдеров)
-#   окно "Safe Mode"              -> Нет
-#   окно краша "*_*"              -> Нет, затем печатает журналы ошибок, итог: КРАШ
-#   игра закрылась сама            -> печатает журналы, итог: КРАШ
-#   в eq_exceptions.log появилась отметка запуска сессии -> карта готова, снимок экрана, итог: ОК
+# What it does along the way:
+#   "Mod change detected" window  -> OK (notification about the shader cache reset)
+#   "Safe Mode" window            -> No
+#   crash window "*_*"            -> No, then prints the error logs, result: CRASH
+#   the game closed by itself     -> prints the logs, result: CRASH
+#   the session start mark appeared in eq_exceptions.log -> the map is ready, screenshot, result: OK
 #
-# Снимок требует оконного режима без рамки (display_mode = 2 в engine_config.txt): из
-# исключительного полноэкранного режима кадр получается чёрным.
+# The screenshot requires borderless windowed mode (display_mode = 2 in engine_config.txt): in
+# exclusive fullscreen mode the frame comes out black.
 param(
     [int]$Timeout = 240,
     [string]$Shot = "$env:TEMP\equestria_selftest.png",
-    # оставить игру открытой после снимка; по умолчанию закрываем — она держит файлы мода
+    # leave the game open after the screenshot; by default we close it, as it holds the mod files
     [switch]$KeepOpen,
-    # дополнительные ключи игры, например "/eqset:2" — показ комплекта брони
+    # extra game switches, for example "/eqset:2" to show an armour set
     [string]$GameArgs = "",
-    # строка журнала мода, после которой можно снимать экран
+    # the mod log line after which the screenshot can be taken
     [string]$ReadyMark = "опись данных мода: запуск сессии",
-    # сколько ждать после отметки, прежде чем снимать
+    # how long to wait after the mark before taking the screenshot
     [int]$SettleSeconds = 8,
-    # не начинать новую кампанию (например, для /eqload:имя — загрузки сохранения)
+    # do not start a new campaign (for example, for /eqload:name, loading a save)
     [switch]$NoQuickStart
 )
 
@@ -68,7 +68,7 @@ public static class SelfTestWin {
 }
 "@
 
-# Номера кнопок стандартных окон Windows
+# Button IDs of standard Windows dialogs
 $IDOK = 1
 $IDNO = 7
 
@@ -97,7 +97,7 @@ function Save-Screenshot($path) {
     $bitmap.Dispose()
 }
 
-# ---------------------------------------------------------------- запуск
+# ---------------------------------------------------------------- launch
 $runArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", (Join-Path $ModRoot "run.ps1"))
 if (-not $NoQuickStart) { $runArgs += "-QuickStart" }
 if ($GameArgs) { $runArgs += @("-ExtraArgs", $GameArgs) }
@@ -105,7 +105,7 @@ if ($GameArgs) { $runArgs += @("-ExtraArgs", $GameArgs) }
 if ($LASTEXITCODE -ne 0) { Write-Host "ИТОГ: СБОРКА НЕ ПРОШЛА" -ForegroundColor Red; exit 2 }
 $started = Get-Date
 
-# ---------------------------------------------------------------- ожидание
+# ---------------------------------------------------------------- waiting
 Write-Host "== жду карту (до $Timeout с)" -ForegroundColor Cyan
 $seenGame = $false
 $result = "timeout"
@@ -122,7 +122,7 @@ while (((Get-Date) - $started).TotalSeconds -lt $Timeout) {
             Write-Host "окно безопасного режима — нажато «Нет»"
         }
         elseif ($title -eq "Mod change detected") {
-            # у окна-уведомления «ОК» имеет номер 2 (IDCANCEL); пробуем оба
+            # in the notification window "OK" has ID 2 (IDCANCEL); we try both
             if (-not [SelfTestWin]::Click($entry.Key, $IDOK)) { [void][SelfTestWin]::Click($entry.Key, 2) }
             Write-Host "окно смены модов — нажато OK"
         }
@@ -148,7 +148,7 @@ while (((Get-Date) - $started).TotalSeconds -lt $Timeout) {
 
 function Stop-Game {
     if ($KeepOpen) { return }
-    # Упавшую игру держит watchdog, и закрыть её сразу не дают — ждём, пока закроется сама.
+    # The crashed game is held by the watchdog and cannot be closed right away, so we wait until it closes by itself.
     for ($i = 0; $i -lt 20; $i++) {
         $game = Get-Process Bannerlord -ErrorAction SilentlyContinue
         if (-not $game) { return }
@@ -157,7 +157,7 @@ function Stop-Game {
     }
 }
 
-# ---------------------------------------------------------------- итог
+# ---------------------------------------------------------------- result
 switch ($result) {
     "ready" {
         Write-Host "карта загружена, жду отрисовку..." -ForegroundColor Green

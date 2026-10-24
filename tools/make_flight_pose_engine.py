@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Собирает FBX позы полёта ПРЯМО на rest-позе движка, минуя Blender-арматуру.
+"""Builds the flight pose FBX DIRECTLY on the engine's rest pose, bypassing a Blender armature.
 
-ПОЧЕМУ (10.10.2026, см. tools/solve_bone_axes.py и equestria-flight-scroll.md): редактор
-Bannerlord берёт parent-relative повороты костей из FBX ДОСЛОВНО (смена базиса C = identity,
-ошибка < 2.4° на всех костях), но rest-поза движка НЕ совпадает с PreRotation из
-modding_resources/human_skeleton.fbx (шея расходится на 180°, позвоночник ~120°, бедро 154°,
-ключицы 91°). Любая анимация, собранная на том FBX-скелете, в игре получает эти расхождения —
-отсюда "тело развёрнуто, голова нормальная" при любых осях экспорта. Поэтому rest берём из
-дампа движка (EquestriaFlightScroll.DumpBones → Module/eq_exceptions.log, "ДАМП КОСТЕЙ",
-entitialRest), а наши дельты задаём в пространстве сущности и переводим в локальные оси кости.
+WHY (10.10.2026, see tools/solve_bone_axes.py and equestria-flight-scroll.md): the Bannerlord
+editor takes the bones' parent-relative rotations from the FBX VERBATIM (basis change C = identity,
+error < 2.4° on all bones), but the engine's rest pose does NOT match the PreRotation from
+modding_resources/human_skeleton.fbx (the neck differs by 180°, the spine ~120°, the thigh 154°,
+the clavicles 91°). Any animation built on that FBX skeleton gets these differences in game,
+hence "body turned around, head normal" with any export axes. So the rest is taken from the
+engine dump (EquestriaFlightScroll.DumpBones → Module/eq_exceptions.log, "bone dump",
+entitialRest), and our deltas are set in entity space and converted into the bone's local axes.
 
-Для каждой кости k:  X_k = R_k * D_k,  R_k = E_parent^-1 * E_k (rest движка, parent-relative),
-D_k = E_k^-1 * W_k * E_k, где W_k — желаемый поворот кости в пространстве сущности (Z вверх,
-+Y вперёд, +X вправо с точки зрения камеры за спиной... знаки проверяются превью/игрой).
-X_k пишется как абсолютный Lcl Rotation (PreRotation=0) и во все ключи кривых R.
+For each bone k:  X_k = R_k * D_k,  R_k = E_parent^-1 * E_k (engine rest, parent-relative),
+D_k = E_k^-1 * W_k * E_k, where W_k is the desired bone rotation in entity space (Z up,
++Y forward, +X right from the point of view of a camera behind the back... signs are checked by preview/game).
+X_k is written as an absolute Lcl Rotation (PreRotation=0) and into all keys of the R curves.
 
-Контейнер — любой экспорт Blender того же скелета (нужны узлы/кривые/связи). Файл делаем
-Z-up с единичным корнем: тогда у таза parent = мир и его локальный поворот = entitialRest.
+The container is any Blender export of the same skeleton (nodes/curves/links are needed). The file is made
+Z-up with an identity root: then the pelvis's parent = world and its local rotation = entitialRest.
 
-Запуск:
+Run:
     blender --background --factory-startup --python tools/make_flight_pose_engine.py -- \
-        <eq_exceptions.log с дампом> <контейнер.fbx из Blender> <выход.fbx>
+        <eq_exceptions.log with the dump> <container.fbx from Blender> <output.fbx>
 """
 import math
 import re
@@ -31,28 +31,28 @@ from mathutils import Euler, Matrix, Vector
 
 log_path, src_path, out_path = sys.argv[sys.argv.index("--") + 1:][:3]
 
-# ---------------------------------------------------------------- желаемая поза (пространство сущности)
-# Левая рука у движка в rest смотрит влево-вниз (entitialRest l_upperarm_twist s≈(-0.83,0,-0.55)),
-# правая — зеркально. Поднимаем до горизонтали поворотом вокруг оси Y (вперёд) и чуть выводим
-# вперёд поворотом вокруг Z (вверх). Предплечье дополнительно слегка вперёд.
-ARM_LIFT_DEG = -30.0     # вокруг entity Y: левая +, правая -; rest рук ~33° ниже горизонтали, -50 = почти вдоль тела
-ARM_FORWARD_DEG = 40.0   # вокруг entity Z: левая -, правая +; положительно = вперёд (10.10.2026: руки по бокам, чуть вперёд)
+# ---------------------------------------------------------------- desired pose (entity space)
+# In the engine rest the left arm points left-down (entitialRest l_upperarm_twist s≈(-0.83,0,-0.55)),
+# the right one mirrored. We raise it to horizontal by rotating around the Y axis (forward) and bring it
+# slightly forward by rotating around Z (up). The forearm additionally goes slightly forward.
+ARM_LIFT_DEG = -30.0     # around entity Y: left +, right -; arms rest ~33° below horizontal, -50 = almost along the body
+ARM_FORWARD_DEG = 40.0   # around entity Z: left -, right +; positive = forward (10.10.2026: arms at the sides, slightly forward)
 FOREARM_FORWARD_DEG = 30.0
-# Покачивание рук при ходьбе: кадр 1 (Source1) — базовая поза, кадр 250 (Source2) — руки
-# чуть выше и вперёд. Код (EquestriaFlightScroll) держит скорость клипа 0 и гоняет прогресс
-# 0..1 туда-обратно только пока агент идёт; стоя — прогресс 0 (базовая поза).
+# Arm sway while walking: frame 1 (Source1) is the base pose, frame 250 (Source2) has the arms
+# slightly higher and forward. The code (EquestriaFlightScroll) keeps the clip speed at 0 and drives the progress
+# 0..1 back and forth only while the agent walks; standing, progress is 0 (the base pose).
 ARM_SWAY_LIFT_DEG = 5.0
 ARM_SWAY_FORWARD_DEG = 6.0
-HEAD_DOWN_DEG = 10.0     # голова чуть вниз (вокруг entity X; минус = макушка вперёд)
-THIGH_SWAY_DEG = 6.0     # ноги тоже покачиваются (10.10.2026)
+HEAD_DOWN_DEG = 10.0     # head slightly down (around entity X; minus = crown forward)
+THIGH_SWAY_DEG = 6.0     # the legs sway too (10.10.2026)
 CALF_SWAY_DEG = 10.0
 LAST_FRAME = 250.0
-# Ноги "как у джинна" (10.10.2026): бедро отведено назад и внутрь (накрест), колено согнуто
-# назад. Кость бедра/голени в rest смотрит вниз (-Z): поворот вокруг entity X на -θ уводит её
-# назад (-Y), вокруг Y на -θ — вправо (+X), т.е. левую ногу к правой.
+# Legs "like a genie's" (10.10.2026): the thigh is swung back and inward (crossed), the knee bent
+# back. The thigh/calf bone points down (-Z) in rest: rotating around entity X by -θ takes it
+# back (-Y), around Y by -θ to the right (+X), i.e. the left leg toward the right one.
 THIGH_BACK_DEG = 35.0
-THIGH_CROSS_DEG = 15.0   # вокруг entity Y: левая -, правая +
-CALF_BACK_DEG = 70.0     # сверх поворота бедра (дельта дочерней кости складывается с родительской)
+THIGH_CROSS_DEG = 15.0   # around entity Y: left -, right +
+CALF_BACK_DEG = 70.0     # on top of the thigh rotation (a child bone's delta adds to the parent's)
 
 
 def rot(axis, deg):
@@ -60,8 +60,8 @@ def rot(axis, deg):
 
 
 def world_delta(frame):
-    """Желаемые повороты костей (пространство сущности) для кадра frame (1..LAST_FRAME)."""
-    s = max(0.0, min(1.0, (frame - 1.0) / (LAST_FRAME - 1.0)))  # 0 — база, 1 — руки сдвинуты
+    """Desired bone rotations (entity space) for frame `frame` (1..LAST_FRAME)."""
+    s = max(0.0, min(1.0, (frame - 1.0) / (LAST_FRAME - 1.0)))  # 0 = base, 1 = arms moved
     lift = ARM_LIFT_DEG + ARM_SWAY_LIFT_DEG * s
     fwd = ARM_FORWARD_DEG + ARM_SWAY_FORWARD_DEG * s
     thigh_back = THIGH_BACK_DEG + THIGH_SWAY_DEG * s
@@ -81,7 +81,7 @@ def world_delta(frame):
 
 WORLD_DELTA = world_delta(1.0)
 
-# ---------------------------------------------------------------- дамп движка
+# ---------------------------------------------------------------- engine dump
 text = open(log_path, encoding="utf-8", errors="replace").read()
 block = text[text.rfind("ДАМП КОСТЕЙ"):]
 vec = r"\(([-\d.]+),([-\d.]+),([-\d.]+)\)"
@@ -99,7 +99,7 @@ for line in block.splitlines():
     if m and cur is not None and "E" not in cur:
         nums = [float(x) for x in m.groups()]
         f, s, u = Vector(nums[3:6]), Vector(nums[6:9]), Vector(nums[9:12])
-        cur["E"] = Matrix((s, f, u)).transposed()  # столбцы X,Y,Z
+        cur["E"] = Matrix((s, f, u)).transposed()  # columns X,Y,Z
 if len(bones) < 28 or any("E" not in b for b in bones):
     raise RuntimeError("дамп движка не найден или неполный — сначала запусти игру со свитком")
 print(f"[engine-pose] костей из дампа: {len(bones)}")
@@ -113,7 +113,7 @@ def engine_name_of(fbx_name):
     return core if core in by_engine_name else None
 
 
-# ---------------------------------------------------------------- контейнер
+# ---------------------------------------------------------------- container
 root, version = parse_fbx.parse(src_path)
 objects = next(e for e in root.elems if e.id == b"Objects")
 connections = next(e for e in root.elems if e.id == b"Connections")
@@ -147,8 +147,8 @@ def prop(elem, name):
 
 
 def set_rotation(model_id, model, euler_fn):
-    """euler_fn(s) -> эйлеры XYZ в градусах для нормированного времени s (0 — первый ключ,
-    1 — последний); Lcl Rotation = euler_fn(0), ключи кривых — по своему времени."""
+    """euler_fn(s) -> XYZ Euler angles in degrees for normalized time s (0 = first key,
+    1 = last); Lcl Rotation = euler_fn(0), curve keys by their own time."""
     base = euler_fn(0.0)
     p = prop(model, "Lcl Rotation")
     if p is not None:
@@ -176,7 +176,7 @@ def set_rotation(model_id, model, euler_fn):
             p.props[4] = float(base[axis_i])
 
 
-# файл Z-up (контейнер должен быть экспортирован с axis_up="Z"); корень — единичный
+# the file is Z-up (the container must be exported with axis_up="Z"); the root is identity
 up = prop(header, "UpAxis")
 if up is not None and int(up.props[4]) != 2:
     raise RuntimeError("контейнер должен быть Z-up (экспорт Blender с axis_forward='Y', axis_up='Z')")
@@ -189,7 +189,7 @@ for model_id, model in models_by_id.items():
         continue
     en = engine_name_of(name)
     if en is None:
-        continue  # *_nub_notused — движок их игнорирует
+        continue  # *_nub_notused: the engine ignores them
     b = by_engine_name[en]
     E = b["E"]
     Ep = bones[b["parent"]]["E"] if b["parent"] >= 0 else Matrix.Identity(3)
@@ -207,7 +207,7 @@ for model_id, model in models_by_id.items():
     print(f"[engine-pose] {name:28s} X={tuple(round(a, 2) for a in deg)}{tag}")
 print(f"[engine-pose] записано костей: {done}")
 
-# ---------------------------------------------------------------- пересборка
+# ---------------------------------------------------------------- rebuild
 ADD = {
     b"C"[0]: "add_char", b"Y"[0]: "add_int16", b"B"[0]: "add_bool", b"Z"[0]: "add_int8",
     b"I"[0]: "add_int32", b"L"[0]: "add_int64", b"F"[0]: "add_float32", b"D"[0]: "add_float64",

@@ -1,11 +1,11 @@
-# Поиск швов между узлами рельефа карты мира.
+# Find seams between the world map's terrain nodes.
 #
-#   py -3 tools\check_seams.py [папка Module мода]
+#   py -3 tools\check_seams.py [the mod's Module folder]
 #
-# Соседние узлы делят общий край: последний столбец (строку) масок одного — это первый столбец
-# (строка) другого. Если на этом краю доли слоёв у двух узлов разные (слой есть в одном узле и
-# отброшен в другом), в игре видна прямая граница во всю длину узла. Скрипт читает маски из
-# Main_map/terrain.bin и печатает такие края, худшие первыми.
+# Neighbouring nodes share an edge: the last column (row) of one node's masks is the first column
+# (row) of the other. If the layer shares on this edge differ between the two nodes (a layer is present
+# in one node and dropped in the other), the game shows a straight border along the whole node. The script
+# reads the masks from Main_map/terrain.bin and prints such edges, worst first.
 import io
 import os
 import struct
@@ -20,7 +20,7 @@ import terrain_bin as tb  # noqa: E402
 
 MOD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Module")
-LIMIT = 0.15   # расхождение доли слоя на краю, выше которого шов заметен
+LIMIT = 0.15   # layer-share mismatch on the edge above which the seam is noticeable
 
 
 def node_masks(mod):
@@ -54,8 +54,8 @@ def node_masks(mod):
 
 
 def normalized(layers):
-    """Маски -> доли слоёв. Игра кладёт слои по очереди (меньший номер ниже), маска — это
-    непрозрачность слоя поверх нарисованного: доля слоя = маска * (1 - маски всех слоёв выше)."""
+    """Masks -> layer shares. The game lays layers one by one (lower index below); a mask is the
+    layer's opacity over what is already painted: layer share = mask * (1 - masks of all layers above)."""
     out = {}
     order = sorted(layers)
     for i, k in enumerate(order):

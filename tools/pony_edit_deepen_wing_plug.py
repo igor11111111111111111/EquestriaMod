@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Углубить корень крыла внутрь тела — щель между отдельными объектами (не дыра в одном меше).
+"""Sink the wing root deeper into the body: a gap between separate objects (not a hole in one mesh).
 
-Запуск: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_deepen_wing_plug.py
+Run: blender --background assets/pony/eq_pony_edit.blend --python tools/pony_edit_deepen_wing_plug.py
 
-Тело и крыло — разные объекты, а не одна сетка со швом. У самого узкого ракурса плечо приоткрывает
-щель между ними (замечено в игре и подтверждено рендером 27.09.2026: без крыльев тело целое, само
-крыло целое, вместе — просвет). Двигаем вершины корня крыла ДОПОЛНИТЕЛЬНО внутрь, к позвоночнику,
-чтобы запас перекрытия был больше на всех углах обзора.
+The body and the wing are different objects, not one mesh with a seam. At the narrowest angle the shoulder
+opens a gap between them (noticed in game and confirmed by a render on 27.09.2026: without wings the body
+is whole, the wing itself is whole, together there is a gap). We move the wing root vertices FURTHER
+inward, toward the spine, so the overlap margin is larger at all viewing angles.
 """
 import bmesh
 import bpy
 from mathutils import Vector
 
-ROOT_NEAR = 0.18     # вершины ближе этого к ключице считаются корнем
-PUSH = 0.05          # на сколько дополнительно продвинуть внутрь (метры)
+ROOT_NEAR = 0.18     # vertices closer than this to the clavicle count as the root
+PUSH = 0.05          # how much further to push inward (metres)
 
 ob = bpy.data.collections["Пони - цельная"].objects["eq_pony_wings"]
 skel = bpy.data.objects["bip01_notused"]

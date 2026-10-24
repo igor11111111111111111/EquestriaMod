@@ -11,37 +11,37 @@ using TaleWorlds.MountAndBlade;
 
 namespace EquestriaMod
 {
-    // Кнопка в главном меню: сразу начинает песочницу с готовым персонажем, минуя выбор предыстории,
-    // внешности и сложности. Нужна для быстрой проверки мода — каждый тест требует новой кампании.
+    // A main menu button: starts a sandbox right away with a ready character, skipping the choice of
+    // background, appearance and difficulty. Needed for quick mod checks — every test needs a new campaign.
     public static class EquestriaQuickStart
     {
         private const string OptionId = "EquestriaQuickStart";
 
-        // Ключ командной строки: с ним игра сама нажимает кнопку быстрого теста в главном меню.
+        // Command line switch: with it the game presses the quick test button in the main menu by itself.
         private const string AutoStartFlag = "/eqautostart";
 
-        // Ключ для .\run.ps1 -DefaultStart (EquestriaDefaultStart) — та же автозапускаемая новая
-        // кампания, но БЕЗ пропуска мастера создания персонажа: игрок проходит его целиком (там же
-        // выбирает расу через готовый список народностей, EquestriaRaceSelector), а после — свой
-        // выбор начала игры (наёмник/вассал/король).
+        // Switch for .\run.ps1 -DefaultStart (EquestriaDefaultStart) — the same auto-started new
+        // campaign, but WITHOUT skipping the character creation wizard: the player goes through it fully
+        // (choosing the race there via the ready culture list, EquestriaRaceSelector), and afterwards our
+        // own choice of game start (mercenary/vassal/king).
         private const string DefaultStartFlag = "/eqdefaultstart";
 
-        // Флаг живёт между сценами: по нему создание персонажа завершается автоматически.
+        // The flag lives across scenes: it makes character creation finish automatically.
         public static bool SkipCharacterCreation;
 
         private static bool _autoStartPending;
         private static bool _defaultStartPending;
 
-        // Вступительный ролик обрываем один раз за запуск кампании.
+        // The intro video is cut once per campaign launch.
         private static bool _introSkipped;
 
-        // Ключ командной строки для сборки с редактором (Modding Kit): сразу открыть редактор,
-        // не нажимая «Редактор» в главном меню. Запуск — tools\editor.ps1.
+        // Command line switch for the build with the editor (Modding Kit): open the editor right away,
+        // without pressing "Editor" in the main menu. Launch — tools\editor.ps1.
         private const string EditorFlag = "/eqeditor";
 
         private static bool _editorPending;
 
-        // Вызывается при показе главного меню: смотрим, просили ли запуск без единого клика.
+        // Called when the main menu is shown: check whether a no-click launch was requested.
         public static void CheckAutoStartRequest()
         {
             foreach (string arg in Environment.GetCommandLineArgs())
@@ -61,8 +61,8 @@ namespace EquestriaMod
             }
         }
 
-        // Пункт «Editor» главного меню добавляет Native (ViewSubModule) — и только в сборке
-        // с редактором, где Utilities.EditModeEnabled. Нажимаем его по имени.
+        // The main menu item «Editor» is added by Native (ViewSubModule) — and only in the build
+        // with the editor, where Utilities.EditModeEnabled. We press it by name.
         private static void OpenEditor()
         {
             EquestriaCrashLog.Try("открытие редактора", () =>
@@ -77,8 +77,8 @@ namespace EquestriaMod
             });
         }
 
-        // Оба шага быстрого старта делаются по кадрам, а не сразу по событию: и кнопку в меню, и
-        // пропуск создания персонажа нужно выполнять, когда нужное состояние игры уже стало активным.
+        // Both quick start steps are done per frame, not right on the event: both the menu button and
+        // skipping character creation must run when the required game state is already active.
         public static void Tick()
         {
             if (GameStateManager.Current == null)
@@ -111,11 +111,11 @@ namespace EquestriaMod
                 return;
             }
 
-            // Перед созданием персонажа игра крутит вступительный ролик про Кальрадию. Он идёт
-            // отдельным состоянием, поверх которого потом открывается выбор народности. Обрываем
-            // его так же, как это делает кнопка пропуска у игрока. При -DefaultStart мастер
-            // создания персонажа НЕ пропускается (SkipCharacterCreation=false), но сам ролик всё
-            // равно не нужен — по просьбе пользователя 08.10.2026.
+            // Before character creation the game plays the intro video about Calradia. It runs as a
+            // separate state, on top of which the culture choice opens later. We cut it the same way
+            // the player's skip button does. With -DefaultStart the character creation wizard is NOT
+            // skipped (SkipCharacterCreation=false), but the video itself is still not needed — at the
+            // user's request 08.10.2026.
             if ((SkipCharacterCreation || EquestriaDefaultStart.Active) && !_introSkipped && state is VideoPlaybackState video)
             {
                 _introSkipped = true;
@@ -131,12 +131,12 @@ namespace EquestriaMod
             }
         }
 
-        // Пропуск всех экранов создания героя: народность, родители, детство, юность и прочее.
+        // Skipping all hero creation screens: culture, parents, childhood, youth and so on.
         //
-        // Раньше это делалось по событию «создание персонажа началось», но тогда состояние ещё не
-        // активно: игра дозаполняет его и сама открывает первый экран поверх нашего завершения.
-        // Здесь мы дожидаемся кадра, где экран создания уже активен, и закрываем его целиком —
-        // FinalizeCharacterCreationState сразу переключает игру на карту.
+        // This used to be done on the "character creation started" event, but then the state is not
+        // active yet: the game finishes filling it and opens the first screen itself on top of our
+        // finalisation. Here we wait for the frame where the creation screen is already active and close
+        // it entirely — FinalizeCharacterCreationState switches the game to the map right away.
         private static void SkipAllStages(CharacterCreationState creation)
         {
             EquestriaCrashLog.Try("быстрый старт: пропуск создания персонажа", () =>
@@ -150,8 +150,8 @@ namespace EquestriaMod
             });
         }
 
-        // Этапы пропущены, а вместе с ними и выбор культуры «Пони», который обычно делает героя пони.
-        // Поэтому расу и гриву выдаём сами — иначе быстрый тест начинался бы за человека.
+        // The stages are skipped, and with them the choice of the "Pony" culture that normally makes
+        // the hero a pony. So we assign the race and mane ourselves — otherwise the quick test would start as a human.
         private static void MakePlayerPony()
         {
             if (Hero.MainHero == null)
@@ -159,15 +159,15 @@ namespace EquestriaMod
                 EquestriaCrashLog.Warn("быстрый старт: главного героя нет, раса не изменена");
                 return;
             }
-            // FaceGen объявлен и в TaleWorlds.Core, и в TaleWorlds.MountAndBlade — нужен первый.
+            // FaceGen is declared both in TaleWorlds.Core and in TaleWorlds.MountAndBlade — we need the first.
             int race = TaleWorlds.Core.FaceGen.GetRaceOrDefault(EquestriaMane.RaceId);
             EquestriaRaceSaveBehavior.SetRace(Hero.MainHero, race);
             EquestriaMane.EnsureForPonies();
             EquestriaCrashLog.Log($"быстрый старт: игрок стал пони (раса {race})");
         }
 
-        // Любой самый дешёвый шлем из игры — пригодится проверять подгонку шлема под расу
-        // (EquestriaHelmetFit) сразу после быстрого старта, без похода в снаряжение.
+        // Any cheapest helmet in the game — handy for checking the helmet fit for the race
+        // (EquestriaHelmetFit) right after the quick start, without going to the equipment screen.
         private static void GiveCheapHelmet()
         {
             var hero = Hero.MainHero;
@@ -188,8 +188,8 @@ namespace EquestriaMod
             EquestriaCrashLog.Log($"быстрый старт: надет шлем {helmet.StringId} (цена {helmet.Value})");
         }
 
-        // Создание персонажа пропущено, а вместе с ним и выбор навыков: без этого у героя нет ни
-        // одного очка внимания и характеристик, и вкладку «Навыки» не с чего начинать.
+        // Character creation is skipped, and with it the skill choice: without this the hero has not a
+        // single focus or attribute point, and the "Skills" tab has nothing to start from.
         private const int StartFocusPoints = 10;
         private const int StartAttributePoints = 10;
 
@@ -207,10 +207,10 @@ namespace EquestriaMod
                 + $"характеристик {StartAttributePoints} (теперь {developer.UnspentFocusPoints}/{developer.UnspentAttributePoints})");
         }
 
-        // Кнопка «Начать приключение» (10.10.2026): тот же запуск, что .\run.ps1 -DefaultStart —
-        // полный мастер создания персонажа с выбором расы и затем выбор начала игры (нищий /
-        // наёмник / вассал / правитель). Быстрый тест с готовым персонажем остался за ключом
-        // /eqautostart (run.ps1 -QuickStart и прочие тестовые запуски).
+        // The "Start the adventure" button (10.10.2026): the same launch as
+        // .\run.ps1 -DefaultStart — the full character creation wizard with race choice and then the game
+        // start choice (beggar / mercenary / vassal / ruler). The quick test with a ready character stays
+        // behind the /eqautostart switch (run.ps1 -QuickStart and other test launches).
         public static void AddMenuOption()
         {
             var option = new InitialStateOption(
@@ -231,23 +231,23 @@ namespace EquestriaMod
             StartDefaultCampaign();
         }
 
-        // internal: этой же кнопкой начинает кампанию смотр рас (EquestriaRaceParty)
+        // internal: the race review (EquestriaRaceParty) starts its campaign with this same button
         internal static void StartQuickCampaign()
         {
             SkipCharacterCreation = true;
             _introSkipped = false;
-            // Конструктор с LoadResult — это загрузка сохранения (игра падала на "Initializing saved game").
-            // Для новой игры нужен конструктор, который сам создаёт кампанию.
+            // The constructor with LoadResult loads a save (the game crashed at "Initializing saved game").
+            // A new game needs the constructor that creates the campaign itself.
             var manager = new SandBoxGameManager(
                 new SandBoxGameManager.CampaignCreatorDelegate(() => new Campaign(CampaignGameMode.Campaign)));
             MBGameManager.StartNewGame(manager);
         }
 
-        // Та же новая кампания, но БЕЗ пропуска мастера создания персонажа — используется
-        // EquestriaDefaultStart (.\run.ps1 -DefaultStart): игрок проходит весь мастер сам (там же
-        // стоит выбор народности, EquestriaRaceSelector), а не получает готового пони автоматом.
-        // Этап «Народность» (первый) EquestriaDefaultStart пропускает сам, напрямую через данные
-        // мастера — см. EquestriaDefaultStart.TrySkipCultureStage.
+        // The same new campaign, but WITHOUT skipping the character creation wizard — used by
+        // EquestriaDefaultStart (.\run.ps1 -DefaultStart): the player goes through the whole wizard
+        // (the culture choice is there too, EquestriaRaceSelector) instead of getting a ready pony
+        // automatically. The "Culture" stage (the first) is skipped by EquestriaDefaultStart
+        // itself, directly through the wizard data — see EquestriaDefaultStart.TrySkipCultureStage.
         internal static void StartDefaultCampaign()
         {
             SkipCharacterCreation = false;
@@ -257,7 +257,7 @@ namespace EquestriaMod
             MBGameManager.StartNewGame(manager);
         }
 
-        // Отметка в журнале: видно, дошла ли игра до экрана создания персонажа.
+        // A log mark: shows whether the game reached the character creation screen.
         public static void NoteCharacterCreationStarted()
         {
             EquestriaCrashLog.Note("создание персонажа началось, пропуск="

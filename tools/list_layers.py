@@ -1,6 +1,6 @@
-# Список слоёв рельефа сцены с их текстурами.
+# List of the scene's terrain layers with their textures.
 #
-#   python list_layers.py <scene.xscene> [ещё сцены...]
+#   python list_layers.py <scene.xscene> [more scenes...]
 import re
 import sys
 

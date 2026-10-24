@@ -1,9 +1,9 @@
-# Сброс масок слоёв рельефа в сцене: весь рельеф снова считается залитым только слоем 0.
+# Reset the terrain layer masks in the scene: the whole terrain again counts as filled with layer 0 only.
 #
-#   python reset_terrain_masks.py <папка Module мода>
+#   python reset_terrain_masks.py <the mod's Module folder>
 #
-# Нужен в паре с откатом terrain.bin из резервной копии (terrain.bin.bak): там в каждом узле
-# одна маска, и сцена должна говорить игре то же самое, иначе маски и слои не совпадут.
+# Used together with restoring terrain.bin from the backup (terrain.bin.bak): there every node has
+# one mask, and the scene must tell the game the same, otherwise the masks and layers will not match.
 import os
 import sys
 import xml.etree.ElementTree as ET
