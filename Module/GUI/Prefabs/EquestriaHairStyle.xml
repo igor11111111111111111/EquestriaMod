@@ -1,0 +1,43 @@
+<!-- Переключатель "сплошная/полосатая" грива у пони — маленькая панель поверх экрана внешности
+     (окно персонажа, отряд, цирюльник). Своя, отдельная от родного FaceGenVM: цвет волос там
+     выбирается родным списком, а стиль (сплошная заливка или полосы — у Color2 в шейдере волос
+     эффекта нет, второй материал с запечённой текстурой) переключаем сами.
+     Видна только когда раса — пони; экран и расу определяет EquestriaHairStyleView.cs. -->
+<Prefab>
+  <Window>
+    <!-- Справа, в зазоре между палитрой цвета волос и сеткой причёсок. Подобрано по скриншоту
+         1920x1080 — на других разрешениях может потребоваться подправить MarginTop/MarginRight. -->
+    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren"
+            HorizontalAlignment="Right" VerticalAlignment="Top"
+            MarginRight="293" MarginTop="305" IsVisible="@IsVisible">
+      <Children>
+
+        <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="150" SuggestedHeight="36"
+                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                      DoNotPassEventsToChildren="true" UpdateChildrenStates="true"
+                      Brush="FaceGen.Extension.Button" Command.Click="ExecutePlain">
+          <Children>
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Text="@PlainLabel" Brush.FontSize="18" />
+          </Children>
+        </ButtonWidget>
+
+        <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="150" SuggestedHeight="36"
+                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                      MarginLeft="158"
+                      DoNotPassEventsToChildren="true" UpdateChildrenStates="true"
+                      Brush="FaceGen.Extension.Button" Command.Click="ExecuteStripe">
+          <Children>
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Text="@StripeLabel" Brush.FontSize="18" />
+          </Children>
+        </ButtonWidget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

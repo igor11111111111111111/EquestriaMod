@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <string id="eq_changeling_aserai_civil_e" text="Улей: Халат" />
+    <string id="eq_changeling_eastern_leather_boots" text="Улей: Кожаные сапоги для верховой езды" />
+    <string id="eq_changeling_aserai_civil_c" text="Улей: Окрашенный кафтан" />
+    <string id="eq_changeling_buttoned_leather_bracers" text="Улей: Кожаные наручи на пуговицах" />
+    <string id="eq_changeling_desert_padded_cloth" text="Улей: Легкая длинная броня с подкладом" />
+    <string id="eq_changeling_rough_tied_bracers" text="Улей: Наручи с грубой обмоткой" />
+    <string id="eq_changeling_long_padded_robe" text="Улей: Длинное одеяние с подкладом" />
+    <string id="eq_changeling_steppe_leather_boots" text="Улей: Крепкие кожаные сапоги" />
+    <string id="eq_changeling_aserai_chain_plate_armor_d" text="Улей: Укрепленная южная короткая кольчуга" />
+    <string id="eq_changeling_aserai_archer_armor" text="Улей: Гамбезон поверх кольчуги" />
+    <string id="eq_changeling_plated_strip_boots" text="Улей: Сапоги с накладками" />
+    <string id="eq_changeling_reinforced_leather_vambraces" text="Улей: Наручи с накладками" />
+    <string id="eq_changeling_leather_strips_over_padded_robe" text="Улей: Кожаные полоски поверх мягкого одеяния" />
+    <string id="eq_changeling_eastern_plated_leather_vambraces" text="Улей: Кожаные пластинчатые наручи" />
+    <string id="eq_changeling_desert_lamellar" text="Улей: Легкая пластинчатая броня" />
+    <string id="eq_changeling_reinforced_mail_mitten" text="Улей: Укрепленные кольчужные рукавицы" />
+    <string id="eq_changeling_mail_mitten_h" text="Улей: Кольчужные рукавицы с латными щитками" />
+    <string id="eq_changeling_mail_mitten_e" text="Улей: Обмотанные кольчужные рукавицы" />
+    <string id="eq_changeling_studded_leather_coat" text="Улей: Клепаная кожаная куртка" />
+    <string id="eq_changeling_guarded_padded_vambrace" text="Улей: Укрепленные наручи с подкладом" />
+    <string id="eq_changeling_aserai_chain_plate_armor_b" text="Улей: Укрепленная южная кольчуга без рукавов" />
+    <string id="eq_changeling_strapped_mail_chausses" text="Улей: Кольчужные поножи на ремне" />
+    <string id="eq_changeling_aserai_chain_plate_armor_a" text="Улей: Укрепленная южная кольчуга" />
+    <string id="eq_changeling_ringed_desert_armor" text="Улей: Тяжелая кольчуга" />
+    <string id="eq_changeling_aserai_armor_02" text="Улей: Южная кольчуга" />
+    <string id="eq_changeling_aserai_armor_02_b" text="Улей: Украшенная южная кольчуга" />
+    <string id="eq_changeling_mail_cavalier_boots" text="Улей: Кольчужные сапоги всадника" />
+    <string id="eq_changeling_mail_mitten_f" text="Улей: Кольчужные рукавицы с бронзовыми пластинами" />
+    <string id="eq_changeling_aserai_horseman_armor" text="Улей: Кольчуга" />
+    <string id="eq_changeling_studded_leather_vambraces" text="Улей: Клепаные кожаные наручи" />
+    <string id="eq_changeling_aserai_scale_armor_on_cloth" text="Улей: Изящная южная чешуйчатая кольчуга" />
+    <string id="eq_changeling_aserai_scale_armor_on_chain" text="Улей: Изящная южная чешуя поверх кольчуги" />
+    <string id="eq_changeling_aserai_full_scale_armor_on_chain" text="Улей: Изящная южная чешуя поверх хауберка" />
+    <string id="eq_changeling_aserai_civil_a" text="Улей: Роскошный кафтан с поясом" />
+    <string id="eq_changeling_khuzait_curved_boots" text="Улей: Сапоги с фигурным верхом" />
+    <string id="eq_changeling_layered_robe" text="Улей: Многослойное одеяние" />
+    <string id="eq_changeling_aserai_civil_d" text="Улей: Окрашенный бишт" />
+    <string id="eq_changeling_short_padded_robe" text="Улей: Короткое одеяние с подкладом" />
+    <string id="eq_changeling_leather_boots" text="Улей: Сапоги с фигурным верхом и меховой оторочкой" />
+    <string id="eq_prisoner_meat" text="Деликатес" />
+    <string id="eq_flight_scroll_50" text="Свиток полёта (великий)" />
+    <string id="eq_flight_scroll_40" text="Свиток полёта" />
+    <string id="eq_flight_scroll_30" text="Свиток полёта (малый)" />
+    <string id="P1rL28RT" text="Повозка{@Plural}повозки{\@}" />
+    <string id="VqCS28U1" text="Тележка{@Plural}тележки{\@}" />
+    <string id="1O761hqN" text="Большая повозка{@Plural}большие повозки{\@}" />
+  </strings>
+</base>

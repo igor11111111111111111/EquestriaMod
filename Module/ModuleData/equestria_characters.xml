@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NPCCharacters>
+	<!-- Королевская стражница Эквестрии: раса pony (тело Twilight из pony_skins.xml), имперские оружие и броня. -->
+	<NPCCharacter
+		id="equestria_royal_guard"
+		default_group="Infantry"
+		level="26"
+		name="{=eq_royal_guard}Royal Guard of Equestria"
+		occupation="Soldier"
+		is_basic_troop="false"
+		is_female="true"
+		race="pony"
+		culture="Culture.empire">
+		<face>
+			<face_key_template value="BodyProperty.fighter_empire_tall"/>
+		</face>
+		<skills>
+			<skill id="Athletics" value="100"/>
+			<skill id="Riding" value="40"/>
+			<skill id="OneHanded" value="120"/>
+			<skill id="TwoHanded" value="60"/>
+			<skill id="Polearm" value="130"/>
+			<skill id="Bow" value="10"/>
+			<skill id="Crossbow" value="10"/>
+			<skill id="Throwing" value="60"/>
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_5_t4"/>
+				<equipment slot="Item1" id="Item.empire_sword_4_t4"/>
+				<equipment slot="Item2" id="Item.stronger_reinforced_kite_shield"/>
+				<!-- ванильная имперская броня: своей брони в моде нет, все расы подогнаны под человека -->
+				<equipment slot="Head" id="Item.empire_guarded_lord_helmet"/>
+				<equipment slot="Body" id="Item.empire_plate_vest_armor"/>
+				<equipment slot="Gloves" id="Item.decorated_imperial_gauntlets"/>
+				<equipment slot="Leg" id="Item.decorated_imperial_boots"/>
+			</EquipmentRoster>
+		</Equipments>
+	</NPCCharacter>
+</NPCCharacters>

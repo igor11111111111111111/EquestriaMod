@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Тексты мода на этом языке. Файлы грузятся после ванильных,
+     поэтому одинаковые id перекрывают их. Список собран tools/lang.py. -->
+<LanguageData id="日本語">
+  <LanguageFile xml_path="JP/eq_bandits_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_items_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_lords_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_misc_ui_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_npc_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_spells_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_troops_jpn.xml" />
+  <LanguageFile xml_path="JP/eq_world_jpn.xml" />
+</LanguageData>

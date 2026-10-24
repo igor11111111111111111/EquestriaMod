@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<!-- Приветствия остальных персонажей: караваны, крестьяне, кузнецы, трактирщики, стража, арена,
+     цирюльник, горожане, хозяева мастерских, наёмники, игроки в настольные игры, отшельник и др.
+
+     Как устроено. Ванильная строка (id из игры) заменена переменной {EQV_ИМЯ}. Её варианты — строки
+     eq_имя_1, eq_имя_2, ... (имя переменной без EQV_, строчными буквами). src/EquestriaGreetings.cs сам
+     находит такие переменные во всех файлах этой папки и перед каждым разговором выбирает случайный
+     вариант. Чтобы добавить фразу — допишите строку со следующим номером (без пропусков); пересборка
+     не нужна. Новую группу можно завести так же: {EQV_EQ_ЧТОТО} у ванильного id + строки eq_чтото_N.
+
+     Переменные внутри фраз должны остаться те же, что у ванильной строки (указаны у каждой группы).
+     {?PLAYER.GENDER}она{?}он{\?} — выбор по полу игрока, {?SPEAKER.GENDER}...{?}...{\?} — по полу говорящего.
+
+     Приветствия знатных горожан (старосты, купцы, мастера, главари банд, жрецы, сельская знать) и
+     спутников — в группах eq_notable_*, eq_wanderer_* ниже; выбирает их код, не переменная. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <!-- ================= ванильные строки -> переменные ================= -->
+    <string id="BsVXQEhj" text="{EQV_EQ_CARAVAN_OWN}" />
+    <string id="afVsbikp" text="{EQV_EQ_CARAVAN}" />
+    <string id="L7AN6ybY" text="{EQV_EQ_AGAIN}" />
+    <string id="Z5kqbeyu" text="{EQV_EQ_AGAIN}" />
+    <string id="5Mu1cdbc" text="{EQV_EQ_AGAIN}" />
+    <string id="a7NrxcAD" text="{EQV_EQ_VILLAGER}" />
+    <string id="gYByVHQy" text="{EQV_EQ_SMITH}" />
+    <string id="k7ebznzr" text="{EQV_EQ_PRISONER}" />
+    <string id="rJwExPKb" text="{EQV_EQ_MERC_SINGLE}" />
+    <string id="Jhj437BV" text="{EQV_EQ_MERC_READY}" />
+    <string id="cwqR0pp1" text="{EQV_EQ_ALLEY_OWN}" />
+    <string id="jaFWM6sN" text="{EQV_EQ_ALLEY_ATTACK}" />
+    <string id="qT4nbaAY" text="{EQV_EQ_ALLEY_THUG}" />
+    <string id="NVvfxdIc" text="{EQV_EQ_BODYGUARD}" />
+    <string id="GAsVO8cZ" text="{EQV_EQ_ARENA_GAMES}" />
+    <string id="rqFKxm24" text="{EQV_EQ_ARENA_NOGAMES}" />
+    <string id="ZvzxcRbc" text="{EQV_EQ_ARENA_MEET}" />
+    <string id="dgNCuuUL" text="{EQV_EQ_ARENA_AGAIN}" />
+    <string id="2aXYYNBG" text="{EQV_EQ_BARBER}" />
+    <string id="pWzdxd7O" text="{EQV_EQ_BARBER_BEGGAR}" />
+    <string id="dC6YhgPP" text="{EQV_EQ_BOARDGAME_WON}" />
+    <string id="HDhLMbt7" text="{EQV_EQ_GAMEHOST}" />
+    <string id="yN4imaGo" text="{EQV_EQ_GAMEHOST_NOBLE}" />
+    <string id="IrsaIJ4u" text="{EQV_EQ_HARD_DAYS}" />
+    <string id="eKLH9fOb" text="{EQV_EQ_TOWN_LIEGE}" />
+    <string id="Osaupw6M" text="{EQV_EQ_TOWN_CHILD}" />
+    <string id="X1A4r7wY" text="{EQV_EQ_TOWN_TAVERN}" />
+    <string id="P99OLPWU" text="{EQV_EQ_TOWN_BUSY}" />
+    <string id="iVJlUlOg" text="{EQV_EQ_BEGGAR}" />
+    <string id="qGIFpahv" text="{EQV_EQ_NO_COINS}" />
+    <string id="uTycGRdI" text="{EQV_EQ_GUARD_NO_COINS}" />
+    <string id="P98iCLjl" text="{EQV_EQ_GUARD_BEGGAR}" />
+    <string id="0UUCTaEj" text="{EQV_EQ_GUARD_CRIMINAL}" />
+    <string id="6SppoTum" text="{EQV_EQ_GUARD}" />
+    <string id="5RDF3aZN" text="{EQV_EQ_RESCUE_KNOWN}" />
+    <string id="zbPRul7h" text="{EQV_EQ_RESCUE_STRANGER}" />
+    <string id="09PJ02x6" text="{EQV_EQ_HERMIT}" />
+    <string id="QCuxL92I" text="{EQV_EQ_TAVERNKEEPER}" />
+    <string id="ddYWbO8b" text="{EQV_EQ_MAID_USUAL}" />
+    <string id="Tn9g83ry" text="{EQV_EQ_MAID_DRINK}" />
+    <string id="w4yxgY3F" text="{EQV_EQ_RANSOM_AGAIN}" />
+    <string id="Y7tozytM" text="{EQV_EQ_RANSOM}" />
+    <string id="6zxo4AU9" text="{EQV_EQ_RANSOM_NOBLE}" />
+    <string id="bqg2gS7i" text="{EQV_EQ_TRADER_FRIEND}" />
+    <string id="7IxFrati" text="{EQV_EQ_TRADER}" />
+    <string id="1auLEn9y" text="{EQV_EQ_TRADER_BEGGAR}" />
+    <string id="VO8qBWrv" text="{EQV_EQ_WORKSHOP_OWN}" />
+    <string id="TnZ9Mynm" text="{EQV_EQ_WORKSHOP}" />
+    <string id="KTgOXBPN" text="{EQV_EQ_WORKSHOP_SMITHY}" />
+    <string id="4pkfkSbe" text="{EQV_EQ_WORKSHOP_TANNERY}" />
+    <string id="lUjCslGK" text="{EQV_EQ_WORKSHOP_POTTERY}" />
+    <string id="keLJvk37" text="{EQV_EQ_WORKSHOP_BREWERY}" />
+    <string id="1xyj3HW0" text="{EQV_EQ_WORKSHOP_LOOM}" />
+    <string id="PRiOVcO9" text="{EQV_EQ_WORKSHOP_PRESS}" />
+    <string id="kMdBpDu1" text="{EQV_EQ_WORKSHOP_WOOD}" />
+
+    <!-- ================= варианты ================= -->
+
+    <!-- свой караван -->
+    <string id="eq_caravan_own_1" text="Хозяин! Повозки смазаны, яблоки не помяты. Чем могу помочь?" />
+    <string id="eq_caravan_own_2" text="Всё по накладным, всё на месте! Что прикажете?" />
+    <string id="eq_caravan_own_3" text="Рады видеть! Хотите посмотреть, сколько мы наторговали? Спойлер: много." />
+
+    <!-- чужой караван -->
+    <string id="eq_caravan_1" text="Приветствую, {?PLAYER.GENDER}путница{?}путник{\?}! Караван идёт в Мейнхеттен, но для хорошего пони найдём минутку." />
+    <string id="eq_caravan_2" text="Тпру! Дорогу торговому каравану! А, это всего лишь ты. Чем помочь?" />
+    <string id="eq_caravan_3" text="Добрый день! Сидр, ткани, самоцветы — всё, кроме скидок. Что нужно?" />
+    <string id="eq_caravan_4" text="Здравствуй, {?PLAYER.GENDER}путница{?}путник{\?}! Если ты от Флима и Флэма — мы ничего не покупаем." />
+
+    <!-- снова здравствуйте (караваны, крестьяне) -->
+    <string id="eq_again_1" text="Снова ты? Чем ещё помочь?" />
+    <string id="eq_again_2" text="О, опять встретились! Эквус тесен, как повозка с тыквами." />
+    <string id="eq_again_3" text="И снова здравствуй! Забыл что-то?" />
+
+    <!-- крестьяне в пути: {VILLAGER_PARTY_EXPLANATION} — куда идут, {VILLAGER_STATE} — что везут -->
+    <string id="eq_villager_1" text="Доброго дня, {?PLAYER.GENDER}госпожа{?}господин{\?}! {VILLAGER_PARTY_EXPLANATION}. {VILLAGER_STATE}" />
+    <string id="eq_villager_2" text="Ох, здравствуйте! Не пугайте так, у нас телега с хрупким товаром. {VILLAGER_PARTY_EXPLANATION}. {VILLAGER_STATE}" />
+    <string id="eq_villager_3" text="Приветствуем! Солнышко светит, принцессы на месте — хороший день. {VILLAGER_PARTY_EXPLANATION}. {VILLAGER_STATE}" />
+
+    <!-- кузнец -->
+    <string id="eq_smith_1" text="Добрый день, {?PLAYER.GENDER}госпожа{?}господин{\?}! Подковы, мечи, доспехи для гривы — чем помочь?" />
+    <string id="eq_smith_2" text="Осторожно, горячо! Что будем ковать сегодня?" />
+    <string id="eq_smith_3" text="А, покупатель! Мой молот скучал. Чем помочь?" />
+    <string id="eq_smith_4" text="Здравствуй! Если нужны подковы на удачу — это к гадалке. Если просто крепкие — это ко мне." />
+
+    <!-- пленник -->
+    <string id="eq_prisoner_1" text="Да? Что ещё?" />
+    <string id="eq_prisoner_2" text="Пришёл полюбоваться? Эти цепи мне совсем не к лицу." />
+    <string id="eq_prisoner_3" text="Чего тебе? Если принёс кекс — говори, если нет — проходи." />
+
+    <!-- одиночный наёмник: {GOLD_AMOUNT}{GOLD_ICON} -->
+    <string id="eq_merc_single_1" text="Нужен крепкий пони в отряд, {?PLAYER.GENDER}госпожа{?}господин{\?}? За {GOLD_AMOUNT}{GOLD_ICON} моё копыто — твоё." />
+    <string id="eq_merc_single_2" text="Ищу, кому служить. Дракона не одолею, но тимбервульфа — запросто. Цена — {GOLD_AMOUNT}{GOLD_ICON}." />
+    <string id="eq_merc_single_3" text="Эй, командир! Мне бы в дело. {GOLD_AMOUNT}{GOLD_ICON} — и я с тобой хоть в Эвервольный лес." />
+
+    <!-- наёмники допивают -->
+    <string id="eq_merc_ready_1" text="Не беспокойтесь, сейчас допью сидр и догоню." />
+    <string id="eq_merc_ready_2" text="Уже иду! Только кекс доем — нельзя же бросать кекс." />
+    <string id="eq_merc_ready_3" text="Секундочку, прощаюсь с трактирщиком. Мы с ним теперь лучшие друзья." />
+
+    <!-- свой притон -->
+    <string id="eq_alley_own_1" text="Приветствую, {?PLAYER.GENDER}босс{?}босс{\?}. {?SPEAKER.GENDER}Рада{?}Рад{\?} видеть. Улица под присмотром, никто не жалуется." />
+    <string id="eq_alley_own_2" text="А вот и {?PLAYER.GENDER}хозяйка{?}хозяин{\?}! Дела идут, монеты звенят. Чем помочь?" />
+    <string id="eq_alley_own_3" text="Всё тихо, {?PLAYER.GENDER}госпожа{?}господин{\?}. Даже стража не заглядывает — мы им кексы носим." />
+
+    <!-- на свой притон напали -->
+    <string id="eq_alley_attack_1" text="Хорошо, что вы здесь, {?PLAYER.GENDER}госпожа{?}господин{\?}! Сейчас покажем им, чья это улица!" />
+    <string id="eq_alley_attack_2" text="Вы вовремя! Эти выскочки думают, что улица их. Разубедим?" />
+
+    <!-- бандит в переулке -->
+    <string id="eq_alley_thug_1" text="Эй, ты! Чего тут забыл? Это наша улица.[if:convo_angry]" />
+    <string id="eq_alley_thug_2" text="Заблудился, {?PLAYER.GENDER}красотка{?}красавчик{\?}? Тут чужих не любят.[if:convo_mocking_revenge]" />
+    <string id="eq_alley_thug_3" text="Стой. Проход по этому переулку платный. Шучу. Или нет.[if:convo_mocking_revenge]" />
+
+    <!-- охрана главаря -->
+    <string id="eq_bodyguard_1" text="Со мной не разговаривай. Говори с боссом." />
+    <string id="eq_bodyguard_2" text="Я просто стою и выгляжу грозно. Все разговоры — к боссу." />
+
+    <!-- распорядитель арены -->
+    <string id="eq_arena_games_1" text="Приветствую! Наверняка ты пришёл за турниром? Приз стоящий — даже Рэйнбоу Дэш позавидует!" />
+    <string id="eq_arena_games_2" text="Добро пожаловать на арену! Турнир скоро — готовь копыта и шлем." />
+    <string id="eq_arena_nogames_1" text="Приветствую, друг. Турнира сейчас нет, но размяться на арене можно всегда." />
+    <string id="eq_arena_nogames_2" text="Турниров пока не предвидится — все чемпионы уехали на Эквестрийские игры. Но ты можешь потренироваться." />
+    <string id="eq_arena_meet_1" text="Добрый день! По походке видно — ты знаешь, с какой стороны браться за меч. Чем помочь?" />
+    <string id="eq_arena_meet_2" text="Новенький? Нет, по глазам вижу — бывалый боец. Что привело на арену?" />
+    <string id="eq_arena_again_1" text="Приветствую, {PLAYER.NAME}! Снова на песок?" />
+    <string id="eq_arena_again_2" text="{PLAYER.NAME}! Зрители тебя помнят. Выйдешь ещё раз?" />
+
+    <!-- цирюльник -->
+    <string id="eq_barber_1" text="Желаете новую причёску, {?PLAYER.GENDER}госпожа{?}господин{\?}? Могу сделать гриву, как у самой Рарити!" />
+    <string id="eq_barber_2" text="Садитесь! Сегодня в моде кудри, завтра — радуга. Что будем делать?" />
+    <string id="eq_barber_3" text="Грива — лицо пони! Позвольте мне позаботиться о вашем лице." />
+    <string id="eq_barber_beggar_1" text="Прости, {?PLAYER.GENDER}бедняжка{?}бедняга{\?}, стригу только за монеты. Но гребешок могу одолжить." />
+    <string id="eq_barber_beggar_2" text="Да хранят тебя принцессы, но бесплатно не стригу." />
+
+    <!-- лорд проиграл в настольную игру -->
+    <string id="eq_boardgame_won_1" text="Ах. Хорошая партия. Не хуже, чем у Твайлайт с Селестией." />
+    <string id="eq_boardgame_won_2" text="Отличная игра! В следующий раз я тебя обыграю." />
+
+    <!-- мастер настольной игры: {GAME_NAME}, {CULTURE_NAME}{.g} -->
+    <string id="eq_gamehost_1" text="Приветствую, {?PLAYER.GENDER}странница{?}странник{\?}! Знаешь игру «{GAME_NAME}»? Я в ней лучший во всей округе. Присаживайся!" />
+    <string id="eq_gamehost_2" text="Эй, не хочешь сыграть в «{GAME_NAME}»? Любимая игра жителей {CULTURE_NAME}{.g}. Проигравший угощает сидром!" />
+    <string id="eq_gamehost_noble_1" text="Ваша милость! Какая честь! Не сыграете в «{GAME_NAME}»? Это любимая забава жителей {CULTURE_NAME}{.g}." />
+    <string id="eq_gamehost_noble_2" text="Ваша милость, партию в «{GAME_NAME}»? Говорят, сама принцесса Луна играет в неё ночами." />
+
+    <!-- горожане -->
+    <string id="eq_hard_days_1" text="Ох, тяжёлые нынче времена..." />
+    <string id="eq_hard_days_2" text="Эх, раньше и сидр был слаще, и яблоки крупнее..." />
+    <string id="eq_town_liege_1" text="Могу я чем-то услужить, ваша милость?" />
+    <string id="eq_town_liege_2" text="Ваша милость! Для нас большая честь. Чем помочь?" />
+    <string id="eq_town_child_1" text="Простите, {?PLAYER.GENDER}госпожа{?}господин{\?}, мне пора домой — мама обещала кексы. Чем-то ещё помочь?" />
+    <string id="eq_town_child_2" text="Извините, меня ждут родители. Может, вам ещё что-нибудь нужно?" />
+    <string id="eq_town_tavern_1" text="Доброго здоровья! Помочь чем-нибудь?" />
+    <string id="eq_town_tavern_2" text="Ваше здоровье! Сидр здесь отличный. Вам что-нибудь подсказать?" />
+    <string id="eq_town_busy_1" text="Простите, {?PLAYER.GENDER}госпожа{?}господин{\?}, дела ждут. Могу чем-то помочь?" />
+    <string id="eq_town_busy_2" text="Спешу, спешу — у меня пироги в печи! Что вам нужно?" />
+    <string id="eq_beggar_1" text="Дружище, давай не мешать друг другу: тут и так на всех кексов не хватает." />
+    <string id="eq_beggar_2" text="Шёл бы ты в другое место, приятель. Тут наше место — и наша удача." />
+    <string id="eq_no_coins_1" text="Нечего подать, прости. Да хранят тебя принцессы." />
+    <string id="eq_no_coins_2" text="Самому бы на яблочко наскрести... Удачи тебе." />
+
+    <!-- стража -->
+    <string id="eq_guard_no_coins_1" text="Проходи. Я на посту, и монет у меня нет. Да хранит тебя Селестия." />
+    <string id="eq_guard_no_coins_2" text="Не положено болтать на посту. Иди своей дорогой." />
+    <string id="eq_guard_beggar_1" text="Проваливай с глаз моих, попрошайка![if:convo_angry]" />
+    <string id="eq_guard_beggar_2" text="Кыш! Королевская стража не подаёт![if:convo_angry]" />
+    <string id="eq_guard_criminal_1" text="На тебя много жалоб. Веди себя прилично, или отправишься на Луну. Ну, в темницу.[if:convo_mocking_revenge]" />
+    <string id="eq_guard_criminal_2" text="А, это ты. Мы за тобой следим. Одно лишнее движение — и в камеру.[if:convo_mocking_revenge]" />
+    <string id="eq_guard_1" text="Да? Что нужно?" />
+    <string id="eq_guard_2" text="Слушаю. Только коротко — я на посту." />
+    <string id="eq_guard_3" text="Во имя принцесс — чего желаешь?" />
+
+    <!-- спасённые из темницы: {SALUTATION} — обращение -->
+    <string id="eq_rescue_known_1" text="{SALUTATION}... Ты {?LISTENER.GENDER}пришла{?}пришёл{\?} за мной! Вот это дружба!" />
+    <string id="eq_rescue_known_2" text="{SALUTATION}! Я знал, что ты меня не бросишь!" />
+    <string id="eq_rescue_stranger_1" text="Я тебя не знаю, но спасибо! Ты настоящий герой Эквуса." />
+    <string id="eq_rescue_stranger_2" text="Кто бы ты ни был — спасибо! С меня кекс." />
+
+    <!-- отшельник -->
+    <string id="eq_hermit_1" text="Эй, привет. Ещё один благородный пони в погоне за славой? Зачем тебе это всё, если можно просто смотреть на закат..." />
+    <string id="eq_hermit_2" text="Здравствуй. Здесь тихо: ни войн, ни интриг, только ромашки и чай. Не хочешь остаться?" />
+
+    <!-- трактир -->
+    <string id="eq_tavernkeeper_1" text="Добро пожаловать, {?PLAYER.GENDER}госпожа{?}господин{\?}! Сидр свежий, сплетни ещё свежее. Чем помочь?" />
+    <string id="eq_tavernkeeper_2" text="Заходи, путник! Сегодня яблочный пирог, как у Бабули Смит. Почти." />
+    <string id="eq_tavernkeeper_3" text="Приветствую! Место у камина свободно, а слухи — бесплатно. Что желаешь?" />
+    <string id="eq_tavernkeeper_4" text="Здравствуй! Если ищешь наёмников — они в углу. Если приключения — они тоже в углу." />
+    <string id="eq_maid_usual_1" text="Как обычно?" />
+    <string id="eq_maid_usual_2" text="Опять сидр? Уже несу!" />
+    <string id="eq_maid_drink_1" text="Нравится угощение, {?PLAYER.GENDER}госпожа{?}господин{\?}?" />
+    <string id="eq_maid_drink_2" text="Всё вкусно? Пинки говорит, что наши кексы — вторые в Эквусе!" />
+
+    <!-- скупщик пленников -->
+    <string id="eq_ransom_again_1" text="Приветствую. Есть пленники? Куплю по честной цене." />
+    <string id="eq_ransom_again_2" text="А, снова ты. Пленников привёл? Показывай." />
+    <string id="eq_ransom_1" text="Приветствую, {?PLAYER.GENDER}госпожа{?}господин{\?}. Похоже, ты умеешь сражаться. Уделишь минутку? У нас может быть общий интерес." />
+    <string id="eq_ransom_2" text="Тсс... Ты похож на того, кто берёт пленных. У меня для тебя деловое предложение." />
+    <string id="eq_ransom_noble_1" text="Какая честь, {?PLAYER.GENDER}моя госпожа{?}мой лорд{\?}. Минутку? Я могу оказать вам ценную услугу." />
+    <string id="eq_ransom_noble_2" text="Ваша милость! Пленники — обуза, а я как раз избавляю от обуз. За золото, разумеется." />
+
+    <!-- торговцы -->
+    <string id="eq_trader_friend_1" text="А, {?PLAYER.GENDER}подруга{?}друг{\?} моих друзей! Для тебя — особые цены. Чем помочь?" />
+    <string id="eq_trader_friend_2" text="Друзья наших друзей — наши друзья! Что покупаем?" />
+    <string id="eq_trader_1" text="Добро пожаловать, {?PLAYER.GENDER}моя леди{?}мой лорд{\?}! Товар лучший в Эквусе, клянусь меткой!" />
+    <string id="eq_trader_2" text="Заходите, смотрите! Всё свежее, всё честное, почти как у Эпплджек." />
+    <string id="eq_trader_3" text="Здравствуйте! Покупаете, продаёте или просто любуетесь?" />
+    <string id="eq_trader_beggar_1" text="Послушай, {?PLAYER.GENDER}добрая пони{?}добрый пони{\?}, времена тяжёлые, но ты мне всех покупателей распугаешь." />
+    <string id="eq_trader_beggar_2" text="Иди-иди, тут не подают. Покупатели пугаются." />
+
+    <!-- мастерские -->
+    <string id="eq_workshop_own_1" text="Привет, {?PLAYER.GENDER}хозяйка{?}хозяин{\?}! Пришли проверить, как идут дела?" />
+    <string id="eq_workshop_own_2" text="{?PLAYER.GENDER}Хозяйка{?}Хозяин{\?}! Работа кипит, копыта не отдыхают." />
+    <string id="eq_workshop_1" text="Так... Чем могу помочь, {?PLAYER.GENDER}госпожа{?}господин{\?}?" />
+    <string id="eq_workshop_2" text="Добрый день! Работы много, но для вас минутка найдётся." />
+    <string id="eq_workshop_smithy_1" text="Жарко тут, да, {?PLAYER.GENDER}госпожа{?}господин{\?}? Мне пора к наковальне. Чем помочь?" />
+    <string id="eq_workshop_smithy_2" text="Осторожно, искры! Подковы сами себя не выкуют. Что нужно?" />
+    <string id="eq_workshop_tannery_1" text="Простите за запах, {?PLAYER.GENDER}госпожа{?}господин{\?}. Дубильня есть дубильня. Чем помочь?" />
+    <string id="eq_workshop_tannery_2" text="Фух! Не морщитесь, привыкнете. Чем могу быть полезен?" />
+    <string id="eq_workshop_pottery_1" text="Надеюсь, дым не мешает, {?PLAYER.GENDER}госпожа{?}господин{\?}. Печь должна быть горячей. Чем помочь?" />
+    <string id="eq_workshop_pottery_2" text="Осторожно, свежие горшки! Разобьёте — купите. Шучу. Почти." />
+    <string id="eq_workshop_brewery_1" text="У меня минутка, {?PLAYER.GENDER}госпожа{?}господин{\?}. Пора проверить свежий сидр. Чем помочь?" />
+    <string id="eq_workshop_brewery_2" text="Попробуете новый сидр? Нет? Тогда чем помочь?" />
+    <string id="eq_workshop_loom_1" text="У меня минутка, {?PLAYER.GENDER}госпожа{?}господин{\?}, станок ждёт. Чем помочь?" />
+    <string id="eq_workshop_loom_2" text="Эту ткань заказала сама Рарити! Ну, почти сама. Что нужно?" />
+    <string id="eq_workshop_press_1" text="Осторожнее, {?PLAYER.GENDER}госпожа{?}господин{\?}, не суньте копыто под пресс! Чем помочь?" />
+    <string id="eq_workshop_press_2" text="Давим масло, давим сок! Что привело к нам?" />
+    <string id="eq_workshop_wood_1" text="Не обращайте внимания на опилки, {?PLAYER.GENDER}госпожа{?}господин{\?}. Чем помочь?" />
+    <string id="eq_workshop_wood_2" text="Тук-тук! Это не дятел, это я. Чем помочь?" />
+
+    <!-- ================= знатные горожане и спутники (выбирает код) ================= -->
+    <!-- первая встреча / обычное приветствие; если группы нет — берётся eq_notable_meet_/eq_notable_greet_ -->
+    <string id="eq_notable_meet_1" text="Приветствую, {?PLAYER.GENDER}путница{?}путник{\?}. Я {LORD.NAME}, меня тут всякий знает. А ты кто будешь?" />
+    <string id="eq_notable_meet_2" text="Новое лицо в {EQ_SETTLEMENT}! Я {LORD.NAME}. Чем могу быть полезен?" />
+    <string id="eq_notable_greet_1" text="А, {PLAYER.NAME}! Рад видеть. Что нового?" />
+    <string id="eq_notable_greet_2" text="{PLAYER.NAME}, здравствуй. Чем могу помочь?" />
+
+    <string id="eq_headman_meet_1" text="Добро пожаловать в {EQ_SETTLEMENT}! Я {LORD.NAME}, староста. Урожай в этом году славный — сама Эпплджек бы одобрила." />
+    <string id="eq_headman_meet_2" text="Здравствуй, {?PLAYER.GENDER}путница{?}путник{\?}. Я {LORD.NAME}, присматриваю за деревней. С чем пожаловал?" />
+    <string id="eq_headman_greet_1" text="{PLAYER.NAME}! Проходи, у нас как раз пирог испёкся." />
+    <string id="eq_headman_greet_2" text="А, {PLAYER.NAME}. Как дела в большом мире? У нас всё по-старому: сеем, пашем, чаёвничаем." />
+
+    <string id="eq_merchant_meet_1" text="Приветствую! {LORD.NAME}, купец. Если что-то продаётся в {EQ_SETTLEMENT} — это через меня." />
+    <string id="eq_merchant_meet_2" text="Новый покупатель? Прекрасно! Я {LORD.NAME}. Дружба — дружбой, а торговля — по расписке." />
+    <string id="eq_merchant_greet_1" text="{PLAYER.NAME}! Рад видеть. Есть выгодное дельце?" />
+    <string id="eq_merchant_greet_2" text="А, {PLAYER.NAME}! Цены растут, а ты всё так же хорошо выглядишь." />
+
+    <string id="eq_artisan_meet_1" text="Здравствуй! Я {LORD.NAME}, мастер. Мои изделия хвалят даже в Кантерлоте." />
+    <string id="eq_artisan_meet_2" text="Осторожно, свежий лак! Я {LORD.NAME}. Чем могу помочь?" />
+    <string id="eq_artisan_greet_1" text="{PLAYER.NAME}! Загляни в мастерскую — у меня новая работа." />
+    <string id="eq_artisan_greet_2" text="Привет, {PLAYER.NAME}. Руки заняты, но уши свободны — говори." />
+
+    <string id="eq_gangleader_meet_1" text="Так-так. Новое лицо. Я {LORD.NAME}, и все тёмные переулки {EQ_SETTLEMENT} — мои. Чего надо?[if:convo_mocking_revenge]" />
+    <string id="eq_gangleader_meet_2" text="Меня зовут {LORD.NAME}. Здесь со мной дружат — если хотят спать спокойно.[if:convo_mocking_revenge]" />
+    <string id="eq_gangleader_greet_1" text="{PLAYER.NAME}. Опять ты. Надеюсь, по делу.[if:convo_mocking_revenge]" />
+    <string id="eq_gangleader_greet_2" text="А, {PLAYER.NAME}. Говори тише — у стен есть уши, а у ушей — мои ребята." />
+
+    <string id="eq_preacher_meet_1" text="Мир тебе, {?PLAYER.GENDER}путница{?}путник{\?}. Я {LORD.NAME}. Солнце и Луна хранят этот город." />
+    <string id="eq_preacher_meet_2" text="Добро пожаловать. Я {LORD.NAME}, и я учу гармонии. Хочешь послушать о дружбе?" />
+    <string id="eq_preacher_greet_1" text="Да осветит тебя солнце Селестии, {PLAYER.NAME}." />
+    <string id="eq_preacher_greet_2" text="{PLAYER.NAME}! Луна видела тебя во сне. Хороший знак." />
+
+    <string id="eq_ruralnotable_meet_1" text="Приветствую на наших землях! Я {LORD.NAME}. Поля здесь мои, и яблоки тоже." />
+    <string id="eq_ruralnotable_meet_2" text="Здравствуй! {LORD.NAME}, к твоим услугам. Хозяйство большое, забот много — говори, с чем пришёл." />
+    <string id="eq_ruralnotable_greet_1" text="{PLAYER.NAME}! Рад видеть. Может, заглянешь на ярмарку?" />
+    <string id="eq_ruralnotable_greet_2" text="А, {PLAYER.NAME}. Урожай поспевает — самое время для дел." />
+
+    <string id="eq_wanderer_meet_1" text="Эй, привет! Я {LORD.NAME}. Вижу, ты тоже любишь дальние дороги. Присядешь?" />
+    <string id="eq_wanderer_meet_2" text="Здравствуй, {?PLAYER.GENDER}путница{?}путник{\?}. {LORD.NAME}, искатель приключений. У меня есть история — хочешь послушать?" />
+    <string id="eq_wanderer_meet_3" text="Ого, настоящая командирская стать! Я {LORD.NAME}. Не ищешь ли надёжного пони в отряд?" />
+    <string id="eq_wanderer_greet_1" text="{PLAYER.NAME}! Какими судьбами?" />
+    <string id="eq_wanderer_greet_2" text="Слушаю, командир!" />
+    <string id="eq_wanderer_greet_3" text="{PLAYER.NAME}, я готов. Куда идём?" />
+  </strings>
+</base>

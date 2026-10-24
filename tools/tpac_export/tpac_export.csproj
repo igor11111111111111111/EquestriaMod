@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>tpac_export</AssemblyName>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <!-- Библиотеки TpacTool 0.4.2 (github.com/hunharibo/TpacTool, MIT), скачиваются в tools\external -->
+    <TpacToolBin>$(MSBuildProjectDirectory)\..\external\TpacTool\bin</TpacToolBin>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(TpacToolBin)\TpacTool.Lib.dll" />
+    <Reference Include="$(TpacToolBin)\TpacTool.IO.dll" />
+    <Reference Include="$(TpacToolBin)\TpacTool.IO.Assimp.dll" />
+    <Reference Include="$(TpacToolBin)\AssimpNet.dll" />
+    <Reference Include="$(TpacToolBin)\LZ4.dll" />
+    <Reference Include="$(TpacToolBin)\UkooLabs.FbxSharpie.dll" />
+    <Reference Include="$(TpacToolBin)\System.Numerics.Vectors.dll" />
+    <Reference Include="$(TpacToolBin)\System.ValueTuple.dll" />
+    <Reference Include="$(TpacToolBin)\netstandard.dll" />
+  </ItemGroup>
+
+  <!-- Остальные зависимости и нативная assimp.dll рядом с exe -->
+  <Target Name="CopyTpacToolRuntime" AfterTargets="Build">
+    <ItemGroup>
+      <RuntimeFiles Include="$(TpacToolBin)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RuntimeFiles)" DestinationFiles="@(RuntimeFiles->'$(OutDir)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <!-- AssimpNet ищет нативную assimp.dll рядом с exe -->
+    <Copy SourceFiles="$(TpacToolBin)\win-x64\native\assimp.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

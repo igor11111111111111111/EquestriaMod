@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Броня улья. Файл собран tools/make_items.py. Хвосты, крылья, рога и гривы — не предметы:
+     они части модели расы, их вешает на скелет src/EquestriaBodyParts.cs. -->
+<!-- Остальные расы носят ванильную броню (см. шапку make_items.py). -->
+<Items>
+
+	<!-- Броня улья: ванильные меши с хитиновыми текстурами и свечением -->
+	<Item
+		id="eq_changeling_aserai_civil_e"
+		name="{=eq_changeling_aserai_civil_e}Hive Thawb"
+		mesh="eq_ch_aserai_civil_e"
+		culture="Culture.aserai"
+		weight="1.1"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="4"
+				leg_armor="2"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth_unarmoured"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			Civilian="true"
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_eastern_leather_boots"
+		name="{=eq_changeling_eastern_leather_boots}Hive Leather Riding Boots"
+		mesh="eq_ch_plated_leather_armor_boot"
+		culture="Culture.khuzait"
+		weight="1.1"
+		appearance="1"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="6"
+				covers_legs="true"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_civil_c"
+		name="{=eq_changeling_aserai_civil_c}Hive Colored Kaftan"
+		mesh="eq_ch_aserai_civil_c"
+		culture="Culture.aserai"
+		weight="0.9"
+		appearance="2"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="4"
+				leg_armor="2"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth_unarmoured"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			Civilian="true"
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_buttoned_leather_bracers"
+		name="{=eq_changeling_buttoned_leather_bracers}Hive Buttoned Leather Bracers"
+		mesh="eq_ch_bandit_leather_wristbands"
+		culture="Culture.battania"
+		weight="0.5"
+		appearance="1"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="4"
+				covers_hands="false"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_desert_padded_cloth"
+		name="{=eq_changeling_desert_padded_cloth}Hive Light Long Padded Armor"
+		lod_atlas_index="4"
+		mesh="eq_ch_aserai_fabric_armor"
+		culture="Culture.aserai"
+		weight="1.3"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="16"
+				leg_armor="8"
+				arm_armor="6"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_rough_tied_bracers"
+		name="{=eq_changeling_rough_tied_bracers}Hive Rough Tied Bracers"
+		mesh="eq_ch_bandit_3_wrist"
+		culture="Culture.battania"
+		weight="0.6"
+		appearance="0.3"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="9"
+				covers_hands="false"
+				modifier_group="cloth"
+				material_type="Cloth"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_long_padded_robe"
+		name="{=eq_changeling_long_padded_robe}Hive Long Padded Robe"
+		lod_atlas_index="10"
+		mesh="eq_ch_sarranid_gambeson_v2"
+		culture="Culture.aserai"
+		weight="3.9"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="14"
+				leg_armor="7"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_steppe_leather_boots"
+		name="{=eq_changeling_steppe_leather_boots}Hive Sturdy Leather Boots"
+		mesh="eq_ch_khuzait_leather_armor_foot"
+		culture="Culture.khuzait"
+		weight="0.8"
+		difficulty="0"
+		appearance="1"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="4"
+				stealth_factor="10"
+				covers_legs="true"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Stealth="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_chain_plate_armor_d"
+		name="{=eq_changeling_aserai_chain_plate_armor_d}Hive Southern Reinforced Short Mail Armor"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_chain_plate_armor_d"
+		culture="Culture.aserai"
+		weight="18.0"
+		appearance="4"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="31"
+				leg_armor="6"
+				arm_armor="16"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_archer_armor"
+		name="{=eq_changeling_aserai_archer_armor}Hive Gambeson over Mail Armor"
+		lod_atlas_index="1"
+		subtype="body_armor"
+		mesh="eq_ch_aserai_archer_armor"
+		culture="Culture.aserai"
+		weight="11.0"
+		difficulty="0"
+		appearance="2"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="29"
+				leg_armor="15"
+				arm_armor="8"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_plated_strip_boots"
+		name="{=eq_changeling_plated_strip_boots}Hive Splint Boots"
+		mesh="eq_ch_empire_plated_boots"
+		culture="Culture.empire"
+		weight="2.7"
+		appearance="2"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="22"
+				covers_legs="true"
+				modifier_group="plate"
+				material_type="Plate"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_reinforced_leather_vambraces"
+		name="{=eq_changeling_reinforced_leather_vambraces}Hive Splint Vambraces"
+		mesh="eq_ch_crossbow_armor_leather_hand_b"
+		culture="Culture.vlandia"
+		weight="1.0"
+		appearance="2"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="20"
+				covers_hands="false"
+				modifier_group="plate"
+				material_type="Plate"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_leather_strips_over_padded_robe"
+		name="{=eq_changeling_leather_strips_over_padded_robe}Hive Leather Strips over Padded Robe"
+		lod_atlas_index="9"
+		subtype="body_armor"
+		mesh="eq_ch_sarranid_gambeson_v1"
+		culture="Culture.aserai"
+		weight="5.5"
+		difficulty="0"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="36"
+				leg_armor="6"
+				arm_armor="7"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			Civilian="true"
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_eastern_plated_leather_vambraces"
+		name="{=eq_changeling_eastern_plated_leather_vambraces}Hive Plated Leather Vambraces"
+		mesh="eq_ch_plated_leather_armor_glove_b"
+		culture="Culture.khuzait"
+		weight="1.7"
+		appearance="1"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				stealth_factor="10"
+				arm_armor="24"
+				covers_hands="false"
+				modifier_group="plate"
+				material_type="Plate"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Stealth="true" />
+	</Item>
+	<Item
+		id="eq_changeling_desert_lamellar"
+		name="{=eq_changeling_desert_lamellar}Hive Light Lamellar Armor"
+		subtype="body_armor"
+		mesh="eq_ch_aserai_cavalry_armor"
+		culture="Culture.aserai"
+		weight="16.5"
+		difficulty="0"
+		appearance="1.5"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="48"
+				arm_armor="14"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="plate"
+				material_type="Plate" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_reinforced_mail_mitten"
+		name="{=eq_changeling_reinforced_mail_mitten}Hive Reinforced Mail Mittens"
+		mesh="eq_ch_mail_mitten_b"
+		culture="Culture.vlandia"
+		weight="1.6"
+		difficulty="0"
+		appearance="3"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="23"
+				covers_hands="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_mail_mitten_h"
+		name="{=eq_changeling_mail_mitten_h}Hive Mail Mittens with Plate Guard"
+		mesh="eq_ch_mail_mitten_h"
+		culture="Culture.sturgia"
+		weight="1.7"
+		appearance="3"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="28"
+				covers_hands="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_mail_mitten_e"
+		name="{=eq_changeling_mail_mitten_e}Hive Wrapped Mail Mittens"
+		mesh="eq_ch_mail_mitten_e"
+		culture="Culture.aserai"
+		weight="1.5"
+		appearance="3"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="21"
+				covers_hands="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_studded_leather_coat"
+		name="{=eq_changeling_studded_leather_coat}Hive Studded Leather Coat"
+		lod_atlas_index="12"
+		mesh="eq_ch_bandit_leather_a"
+		culture="Culture.aserai"
+		weight="1.6"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="10"
+				leg_armor="5"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="leather"
+				material_type="Leather" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_guarded_padded_vambrace"
+		name="{=eq_changeling_guarded_padded_vambrace}Hive Guarded Padded Vambraces"
+		mesh="eq_ch_padded_vambrace_a_handguard"
+		culture="Culture.aserai"
+		weight="0.6"
+		difficulty="0"
+		appearance="1"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="9"
+				stealth_factor="10"
+				modifier_group="cloth"
+				material_type="Cloth"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Stealth="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_chain_plate_armor_b"
+		name="{=eq_changeling_aserai_chain_plate_armor_b}Hive Southern Reinforced Sleeveless Mail Armor"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_chain_plate_armor_b"
+		culture="Culture.aserai"
+		weight="19.0"
+		appearance="6"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="31"
+				leg_armor="16"
+				arm_armor="6"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_strapped_mail_chausses"
+		name="{=eq_changeling_strapped_mail_chausses}Hive Strapped Mail Chausses"
+		mesh="eq_ch_mail_chausses_b"
+		culture="Culture.vlandia"
+		weight="3.0"
+		difficulty="0"
+		appearance="1.6"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="23"
+				covers_legs="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_chain_plate_armor_a"
+		name="{=eq_changeling_aserai_chain_plate_armor_a}Hive Southern Reinforced Mail Armor"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_chain_plate_armor_a"
+		culture="Culture.aserai"
+		weight="22.0"
+		appearance="4"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="31"
+				leg_armor="16"
+				arm_armor="16"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_ringed_desert_armor"
+		name="{=eq_changeling_ringed_desert_armor}Hive Heavy Ring Mail"
+		mesh="eq_ch_aserai_bigchain_armor"
+		culture="Culture.aserai"
+		weight="10.5"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="20"
+				leg_armor="10"
+				arm_armor="8"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_armor_02"
+		name="{=eq_changeling_aserai_armor_02}Hive Southern Chain Mail"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_armor_02"
+		culture="Culture.aserai"
+		weight="17.0"
+		appearance="2"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="25"
+				leg_armor="13"
+				arm_armor="13"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_armor_02_b"
+		name="{=eq_changeling_aserai_armor_02_b}Hive Southern Decorated Chain Mail"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_armor_02_b"
+		culture="Culture.aserai"
+		weight="18.0"
+		appearance="4"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="27"
+				leg_armor="13"
+				arm_armor="13"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_mail_cavalier_boots"
+		name="{=eq_changeling_mail_cavalier_boots}Hive Mail Cavalier Boots"
+		mesh="eq_ch_cav_boots_reinforced"
+		culture="Culture.vlandia"
+		weight="1.8"
+		difficulty="0"
+		appearance="1"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="12"
+				covers_legs="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_mail_mitten_f"
+		name="{=eq_changeling_mail_mitten_f}Hive Mail Mittens with Bronze Plate"
+		mesh="eq_ch_mail_mitten_f"
+		culture="Culture.khuzait"
+		weight="1.8"
+		appearance="4"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="26"
+				covers_hands="true"
+				modifier_group="chain"
+				material_type="Chainmail"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_horseman_armor"
+		name="{=eq_changeling_aserai_horseman_armor}Hive Ring Mail"
+		subtype="body_armor"
+		mesh="eq_ch_aserai_horseman"
+		lod_atlas_index="2"
+		culture="Culture.aserai"
+		weight="4.4"
+		difficulty="0"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="13"
+				leg_armor="2"
+				arm_armor="3"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="leather"
+				material_type="Leather" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_studded_leather_vambraces"
+		name="{=eq_changeling_studded_leather_vambraces}Hive Studded Leather Vambraces"
+		mesh="eq_ch_crossbow_armor_leather_hand_a"
+		culture="Culture.khuzait"
+		weight="0.9"
+		appearance="1"
+		Type="HandArmor">
+		<ItemComponent>
+			<Armor
+				arm_armor="11"
+				covers_hands="false"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_scale_armor_on_cloth"
+		name="{=eq_changeling_aserai_scale_armor_on_cloth}Hive Mastercrafted Southern Scale Mail"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_scale_armor_on_cloth"
+		culture="Culture.aserai"
+		weight="18.0"
+		appearance="6"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="36"
+				leg_armor="6"
+				arm_armor="7"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="plate"
+				material_type="Plate" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_scale_armor_on_chain"
+		name="{=eq_changeling_aserai_scale_armor_on_chain}Hive Mastercrafted Southern Scale over Chain Mail"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_scale_armor_on_chain"
+		culture="Culture.aserai"
+		weight="22.0"
+		appearance="6"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="51"
+				leg_armor="16"
+				arm_armor="16"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="chain"
+				material_type="Chainmail" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_full_scale_armor_on_chain"
+		name="{=eq_changeling_aserai_full_scale_armor_on_chain}Hive Mastercrafted Southern Scale over Chain Hauberk"
+		lod_atlas_index="3"
+		mesh="eq_ch_aserai_full_scale_armor_on_chain"
+		culture="Culture.aserai"
+		weight="28.0"
+		appearance="7"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="51"
+				leg_armor="25"
+				arm_armor="16"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="plate"
+				material_type="Plate" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_civil_a"
+		name="{=eq_changeling_aserai_civil_a}Hive Luxury Kaftan with Waistband"
+		mesh="eq_ch_aserai_civil_a"
+		culture="Culture.aserai"
+		weight="0.8"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="8"
+				leg_armor="4"
+				arm_armor="4"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth_unarmoured"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			Civilian="true"
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_khuzait_curved_boots"
+		name="{=eq_changeling_khuzait_curved_boots}Hive Curved Boots"
+		mesh="eq_ch_khuzait_leather_boots"
+		culture="Culture.khuzait"
+		weight="0.9"
+		appearance="1"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="5"
+				covers_legs="true"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_layered_robe"
+		name="{=eq_changeling_layered_robe}Hive Layered Robe"
+		lod_atlas_index="6"
+		mesh="eq_ch_aserai_robe_c"
+		culture="Culture.aserai"
+		weight="2.0"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="5"
+				leg_armor="2"
+				arm_armor="1"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth_unarmoured"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_aserai_civil_d"
+		name="{=eq_changeling_aserai_civil_d}Hive Colored Bisht"
+		mesh="eq_ch_aserai_civil_d"
+		culture="Culture.aserai"
+		weight="1.0"
+		appearance="0.6"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="5"
+				leg_armor="2"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth_unarmoured"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			Civilian="true"
+			UseTeamColor="true" />
+	</Item>
+	<Item
+		id="eq_changeling_short_padded_robe"
+		name="{=eq_changeling_short_padded_robe}Hive Short Padded Robe"
+		subtype="body_armor"
+		lod_atlas_index="11"
+		mesh="eq_ch_sarranid_gambeson_v3"
+		culture="Culture.aserai"
+		weight="1.3"
+		difficulty="0"
+		appearance="1"
+		Type="BodyArmor">
+		<ItemComponent>
+			<Armor
+				body_armor="14"
+				leg_armor="6"
+				arm_armor="2"
+				has_gender_variations="false"
+				covers_body="true"
+				modifier_group="cloth"
+				material_type="Cloth" />
+		</ItemComponent>
+		<Flags
+			UseTeamColor="true"
+			Civilian="true" />
+	</Item>
+	<Item
+		id="eq_changeling_leather_boots"
+		name="{=eq_changeling_leather_boots}Hive Fur Rimmed Curved Boots"
+		mesh="eq_ch_boot_f"
+		culture="Culture.khuzait"
+		weight="0.8"
+		difficulty="0"
+		appearance="1"
+		Type="LegArmor">
+		<ItemComponent>
+			<Armor
+				leg_armor="4"
+				stealth_factor="10"
+				covers_legs="true"
+				modifier_group="leather"
+				material_type="Leather"
+				has_gender_variations="false" />
+		</ItemComponent>
+		<Flags
+			Stealth="true"
+			Civilian="true" />
+	</Item>
+
+	<!-- Мясо пленных: переработка (src/EquestriaPrisonerButchery.cs) -->
+	<Item
+		id="eq_prisoner_meat"
+		name="{=eq_prisoner_meat}Delicacy"
+		mesh="bd_barrel_a"
+		IsFood="true"
+		value="15"
+		weight="10"
+		Type="Goods">
+		<ItemComponent>
+			<Trade morale_bonus="-2" />
+		</ItemComponent>
+		<Flags Civilian="true" />
+	</Item>
+
+	<!-- Свиток полёта: замена ездовым коням (src/EquestriaFlightTest.cs) -->
+	<Item
+		id="eq_flight_scroll_50"
+		name="{=eq_flight_scroll_50}Greater Scroll of Flight"
+		mesh="lib_scroll_c"
+		item_category="war_horse"
+		value="500"
+		weight="1"
+		is_merchandise="true"
+		Type="Horse" />
+	<Item
+		id="eq_flight_scroll_40"
+		name="{=eq_flight_scroll_40}Scroll of Flight"
+		mesh="lib_scroll_b"
+		item_category="war_horse"
+		value="400"
+		weight="1"
+		is_merchandise="true"
+		Type="Horse" />
+	<Item
+		id="eq_flight_scroll_30"
+		name="{=eq_flight_scroll_30}Lesser Scroll of Flight"
+		mesh="lib_scroll_a"
+		item_category="war_horse"
+		value="300"
+		weight="1"
+		is_merchandise="true"
+		Type="Horse" />
+</Items>

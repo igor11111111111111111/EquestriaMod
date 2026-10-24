@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <string id="eq_troop_imperial_recruit" text="Эквестрийский новобранец" />
+    <string id="eq_troop_imperial_infantryman" text="Стражник Эквестрии" />
+    <string id="eq_troop_imperial_trained_infantryman" text="Королевский стражник" />
+    <string id="eq_troop_imperial_veteran_infantryman" text="Ветеран Королевской стражи" />
+    <string id="eq_troop_imperial_legionary" text="Солнечный гвардеец" />
+    <string id="eq_troop_imperial_menavliaton" text="Алебардщик Кантерлота" />
+    <string id="eq_troop_imperial_elite_menavliaton" text="Страж Кантерлотских врат" />
+    <string id="eq_troop_imperial_archer" text="Единорог-стрелок" />
+    <string id="eq_troop_imperial_trained_archer" text="Опытный единорог-стрелок" />
+    <string id="eq_troop_imperial_veteran_archer" text="Единорог-чародей" />
+    <string id="eq_troop_imperial_palatine_guard" text="Магическая стража принцессы" />
+    <string id="eq_troop_bucellarii" text="Ночной страж Луны" />
+    <string id="eq_troop_imperial_crossbowman" text="Арбалетчик Мейнхэттена" />
+    <string id="eq_troop_imperial_sergeant_crossbowman" text="Сержант-арбалетчик Мейнхэттена" />
+    <string id="eq_troop_imperial_vigla_recruit" text="Кадет лётной академии" />
+    <string id="eq_troop_imperial_equite" text="Пегас-разведчик" />
+    <string id="eq_troop_imperial_heavy_horseman" text="Пегас-штурмовик" />
+    <string id="eq_troop_imperial_cataphract" text="Вандерболт" />
+    <string id="eq_troop_imperial_elite_cataphract" text="Ас Вандерболтов" />
+    <string id="eq_troop_imperial_militia_spearman" text="Ополченец Понивилля" />
+    <string id="eq_troop_imperial_militia_archer" text="Ополченец-стрелок" />
+    <string id="eq_troop_imperial_militia_veteran_spearman" text="Бывалый ополченец" />
+    <string id="eq_troop_imperial_militia_veteran_archer" text="Бывалый ополченец-стрелок" />
+    <string id="eq_troop_looter" text="Мародёр" />
+    <string id="eq_troop_deserter" text="Дезертир" />
+    <string id="eq_troop_sea_raiders_bandit" text="Пират Короля Шторма" />
+    <string id="eq_troop_sea_raiders_raider" text="Абордажник Короля Шторма" />
+    <string id="eq_troop_sea_raiders_chief" text="Капитан Короля Шторма" />
+    <string id="eq_troop_mountain_bandits_bandit" text="Горный старатель" />
+    <string id="eq_troop_mountain_bandits_raider" text="Громила Алмазных Псов" />
+    <string id="eq_troop_mountain_bandits_chief" text="Вожак Алмазных Псов" />
+    <string id="eq_troop_forest_bandits_bandit" text="Лесной бродяга" />
+    <string id="eq_troop_forest_bandits_raider" text="Вольный стрелок Вечнодикого леса" />
+    <string id="eq_troop_forest_bandits_chief" text="Атаман Тимбервульфов" />
+    <string id="eq_troop_desert_bandits_bandit" text="Бродяга Бесплодных Земель" />
+    <string id="eq_troop_desert_bandits_raider" text="Пустынный налётчик" />
+    <string id="eq_troop_desert_bandits_chief" text="Стервятник" />
+    <string id="eq_troop_steppe_bandits_bandit" text="Степной разбойник" />
+    <string id="eq_troop_steppe_bandits_raider" text="Бизоний налётчик" />
+    <string id="eq_troop_steppe_bandits_chief" text="Вожак набега" />
+    <string id="eq_troop_sea_raiders_boss" text="Адмирал Короля Шторма" />
+    <string id="eq_troop_mountain_bandits_boss" text="Король Алмазных Псов" />
+    <string id="eq_troop_forest_bandits_boss" text="Хозяин Вечнодикого леса" />
+    <string id="eq_troop_desert_bandits_boss" text="Главарь Стервятников" />
+    <string id="eq_troop_steppe_bandits_boss" text="Вождь Бизоньих Набегов" />
+    <string id="eq_troop_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_aserai_recruit" text="Молодой трутень" />
+    <string id="eq_troop_aserai_tribesman" text="Трутень роя" />
+    <string id="eq_troop_aserai_skirmisher" text="Плевун" />
+    <string id="eq_troop_aserai_archer" text="Стрелок улья" />
+    <string id="eq_troop_aserai_master_archer" text="Меткий плевун королевы" />
+    <string id="eq_troop_aserai_footman" text="Боец роя" />
+    <string id="eq_troop_aserai_infantry" text="Воин улья" />
+    <string id="eq_troop_aserai_veteran_infantry" text="Ветеран улья" />
+    <string id="eq_troop_aserai_mameluke_soldier" text="Оборотень-лазутчик" />
+    <string id="eq_troop_aserai_mameluke_regular" text="Оборотень-наездник" />
+    <string id="eq_troop_aserai_mameluke_cavalry" text="Крылатый охотник" />
+    <string id="eq_troop_aserai_mameluke_heavy_cavalry" text="Крылатый ловчий королевы" />
+    <string id="eq_troop_aserai_mameluke_axeman" text="Лазутчик-рубака" />
+    <string id="eq_troop_aserai_mameluke_guard" text="Страж улья" />
+    <string id="eq_troop_mamluke_palace_guard" text="Страж тронного зала" />
+    <string id="eq_troop_aserai_youth" text="Личинка-гонец" />
+    <string id="eq_troop_aserai_tribal_horseman" text="Роевой всадник" />
+    <string id="eq_troop_aserai_faris" text="Всадник улья" />
+    <string id="eq_troop_aserai_veteran_faris" text="Старший всадник улья" />
+    <string id="eq_troop_aserai_vanguard_faris" text="Авангард королевы" />
+    <string id="eq_troop_aserai_militia_spearman" text="Ополченец улья" />
+    <string id="eq_troop_aserai_militia_archer" text="Ополченец-плевун" />
+    <string id="eq_troop_aserai_militia_veteran_spearman" text="Опытный ополченец улья" />
+    <string id="eq_troop_aserai_militia_veteran_archer" text="Опытный ополченец-плевун" />
+    <string id="eq_troop_khuzait_nomad" text="Птенец Грифонстоуна" />
+    <string id="eq_troop_khuzait_tribal_warrior" text="Грифон-боец" />
+    <string id="eq_troop_khuzait_raider" text="Грифон-налётчик" />
+    <string id="eq_troop_khuzait_horse_archer" text="Небесный стрелок Грифонстоуна" />
+    <string id="eq_troop_khuzait_heavy_horse_archer" text="Тяжёлый небесный стрелок" />
+    <string id="eq_troop_khuzait_horseman" text="Небесный дозорный" />
+    <string id="eq_troop_khuzait_lancer" text="Крылатый копейщик Грифонстоуна" />
+    <string id="eq_troop_khuzait_heavy_lancer" text="Крылатый налётчик" />
+    <string id="eq_troop_khuzait_footman" text="Страж гнезда" />
+    <string id="eq_troop_khuzait_hunter" text="Охотник утёсов" />
+    <string id="eq_troop_khuzait_archer" text="Лучник Грифонстоуна" />
+    <string id="eq_troop_khuzait_marksman" text="Меткий глаз Бориаса" />
+    <string id="eq_troop_khuzait_spearman" text="Копейщик гнезда" />
+    <string id="eq_troop_khuzait_spear_infantry" text="Опытный копейщик гнезда" />
+    <string id="eq_troop_khuzait_darkhan" text="Секироносец Грифонстоуна" />
+    <string id="eq_troop_khuzait_noble_son" text="Сын знатного гнезда" />
+    <string id="eq_troop_khuzait_qanqli" text="Оруженосец Идола" />
+    <string id="eq_troop_khuzait_torguud" text="Молодой когтеносец" />
+    <string id="eq_troop_khuzait_kheshig" text="Когтеносец Грифонстоуна" />
+    <string id="eq_troop_khuzait_khans_guard" text="Стража Идола Бориаса" />
+    <string id="eq_troop_khuzait_militia_spearman" text="Ополченец Грифонстоуна" />
+    <string id="eq_troop_khuzait_militia_archer" text="Ополченец-лучник Грифонстоуна" />
+    <string id="eq_troop_khuzait_militia_veteran_spearman" text="Бывалый ополченец Грифонстоуна" />
+    <string id="eq_troop_khuzait_militia_veteran_archer" text="Бывалый ополченец-лучник Грифонстоуна" />
+    <string id="eq_troop_battanian_volunteer" text="Молодой олень" />
+    <string id="eq_troop_battanian_clanwarrior" text="Лесной боец" />
+    <string id="eq_troop_battanian_trained_warrior" text="Оленийский воин" />
+    <string id="eq_troop_battanian_picked_warrior" text="Отборный воин Олении" />
+    <string id="eq_troop_battanian_oathsworn" text="Гвардеец Оленьей Рощи" />
+    <string id="eq_troop_battanian_scout" text="Оленийский разведчик" />
+    <string id="eq_troop_battanian_horseman" text="Рогатый налётчик" />
+    <string id="eq_troop_battanian_woodrunner" text="Лесовик" />
+    <string id="eq_troop_battanian_raider" text="Оленийский разбойник" />
+    <string id="eq_troop_battanian_falxman" text="Копейщик чащи" />
+    <string id="eq_troop_battanian_veteran_falxman" text="Тяжёлый копейщик Олении" />
+    <string id="eq_troop_battanian_skirmisher" text="Метатель дротиков Олении" />
+    <string id="eq_troop_battanian_veteran_skirmisher" text="Бывалый метатель дротиков Олении" />
+    <string id="eq_troop_battanian_wildling" text="Рогатый таран" />
+    <string id="eq_troop_battanian_mounted_skirmisher" text="Застрельщик Олении" />
+    <string id="eq_troop_battanian_highborn_youth" text="Сын оленьего дома" />
+    <string id="eq_troop_battanian_highborn_warrior" text="Знатный воин Олении" />
+    <string id="eq_troop_battanian_hero" text="Дружинник короля Олении" />
+    <string id="eq_troop_battanian_fian" text="Лучник Совета Семи" />
+    <string id="eq_troop_battanian_fian_champion" text="Поборник Совета Семи" />
+    <string id="eq_troop_battanian_militia_spearman" text="Ополченец Олении" />
+    <string id="eq_troop_battanian_militia_archer" text="Ополченец-лучник Олении" />
+    <string id="eq_troop_battanian_militia_veteran_spearman" text="Бывалый ополченец Олении" />
+    <string id="eq_troop_battanian_militia_veteran_archer" text="Бывалый ополченец-лучник Олении" />
+    <string id="eq_troop_vlandian_recruit" text="Юный дракон" />
+    <string id="eq_troop_vlandian_levy_crossbowman" text="Дракон с арбалетом" />
+    <string id="eq_troop_vlandian_crossbowman" text="Арбалетчик пепла" />
+    <string id="eq_troop_vlandian_hardened_crossbowman" text="Бывалый арбалетчик пепла" />
+    <string id="eq_troop_vlandian_sharpshooter" text="Меткий стрелок вулкана" />
+    <string id="eq_troop_vlandian_footman" text="Драконий боец" />
+    <string id="eq_troop_vlandian_spearman" text="Копейщик пепла" />
+    <string id="eq_troop_vlandian_billman" text="Крюкастый дракон" />
+    <string id="eq_troop_vlandian_voulgier" text="Секироносец лавы" />
+    <string id="eq_troop_vlandian_pikeman" text="Пикинёр вулкана" />
+    <string id="eq_troop_vlandian_swordsman" text="Клинок Драконьих Земель" />
+    <string id="eq_troop_vlandian_sergeant" text="Драконий воин" />
+    <string id="eq_troop_vlandian_light_cavalry" text="Лазутчик ущелий" />
+    <string id="eq_troop_vlandian_cavalry" text="Летучий налётчик" />
+    <string id="eq_troop_vlandian_vanguard" text="Авангард Состязания" />
+    <string id="eq_troop_vlandian_squire" text="Отпрыск драконьего рода" />
+    <string id="eq_troop_vlandian_gallant" text="Молодой страж Скипетра" />
+    <string id="eq_troop_vlandian_knight" text="Страж Скипетра" />
+    <string id="eq_troop_vlandian_champion" text="Поборник Состязания" />
+    <string id="eq_troop_vlandian_banner_knight" text="Дружинник лорда драконов" />
+    <string id="eq_troop_vlandian_militia_spearman" text="Ополченец Драконьих Земель" />
+    <string id="eq_troop_vlandian_militia_archer" text="Ополченец-арбалетчик Драконьих Земель" />
+    <string id="eq_troop_vlandian_militia_veteran_spearman" text="Бывалый ополченец Драконьих Земель" />
+    <string id="eq_troop_vlandian_militia_veteran_archer" text="Бывалый ополченец-арбалетчик Драконьих Земель" />
+    <string id="eq_troop_vlandian_infantry" text="Пехотинец Драконьих Земель" />
+    <string id="eq_troop_sturgian_recruit" text="Молодой як" />
+    <string id="eq_troop_sturgian_warrior" text="Як-боец" />
+    <string id="eq_troop_sturgian_soldier" text="Пеший як" />
+    <string id="eq_troop_sturgian_spearman" text="Копейщик Яктауна" />
+    <string id="eq_troop_sturgian_shock_troop" text="Опытный копейщик Яктауна" />
+    <string id="eq_troop_sturgian_veteran_warrior" text="Секироносец Якьякистана" />
+    <string id="eq_troop_sturgian_berzerker" text="Крушитель" />
+    <string id="eq_troop_sturgian_ulfhednar" text="Ярость ледника" />
+    <string id="eq_troop_sturgian_woodsman" text="Охотник ледника" />
+    <string id="eq_troop_sturgian_brigand" text="Як-налётчик" />
+    <string id="eq_troop_sturgian_hardened_brigand" text="Бывалый налётчик ледника" />
+    <string id="eq_troop_sturgian_horse_raider" text="Налётчик тундры" />
+    <string id="eq_troop_sturgian_hunter" text="Следопыт тундры" />
+    <string id="eq_troop_sturgian_archer" text="Лучник Якьякистана" />
+    <string id="eq_troop_sturgian_veteran_bowman" text="Меткий лучник ледника" />
+    <string id="eq_troop_sturgian_warrior_son" text="Сын знатного яка" />
+    <string id="eq_troop_varyag" text="Гвардеец Яктауна" />
+    <string id="eq_troop_varyag_veteran" text="Старший гвардеец Яктауна" />
+    <string id="eq_troop_druzhinnik" text="Телохранитель принца" />
+    <string id="eq_troop_druzhinnik_champion" text="Стража принца Резерфорда" />
+    <string id="eq_troop_sturgian_militia_spearman" text="Ополченец Якьякистана" />
+    <string id="eq_troop_sturgian_militia_archer" text="Ополченец-лучник Якьякистана" />
+    <string id="eq_troop_sturgian_militia_veteran_spearman" text="Бывалый ополченец Якьякистана" />
+    <string id="eq_troop_sturgian_militia_veteran_archer" text="Бывалый ополченец-лучник Якьякистана" />
+    <string id="eq_troop_armed_trader_aserai" text="Вооружённый торговец улья" />
+    <string id="eq_troop_armed_trader_battania" text="Вооружённый торговец Олении" />
+    <string id="eq_troop_armed_trader_empire" text="Вооружённый торговец Эквестрии" />
+    <string id="eq_troop_armed_trader_khuzait" text="Вооружённый торговец Грифонстоуна" />
+    <string id="eq_troop_armed_trader_sturgia" text="Вооружённый торговец Якьякистана" />
+    <string id="eq_troop_armed_trader_vlandia" text="Вооружённый торговец Драконьих Земель" />
+    <string id="eq_troop_caravan_guard_aserai" text="Охранник каравана улья" />
+    <string id="eq_troop_caravan_guard_battania" text="Охранник каравана Олении" />
+    <string id="eq_troop_caravan_guard_empire" text="Охранник каравана Эквестрии" />
+    <string id="eq_troop_caravan_guard_khuzait" text="Охранник каравана Грифонстоуна" />
+    <string id="eq_troop_caravan_guard_sturgia" text="Охранник каравана Якьякистана" />
+    <string id="eq_troop_caravan_guard_vlandia" text="Охранник каравана Драконьих Земель" />
+    <string id="eq_troop_caravan_master_aserai" text="Караванщик улья" />
+    <string id="eq_troop_caravan_master_battania" text="Караванщик Олении" />
+    <string id="eq_troop_caravan_master_empire" text="Караванщик Эквестрии" />
+    <string id="eq_troop_caravan_master_khuzait" text="Караванщик Грифонстоуна" />
+    <string id="eq_troop_caravan_master_sturgia" text="Караванщик Якьякистана" />
+    <string id="eq_troop_caravan_master_vlandia" text="Караванщик Драконьих Земель" />
+    <string id="eq_troop_fighter_aserai" text="Деревенский боец улья" />
+    <string id="eq_troop_fighter_battania" text="Деревенский боец Олении" />
+    <string id="eq_troop_fighter_empire" text="Деревенский боец Эквестрии" />
+    <string id="eq_troop_fighter_khuzait" text="Деревенский боец Грифонстоуна" />
+    <string id="eq_troop_fighter_sturgia" text="Деревенский боец Якьякистана" />
+    <string id="eq_troop_fighter_vlandia" text="Деревенский боец Драконьих Земель" />
+    <string id="eq_troop_veteran_caravan_guard_aserai" text="Бывалый охранник каравана улья" />
+    <string id="eq_troop_veteran_caravan_guard_battania" text="Бывалый охранник каравана Олении" />
+    <string id="eq_troop_veteran_caravan_guard_empire" text="Бывалый охранник каравана Эквестрии" />
+    <string id="eq_troop_veteran_caravan_guard_khuzait" text="Бывалый охранник каравана Грифонстоуна" />
+    <string id="eq_troop_veteran_caravan_guard_sturgia" text="Бывалый охранник каравана Якьякистана" />
+    <string id="eq_troop_veteran_caravan_guard_vlandia" text="Бывалый охранник каравана Драконьих Земель" />
+    <string id="eq_troop_village_woman_aserai" text="Крестьянка улья" />
+    <string id="eq_troop_village_woman_battania" text="Крестьянка Олении" />
+    <string id="eq_troop_village_woman_empire" text="Крестьянка Эквестрии" />
+    <string id="eq_troop_village_woman_khuzait" text="Крестьянка Грифонстоуна" />
+    <string id="eq_troop_village_woman_sturgia" text="Крестьянка Якьякистана" />
+    <string id="eq_troop_village_woman_vlandia" text="Крестьянка Драконьих Земель" />
+    <string id="eq_troop_villager_aserai" text="Крестьянин улья" />
+    <string id="eq_troop_villager_battania" text="Крестьянин Олении" />
+    <string id="eq_troop_villager_empire" text="Крестьянин Эквестрии" />
+    <string id="eq_troop_villager_khuzait" text="Крестьянин Грифонстоуна" />
+    <string id="eq_troop_villager_sturgia" text="Крестьянин Якьякистана" />
+    <string id="eq_troop_villager_vlandia" text="Крестьянин Драконьих Земель" />
+    <string id="eq_troop_spc_aserai_headman_1" text="Деревенский голова улья" />
+    <string id="eq_troop_spc_aserai_headman_2" text="Деревенский голова улья" />
+    <string id="eq_troop_spc_aserai_headman_3" text="Деревенский голова улья" />
+    <string id="eq_troop_spc_battania_artisan_1" text="Ремесленник Олении" />
+    <string id="eq_troop_spc_battania_artisan_2" text="Ремесленник Олении" />
+    <string id="eq_troop_spc_battania_artisan_3" text="Ремесленник Олении" />
+    <string id="eq_troop_spc_battania_headman_1" text="Деревенский голова Олении" />
+    <string id="eq_troop_spc_battania_headman_2" text="Деревенский голова Олении" />
+    <string id="eq_troop_spc_battania_headman_3" text="Деревенский голова Олении" />
+    <string id="eq_troop_spc_battania_rural_notable_2" text="Сельский староста Олении" />
+    <string id="eq_troop_spc_e3_character_1" text="Ремесленник улья" />
+    <string id="eq_troop_spc_e3_character_2" text="Ремесленник горы Арис" />
+    <string id="eq_troop_spc_e3_character_3" text="Ремесленник Якьякистана" />
+    <string id="eq_troop_spc_e3_character_4" text="Ремесленник Якьякистана" />
+    <string id="eq_troop_spc_e3_character_5" text="Ремесленник Эквестрии" />
+    <string id="eq_troop_spc_e3_character_6" text="Ремесленник горы Арис" />
+    <string id="eq_troop_spc_empire_headman_1" text="Деревенский голова Эквестрии" />
+    <string id="eq_troop_spc_empire_headman_2" text="Деревенский голова Эквестрии" />
+    <string id="eq_troop_spc_empire_headman_3" text="Деревенский голова Эквестрии" />
+    <string id="eq_troop_spc_khuzait_artisan_1" text="Ремесленник Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_artisan_2" text="Ремесленник Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_artisan_3" text="Ремесленник Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_gangleader_1" text="Главарь банды Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_gangleader_2" text="Главарь банды Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_gangleader_3" text="Главарь банды Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_headman_1" text="Деревенский голова Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_headman_2" text="Деревенский голова Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_headman_3" text="Деревенский голова Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_rural_notable_1" text="Сельский староста Грифонстоуна" />
+    <string id="eq_troop_spc_khuzait_rural_notable_2" text="Сельский староста Грифонстоуна" />
+    <string id="eq_troop_spc_notable_aserai_0" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_0b" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_1" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_10" text="Ремесленник улья" />
+    <string id="eq_troop_spc_notable_aserai_11" text="Сельский староста улья" />
+    <string id="eq_troop_spc_notable_aserai_12" text="Сельский староста улья" />
+    <string id="eq_troop_spc_notable_aserai_1b" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_2" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_2b" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_3" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_3b" text="Торговец улья" />
+    <string id="eq_troop_spc_notable_aserai_4" text="Проповедник улья" />
+    <string id="eq_troop_spc_notable_aserai_5" text="Проповедник улья" />
+    <string id="eq_troop_spc_notable_aserai_6" text="Проповедник улья" />
+    <string id="eq_troop_spc_notable_aserai_7" text="Главарь банды улья" />
+    <string id="eq_troop_spc_notable_aserai_8" text="Главарь банды улья" />
+    <string id="eq_troop_spc_notable_aserai_9" text="Главарь банды улья" />
+    <string id="eq_troop_spc_notable_battania_0b" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_0c" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_0d" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_0e" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_1" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_1b" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_battania_2" text="Проповедник Олении" />
+    <string id="eq_troop_spc_notable_battania_3" text="Проповедник Олении" />
+    <string id="eq_troop_spc_notable_battania_4" text="Главарь банды Олении" />
+    <string id="eq_troop_spc_notable_battania_5" text="Главарь банды Олении" />
+    <string id="eq_troop_spc_notable_battania_merchant_1" text="Торговец Олении" />
+    <string id="eq_troop_spc_notable_empire_0" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_0b" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_1" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_10" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_11" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_12" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_13" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_1b" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_2" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_21" text="Сельский староста Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_22" text="Сельский староста Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_2b" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_3" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_3b" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_4" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_4b" text="Торговец Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_5" text="Проповедник Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_6" text="Проповедник Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_7" text="Проповедник Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_8" text="Ремесленник Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_9" text="Ремесленник Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_gl1" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_empire_gl4" text="Главарь банды Эквестрии" />
+    <string id="eq_troop_spc_notable_khuzait_0b" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_1" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_1b" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_1c" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_2" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_2b" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_3" text="Проповедник Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_4" text="Проповедник Грифонстоуна" />
+    <string id="eq_troop_spc_notable_khuzait_merchant_1" text="Торговец Грифонстоуна" />
+    <string id="eq_troop_spc_notable_rural_notable_1" text="Сельский староста горы Арис" />
+    <string id="eq_troop_spc_notable_sturgia_0" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_0b" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_1" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_10" text="Сельский староста Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_2" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_2b" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_3" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_3b" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_3c" text="Торговец Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_4" text="Проповедник Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_5" text="Проповедник Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_6" text="Главарь банды Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_7" text="Главарь банды Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_8" text="Ремесленник Якьякистана" />
+    <string id="eq_troop_spc_notable_sturgia_9" text="Сельский староста Якьякистана" />
+    <string id="eq_troop_spc_notable_vlandia_1" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_1b" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_2" text="Проповедник Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_3" text="Проповедник Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_artisan_1" text="Ремесленник Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_artisan_2" text="Ремесленник Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_merch1" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_merch2" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_merch3" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_merch4" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_merch5" text="Торговец Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_rural_1" text="Сельский староста Драконьих Земель" />
+    <string id="eq_troop_spc_notable_vlandia_rural_2" text="Сельский староста Драконьих Земель" />
+    <string id="eq_troop_spc_sturgia_headman_1" text="Деревенский голова Якьякистана" />
+    <string id="eq_troop_spc_sturgia_headman_2" text="Деревенский голова Якьякистана" />
+    <string id="eq_troop_spc_sturgia_headman_3" text="Деревенский голова Якьякистана" />
+    <string id="eq_troop_spc_vlandia_gangleader_1" text="Главарь банды Драконьих Земель" />
+    <string id="eq_troop_spc_vlandia_gangleader_2" text="Главарь банды Драконьих Земель" />
+    <string id="eq_troop_spc_vlandia_gangleader_3" text="Главарь банды Драконьих Земель" />
+    <string id="eq_troop_spc_vlandia_headman_1" text="Деревенский голова Драконьих Земель" />
+    <string id="eq_troop_spc_vlandia_headman_2" text="Деревенский голова Драконьих Земель" />
+    <string id="eq_troop_spc_vlandia_headman_3" text="Деревенский голова Драконьих Земель" />
+    <string id="eq_troop_spc_beni_zilal_leader_0" text="Вождь «Тени Улья»" />
+    <string id="eq_troop_spc_beni_zilal_leader_1" text="Вождь «Тени Улья»" />
+    <string id="eq_troop_spc_beni_zilal_leader_2" text="Вождь «Тени Улья»" />
+    <string id="eq_troop_spc_beni_zilal_leader_3" text="Вождь «Тени Улья»" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_0" text="Вождь «Братство Вечнодикого Леса»" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_1" text="Вождь «Братство Вечнодикого Леса»" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_2" text="Вождь «Братство Вечнодикого Леса»" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_3" text="Вождь «Братство Вечнодикого Леса»" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_0" text="Вождь «Небесные пираты капитана Келено»" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_1" text="Вождь «Небесные пираты капитана Келено»" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_2" text="Вождь «Небесные пираты капитана Келено»" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_3" text="Вождь «Небесные пираты капитана Келено»" />
+    <string id="eq_troop_spc_eleftheroi_leader_0" text="Вождь «Равные из городка Старлайт»" />
+    <string id="eq_troop_spc_eleftheroi_leader_1" text="Вождь «Равные из городка Старлайт»" />
+    <string id="eq_troop_spc_eleftheroi_leader_2" text="Вождь «Равные из городка Старлайт»" />
+    <string id="eq_troop_spc_eleftheroi_leader_3" text="Вождь «Равные из городка Старлайт»" />
+    <string id="eq_troop_spc_embers_of_flame_leader_0" text="Вождь «Рота Золотой Подковы»" />
+    <string id="eq_troop_spc_embers_of_flame_leader_1" text="Вождь «Рота Золотой Подковы»" />
+    <string id="eq_troop_spc_embers_of_flame_leader_2" text="Вождь «Рота Золотой Подковы»" />
+    <string id="eq_troop_spc_embers_of_flame_leader_3" text="Вождь «Рота Золотой Подковы»" />
+    <string id="eq_troop_spc_forest_people_leader_0" text="Вождь «Ватага Гарбла»" />
+    <string id="eq_troop_spc_forest_people_leader_1" text="Вождь «Ватага Гарбла»" />
+    <string id="eq_troop_spc_forest_people_leader_2" text="Вождь «Ватага Гарбла»" />
+    <string id="eq_troop_spc_forest_people_leader_3" text="Вождь «Ватага Гарбла»" />
+    <string id="eq_troop_spc_ghilman_leader_0" text="Вождь «Абиссинские наёмники»" />
+    <string id="eq_troop_spc_ghilman_leader_1" text="Вождь «Абиссинские наёмники»" />
+    <string id="eq_troop_spc_ghilman_leader_2" text="Вождь «Абиссинские наёмники»" />
+    <string id="eq_troop_spc_ghilman_leader_3" text="Вождь «Абиссинские наёмники»" />
+    <string id="eq_troop_spc_hidden_hand_leader_0" text="Вождь «Предприятие Флима и Флэма»" />
+    <string id="eq_troop_spc_hidden_hand_leader_1" text="Вождь «Предприятие Флима и Флэма»" />
+    <string id="eq_troop_spc_hidden_hand_leader_2" text="Вождь «Предприятие Флима и Флэма»" />
+    <string id="eq_troop_spc_hidden_hand_leader_3" text="Вождь «Предприятие Флима и Флэма»" />
+    <string id="eq_troop_spc_jawwal_leader_0" text="Вождь «Верные Хризалиде»" />
+    <string id="eq_troop_spc_jawwal_leader_1" text="Вождь «Верные Хризалиде»" />
+    <string id="eq_troop_spc_jawwal_leader_2" text="Вождь «Верные Хризалиде»" />
+    <string id="eq_troop_spc_jawwal_leader_3" text="Вождь «Верные Хризалиде»" />
+    <string id="eq_troop_spc_karakhuzaits_leader_0" text="Вождь «Чёрные Яки»" />
+    <string id="eq_troop_spc_karakhuzaits_leader_1" text="Вождь «Чёрные Яки»" />
+    <string id="eq_troop_spc_karakhuzaits_leader_2" text="Вождь «Чёрные Яки»" />
+    <string id="eq_troop_spc_karakhuzaits_leader_3" text="Вождь «Чёрные Яки»" />
+    <string id="eq_troop_spc_lakepike_leader_0" text="Вождь «Драконье Пламя»" />
+    <string id="eq_troop_spc_lakepike_leader_1" text="Вождь «Драконье Пламя»" />
+    <string id="eq_troop_spc_lakepike_leader_2" text="Вождь «Драконье Пламя»" />
+    <string id="eq_troop_spc_lakepike_leader_3" text="Вождь «Драконье Пламя»" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_0" text="Вождь «Лунные Волки»" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_1" text="Вождь «Лунные Волки»" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_2" text="Вождь «Лунные Волки»" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_3" text="Вождь «Лунные Волки»" />
+    <string id="eq_troop_spc_skolderbrotva_leader_0" text="Вождь «Вольные клинки Клюгтауна»" />
+    <string id="eq_troop_spc_skolderbrotva_leader_1" text="Вождь «Вольные клинки Клюгтауна»" />
+    <string id="eq_troop_spc_skolderbrotva_leader_2" text="Вождь «Вольные клинки Клюгтауна»" />
+    <string id="eq_troop_spc_skolderbrotva_leader_3" text="Вождь «Вольные клинки Клюгтауна»" />
+    <string id="eq_troop_spc_wolfskins_leader_0" text="Вождь «Клинки Горы Арис»" />
+    <string id="eq_troop_spc_wolfskins_leader_1" text="Вождь «Клинки Горы Арис»" />
+    <string id="eq_troop_spc_wolfskins_leader_2" text="Вождь «Клинки Горы Арис»" />
+    <string id="eq_troop_spc_wolfskins_leader_3" text="Вождь «Клинки Горы Арис»" />
+    <string id="eq_troop_beni_zilal_tier_1" text="Молодая тень" />
+    <string id="eq_troop_beni_zilal_tier_2" text="Тень улья" />
+    <string id="eq_troop_beni_zilal_tier_3" text="Старшая тень" />
+    <string id="eq_troop_brotherhood_of_woods_tier_1" text="Следопыт-послушник" />
+    <string id="eq_troop_brotherhood_of_woods_tier_2" text="Следопыт Братства" />
+    <string id="eq_troop_brotherhood_of_woods_tier_3" text="Старший следопыт Братства" />
+    <string id="eq_troop_company_of_the_boar_tier_1" text="Юнга небесного корабля" />
+    <string id="eq_troop_company_of_the_boar_tier_2" text="Небесный пират" />
+    <string id="eq_troop_company_of_the_boar_tier_3" text="Старший канонир Келено" />
+    <string id="eq_troop_eleftheroi_tier_1" text="Равный ополченец" />
+    <string id="eq_troop_eleftheroi_tier_2" text="Равный копейщик" />
+    <string id="eq_troop_eleftheroi_tier_3" text="Старший равный" />
+    <string id="eq_troop_embers_of_flame_tier_1" text="Новобранец Золотой Подковы" />
+    <string id="eq_troop_embers_of_flame_tier_2" text="Солдат Золотой Подковы" />
+    <string id="eq_troop_embers_of_flame_tier_3" text="Ветеран Золотой Подковы" />
+    <string id="eq_troop_forest_people_tier_1" text="Шпана Гарбла" />
+    <string id="eq_troop_forest_people_tier_2" text="Задира из ватаги" />
+    <string id="eq_troop_forest_people_tier_3" text="Правая лапа Гарбла" />
+    <string id="eq_troop_ghilman_tier_1" text="Наёмник из Клюгтауна" />
+    <string id="eq_troop_ghilman_tier_2" text="Абиссинский клинок" />
+    <string id="eq_troop_ghilman_tier_3" text="Ветеран абиссинцев" />
+    <string id="eq_troop_hidden_hand_tier_1" text="Ярмарочный зазывала" />
+    <string id="eq_troop_hidden_hand_tier_2" text="Охранник повозки" />
+    <string id="eq_troop_hidden_hand_tier_3" text="Вышибала братьев" />
+    <string id="eq_troop_jawwal_tier_1" text="Верный трутень" />
+    <string id="eq_troop_jawwal_tier_2" text="Мститель Хризалиды" />
+    <string id="eq_troop_jawwal_tier_3" text="Клинок Хризалиды" />
+    <string id="eq_troop_karakhuzaits_tier_1" text="Молодой чёрный як" />
+    <string id="eq_troop_karakhuzaits_tier_2" text="Чёрный як" />
+    <string id="eq_troop_karakhuzaits_tier_3" text="Крушитель Чёрных Яков" />
+    <string id="eq_troop_lakepike_tier_1" text="Юный огнедышец" />
+    <string id="eq_troop_lakepike_tier_2" text="Дракон-наёмник" />
+    <string id="eq_troop_lakepike_tier_3" text="Ветеран Драконьего Пламени" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_1" text="Ночной дозорный" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_2" text="Лунный волк" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_3" text="Клинок полуночи" />
+    <string id="eq_troop_skolderbrotva_tier_1" text="Портовый задира" />
+    <string id="eq_troop_skolderbrotva_tier_2" text="Вольный клинок" />
+    <string id="eq_troop_skolderbrotva_tier_3" text="Чешуйчатый ветеран" />
+    <string id="eq_troop_wolfskins_tier_1" text="Юный клинок Ариса" />
+    <string id="eq_troop_wolfskins_tier_2" text="Клинок Горы Арис" />
+    <string id="eq_troop_wolfskins_tier_3" text="Морской ветеран Ариса" />
+    <string id="eq_troop_eq_hg_caravan_guard_sturgia" text="Охранник каравана горы Арис" />
+    <string id="eq_troop_eq_hg_caravan_master_sturgia" text="Караванщик горы Арис" />
+    <string id="eq_troop_eq_hg_druzhinnik" text="Страж Жемчужины" />
+    <string id="eq_troop_eq_hg_druzhinnik_champion" text="Поборник Жемчужины" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_0" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_0b" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_1" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_10" text="Сельский староста горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_2" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_2b" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3b" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3c" text="Торговец горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_4" text="Проповедник горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_5" text="Проповедник горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_6" text="Главарь банды горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_7" text="Главарь банды горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_8" text="Ремесленник горы Арис" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_9" text="Сельский староста горы Арис" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_1" text="Деревенский голова горы Арис" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_2" text="Деревенский голова горы Арис" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_3" text="Деревенский голова горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_archer" text="Лучник горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_berzerker" text="Рифовый буян" />
+    <string id="eq_troop_eq_hg_sturgian_brigand" text="Налётчик Сиквестрии" />
+    <string id="eq_troop_eq_hg_sturgian_hardened_brigand" text="Бывалый налётчик Сиквестрии" />
+    <string id="eq_troop_eq_hg_sturgian_horse_raider" text="Летучий гарпунщик" />
+    <string id="eq_troop_eq_hg_sturgian_hunter" text="Небесный разведчик" />
+    <string id="eq_troop_eq_hg_sturgian_militia_archer" text="Ополченец-лучник горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_militia_spearman" text="Ополченец горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_militia_veteran_archer" text="Бывалый ополченец-лучник горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_militia_veteran_spearman" text="Бывалый ополченец горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_recruit" text="Доброволец горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_shock_troop" text="Тяжёлый гарпунщик Ариса" />
+    <string id="eq_troop_eq_hg_sturgian_soldier" text="Обученный воин Ариса" />
+    <string id="eq_troop_eq_hg_sturgian_spearman" text="Гарпунщик прибоя" />
+    <string id="eq_troop_eq_hg_sturgian_ulfhednar" text="Ярость прибоя" />
+    <string id="eq_troop_eq_hg_sturgian_veteran_bowman" text="Меткий лучник Ариса" />
+    <string id="eq_troop_eq_hg_sturgian_veteran_warrior" text="Ветеран прибоя" />
+    <string id="eq_troop_eq_hg_sturgian_warrior" text="Воин горы Арис" />
+    <string id="eq_troop_eq_hg_sturgian_warrior_son" text="Птенец знатного гнезда" />
+    <string id="eq_troop_eq_hg_sturgian_woodsman" text="Бегун по рифам" />
+    <string id="eq_troop_eq_hg_varyag" text="Знатный воин Ариса" />
+    <string id="eq_troop_eq_hg_varyag_veteran" text="Герой горы Арис" />
+    <string id="eq_troop_eq_hg_veteran_caravan_guard_sturgia" text="Бывалый охранник каравана горы Арис" />
+    <string id="eq_troop_eq_hg_village_woman_sturgia" text="Крестьянка горы Арис" />
+    <string id="eq_troop_eq_hg_villager_sturgia" text="Крестьянин горы Арис" />
+    <string id="eq_troop_eq_griffon_looter" text="Мародёр" />
+    <string id="eq_troop_eq_griffon_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_griffon_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_griffon_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_eq_hippogriff_looter" text="Мародёр" />
+    <string id="eq_troop_eq_hippogriff_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_hippogriff_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_hippogriff_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_eq_dragon_looter" text="Мародёр" />
+    <string id="eq_troop_eq_dragon_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_dragon_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_dragon_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_eq_yak_looter" text="Мародёр" />
+    <string id="eq_troop_eq_yak_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_yak_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_yak_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_eq_changeling_looter" text="Мародёр" />
+    <string id="eq_troop_eq_changeling_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_changeling_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_changeling_mounted_ransacker" text="Конный налётчик" />
+    <string id="eq_troop_eq_deer_looter" text="Мародёр" />
+    <string id="eq_troop_eq_deer_deserter" text="Дезертир" />
+    <string id="eq_troop_eq_deer_mounted_pillager" text="Конный грабитель" />
+    <string id="eq_troop_eq_deer_mounted_ransacker" text="Конный налётчик" />
+  </strings>
+</base>

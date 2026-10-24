@@ -1,0 +1,2370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Культуры Equus. Занимают ванильные идентификаторы: на них есть жёстко прописанные
+     ссылки в коде игры (список из шести культур при создании персонажа и прочее).
+     Меняем названия, описания и списки имён — бойцы и горожане остаются ванильные.
+     Файл собран tools/make_world.py из tools/world_data.py — правьте таблицу, не его. -->
+<Cultures>
+	<Culture id="empire" name="{=culture_empire}Equestria" text="{=culture_empire_text}The ponies of Equestria: earth ponies, pegasi and unicorns under the alicorn princesses." color="0xFFE8B53A" color2="0xFFFFF6E0">
+		<male_names>
+			<name name="{=eq_name_empire_m_0}Sunny Dash" />
+			<name name="{=eq_name_empire_m_1}Sunny Heart" />
+			<name name="{=eq_name_empire_m_2}Sunny Mane" />
+			<name name="{=eq_name_empire_m_3}Sunny Light" />
+			<name name="{=eq_name_empire_m_4}Sunny Song" />
+			<name name="{=eq_name_empire_m_5}Sunny Hoof" />
+			<name name="{=eq_name_empire_m_6}Sunny Brave" />
+			<name name="{=eq_name_empire_m_7}Sunny Field" />
+			<name name="{=eq_name_empire_m_8}Sunny Wind" />
+			<name name="{=eq_name_empire_m_9}Sunny Stone" />
+			<name name="{=eq_name_empire_m_10}Sunny Flame" />
+			<name name="{=eq_name_empire_m_11}Sunny Sky" />
+			<name name="{=eq_name_empire_m_12}Sunny Ridge" />
+			<name name="{=eq_name_empire_m_13}Sunny Grove" />
+			<name name="{=eq_name_empire_m_14}Moon Dash" />
+			<name name="{=eq_name_empire_m_15}Moon Heart" />
+			<name name="{=eq_name_empire_m_16}Moon Mane" />
+			<name name="{=eq_name_empire_m_17}Moon Light" />
+			<name name="{=eq_name_empire_m_18}Moon Song" />
+			<name name="{=eq_name_empire_m_19}Moon Hoof" />
+			<name name="{=eq_name_empire_m_20}Moon Brave" />
+			<name name="{=eq_name_empire_m_21}Moon Field" />
+			<name name="{=eq_name_empire_m_22}Moon Wind" />
+			<name name="{=eq_name_empire_m_23}Moon Stone" />
+			<name name="{=eq_name_empire_m_24}Moon Flame" />
+			<name name="{=eq_name_empire_m_25}Moon Sky" />
+			<name name="{=eq_name_empire_m_26}Moon Ridge" />
+			<name name="{=eq_name_empire_m_27}Moon Grove" />
+			<name name="{=eq_name_empire_m_28}Star Dash" />
+			<name name="{=eq_name_empire_m_29}Star Heart" />
+			<name name="{=eq_name_empire_m_30}Star Mane" />
+			<name name="{=eq_name_empire_m_31}Star Light" />
+			<name name="{=eq_name_empire_m_32}Star Song" />
+			<name name="{=eq_name_empire_m_33}Star Hoof" />
+			<name name="{=eq_name_empire_m_34}Star Brave" />
+			<name name="{=eq_name_empire_m_35}Star Field" />
+			<name name="{=eq_name_empire_m_36}Star Wind" />
+			<name name="{=eq_name_empire_m_37}Star Stone" />
+			<name name="{=eq_name_empire_m_38}Star Flame" />
+			<name name="{=eq_name_empire_m_39}Star Sky" />
+			<name name="{=eq_name_empire_m_40}Star Ridge" />
+			<name name="{=eq_name_empire_m_41}Star Grove" />
+			<name name="{=eq_name_empire_m_42}Apple Dash" />
+			<name name="{=eq_name_empire_m_43}Apple Heart" />
+			<name name="{=eq_name_empire_m_44}Apple Mane" />
+			<name name="{=eq_name_empire_m_45}Apple Light" />
+			<name name="{=eq_name_empire_m_46}Apple Song" />
+			<name name="{=eq_name_empire_m_47}Apple Hoof" />
+			<name name="{=eq_name_empire_m_48}Apple Brave" />
+			<name name="{=eq_name_empire_m_49}Apple Field" />
+			<name name="{=eq_name_empire_m_50}Apple Wind" />
+			<name name="{=eq_name_empire_m_51}Apple Stone" />
+			<name name="{=eq_name_empire_m_52}Apple Flame" />
+			<name name="{=eq_name_empire_m_53}Apple Sky" />
+			<name name="{=eq_name_empire_m_54}Apple Ridge" />
+			<name name="{=eq_name_empire_m_55}Apple Grove" />
+			<name name="{=eq_name_empire_m_56}Cloud Dash" />
+			<name name="{=eq_name_empire_m_57}Cloud Heart" />
+			<name name="{=eq_name_empire_m_58}Cloud Mane" />
+			<name name="{=eq_name_empire_m_59}Cloud Light" />
+			<name name="{=eq_name_empire_m_60}Cloud Song" />
+			<name name="{=eq_name_empire_m_61}Cloud Hoof" />
+			<name name="{=eq_name_empire_m_62}Cloud Brave" />
+			<name name="{=eq_name_empire_m_63}Cloud Field" />
+			<name name="{=eq_name_empire_m_64}Cloud Wind" />
+			<name name="{=eq_name_empire_m_65}Cloud Stone" />
+			<name name="{=eq_name_empire_m_66}Cloud Flame" />
+			<name name="{=eq_name_empire_m_67}Cloud Sky" />
+			<name name="{=eq_name_empire_m_68}Cloud Ridge" />
+			<name name="{=eq_name_empire_m_69}Cloud Grove" />
+			<name name="{=eq_name_empire_m_70}Swift Dash" />
+			<name name="{=eq_name_empire_m_71}Swift Heart" />
+			<name name="{=eq_name_empire_m_72}Swift Mane" />
+			<name name="{=eq_name_empire_m_73}Swift Light" />
+			<name name="{=eq_name_empire_m_74}Swift Song" />
+			<name name="{=eq_name_empire_m_75}Swift Hoof" />
+			<name name="{=eq_name_empire_m_76}Swift Brave" />
+			<name name="{=eq_name_empire_m_77}Swift Field" />
+			<name name="{=eq_name_empire_m_78}Swift Wind" />
+			<name name="{=eq_name_empire_m_79}Swift Stone" />
+			<name name="{=eq_name_empire_m_80}Swift Flame" />
+			<name name="{=eq_name_empire_m_81}Swift Sky" />
+			<name name="{=eq_name_empire_m_82}Swift Ridge" />
+			<name name="{=eq_name_empire_m_83}Swift Grove" />
+			<name name="{=eq_name_empire_m_84}Golden Dash" />
+			<name name="{=eq_name_empire_m_85}Golden Heart" />
+			<name name="{=eq_name_empire_m_86}Golden Mane" />
+			<name name="{=eq_name_empire_m_87}Golden Light" />
+			<name name="{=eq_name_empire_m_88}Golden Song" />
+			<name name="{=eq_name_empire_m_89}Golden Hoof" />
+			<name name="{=eq_name_empire_m_90}Golden Brave" />
+			<name name="{=eq_name_empire_m_91}Golden Field" />
+			<name name="{=eq_name_empire_m_92}Golden Wind" />
+			<name name="{=eq_name_empire_m_93}Golden Stone" />
+			<name name="{=eq_name_empire_m_94}Golden Flame" />
+			<name name="{=eq_name_empire_m_95}Golden Sky" />
+			<name name="{=eq_name_empire_m_96}Golden Ridge" />
+			<name name="{=eq_name_empire_m_97}Golden Grove" />
+			<name name="{=eq_name_empire_m_98}Bright Dash" />
+			<name name="{=eq_name_empire_m_99}Bright Heart" />
+			<name name="{=eq_name_empire_m_100}Bright Mane" />
+			<name name="{=eq_name_empire_m_101}Bright Light" />
+			<name name="{=eq_name_empire_m_102}Bright Song" />
+			<name name="{=eq_name_empire_m_103}Bright Hoof" />
+			<name name="{=eq_name_empire_m_104}Bright Brave" />
+			<name name="{=eq_name_empire_m_105}Bright Field" />
+			<name name="{=eq_name_empire_m_106}Bright Wind" />
+			<name name="{=eq_name_empire_m_107}Bright Stone" />
+			<name name="{=eq_name_empire_m_108}Bright Flame" />
+			<name name="{=eq_name_empire_m_109}Bright Sky" />
+			<name name="{=eq_name_empire_m_110}Bright Ridge" />
+			<name name="{=eq_name_empire_m_111}Bright Grove" />
+			<name name="{=eq_name_empire_m_112}Silver Dash" />
+			<name name="{=eq_name_empire_m_113}Silver Heart" />
+			<name name="{=eq_name_empire_m_114}Silver Mane" />
+			<name name="{=eq_name_empire_m_115}Silver Light" />
+			<name name="{=eq_name_empire_m_116}Silver Song" />
+			<name name="{=eq_name_empire_m_117}Silver Hoof" />
+			<name name="{=eq_name_empire_m_118}Silver Brave" />
+			<name name="{=eq_name_empire_m_119}Silver Field" />
+			<name name="{=eq_name_empire_m_120}Silver Wind" />
+			<name name="{=eq_name_empire_m_121}Silver Stone" />
+			<name name="{=eq_name_empire_m_122}Silver Flame" />
+			<name name="{=eq_name_empire_m_123}Silver Sky" />
+			<name name="{=eq_name_empire_m_124}Silver Ridge" />
+			<name name="{=eq_name_empire_m_125}Silver Grove" />
+			<name name="{=eq_name_empire_m_126}Dusty Dash" />
+			<name name="{=eq_name_empire_m_127}Dusty Heart" />
+			<name name="{=eq_name_empire_m_128}Dusty Mane" />
+			<name name="{=eq_name_empire_m_129}Dusty Light" />
+			<name name="{=eq_name_empire_m_130}Dusty Song" />
+			<name name="{=eq_name_empire_m_131}Dusty Hoof" />
+			<name name="{=eq_name_empire_m_132}Dusty Brave" />
+			<name name="{=eq_name_empire_m_133}Dusty Field" />
+			<name name="{=eq_name_empire_m_134}Dusty Wind" />
+			<name name="{=eq_name_empire_m_135}Dusty Stone" />
+			<name name="{=eq_name_empire_m_136}Dusty Flame" />
+			<name name="{=eq_name_empire_m_137}Dusty Sky" />
+			<name name="{=eq_name_empire_m_138}Dusty Ridge" />
+			<name name="{=eq_name_empire_m_139}Dusty Grove" />
+			<name name="{=eq_name_empire_m_140}Copper Dash" />
+			<name name="{=eq_name_empire_m_141}Copper Heart" />
+			<name name="{=eq_name_empire_m_142}Copper Mane" />
+			<name name="{=eq_name_empire_m_143}Copper Light" />
+			<name name="{=eq_name_empire_m_144}Copper Song" />
+			<name name="{=eq_name_empire_m_145}Copper Hoof" />
+			<name name="{=eq_name_empire_m_146}Copper Brave" />
+			<name name="{=eq_name_empire_m_147}Copper Field" />
+			<name name="{=eq_name_empire_m_148}Copper Wind" />
+			<name name="{=eq_name_empire_m_149}Copper Stone" />
+			<name name="{=eq_name_empire_m_150}Copper Flame" />
+			<name name="{=eq_name_empire_m_151}Copper Sky" />
+			<name name="{=eq_name_empire_m_152}Copper Ridge" />
+			<name name="{=eq_name_empire_m_153}Copper Grove" />
+			<name name="{=eq_name_empire_m_154}Iron Dash" />
+			<name name="{=eq_name_empire_m_155}Iron Heart" />
+			<name name="{=eq_name_empire_m_156}Iron Mane" />
+			<name name="{=eq_name_empire_m_157}Iron Light" />
+			<name name="{=eq_name_empire_m_158}Iron Song" />
+			<name name="{=eq_name_empire_m_159}Iron Hoof" />
+			<name name="{=eq_name_empire_m_160}Iron Brave" />
+			<name name="{=eq_name_empire_m_161}Iron Field" />
+			<name name="{=eq_name_empire_m_162}Iron Wind" />
+			<name name="{=eq_name_empire_m_163}Iron Stone" />
+			<name name="{=eq_name_empire_m_164}Iron Flame" />
+			<name name="{=eq_name_empire_m_165}Iron Sky" />
+			<name name="{=eq_name_empire_m_166}Iron Ridge" />
+			<name name="{=eq_name_empire_m_167}Iron Grove" />
+			<name name="{=eq_name_empire_m_168}Noble Dash" />
+			<name name="{=eq_name_empire_m_169}Noble Heart" />
+			<name name="{=eq_name_empire_m_170}Noble Mane" />
+			<name name="{=eq_name_empire_m_171}Noble Light" />
+			<name name="{=eq_name_empire_m_172}Noble Song" />
+			<name name="{=eq_name_empire_m_173}Noble Hoof" />
+			<name name="{=eq_name_empire_m_174}Noble Brave" />
+			<name name="{=eq_name_empire_m_175}Noble Field" />
+			<name name="{=eq_name_empire_m_176}Noble Wind" />
+			<name name="{=eq_name_empire_m_177}Noble Stone" />
+			<name name="{=eq_name_empire_m_178}Noble Flame" />
+			<name name="{=eq_name_empire_m_179}Noble Sky" />
+			<name name="{=eq_name_empire_m_180}Noble Ridge" />
+			<name name="{=eq_name_empire_m_181}Noble Grove" />
+			<name name="{=eq_name_empire_m_182}Steel Dash" />
+			<name name="{=eq_name_empire_m_183}Steel Heart" />
+			<name name="{=eq_name_empire_m_184}Steel Mane" />
+			<name name="{=eq_name_empire_m_185}Steel Light" />
+			<name name="{=eq_name_empire_m_186}Steel Song" />
+			<name name="{=eq_name_empire_m_187}Steel Hoof" />
+			<name name="{=eq_name_empire_m_188}Steel Brave" />
+			<name name="{=eq_name_empire_m_189}Steel Field" />
+			<name name="{=eq_name_empire_m_190}Steel Wind" />
+			<name name="{=eq_name_empire_m_191}Steel Stone" />
+			<name name="{=eq_name_empire_m_192}Steel Flame" />
+			<name name="{=eq_name_empire_m_193}Steel Sky" />
+			<name name="{=eq_name_empire_m_194}Steel Ridge" />
+			<name name="{=eq_name_empire_m_195}Steel Grove" />
+			<name name="{=eq_name_empire_m_196}Caramel" />
+			<name name="{=eq_name_empire_m_197}Davenport" />
+			<name name="{=eq_name_empire_m_198}Lucky Clover" />
+			<name name="{=eq_name_empire_m_199}Noteworthy" />
+			<name name="{=eq_name_empire_m_200}Mr. Cake" />
+			<name name="{=eq_name_empire_m_201}Hoity Toity" />
+			<name name="{=eq_name_empire_m_202}Jet Set" />
+			<name name="{=eq_name_empire_m_203}Burnt Oak" />
+			<name name="{=eq_name_empire_m_204}Golden Harvest" />
+			<name name="{=eq_name_empire_m_205}Shining Star" />
+			<name name="{=eq_name_empire_m_206}Comet Tail" />
+			<name name="{=eq_name_empire_m_207}Star Hunter" />
+			<name name="{=eq_name_empire_m_208}Midlight" />
+			<name name="{=eq_name_empire_m_209}Night Glider" />
+			<name name="{=eq_name_empire_m_210}Double Diamond" />
+			<name name="{=eq_name_empire_m_211}Party Favor" />
+			<name name="{=eq_name_empire_m_212}Sunny Daze" />
+			<name name="{=eq_name_empire_m_213}Cranky Doodle" />
+			<name name="{=eq_name_empire_m_214}Featherweight" />
+			<name name="{=eq_name_empire_m_215}Pipsqueak" />
+			<name name="{=eq_name_empire_m_216}Snowflake" />
+			<name name="{=eq_name_empire_m_217}Bulk Biceps" />
+			<name name="{=eq_name_empire_m_218}Trenderhoof" />
+			<name name="{=eq_name_empire_m_219}Thunder Clap" />
+			<name name="{=eq_name_empire_m_220}Rumble" />
+			<name name="{=eq_name_empire_m_221}Snips" />
+			<name name="{=eq_name_empire_m_222}Snails" />
+			<name name="{=eq_name_empire_m_223}Fireball" />
+			<name name="{=eq_name_empire_m_224}Flim" />
+			<name name="{=eq_name_empire_m_225}Flam" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_empire_f_0}Sunny Sparkle" />
+			<name name="{=eq_name_empire_f_1}Sunny Bloom" />
+			<name name="{=eq_name_empire_f_2}Sunny Heart" />
+			<name name="{=eq_name_empire_f_3}Sunny Swirl" />
+			<name name="{=eq_name_empire_f_4}Sunny Dash" />
+			<name name="{=eq_name_empire_f_5}Sunny Belle" />
+			<name name="{=eq_name_empire_f_6}Sunny Song" />
+			<name name="{=eq_name_empire_f_7}Sunny Shine" />
+			<name name="{=eq_name_empire_f_8}Sunny Leaf" />
+			<name name="{=eq_name_empire_f_9}Sunny Mist" />
+			<name name="{=eq_name_empire_f_10}Sunny Glow" />
+			<name name="{=eq_name_empire_f_11}Sunny Flower" />
+			<name name="{=eq_name_empire_f_12}Sunny Dew" />
+			<name name="{=eq_name_empire_f_13}Sunny Wind" />
+			<name name="{=eq_name_empire_f_14}Moon Sparkle" />
+			<name name="{=eq_name_empire_f_15}Moon Bloom" />
+			<name name="{=eq_name_empire_f_16}Moon Heart" />
+			<name name="{=eq_name_empire_f_17}Moon Swirl" />
+			<name name="{=eq_name_empire_f_18}Moon Dash" />
+			<name name="{=eq_name_empire_f_19}Moon Belle" />
+			<name name="{=eq_name_empire_f_20}Moon Song" />
+			<name name="{=eq_name_empire_f_21}Moon Shine" />
+			<name name="{=eq_name_empire_f_22}Moon Leaf" />
+			<name name="{=eq_name_empire_f_23}Moon Mist" />
+			<name name="{=eq_name_empire_f_24}Moon Glow" />
+			<name name="{=eq_name_empire_f_25}Moon Flower" />
+			<name name="{=eq_name_empire_f_26}Moon Dew" />
+			<name name="{=eq_name_empire_f_27}Moon Wind" />
+			<name name="{=eq_name_empire_f_28}Star Sparkle" />
+			<name name="{=eq_name_empire_f_29}Star Bloom" />
+			<name name="{=eq_name_empire_f_30}Star Heart" />
+			<name name="{=eq_name_empire_f_31}Star Swirl" />
+			<name name="{=eq_name_empire_f_32}Star Dash" />
+			<name name="{=eq_name_empire_f_33}Star Belle" />
+			<name name="{=eq_name_empire_f_34}Star Song" />
+			<name name="{=eq_name_empire_f_35}Star Shine" />
+			<name name="{=eq_name_empire_f_36}Star Leaf" />
+			<name name="{=eq_name_empire_f_37}Star Mist" />
+			<name name="{=eq_name_empire_f_38}Star Glow" />
+			<name name="{=eq_name_empire_f_39}Star Flower" />
+			<name name="{=eq_name_empire_f_40}Star Dew" />
+			<name name="{=eq_name_empire_f_41}Star Wind" />
+			<name name="{=eq_name_empire_f_42}Apple Sparkle" />
+			<name name="{=eq_name_empire_f_43}Apple Bloom" />
+			<name name="{=eq_name_empire_f_44}Apple Heart" />
+			<name name="{=eq_name_empire_f_45}Apple Swirl" />
+			<name name="{=eq_name_empire_f_46}Apple Dash" />
+			<name name="{=eq_name_empire_f_47}Apple Belle" />
+			<name name="{=eq_name_empire_f_48}Apple Song" />
+			<name name="{=eq_name_empire_f_49}Apple Shine" />
+			<name name="{=eq_name_empire_f_50}Apple Leaf" />
+			<name name="{=eq_name_empire_f_51}Apple Mist" />
+			<name name="{=eq_name_empire_f_52}Apple Glow" />
+			<name name="{=eq_name_empire_f_53}Apple Flower" />
+			<name name="{=eq_name_empire_f_54}Apple Dew" />
+			<name name="{=eq_name_empire_f_55}Apple Wind" />
+			<name name="{=eq_name_empire_f_56}Honey Sparkle" />
+			<name name="{=eq_name_empire_f_57}Honey Bloom" />
+			<name name="{=eq_name_empire_f_58}Honey Heart" />
+			<name name="{=eq_name_empire_f_59}Honey Swirl" />
+			<name name="{=eq_name_empire_f_60}Honey Dash" />
+			<name name="{=eq_name_empire_f_61}Honey Belle" />
+			<name name="{=eq_name_empire_f_62}Honey Song" />
+			<name name="{=eq_name_empire_f_63}Honey Shine" />
+			<name name="{=eq_name_empire_f_64}Honey Leaf" />
+			<name name="{=eq_name_empire_f_65}Honey Mist" />
+			<name name="{=eq_name_empire_f_66}Honey Glow" />
+			<name name="{=eq_name_empire_f_67}Honey Flower" />
+			<name name="{=eq_name_empire_f_68}Honey Dew" />
+			<name name="{=eq_name_empire_f_69}Honey Wind" />
+			<name name="{=eq_name_empire_f_70}Rose Sparkle" />
+			<name name="{=eq_name_empire_f_71}Rose Bloom" />
+			<name name="{=eq_name_empire_f_72}Rose Heart" />
+			<name name="{=eq_name_empire_f_73}Rose Swirl" />
+			<name name="{=eq_name_empire_f_74}Rose Dash" />
+			<name name="{=eq_name_empire_f_75}Rose Belle" />
+			<name name="{=eq_name_empire_f_76}Rose Song" />
+			<name name="{=eq_name_empire_f_77}Rose Shine" />
+			<name name="{=eq_name_empire_f_78}Rose Leaf" />
+			<name name="{=eq_name_empire_f_79}Rose Mist" />
+			<name name="{=eq_name_empire_f_80}Rose Glow" />
+			<name name="{=eq_name_empire_f_81}Rose Flower" />
+			<name name="{=eq_name_empire_f_82}Rose Dew" />
+			<name name="{=eq_name_empire_f_83}Rose Wind" />
+			<name name="{=eq_name_empire_f_84}Sweet Sparkle" />
+			<name name="{=eq_name_empire_f_85}Sweet Bloom" />
+			<name name="{=eq_name_empire_f_86}Sweet Heart" />
+			<name name="{=eq_name_empire_f_87}Sweet Swirl" />
+			<name name="{=eq_name_empire_f_88}Sweet Dash" />
+			<name name="{=eq_name_empire_f_89}Sweet Belle" />
+			<name name="{=eq_name_empire_f_90}Sweet Song" />
+			<name name="{=eq_name_empire_f_91}Sweet Shine" />
+			<name name="{=eq_name_empire_f_92}Sweet Leaf" />
+			<name name="{=eq_name_empire_f_93}Sweet Mist" />
+			<name name="{=eq_name_empire_f_94}Sweet Glow" />
+			<name name="{=eq_name_empire_f_95}Sweet Flower" />
+			<name name="{=eq_name_empire_f_96}Sweet Dew" />
+			<name name="{=eq_name_empire_f_97}Sweet Wind" />
+			<name name="{=eq_name_empire_f_98}Lily Sparkle" />
+			<name name="{=eq_name_empire_f_99}Lily Bloom" />
+			<name name="{=eq_name_empire_f_100}Lily Heart" />
+			<name name="{=eq_name_empire_f_101}Lily Swirl" />
+			<name name="{=eq_name_empire_f_102}Lily Dash" />
+			<name name="{=eq_name_empire_f_103}Lily Belle" />
+			<name name="{=eq_name_empire_f_104}Lily Song" />
+			<name name="{=eq_name_empire_f_105}Lily Shine" />
+			<name name="{=eq_name_empire_f_106}Lily Leaf" />
+			<name name="{=eq_name_empire_f_107}Lily Mist" />
+			<name name="{=eq_name_empire_f_108}Lily Glow" />
+			<name name="{=eq_name_empire_f_109}Lily Flower" />
+			<name name="{=eq_name_empire_f_110}Lily Dew" />
+			<name name="{=eq_name_empire_f_111}Lily Wind" />
+			<name name="{=eq_name_empire_f_112}Misty Sparkle" />
+			<name name="{=eq_name_empire_f_113}Misty Bloom" />
+			<name name="{=eq_name_empire_f_114}Misty Heart" />
+			<name name="{=eq_name_empire_f_115}Misty Swirl" />
+			<name name="{=eq_name_empire_f_116}Misty Dash" />
+			<name name="{=eq_name_empire_f_117}Misty Belle" />
+			<name name="{=eq_name_empire_f_118}Misty Song" />
+			<name name="{=eq_name_empire_f_119}Misty Shine" />
+			<name name="{=eq_name_empire_f_120}Misty Leaf" />
+			<name name="{=eq_name_empire_f_121}Misty Mist" />
+			<name name="{=eq_name_empire_f_122}Misty Glow" />
+			<name name="{=eq_name_empire_f_123}Misty Flower" />
+			<name name="{=eq_name_empire_f_124}Misty Dew" />
+			<name name="{=eq_name_empire_f_125}Misty Wind" />
+			<name name="{=eq_name_empire_f_126}Pinkie Sparkle" />
+			<name name="{=eq_name_empire_f_127}Pinkie Bloom" />
+			<name name="{=eq_name_empire_f_128}Pinkie Heart" />
+			<name name="{=eq_name_empire_f_129}Pinkie Swirl" />
+			<name name="{=eq_name_empire_f_130}Pinkie Dash" />
+			<name name="{=eq_name_empire_f_131}Pinkie Belle" />
+			<name name="{=eq_name_empire_f_132}Pinkie Song" />
+			<name name="{=eq_name_empire_f_133}Pinkie Shine" />
+			<name name="{=eq_name_empire_f_134}Pinkie Leaf" />
+			<name name="{=eq_name_empire_f_135}Pinkie Mist" />
+			<name name="{=eq_name_empire_f_136}Pinkie Glow" />
+			<name name="{=eq_name_empire_f_137}Pinkie Flower" />
+			<name name="{=eq_name_empire_f_138}Pinkie Dew" />
+			<name name="{=eq_name_empire_f_139}Pinkie Wind" />
+			<name name="{=eq_name_empire_f_140}Lavender Sparkle" />
+			<name name="{=eq_name_empire_f_141}Lavender Bloom" />
+			<name name="{=eq_name_empire_f_142}Lavender Heart" />
+			<name name="{=eq_name_empire_f_143}Lavender Swirl" />
+			<name name="{=eq_name_empire_f_144}Lavender Dash" />
+			<name name="{=eq_name_empire_f_145}Lavender Belle" />
+			<name name="{=eq_name_empire_f_146}Lavender Song" />
+			<name name="{=eq_name_empire_f_147}Lavender Shine" />
+			<name name="{=eq_name_empire_f_148}Lavender Leaf" />
+			<name name="{=eq_name_empire_f_149}Lavender Mist" />
+			<name name="{=eq_name_empire_f_150}Lavender Glow" />
+			<name name="{=eq_name_empire_f_151}Lavender Flower" />
+			<name name="{=eq_name_empire_f_152}Lavender Dew" />
+			<name name="{=eq_name_empire_f_153}Lavender Wind" />
+			<name name="{=eq_name_empire_f_154}Cherry Sparkle" />
+			<name name="{=eq_name_empire_f_155}Cherry Bloom" />
+			<name name="{=eq_name_empire_f_156}Cherry Heart" />
+			<name name="{=eq_name_empire_f_157}Cherry Swirl" />
+			<name name="{=eq_name_empire_f_158}Cherry Dash" />
+			<name name="{=eq_name_empire_f_159}Cherry Belle" />
+			<name name="{=eq_name_empire_f_160}Cherry Song" />
+			<name name="{=eq_name_empire_f_161}Cherry Shine" />
+			<name name="{=eq_name_empire_f_162}Cherry Leaf" />
+			<name name="{=eq_name_empire_f_163}Cherry Mist" />
+			<name name="{=eq_name_empire_f_164}Cherry Glow" />
+			<name name="{=eq_name_empire_f_165}Cherry Flower" />
+			<name name="{=eq_name_empire_f_166}Cherry Dew" />
+			<name name="{=eq_name_empire_f_167}Cherry Wind" />
+			<name name="{=eq_name_empire_f_168}Daisy Sparkle" />
+			<name name="{=eq_name_empire_f_169}Daisy Bloom" />
+			<name name="{=eq_name_empire_f_170}Daisy Heart" />
+			<name name="{=eq_name_empire_f_171}Daisy Swirl" />
+			<name name="{=eq_name_empire_f_172}Daisy Dash" />
+			<name name="{=eq_name_empire_f_173}Daisy Belle" />
+			<name name="{=eq_name_empire_f_174}Daisy Song" />
+			<name name="{=eq_name_empire_f_175}Daisy Shine" />
+			<name name="{=eq_name_empire_f_176}Daisy Leaf" />
+			<name name="{=eq_name_empire_f_177}Daisy Mist" />
+			<name name="{=eq_name_empire_f_178}Daisy Glow" />
+			<name name="{=eq_name_empire_f_179}Daisy Flower" />
+			<name name="{=eq_name_empire_f_180}Daisy Dew" />
+			<name name="{=eq_name_empire_f_181}Daisy Wind" />
+			<name name="{=eq_name_empire_f_182}Violet Sparkle" />
+			<name name="{=eq_name_empire_f_183}Violet Bloom" />
+			<name name="{=eq_name_empire_f_184}Violet Heart" />
+			<name name="{=eq_name_empire_f_185}Violet Swirl" />
+			<name name="{=eq_name_empire_f_186}Violet Dash" />
+			<name name="{=eq_name_empire_f_187}Violet Belle" />
+			<name name="{=eq_name_empire_f_188}Violet Song" />
+			<name name="{=eq_name_empire_f_189}Violet Shine" />
+			<name name="{=eq_name_empire_f_190}Violet Leaf" />
+			<name name="{=eq_name_empire_f_191}Violet Mist" />
+			<name name="{=eq_name_empire_f_192}Violet Glow" />
+			<name name="{=eq_name_empire_f_193}Violet Flower" />
+			<name name="{=eq_name_empire_f_194}Violet Dew" />
+			<name name="{=eq_name_empire_f_195}Violet Wind" />
+			<name name="{=eq_name_empire_f_196}Roseluck" />
+			<name name="{=eq_name_empire_f_197}Lily Valley" />
+			<name name="{=eq_name_empire_f_198}Berry Punch" />
+			<name name="{=eq_name_empire_f_199}Mrs. Cake" />
+			<name name="{=eq_name_empire_f_200}Amber Waves" />
+			<name name="{=eq_name_empire_f_201}Mane Goodall" />
+			<name name="{=eq_name_empire_f_202}Sapphire Shores" />
+			<name name="{=eq_name_empire_f_203}Coloratura" />
+			<name name="{=eq_name_empire_f_204}White Lightning" />
+			<name name="{=eq_name_empire_f_205}Cloud Kicker" />
+			<name name="{=eq_name_empire_f_206}Blossomforth" />
+			<name name="{=eq_name_empire_f_207}Flitter" />
+			<name name="{=eq_name_empire_f_208}Cloudchaser" />
+			<name name="{=eq_name_empire_f_209}Medley" />
+			<name name="{=eq_name_empire_f_210}Cherry Berry" />
+			<name name="{=eq_name_empire_f_211}Goldie Delicious" />
+			<name name="{=eq_name_empire_f_212}Apple Fritter" />
+			<name name="{=eq_name_empire_f_213}Apple Cider" />
+			<name name="{=eq_name_empire_f_214}Cherry Jubilee" />
+			<name name="{=eq_name_empire_f_215}Honey Lemon" />
+			<name name="{=eq_name_empire_f_216}Nocturne" />
+			<name name="{=eq_name_empire_f_217}Blanket" />
+			<name name="{=eq_name_empire_f_218}Ditzy Doo" />
+			<name name="{=eq_name_empire_f_219}Twist" />
+			<name name="{=eq_name_empire_f_220}Diamond Mint" />
+			<name name="{=eq_name_empire_f_221}Lotus Blossom" />
+			<name name="{=eq_name_empire_f_222}Aloe" />
+			<name name="{=eq_name_empire_f_223}Sirena" />
+			<name name="{=eq_name_empire_f_224}Thunder Flash" />
+			<name name="{=eq_name_empire_f_225}May" />
+			<name name="{=eq_name_empire_f_226}Raindrops" />
+			<name name="{=eq_name_empire_f_227}Lightning Bolt" />
+			<name name="{=eq_name_empire_f_228}Sassy Sweet" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_empire_0}House Sunny Dash" />
+			<name name="{=eq_clanname_empire_1}House Moon Heart" />
+			<name name="{=eq_clanname_empire_2}House Star Mane" />
+			<name name="{=eq_clanname_empire_3}House Apple Light" />
+			<name name="{=eq_clanname_empire_4}House Cloud Song" />
+			<name name="{=eq_clanname_empire_5}House Swift Hoof" />
+			<name name="{=eq_clanname_empire_6}House Golden Brave" />
+			<name name="{=eq_clanname_empire_7}House Bright Field" />
+			<name name="{=eq_clanname_empire_8}House Silver Wind" />
+			<name name="{=eq_clanname_empire_9}House Dusty Stone" />
+			<name name="{=eq_clanname_empire_10}House Copper Flame" />
+			<name name="{=eq_clanname_empire_11}House Iron Sky" />
+			<name name="{=eq_clanname_empire_12}House Noble Ridge" />
+			<name name="{=eq_clanname_empire_13}House Steel Grove" />
+			<name name="{=eq_clanname_empire_14}House Moon Dash" />
+			<name name="{=eq_clanname_empire_15}House Star Heart" />
+			<name name="{=eq_clanname_empire_16}House Apple Mane" />
+			<name name="{=eq_clanname_empire_17}House Cloud Light" />
+			<name name="{=eq_clanname_empire_18}House Swift Song" />
+			<name name="{=eq_clanname_empire_19}House Golden Hoof" />
+			<name name="{=eq_clanname_empire_20}House Bright Brave" />
+			<name name="{=eq_clanname_empire_21}House Silver Field" />
+			<name name="{=eq_clanname_empire_22}House Dusty Wind" />
+			<name name="{=eq_clanname_empire_23}House Copper Stone" />
+			<name name="{=eq_clanname_empire_24}House Iron Flame" />
+			<name name="{=eq_clanname_empire_25}House Noble Sky" />
+			<name name="{=eq_clanname_empire_26}House Steel Ridge" />
+			<name name="{=eq_clanname_empire_27}House Sunny Grove" />
+			<name name="{=eq_clanname_empire_28}House Star Dash" />
+			<name name="{=eq_clanname_empire_29}House Apple Heart" />
+		</clan_names>
+	</Culture>
+	<Culture id="vlandia" name="{=culture_vlandia}Gryphons" text="{=culture_vlandia_text}The gryphons of Griffonstone: proud and tight-fisted, but true to their word." color="0xFF7B5E2E" color2="0xFFE8C547"
+		elite_basic_troop="NPCCharacter.khuzait_noble_son"
+		basic_troop="NPCCharacter.khuzait_nomad"
+		melee_militia_troop="NPCCharacter.khuzait_militia_spearman"
+		ranged_militia_troop="NPCCharacter.khuzait_militia_archer"
+		melee_elite_militia_troop="NPCCharacter.khuzait_militia_veteran_spearman"
+		ranged_elite_militia_troop="NPCCharacter.khuzait_militia_veteran_archer"
+		can_have_settlement="true"
+		villager_party_template="PartyTemplate.villager_khuzait_template"
+		default_party_template="PartyTemplate.kingdom_hero_party_khuzait_template"
+		settlement_patrol_template_level_1="PartyTemplate.patrol_party_khuzait_template_level_1"
+		settlement_patrol_template_level_2="PartyTemplate.patrol_party_khuzait_template_level_2"
+		settlement_patrol_template_level_3="PartyTemplate.patrol_party_khuzait_template_level_3"
+		encounter_background_mesh="encounter_khuzait"
+		militia_party_template="PartyTemplate.militia_khuzait_template"
+		rebels_party_template="PartyTemplate.rebels_khuzait_template"
+		vassal_reward_party_template="PartyTemplate.vassal_reward_troops_khuzait"
+		tournament_master="NPCCharacter.tournament_master_khuzait"
+		villager="NPCCharacter.villager_khuzait"
+		caravan_master="NPCCharacter.caravan_master_khuzait"
+		caravan_guard="NPCCharacter.caravan_guard_khuzait"
+		veteran_caravan_guard="NPCCharacter.veteran_caravan_guard_khuzait"
+		prison_guard="NPCCharacter.prison_guard_khuzait"
+		guard="NPCCharacter.guard_khuzait"
+		blacksmith="NPCCharacter.blacksmith_khuzait"
+		weaponsmith="NPCCharacter.weaponsmith_khuzait"
+		townswoman="NPCCharacter.townswoman_khuzait"
+		townswoman_infant="NPCCharacter.townswoman_infant_khuzait"
+		townswoman_child="NPCCharacter.townswoman_child_khuzait"
+		townswoman_teenager="NPCCharacter.townswoman_teenager_khuzait"
+		townsman="NPCCharacter.townsman_khuzait"
+		townsman_infant="NPCCharacter.townsman_infant_khuzait"
+		townsman_child="NPCCharacter.townsman_child_khuzait"
+		townsman_teenager="NPCCharacter.townsman_teenager_khuzait"
+		village_woman="NPCCharacter.village_woman_khuzait"
+		villager_male_child="NPCCharacter.villager_child_khuzait"
+		villager_male_teenager="NPCCharacter.villager_teenager_khuzait"
+		villager_female_child="NPCCharacter.village_woman_child_khuzait"
+		villager_female_teenager="NPCCharacter.village_woman_teenager_khuzait"
+		ransom_broker="NPCCharacter.ransom_broker_khuzait"
+		gangleader_bodyguard="NPCCharacter.gangleader_bodyguard_khuzait"
+		merchant_notary="NPCCharacter.merchant_notary_khuzait"
+		artisan_notary="NPCCharacter.artisan_notary_khuzait"
+		preacher_notary="NPCCharacter.preacher_notary_khuzait"
+		rural_notable_notary="NPCCharacter.rural_notable_notary_khuzait"
+		shop_worker="NPCCharacter.shop_worker_khuzait"
+		tavernkeeper="NPCCharacter.tavernkeeper_khuzait"
+		taverngamehost="NPCCharacter.taverngamehost_khuzait"
+		musician="NPCCharacter.musician_khuzait"
+		tavern_wench="NPCCharacter.tavern_wench_khuzait"
+		armorer="NPCCharacter.armorer_khuzait"
+		horseMerchant="NPCCharacter.horseMerchant_khuzait"
+		barber="NPCCharacter.barber_khuzait"
+		merchant="NPCCharacter.merchant_khuzait"
+		beggar="NPCCharacter.beggar_khuzait"
+		female_beggar="NPCCharacter.female_beggar_khuzait"
+		female_dancer="NPCCharacter.female_dancer_khuzait"
+		default_battle_equipment_roster="EquipmentRoster.khu_civ_template_default"
+		default_civilian_equipment_roster="EquipmentRoster.khu_civ_template_default"
+		default_stealth_equipment_roster="EquipmentRoster.default_stealth_equipment_roster"
+		duel_preset_equipment_roster="EquipmentRoster.khu_duel_preset_template"
+		marriage_bride_equipment_roster="EquipmentRoster.marriage_female_khu_cutscene_template"
+		board_game_type="Puluc"
+		default_character_creation_body_property="BodyProperty.default_character_creation_body_property_khuzait">
+		<caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.caravan_template_khuzait" />
+				</caravan_party_templates>
+		<elite_caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.elite_caravan_template_khuzait" />
+				</elite_caravan_party_templates>
+		<available_ship_hulls />
+		<vassal_reward_items>
+					<item id="Item.steppe_war_bow" />
+				</vassal_reward_items>
+		<banner_bearer_replacement_weapons>
+					<item id="Item.khuzait_sword_1_t2" />
+					<item id="Item.khuzait_sword_2_t3" />
+					<item id="Item.khuzait_sword_3_t3" />
+					<item id="Item.khuzait_sword_4_t4" />
+				</banner_bearer_replacement_weapons>
+		<default_policies>
+					<policy id="policy_grazing_rights" />
+					<policy id="policy_sacred_majesty" />
+				</default_policies>
+		<cultural_feats>
+					<feat id="khuzait_cheaper_recruits_mounted" />
+					<feat id="khuzait_increased_animal_production" />
+					<feat id="khuzait_decreased_town_tax" />
+				</cultural_feats>
+		<possible_clan_banner_icon_ids>
+					<icon id="121" />
+					<icon id="122" />
+					<icon id="123" />
+					<icon id="124" />
+					<icon id="125" />
+					<icon id="126" />
+					<icon id="127" />
+					<icon id="128" />
+					<icon id="129" />
+					<icon id="130" />
+					<icon id="311" />
+					<icon id="312" />
+					<icon id="313" />
+					<icon id="314" />
+				</possible_clan_banner_icon_ids>
+		<notable_templates>
+					<template name="NPCCharacter.spc_notable_khuzait_merchant_1" />
+					<template name="NPCCharacter.spc_notable_khuzait_0b" />
+					<template name="NPCCharacter.spc_notable_khuzait_1" />
+					<template name="NPCCharacter.spc_notable_khuzait_1b" />
+					<template name="NPCCharacter.spc_notable_khuzait_1c" />
+					<template name="NPCCharacter.spc_notable_khuzait_2" />
+					<template name="NPCCharacter.spc_notable_khuzait_2b" />
+					<template name="NPCCharacter.spc_notable_khuzait_3" />
+					<template name="NPCCharacter.spc_notable_khuzait_4" />
+					<template name="NPCCharacter.spc_khuzait_gangleader_1" />
+					<template name="NPCCharacter.spc_khuzait_gangleader_2" />
+					<template name="NPCCharacter.spc_khuzait_gangleader_3" />
+					<template name="NPCCharacter.spc_khuzait_artisan_1" />
+					<template name="NPCCharacter.spc_khuzait_artisan_2" />
+					<template name="NPCCharacter.spc_khuzait_artisan_3" />
+					<template name="NPCCharacter.spc_khuzait_rural_notable_1" />
+					<template name="NPCCharacter.spc_khuzait_rural_notable_2" />
+					<template name="NPCCharacter.spc_khuzait_headman_1" />
+					<template name="NPCCharacter.spc_khuzait_headman_2" />
+					<template name="NPCCharacter.spc_khuzait_headman_3" />
+				</notable_templates>
+		<lord_templates>
+					<template name="NPCCharacter.spc_karakhuzaits_leader_0" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_1" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_2" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_3" />
+				</lord_templates>
+		<rebellion_hero_templates>
+					<template name="NPCCharacter.spc_karakhuzaits_leader_0" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_1" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_2" />
+					<template name="NPCCharacter.spc_karakhuzaits_leader_3" />
+				</rebellion_hero_templates>
+		<tournament_team_templates_one_participant>
+					<template name="NPCCharacter.tournament_template_khuzait_one_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_khuzait_one_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_khuzait_one_participant_set_v3" />
+				</tournament_team_templates_one_participant>
+		<tournament_team_templates_two_participant>
+					<template name="NPCCharacter.tournament_template_khuzait_two_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_khuzait_two_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_khuzait_two_participant_set_v3" />
+				</tournament_team_templates_two_participant>
+		<tournament_team_templates_four_participant>
+					<template name="NPCCharacter.tournament_template_khuzait_four_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_khuzait_four_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_khuzait_four_participant_set_v3" />
+				</tournament_team_templates_four_participant>
+		<basic_mercenary_troops>
+					<template name="NPCCharacter.eastern_mercenary" />
+					<template name="NPCCharacter.sword_sisters_sister_t3" />
+				</basic_mercenary_troops>
+		<male_names>
+			<name name="{=eq_name_vlandia_m_0}Grover Ironclaw" />
+			<name name="{=eq_name_vlandia_m_1}Grover Silverwing" />
+			<name name="{=eq_name_vlandia_m_2}Grover Redtail" />
+			<name name="{=eq_name_vlandia_m_3}Grover Goldcrest" />
+			<name name="{=eq_name_vlandia_m_4}Grover Blackpeak" />
+			<name name="{=eq_name_vlandia_m_5}Grover Highhill" />
+			<name name="{=eq_name_vlandia_m_6}Grover Stormfeather" />
+			<name name="{=eq_name_vlandia_m_7}Grover Rockclaw" />
+			<name name="{=eq_name_vlandia_m_8}Gunther Ironclaw" />
+			<name name="{=eq_name_vlandia_m_9}Gunther Silverwing" />
+			<name name="{=eq_name_vlandia_m_10}Gunther Redtail" />
+			<name name="{=eq_name_vlandia_m_11}Gunther Goldcrest" />
+			<name name="{=eq_name_vlandia_m_12}Gunther Blackpeak" />
+			<name name="{=eq_name_vlandia_m_13}Gunther Highhill" />
+			<name name="{=eq_name_vlandia_m_14}Gunther Stormfeather" />
+			<name name="{=eq_name_vlandia_m_15}Gunther Rockclaw" />
+			<name name="{=eq_name_vlandia_m_16}Gruff Ironclaw" />
+			<name name="{=eq_name_vlandia_m_17}Gruff Silverwing" />
+			<name name="{=eq_name_vlandia_m_18}Gruff Redtail" />
+			<name name="{=eq_name_vlandia_m_19}Gruff Goldcrest" />
+			<name name="{=eq_name_vlandia_m_20}Gruff Blackpeak" />
+			<name name="{=eq_name_vlandia_m_21}Gruff Highhill" />
+			<name name="{=eq_name_vlandia_m_22}Gruff Stormfeather" />
+			<name name="{=eq_name_vlandia_m_23}Gruff Rockclaw" />
+			<name name="{=eq_name_vlandia_m_24}Heinrich Ironclaw" />
+			<name name="{=eq_name_vlandia_m_25}Heinrich Silverwing" />
+			<name name="{=eq_name_vlandia_m_26}Heinrich Redtail" />
+			<name name="{=eq_name_vlandia_m_27}Heinrich Goldcrest" />
+			<name name="{=eq_name_vlandia_m_28}Heinrich Blackpeak" />
+			<name name="{=eq_name_vlandia_m_29}Heinrich Highhill" />
+			<name name="{=eq_name_vlandia_m_30}Heinrich Stormfeather" />
+			<name name="{=eq_name_vlandia_m_31}Heinrich Rockclaw" />
+			<name name="{=eq_name_vlandia_m_32}Wilhelm Ironclaw" />
+			<name name="{=eq_name_vlandia_m_33}Wilhelm Silverwing" />
+			<name name="{=eq_name_vlandia_m_34}Wilhelm Redtail" />
+			<name name="{=eq_name_vlandia_m_35}Wilhelm Goldcrest" />
+			<name name="{=eq_name_vlandia_m_36}Wilhelm Blackpeak" />
+			<name name="{=eq_name_vlandia_m_37}Wilhelm Highhill" />
+			<name name="{=eq_name_vlandia_m_38}Wilhelm Stormfeather" />
+			<name name="{=eq_name_vlandia_m_39}Wilhelm Rockclaw" />
+			<name name="{=eq_name_vlandia_m_40}Erwin Ironclaw" />
+			<name name="{=eq_name_vlandia_m_41}Erwin Silverwing" />
+			<name name="{=eq_name_vlandia_m_42}Erwin Redtail" />
+			<name name="{=eq_name_vlandia_m_43}Erwin Goldcrest" />
+			<name name="{=eq_name_vlandia_m_44}Erwin Blackpeak" />
+			<name name="{=eq_name_vlandia_m_45}Erwin Highhill" />
+			<name name="{=eq_name_vlandia_m_46}Erwin Stormfeather" />
+			<name name="{=eq_name_vlandia_m_47}Erwin Rockclaw" />
+			<name name="{=eq_name_vlandia_m_48}Gustave Ironclaw" />
+			<name name="{=eq_name_vlandia_m_49}Gustave Silverwing" />
+			<name name="{=eq_name_vlandia_m_50}Gustave Redtail" />
+			<name name="{=eq_name_vlandia_m_51}Gustave Goldcrest" />
+			<name name="{=eq_name_vlandia_m_52}Gustave Blackpeak" />
+			<name name="{=eq_name_vlandia_m_53}Gustave Highhill" />
+			<name name="{=eq_name_vlandia_m_54}Gustave Stormfeather" />
+			<name name="{=eq_name_vlandia_m_55}Gustave Rockclaw" />
+			<name name="{=eq_name_vlandia_m_56}Gottfried Ironclaw" />
+			<name name="{=eq_name_vlandia_m_57}Gottfried Silverwing" />
+			<name name="{=eq_name_vlandia_m_58}Gottfried Redtail" />
+			<name name="{=eq_name_vlandia_m_59}Gottfried Goldcrest" />
+			<name name="{=eq_name_vlandia_m_60}Gottfried Blackpeak" />
+			<name name="{=eq_name_vlandia_m_61}Gottfried Highhill" />
+			<name name="{=eq_name_vlandia_m_62}Gottfried Stormfeather" />
+			<name name="{=eq_name_vlandia_m_63}Gottfried Rockclaw" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_vlandia_f_0}Gilda Rosetalon" />
+			<name name="{=eq_name_vlandia_f_1}Gilda Whitefeather" />
+			<name name="{=eq_name_vlandia_f_2}Gilda Silverwing" />
+			<name name="{=eq_name_vlandia_f_3}Gilda Goldcrest" />
+			<name name="{=eq_name_vlandia_f_4}Gilda Redtail" />
+			<name name="{=eq_name_vlandia_f_5}Gilda Brightwing" />
+			<name name="{=eq_name_vlandia_f_6}Gilda Snowfeather" />
+			<name name="{=eq_name_vlandia_f_7}Gilda Ashclaw" />
+			<name name="{=eq_name_vlandia_f_8}Erika Rosetalon" />
+			<name name="{=eq_name_vlandia_f_9}Erika Whitefeather" />
+			<name name="{=eq_name_vlandia_f_10}Erika Silverwing" />
+			<name name="{=eq_name_vlandia_f_11}Erika Goldcrest" />
+			<name name="{=eq_name_vlandia_f_12}Erika Redtail" />
+			<name name="{=eq_name_vlandia_f_13}Erika Brightwing" />
+			<name name="{=eq_name_vlandia_f_14}Erika Snowfeather" />
+			<name name="{=eq_name_vlandia_f_15}Erika Ashclaw" />
+			<name name="{=eq_name_vlandia_f_16}Ulla Rosetalon" />
+			<name name="{=eq_name_vlandia_f_17}Ulla Whitefeather" />
+			<name name="{=eq_name_vlandia_f_18}Ulla Silverwing" />
+			<name name="{=eq_name_vlandia_f_19}Ulla Goldcrest" />
+			<name name="{=eq_name_vlandia_f_20}Ulla Redtail" />
+			<name name="{=eq_name_vlandia_f_21}Ulla Brightwing" />
+			<name name="{=eq_name_vlandia_f_22}Ulla Snowfeather" />
+			<name name="{=eq_name_vlandia_f_23}Ulla Ashclaw" />
+			<name name="{=eq_name_vlandia_f_24}Greta Rosetalon" />
+			<name name="{=eq_name_vlandia_f_25}Greta Whitefeather" />
+			<name name="{=eq_name_vlandia_f_26}Greta Silverwing" />
+			<name name="{=eq_name_vlandia_f_27}Greta Goldcrest" />
+			<name name="{=eq_name_vlandia_f_28}Greta Redtail" />
+			<name name="{=eq_name_vlandia_f_29}Greta Brightwing" />
+			<name name="{=eq_name_vlandia_f_30}Greta Snowfeather" />
+			<name name="{=eq_name_vlandia_f_31}Greta Ashclaw" />
+			<name name="{=eq_name_vlandia_f_32}Helga Rosetalon" />
+			<name name="{=eq_name_vlandia_f_33}Helga Whitefeather" />
+			<name name="{=eq_name_vlandia_f_34}Helga Silverwing" />
+			<name name="{=eq_name_vlandia_f_35}Helga Goldcrest" />
+			<name name="{=eq_name_vlandia_f_36}Helga Redtail" />
+			<name name="{=eq_name_vlandia_f_37}Helga Brightwing" />
+			<name name="{=eq_name_vlandia_f_38}Helga Snowfeather" />
+			<name name="{=eq_name_vlandia_f_39}Helga Ashclaw" />
+			<name name="{=eq_name_vlandia_f_40}Ilse Rosetalon" />
+			<name name="{=eq_name_vlandia_f_41}Ilse Whitefeather" />
+			<name name="{=eq_name_vlandia_f_42}Ilse Silverwing" />
+			<name name="{=eq_name_vlandia_f_43}Ilse Goldcrest" />
+			<name name="{=eq_name_vlandia_f_44}Ilse Redtail" />
+			<name name="{=eq_name_vlandia_f_45}Ilse Brightwing" />
+			<name name="{=eq_name_vlandia_f_46}Ilse Snowfeather" />
+			<name name="{=eq_name_vlandia_f_47}Ilse Ashclaw" />
+			<name name="{=eq_name_vlandia_f_48}Marta Rosetalon" />
+			<name name="{=eq_name_vlandia_f_49}Marta Whitefeather" />
+			<name name="{=eq_name_vlandia_f_50}Marta Silverwing" />
+			<name name="{=eq_name_vlandia_f_51}Marta Goldcrest" />
+			<name name="{=eq_name_vlandia_f_52}Marta Redtail" />
+			<name name="{=eq_name_vlandia_f_53}Marta Brightwing" />
+			<name name="{=eq_name_vlandia_f_54}Marta Snowfeather" />
+			<name name="{=eq_name_vlandia_f_55}Marta Ashclaw" />
+			<name name="{=eq_name_vlandia_f_56}Liesel Rosetalon" />
+			<name name="{=eq_name_vlandia_f_57}Liesel Whitefeather" />
+			<name name="{=eq_name_vlandia_f_58}Liesel Silverwing" />
+			<name name="{=eq_name_vlandia_f_59}Liesel Goldcrest" />
+			<name name="{=eq_name_vlandia_f_60}Liesel Redtail" />
+			<name name="{=eq_name_vlandia_f_61}Liesel Brightwing" />
+			<name name="{=eq_name_vlandia_f_62}Liesel Snowfeather" />
+			<name name="{=eq_name_vlandia_f_63}Liesel Ashclaw" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_vlandia_0}House Ironclaw" />
+			<name name="{=eq_clanname_vlandia_1}House Silverwing" />
+			<name name="{=eq_clanname_vlandia_2}House Redtail" />
+			<name name="{=eq_clanname_vlandia_3}House Goldcrest" />
+			<name name="{=eq_clanname_vlandia_4}House Blackpeak" />
+			<name name="{=eq_clanname_vlandia_5}House Highhill" />
+			<name name="{=eq_clanname_vlandia_6}House Stormfeather" />
+			<name name="{=eq_clanname_vlandia_7}House Rockclaw" />
+		</clan_names>
+	</Culture>
+	<Culture id="battania" name="{=culture_battania}Hippogriffs" text="{=culture_battania_text}The hippogriffs of Mount Aris and the seaponies of Seaquestria." color="0xFF00838F" color2="0xFFFFD54F"
+		elite_basic_troop="NPCCharacter.eq_hg_sturgian_warrior_son"
+		basic_troop="NPCCharacter.eq_hg_sturgian_recruit"
+		melee_militia_troop="NPCCharacter.eq_hg_sturgian_militia_spearman"
+		ranged_militia_troop="NPCCharacter.eq_hg_sturgian_militia_archer"
+		melee_elite_militia_troop="NPCCharacter.eq_hg_sturgian_militia_veteran_spearman"
+		ranged_elite_militia_troop="NPCCharacter.eq_hg_sturgian_militia_veteran_archer"
+		can_have_settlement="true"
+		villager_party_template="PartyTemplate.villager_sturgia_template"
+		default_party_template="PartyTemplate.kingdom_hero_party_sturgia_template"
+		settlement_patrol_template_level_1="PartyTemplate.patrol_party_sturgia_template_level_1"
+		settlement_patrol_template_level_2="PartyTemplate.patrol_party_sturgia_template_level_2"
+		settlement_patrol_template_level_3="PartyTemplate.patrol_party_sturgia_template_level_3"
+		encounter_background_mesh="encounter_sturgia"
+		militia_party_template="PartyTemplate.militia_sturgia_template"
+		rebels_party_template="PartyTemplate.rebels_sturgia_template"
+		vassal_reward_party_template="PartyTemplate.vassal_reward_troops_sturgia"
+		tournament_master="NPCCharacter.eq_hg_tournament_master_sturgia"
+		villager="NPCCharacter.eq_hg_villager_sturgia"
+		caravan_master="NPCCharacter.eq_hg_caravan_master_sturgia"
+		caravan_guard="NPCCharacter.eq_hg_caravan_guard_sturgia"
+		veteran_caravan_guard="NPCCharacter.eq_hg_veteran_caravan_guard_sturgia"
+		prison_guard="NPCCharacter.eq_hg_prison_guard_sturgia"
+		guard="NPCCharacter.eq_hg_guard_sturgia"
+		blacksmith="NPCCharacter.eq_hg_blacksmith_sturgia"
+		weaponsmith="NPCCharacter.eq_hg_weaponsmith_sturgia"
+		townswoman="NPCCharacter.eq_hg_townswoman_sturgia"
+		townswoman_infant="NPCCharacter.eq_hg_townswoman_infant_sturgia"
+		townswoman_child="NPCCharacter.eq_hg_townswoman_child_sturgia"
+		townswoman_teenager="NPCCharacter.eq_hg_townswoman_teenager_sturgia"
+		townsman="NPCCharacter.eq_hg_townsman_sturgia"
+		townsman_infant="NPCCharacter.eq_hg_townsman_infant_sturgia"
+		townsman_child="NPCCharacter.eq_hg_townsman_child_sturgia"
+		townsman_teenager="NPCCharacter.eq_hg_townsman_teenager_sturgia"
+		village_woman="NPCCharacter.eq_hg_village_woman_sturgia"
+		villager_male_child="NPCCharacter.eq_hg_villager_child_sturgia"
+		villager_male_teenager="NPCCharacter.eq_hg_villager_teenager_sturgia"
+		villager_female_child="NPCCharacter.eq_hg_village_woman_child_sturgia"
+		villager_female_teenager="NPCCharacter.eq_hg_village_woman_teenager_sturgia"
+		ransom_broker="NPCCharacter.eq_hg_ransom_broker_sturgia"
+		gangleader_bodyguard="NPCCharacter.eq_hg_gangleader_bodyguard_sturgia"
+		merchant_notary="NPCCharacter.eq_hg_merchant_notary_sturgia"
+		artisan_notary="NPCCharacter.eq_hg_artisan_notary_sturgia"
+		preacher_notary="NPCCharacter.eq_hg_preacher_notary_sturgia"
+		rural_notable_notary="NPCCharacter.eq_hg_rural_notable_notary_sturgia"
+		shop_worker="NPCCharacter.eq_hg_shop_worker_sturgia"
+		tavernkeeper="NPCCharacter.eq_hg_tavernkeeper_sturgia"
+		taverngamehost="NPCCharacter.eq_hg_taverngamehost_sturgia"
+		musician="NPCCharacter.eq_hg_musician_sturgia"
+		tavern_wench="NPCCharacter.eq_hg_tavern_wench_sturgia"
+		armorer="NPCCharacter.eq_hg_armorer_sturgia"
+		horseMerchant="NPCCharacter.eq_hg_horseMerchant_sturgia"
+		barber="NPCCharacter.eq_hg_barber_sturgia"
+		merchant="NPCCharacter.eq_hg_merchant_sturgia"
+		beggar="NPCCharacter.eq_hg_beggar_sturgia"
+		female_beggar="NPCCharacter.eq_hg_female_beggar_sturgia"
+		female_dancer="NPCCharacter.eq_hg_female_dancer_sturgia"
+		default_battle_equipment_roster="EquipmentRoster.stu_civ_template_default"
+		default_civilian_equipment_roster="EquipmentRoster.stu_civ_template_default"
+		default_stealth_equipment_roster="EquipmentRoster.default_stealth_equipment_roster"
+		duel_preset_equipment_roster="EquipmentRoster.stu_duel_preset_template"
+		marriage_bride_equipment_roster="EquipmentRoster.marriage_female_stu_cutscene_template"
+		board_game_type="Konane"
+		default_character_creation_body_property="BodyProperty.default_character_creation_body_property_sturgia">
+		<caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.caravan_template_sturgia" />
+				</caravan_party_templates>
+		<elite_caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.elite_caravan_template_sturgia" />
+				</elite_caravan_party_templates>
+		<available_ship_hulls />
+		<vassal_reward_items>
+					<item id="Item.avalanche_2haxe" />
+				</vassal_reward_items>
+		<banner_bearer_replacement_weapons>
+					<item id="Item.sturgia_sword_1_t2" />
+					<item id="Item.sturgia_sword_2_t3" />
+					<item id="Item.sturgia_sword_4_t4" />
+					<item id="Item.sturgia_sword_5_t5" />
+				</banner_bearer_replacement_weapons>
+		<default_policies>
+					<policy id="policy_lawspeakers" />
+					<policy id="policy_precarial_land_tenure" />
+				</default_policies>
+		<cultural_feats>
+					<feat id="sturgian_increased_grain_production" />
+					<feat id="sturgian_decreased_army_influence_cost" />
+					<feat id="sturgian_increased_decision_penalty" />
+				</cultural_feats>
+		<possible_clan_banner_icon_ids>
+					<icon id="112" />
+					<icon id="113" />
+					<icon id="114" />
+					<icon id="115" />
+					<icon id="116" />
+					<icon id="117" />
+					<icon id="118" />
+					<icon id="132" />
+					<icon id="138" />
+					<icon id="139" />
+					<icon id="307" />
+					<icon id="331" />
+					<icon id="407" />
+					<icon id="408" />
+					<icon id="409" />
+					<icon id="410" />
+					<icon id="439" />
+					<icon id="440" />
+					<icon id="441" />
+					<icon id="442" />
+					<icon id="443" />
+					<icon id="444" />
+					<icon id="445" />
+				</possible_clan_banner_icon_ids>
+		<notable_templates>
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_0" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_0b" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_1" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_2" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_2b" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_3" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_3b" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_3c" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_4" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_5" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_6" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_7" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_8" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_9" />
+					<template name="NPCCharacter.eq_hg_spc_notable_sturgia_10" />
+					<template name="NPCCharacter.eq_hg_spc_sturgia_headman_1" />
+					<template name="NPCCharacter.eq_hg_spc_sturgia_headman_2" />
+					<template name="NPCCharacter.eq_hg_spc_sturgia_headman_3" />
+				</notable_templates>
+		<lord_templates>
+					<template name="NPCCharacter.spc_skolderbrotva_leader_0" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_1" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_2" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_3" />
+					<template name="NPCCharacter.spc_lakepike_leader_0" />
+					<template name="NPCCharacter.spc_lakepike_leader_1" />
+					<template name="NPCCharacter.spc_lakepike_leader_2" />
+					<template name="NPCCharacter.spc_lakepike_leader_3" />
+					<template name="NPCCharacter.spc_forest_people_leader_0" />
+					<template name="NPCCharacter.spc_forest_people_leader_1" />
+					<template name="NPCCharacter.spc_forest_people_leader_2" />
+					<template name="NPCCharacter.spc_forest_people_leader_3" />
+				</lord_templates>
+		<rebellion_hero_templates>
+					<template name="NPCCharacter.spc_skolderbrotva_leader_0" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_1" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_2" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_3" />
+					<template name="NPCCharacter.spc_lakepike_leader_0" />
+					<template name="NPCCharacter.spc_lakepike_leader_1" />
+					<template name="NPCCharacter.spc_lakepike_leader_2" />
+					<template name="NPCCharacter.spc_lakepike_leader_3" />
+					<template name="NPCCharacter.spc_forest_people_leader_0" />
+					<template name="NPCCharacter.spc_forest_people_leader_1" />
+					<template name="NPCCharacter.spc_forest_people_leader_2" />
+					<template name="NPCCharacter.spc_forest_people_leader_3" />
+				</rebellion_hero_templates>
+		<tournament_team_templates_one_participant>
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_one_participant_set_v1" />
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_one_participant_set_v2" />
+				</tournament_team_templates_one_participant>
+		<tournament_team_templates_two_participant>
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_two_participant_set_v1" />
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_two_participant_set_v2" />
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_two_participant_set_v3" />
+				</tournament_team_templates_two_participant>
+		<tournament_team_templates_four_participant>
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_four_participant_set_v1" />
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_four_participant_set_v2" />
+					<template name="NPCCharacter.eq_hg_tournament_template_sturgia_four_participant_set_v3" />
+				</tournament_team_templates_four_participant>
+		<basic_mercenary_troops>
+					<template name="NPCCharacter.eastern_mercenary" />
+					<template name="NPCCharacter.western_mercenary" />
+					<template name="NPCCharacter.sword_sisters_sister_t3" />
+				</basic_mercenary_troops>
+		<male_names>
+			<name name="{=eq_name_battania_m_0}Sky Beak" />
+			<name name="{=eq_name_battania_m_1}Sky Wing" />
+			<name name="{=eq_name_battania_m_2}Sky Spray" />
+			<name name="{=eq_name_battania_m_3}Sky Stream" />
+			<name name="{=eq_name_battania_m_4}Sky Feather" />
+			<name name="{=eq_name_battania_m_5}Sky River" />
+			<name name="{=eq_name_battania_m_6}Sky Glide" />
+			<name name="{=eq_name_battania_m_7}Sky Mar" />
+			<name name="{=eq_name_battania_m_8}Ocean Beak" />
+			<name name="{=eq_name_battania_m_9}Ocean Wing" />
+			<name name="{=eq_name_battania_m_10}Ocean Spray" />
+			<name name="{=eq_name_battania_m_11}Ocean Stream" />
+			<name name="{=eq_name_battania_m_12}Ocean Feather" />
+			<name name="{=eq_name_battania_m_13}Ocean River" />
+			<name name="{=eq_name_battania_m_14}Ocean Glide" />
+			<name name="{=eq_name_battania_m_15}Ocean Mar" />
+			<name name="{=eq_name_battania_m_16}Tide Beak" />
+			<name name="{=eq_name_battania_m_17}Tide Wing" />
+			<name name="{=eq_name_battania_m_18}Tide Spray" />
+			<name name="{=eq_name_battania_m_19}Tide Stream" />
+			<name name="{=eq_name_battania_m_20}Tide Feather" />
+			<name name="{=eq_name_battania_m_21}Tide River" />
+			<name name="{=eq_name_battania_m_22}Tide Glide" />
+			<name name="{=eq_name_battania_m_23}Tide Mar" />
+			<name name="{=eq_name_battania_m_24}Coral Beak" />
+			<name name="{=eq_name_battania_m_25}Coral Wing" />
+			<name name="{=eq_name_battania_m_26}Coral Spray" />
+			<name name="{=eq_name_battania_m_27}Coral Stream" />
+			<name name="{=eq_name_battania_m_28}Coral Feather" />
+			<name name="{=eq_name_battania_m_29}Coral River" />
+			<name name="{=eq_name_battania_m_30}Coral Glide" />
+			<name name="{=eq_name_battania_m_31}Coral Mar" />
+			<name name="{=eq_name_battania_m_32}Sea Beak" />
+			<name name="{=eq_name_battania_m_33}Sea Wing" />
+			<name name="{=eq_name_battania_m_34}Sea Spray" />
+			<name name="{=eq_name_battania_m_35}Sea Stream" />
+			<name name="{=eq_name_battania_m_36}Sea Feather" />
+			<name name="{=eq_name_battania_m_37}Sea River" />
+			<name name="{=eq_name_battania_m_38}Sea Glide" />
+			<name name="{=eq_name_battania_m_39}Sea Mar" />
+			<name name="{=eq_name_battania_m_40}Storm Beak" />
+			<name name="{=eq_name_battania_m_41}Storm Wing" />
+			<name name="{=eq_name_battania_m_42}Storm Spray" />
+			<name name="{=eq_name_battania_m_43}Storm Stream" />
+			<name name="{=eq_name_battania_m_44}Storm Feather" />
+			<name name="{=eq_name_battania_m_45}Storm River" />
+			<name name="{=eq_name_battania_m_46}Storm Glide" />
+			<name name="{=eq_name_battania_m_47}Storm Mar" />
+			<name name="{=eq_name_battania_m_48}Wave Beak" />
+			<name name="{=eq_name_battania_m_49}Wave Wing" />
+			<name name="{=eq_name_battania_m_50}Wave Spray" />
+			<name name="{=eq_name_battania_m_51}Wave Stream" />
+			<name name="{=eq_name_battania_m_52}Wave Feather" />
+			<name name="{=eq_name_battania_m_53}Wave River" />
+			<name name="{=eq_name_battania_m_54}Wave Glide" />
+			<name name="{=eq_name_battania_m_55}Wave Mar" />
+			<name name="{=eq_name_battania_m_56}Pearl Beak" />
+			<name name="{=eq_name_battania_m_57}Pearl Wing" />
+			<name name="{=eq_name_battania_m_58}Pearl Spray" />
+			<name name="{=eq_name_battania_m_59}Pearl Stream" />
+			<name name="{=eq_name_battania_m_60}Pearl Feather" />
+			<name name="{=eq_name_battania_m_61}Pearl River" />
+			<name name="{=eq_name_battania_m_62}Pearl Glide" />
+			<name name="{=eq_name_battania_m_63}Pearl Mar" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_battania_f_0}Sky Star" />
+			<name name="{=eq_name_battania_f_1}Sky Stream" />
+			<name name="{=eq_name_battania_f_2}Sky Flow" />
+			<name name="{=eq_name_battania_f_3}Sky Bloom" />
+			<name name="{=eq_name_battania_f_4}Sky Wave" />
+			<name name="{=eq_name_battania_f_5}Sky Feather" />
+			<name name="{=eq_name_battania_f_6}Sky Glow" />
+			<name name="{=eq_name_battania_f_7}Sky Light" />
+			<name name="{=eq_name_battania_f_8}Ocean Star" />
+			<name name="{=eq_name_battania_f_9}Ocean Stream" />
+			<name name="{=eq_name_battania_f_10}Ocean Flow" />
+			<name name="{=eq_name_battania_f_11}Ocean Bloom" />
+			<name name="{=eq_name_battania_f_12}Ocean Wave" />
+			<name name="{=eq_name_battania_f_13}Ocean Feather" />
+			<name name="{=eq_name_battania_f_14}Ocean Glow" />
+			<name name="{=eq_name_battania_f_15}Ocean Light" />
+			<name name="{=eq_name_battania_f_16}Silver Star" />
+			<name name="{=eq_name_battania_f_17}Silver Stream" />
+			<name name="{=eq_name_battania_f_18}Silver Flow" />
+			<name name="{=eq_name_battania_f_19}Silver Bloom" />
+			<name name="{=eq_name_battania_f_20}Silver Wave" />
+			<name name="{=eq_name_battania_f_21}Silver Feather" />
+			<name name="{=eq_name_battania_f_22}Silver Glow" />
+			<name name="{=eq_name_battania_f_23}Silver Light" />
+			<name name="{=eq_name_battania_f_24}Coral Star" />
+			<name name="{=eq_name_battania_f_25}Coral Stream" />
+			<name name="{=eq_name_battania_f_26}Coral Flow" />
+			<name name="{=eq_name_battania_f_27}Coral Bloom" />
+			<name name="{=eq_name_battania_f_28}Coral Wave" />
+			<name name="{=eq_name_battania_f_29}Coral Feather" />
+			<name name="{=eq_name_battania_f_30}Coral Glow" />
+			<name name="{=eq_name_battania_f_31}Coral Light" />
+			<name name="{=eq_name_battania_f_32}Pearl Star" />
+			<name name="{=eq_name_battania_f_33}Pearl Stream" />
+			<name name="{=eq_name_battania_f_34}Pearl Flow" />
+			<name name="{=eq_name_battania_f_35}Pearl Bloom" />
+			<name name="{=eq_name_battania_f_36}Pearl Wave" />
+			<name name="{=eq_name_battania_f_37}Pearl Feather" />
+			<name name="{=eq_name_battania_f_38}Pearl Glow" />
+			<name name="{=eq_name_battania_f_39}Pearl Light" />
+			<name name="{=eq_name_battania_f_40}Sea Star" />
+			<name name="{=eq_name_battania_f_41}Sea Stream" />
+			<name name="{=eq_name_battania_f_42}Sea Flow" />
+			<name name="{=eq_name_battania_f_43}Sea Bloom" />
+			<name name="{=eq_name_battania_f_44}Sea Wave" />
+			<name name="{=eq_name_battania_f_45}Sea Feather" />
+			<name name="{=eq_name_battania_f_46}Sea Glow" />
+			<name name="{=eq_name_battania_f_47}Sea Light" />
+			<name name="{=eq_name_battania_f_48}Mist Star" />
+			<name name="{=eq_name_battania_f_49}Mist Stream" />
+			<name name="{=eq_name_battania_f_50}Mist Flow" />
+			<name name="{=eq_name_battania_f_51}Mist Bloom" />
+			<name name="{=eq_name_battania_f_52}Mist Wave" />
+			<name name="{=eq_name_battania_f_53}Mist Feather" />
+			<name name="{=eq_name_battania_f_54}Mist Glow" />
+			<name name="{=eq_name_battania_f_55}Mist Light" />
+			<name name="{=eq_name_battania_f_56}Shell Star" />
+			<name name="{=eq_name_battania_f_57}Shell Stream" />
+			<name name="{=eq_name_battania_f_58}Shell Flow" />
+			<name name="{=eq_name_battania_f_59}Shell Bloom" />
+			<name name="{=eq_name_battania_f_60}Shell Wave" />
+			<name name="{=eq_name_battania_f_61}Shell Feather" />
+			<name name="{=eq_name_battania_f_62}Shell Glow" />
+			<name name="{=eq_name_battania_f_63}Shell Light" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_battania_0}House Sky Beak" />
+			<name name="{=eq_clanname_battania_1}House Ocean Wing" />
+			<name name="{=eq_clanname_battania_2}House Tide Spray" />
+			<name name="{=eq_clanname_battania_3}House Coral Stream" />
+			<name name="{=eq_clanname_battania_4}House Sea Feather" />
+			<name name="{=eq_clanname_battania_5}House Storm River" />
+			<name name="{=eq_clanname_battania_6}House Wave Glide" />
+			<name name="{=eq_clanname_battania_7}House Pearl Mar" />
+			<name name="{=eq_clanname_battania_8}House Ocean Beak" />
+			<name name="{=eq_clanname_battania_9}House Tide Wing" />
+			<name name="{=eq_clanname_battania_10}House Coral Spray" />
+			<name name="{=eq_clanname_battania_11}House Sea Stream" />
+			<name name="{=eq_clanname_battania_12}House Storm Feather" />
+			<name name="{=eq_clanname_battania_13}House Wave River" />
+			<name name="{=eq_clanname_battania_14}House Pearl Glide" />
+			<name name="{=eq_clanname_battania_15}House Sky Mar" />
+			<name name="{=eq_clanname_battania_16}House Tide Beak" />
+			<name name="{=eq_clanname_battania_17}House Coral Wing" />
+			<name name="{=eq_clanname_battania_18}House Sea Spray" />
+			<name name="{=eq_clanname_battania_19}House Storm Stream" />
+			<name name="{=eq_clanname_battania_20}House Wave Feather" />
+			<name name="{=eq_clanname_battania_21}House Pearl River" />
+			<name name="{=eq_clanname_battania_22}House Sky Glide" />
+			<name name="{=eq_clanname_battania_23}House Ocean Mar" />
+			<name name="{=eq_clanname_battania_24}House Coral Beak" />
+			<name name="{=eq_clanname_battania_25}House Sea Wing" />
+			<name name="{=eq_clanname_battania_26}House Storm Spray" />
+			<name name="{=eq_clanname_battania_27}House Wave Stream" />
+			<name name="{=eq_clanname_battania_28}House Pearl Feather" />
+			<name name="{=eq_clanname_battania_29}House Sky River" />
+		</clan_names>
+	</Culture>
+	<Culture id="nord" name="{=culture_nord}Oleni" text="{=culture_nord_text}The deer of the northern woods: silent trackers and stubborn archers." color="0xFF2E7D32" color2="0xFFD7CCC8"
+		elite_basic_troop="NPCCharacter.battanian_highborn_youth"
+		basic_troop="NPCCharacter.battanian_volunteer"
+		melee_militia_troop="NPCCharacter.battanian_militia_spearman"
+		ranged_militia_troop="NPCCharacter.battanian_militia_archer"
+		melee_elite_militia_troop="NPCCharacter.battanian_militia_veteran_spearman"
+		ranged_elite_militia_troop="NPCCharacter.battanian_militia_veteran_archer"
+		can_have_settlement="true"
+		militia_bonus="1"
+		villager_party_template="PartyTemplate.villager_battania_template"
+		default_party_template="PartyTemplate.kingdom_hero_party_battania_template"
+		settlement_patrol_template_level_1="PartyTemplate.patrol_party_battania_template_level_1"
+		settlement_patrol_template_level_2="PartyTemplate.patrol_party_battania_template_level_2"
+		settlement_patrol_template_level_3="PartyTemplate.patrol_party_battania_template_level_3"
+		encounter_background_mesh="encounter_battania"
+		militia_party_template="PartyTemplate.militia_battania_template"
+		rebels_party_template="PartyTemplate.rebels_battania_template"
+		vassal_reward_party_template="PartyTemplate.vassal_reward_troops_battania"
+		tournament_master="NPCCharacter.tournament_master_battania"
+		villager="NPCCharacter.villager_battania"
+		caravan_master="NPCCharacter.caravan_master_battania"
+		caravan_guard="NPCCharacter.caravan_guard_battania"
+		veteran_caravan_guard="NPCCharacter.veteran_caravan_guard_battania"
+		prison_guard="NPCCharacter.prison_guard_battania"
+		guard="NPCCharacter.guard_battania"
+		blacksmith="NPCCharacter.blacksmith_battania"
+		weaponsmith="NPCCharacter.weaponsmith_battania"
+		townswoman="NPCCharacter.townswoman_battania"
+		townswoman_infant="NPCCharacter.townswoman_infant_battania"
+		townswoman_child="NPCCharacter.townswoman_child_battania"
+		townswoman_teenager="NPCCharacter.townswoman_teenager_battania"
+		townsman="NPCCharacter.townsman_battania"
+		townsman_infant="NPCCharacter.townsman_infant_battania"
+		townsman_child="NPCCharacter.townsman_child_battania"
+		townsman_teenager="NPCCharacter.townsman_teenager_battania"
+		village_woman="NPCCharacter.village_woman_battania"
+		villager_male_child="NPCCharacter.villager_child_battania"
+		villager_male_teenager="NPCCharacter.villager_teenager_battania"
+		villager_female_child="NPCCharacter.village_woman_child_battania"
+		villager_female_teenager="NPCCharacter.village_woman_teenager_battania"
+		ransom_broker="NPCCharacter.ransom_broker_battania"
+		gangleader_bodyguard="NPCCharacter.gangleader_bodyguard_battania"
+		merchant_notary="NPCCharacter.merchant_notary_battania"
+		artisan_notary="NPCCharacter.artisan_notary_battania"
+		preacher_notary="NPCCharacter.preacher_notary_battania"
+		rural_notable_notary="NPCCharacter.rural_notable_notary_battania"
+		shop_worker="NPCCharacter.shop_worker_battania"
+		tavernkeeper="NPCCharacter.tavernkeeper_battania"
+		taverngamehost="NPCCharacter.taverngamehost_battania"
+		musician="NPCCharacter.musician_battania"
+		tavern_wench="NPCCharacter.tavern_wench_battania"
+		armorer="NPCCharacter.armorer_battania"
+		horseMerchant="NPCCharacter.horseMerchant_battania"
+		barber="NPCCharacter.barber_battania"
+		merchant="NPCCharacter.merchant_battania"
+		beggar="NPCCharacter.beggar_battania"
+		female_beggar="NPCCharacter.female_beggar_battania"
+		female_dancer="NPCCharacter.female_dancer_battania"
+		default_battle_equipment_roster="EquipmentRoster.bat_civ_template_default"
+		default_civilian_equipment_roster="EquipmentRoster.bat_civ_template_default"
+		default_stealth_equipment_roster="EquipmentRoster.default_stealth_equipment_roster"
+		duel_preset_equipment_roster="EquipmentRoster.bat_duel_preset_template"
+		marriage_bride_equipment_roster="EquipmentRoster.marriage_female_bat_cutscene_template"
+		board_game_type="BaghChal"
+		default_character_creation_body_property="BodyProperty.default_character_creation_body_property_battania">
+		<caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.caravan_template_battania" />
+				</caravan_party_templates>
+		<elite_caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.elite_caravan_template_battania" />
+				</elite_caravan_party_templates>
+		<available_ship_hulls />
+		<vassal_reward_items>
+					<item id="Item.reaper_falx" />
+				</vassal_reward_items>
+		<banner_bearer_replacement_weapons>
+					<item id="Item.battania_sword_1_t2" />
+					<item id="Item.battania_sword_2_t3" />
+					<item id="Item.battania_sword_4_t4" />
+					<item id="Item.battania_sword_5_t5" />
+				</banner_bearer_replacement_weapons>
+		<default_policies>
+					<policy id="policy_cantons" />
+					<policy id="policy_lawspeakers" />
+				</default_policies>
+		<cultural_feats>
+					<feat id="battanian_forest_speed" />
+					<feat id="battanian_militia_production" />
+					<feat id="battanian_slower_construction" />
+				</cultural_feats>
+		<possible_clan_banner_icon_ids>
+					<icon id="131" />
+					<icon id="132" />
+					<icon id="133" />
+					<icon id="134" />
+					<icon id="135" />
+					<icon id="136" />
+					<icon id="137" />
+					<icon id="145" />
+					<icon id="149" />
+					<icon id="151" />
+					<icon id="203" />
+					<icon id="406" />
+					<icon id="407" />
+					<icon id="408" />
+					<icon id="412" />
+					<icon id="413" />
+					<icon id="414" />
+					<icon id="415" />
+				</possible_clan_banner_icon_ids>
+		<notable_templates>
+					<template name="NPCCharacter.spc_notable_battania_merchant_1" />
+					<template name="NPCCharacter.spc_notable_battania_0b" />
+					<template name="NPCCharacter.spc_notable_battania_0c" />
+					<template name="NPCCharacter.spc_notable_battania_0d" />
+					<template name="NPCCharacter.spc_notable_battania_0e" />
+					<template name="NPCCharacter.spc_notable_battania_1" />
+					<template name="NPCCharacter.spc_notable_battania_1b" />
+					<template name="NPCCharacter.spc_notable_battania_2" />
+					<template name="NPCCharacter.spc_notable_battania_3" />
+					<template name="NPCCharacter.spc_notable_battania_4" />
+					<template name="NPCCharacter.spc_notable_battania_5" />
+					<template name="NPCCharacter.spc_battania_artisan_1" />
+					<template name="NPCCharacter.spc_battania_artisan_2" />
+					<template name="NPCCharacter.spc_battania_artisan_3" />
+					<template name="NPCCharacter.spc_notable_rural_notable_1" />
+					<template name="NPCCharacter.spc_battania_rural_notable_2" />
+					<template name="NPCCharacter.spc_battania_headman_1" />
+					<template name="NPCCharacter.spc_battania_headman_2" />
+					<template name="NPCCharacter.spc_battania_headman_3" />
+				</notable_templates>
+		<lord_templates>
+					<template name="NPCCharacter.spc_wolfskins_leader_0" />
+					<template name="NPCCharacter.spc_wolfskins_leader_1" />
+					<template name="NPCCharacter.spc_wolfskins_leader_2" />
+					<template name="NPCCharacter.spc_wolfskins_leader_3" />
+				</lord_templates>
+		<rebellion_hero_templates>
+					<template name="NPCCharacter.spc_wolfskins_leader_0" />
+					<template name="NPCCharacter.spc_wolfskins_leader_1" />
+					<template name="NPCCharacter.spc_wolfskins_leader_2" />
+					<template name="NPCCharacter.spc_wolfskins_leader_3" />
+				</rebellion_hero_templates>
+		<tournament_team_templates_one_participant>
+					<template name="NPCCharacter.tournament_template_battania_one_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_battania_one_participant_set_v2" />
+				</tournament_team_templates_one_participant>
+		<tournament_team_templates_two_participant>
+					<template name="NPCCharacter.tournament_template_battania_two_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_battania_two_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_battania_two_participant_set_v3" />
+					<template name="NPCCharacter.tournament_template_battania_two_participant_set_v4" />
+					<template name="NPCCharacter.tournament_template_battania_two_participant_set_v5" />
+				</tournament_team_templates_two_participant>
+		<tournament_team_templates_four_participant>
+					<template name="NPCCharacter.tournament_template_battania_four_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_battania_four_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_battania_four_participant_set_v3" />
+				</tournament_team_templates_four_participant>
+		<basic_mercenary_troops>
+					<template name="NPCCharacter.western_mercenary" />
+					<template name="NPCCharacter.sword_sisters_sister_t3" />
+				</basic_mercenary_troops>
+		<male_names>
+			<name name="{=eq_name_nord_m_0}Johan Jelzek" />
+			<name name="{=eq_name_nord_m_1}Johan Kudlinen" />
+			<name name="{=eq_name_nord_m_2}Johan Hjort" />
+			<name name="{=eq_name_nord_m_3}Johan Sarvinen" />
+			<name name="{=eq_name_nord_m_4}Johan Metsola" />
+			<name name="{=eq_name_nord_m_5}Johan Jarvinen" />
+			<name name="{=eq_name_nord_m_6}Johan Lehto" />
+			<name name="{=eq_name_nord_m_7}Johan Salonen" />
+			<name name="{=eq_name_nord_m_8}Johan Korpi" />
+			<name name="{=eq_name_nord_m_9}Johan Vironen" />
+			<name name="{=eq_name_nord_m_10}Johan Aalto" />
+			<name name="{=eq_name_nord_m_11}Johan Hirvi" />
+			<name name="{=eq_name_nord_m_12}Benjen Jelzek" />
+			<name name="{=eq_name_nord_m_13}Benjen Kudlinen" />
+			<name name="{=eq_name_nord_m_14}Benjen Hjort" />
+			<name name="{=eq_name_nord_m_15}Benjen Sarvinen" />
+			<name name="{=eq_name_nord_m_16}Benjen Metsola" />
+			<name name="{=eq_name_nord_m_17}Benjen Jarvinen" />
+			<name name="{=eq_name_nord_m_18}Benjen Lehto" />
+			<name name="{=eq_name_nord_m_19}Benjen Salonen" />
+			<name name="{=eq_name_nord_m_20}Benjen Korpi" />
+			<name name="{=eq_name_nord_m_21}Benjen Vironen" />
+			<name name="{=eq_name_nord_m_22}Benjen Aalto" />
+			<name name="{=eq_name_nord_m_23}Benjen Hirvi" />
+			<name name="{=eq_name_nord_m_24}Hjalmar Jelzek" />
+			<name name="{=eq_name_nord_m_25}Hjalmar Kudlinen" />
+			<name name="{=eq_name_nord_m_26}Hjalmar Hjort" />
+			<name name="{=eq_name_nord_m_27}Hjalmar Sarvinen" />
+			<name name="{=eq_name_nord_m_28}Hjalmar Metsola" />
+			<name name="{=eq_name_nord_m_29}Hjalmar Jarvinen" />
+			<name name="{=eq_name_nord_m_30}Hjalmar Lehto" />
+			<name name="{=eq_name_nord_m_31}Hjalmar Salonen" />
+			<name name="{=eq_name_nord_m_32}Hjalmar Korpi" />
+			<name name="{=eq_name_nord_m_33}Hjalmar Vironen" />
+			<name name="{=eq_name_nord_m_34}Hjalmar Aalto" />
+			<name name="{=eq_name_nord_m_35}Hjalmar Hirvi" />
+			<name name="{=eq_name_nord_m_36}Einar Jelzek" />
+			<name name="{=eq_name_nord_m_37}Einar Kudlinen" />
+			<name name="{=eq_name_nord_m_38}Einar Hjort" />
+			<name name="{=eq_name_nord_m_39}Einar Sarvinen" />
+			<name name="{=eq_name_nord_m_40}Einar Metsola" />
+			<name name="{=eq_name_nord_m_41}Einar Jarvinen" />
+			<name name="{=eq_name_nord_m_42}Einar Lehto" />
+			<name name="{=eq_name_nord_m_43}Einar Salonen" />
+			<name name="{=eq_name_nord_m_44}Einar Korpi" />
+			<name name="{=eq_name_nord_m_45}Einar Vironen" />
+			<name name="{=eq_name_nord_m_46}Einar Aalto" />
+			<name name="{=eq_name_nord_m_47}Einar Hirvi" />
+			<name name="{=eq_name_nord_m_48}Torvin Jelzek" />
+			<name name="{=eq_name_nord_m_49}Torvin Kudlinen" />
+			<name name="{=eq_name_nord_m_50}Torvin Hjort" />
+			<name name="{=eq_name_nord_m_51}Torvin Sarvinen" />
+			<name name="{=eq_name_nord_m_52}Torvin Metsola" />
+			<name name="{=eq_name_nord_m_53}Torvin Jarvinen" />
+			<name name="{=eq_name_nord_m_54}Torvin Lehto" />
+			<name name="{=eq_name_nord_m_55}Torvin Salonen" />
+			<name name="{=eq_name_nord_m_56}Torvin Korpi" />
+			<name name="{=eq_name_nord_m_57}Torvin Vironen" />
+			<name name="{=eq_name_nord_m_58}Torvin Aalto" />
+			<name name="{=eq_name_nord_m_59}Torvin Hirvi" />
+			<name name="{=eq_name_nord_m_60}Svein Jelzek" />
+			<name name="{=eq_name_nord_m_61}Svein Kudlinen" />
+			<name name="{=eq_name_nord_m_62}Svein Hjort" />
+			<name name="{=eq_name_nord_m_63}Svein Sarvinen" />
+			<name name="{=eq_name_nord_m_64}Svein Metsola" />
+			<name name="{=eq_name_nord_m_65}Svein Jarvinen" />
+			<name name="{=eq_name_nord_m_66}Svein Lehto" />
+			<name name="{=eq_name_nord_m_67}Svein Salonen" />
+			<name name="{=eq_name_nord_m_68}Svein Korpi" />
+			<name name="{=eq_name_nord_m_69}Svein Vironen" />
+			<name name="{=eq_name_nord_m_70}Svein Aalto" />
+			<name name="{=eq_name_nord_m_71}Svein Hirvi" />
+			<name name="{=eq_name_nord_m_72}Jarve Jelzek" />
+			<name name="{=eq_name_nord_m_73}Jarve Kudlinen" />
+			<name name="{=eq_name_nord_m_74}Jarve Hjort" />
+			<name name="{=eq_name_nord_m_75}Jarve Sarvinen" />
+			<name name="{=eq_name_nord_m_76}Jarve Metsola" />
+			<name name="{=eq_name_nord_m_77}Jarve Jarvinen" />
+			<name name="{=eq_name_nord_m_78}Jarve Lehto" />
+			<name name="{=eq_name_nord_m_79}Jarve Salonen" />
+			<name name="{=eq_name_nord_m_80}Jarve Korpi" />
+			<name name="{=eq_name_nord_m_81}Jarve Vironen" />
+			<name name="{=eq_name_nord_m_82}Jarve Aalto" />
+			<name name="{=eq_name_nord_m_83}Jarve Hirvi" />
+			<name name="{=eq_name_nord_m_84}Almo Jelzek" />
+			<name name="{=eq_name_nord_m_85}Almo Kudlinen" />
+			<name name="{=eq_name_nord_m_86}Almo Hjort" />
+			<name name="{=eq_name_nord_m_87}Almo Sarvinen" />
+			<name name="{=eq_name_nord_m_88}Almo Metsola" />
+			<name name="{=eq_name_nord_m_89}Almo Jarvinen" />
+			<name name="{=eq_name_nord_m_90}Almo Lehto" />
+			<name name="{=eq_name_nord_m_91}Almo Salonen" />
+			<name name="{=eq_name_nord_m_92}Almo Korpi" />
+			<name name="{=eq_name_nord_m_93}Almo Vironen" />
+			<name name="{=eq_name_nord_m_94}Almo Aalto" />
+			<name name="{=eq_name_nord_m_95}Almo Hirvi" />
+			<name name="{=eq_name_nord_m_96}Reino Jelzek" />
+			<name name="{=eq_name_nord_m_97}Reino Kudlinen" />
+			<name name="{=eq_name_nord_m_98}Reino Hjort" />
+			<name name="{=eq_name_nord_m_99}Reino Sarvinen" />
+			<name name="{=eq_name_nord_m_100}Reino Metsola" />
+			<name name="{=eq_name_nord_m_101}Reino Jarvinen" />
+			<name name="{=eq_name_nord_m_102}Reino Lehto" />
+			<name name="{=eq_name_nord_m_103}Reino Salonen" />
+			<name name="{=eq_name_nord_m_104}Reino Korpi" />
+			<name name="{=eq_name_nord_m_105}Reino Vironen" />
+			<name name="{=eq_name_nord_m_106}Reino Aalto" />
+			<name name="{=eq_name_nord_m_107}Reino Hirvi" />
+			<name name="{=eq_name_nord_m_108}Tapio Jelzek" />
+			<name name="{=eq_name_nord_m_109}Tapio Kudlinen" />
+			<name name="{=eq_name_nord_m_110}Tapio Hjort" />
+			<name name="{=eq_name_nord_m_111}Tapio Sarvinen" />
+			<name name="{=eq_name_nord_m_112}Tapio Metsola" />
+			<name name="{=eq_name_nord_m_113}Tapio Jarvinen" />
+			<name name="{=eq_name_nord_m_114}Tapio Lehto" />
+			<name name="{=eq_name_nord_m_115}Tapio Salonen" />
+			<name name="{=eq_name_nord_m_116}Tapio Korpi" />
+			<name name="{=eq_name_nord_m_117}Tapio Vironen" />
+			<name name="{=eq_name_nord_m_118}Tapio Aalto" />
+			<name name="{=eq_name_nord_m_119}Tapio Hirvi" />
+			<name name="{=eq_name_nord_m_120}Ville Jelzek" />
+			<name name="{=eq_name_nord_m_121}Ville Kudlinen" />
+			<name name="{=eq_name_nord_m_122}Ville Hjort" />
+			<name name="{=eq_name_nord_m_123}Ville Sarvinen" />
+			<name name="{=eq_name_nord_m_124}Ville Metsola" />
+			<name name="{=eq_name_nord_m_125}Ville Jarvinen" />
+			<name name="{=eq_name_nord_m_126}Ville Lehto" />
+			<name name="{=eq_name_nord_m_127}Ville Salonen" />
+			<name name="{=eq_name_nord_m_128}Ville Korpi" />
+			<name name="{=eq_name_nord_m_129}Ville Vironen" />
+			<name name="{=eq_name_nord_m_130}Ville Aalto" />
+			<name name="{=eq_name_nord_m_131}Ville Hirvi" />
+			<name name="{=eq_name_nord_m_132}Anssi Jelzek" />
+			<name name="{=eq_name_nord_m_133}Anssi Kudlinen" />
+			<name name="{=eq_name_nord_m_134}Anssi Hjort" />
+			<name name="{=eq_name_nord_m_135}Anssi Sarvinen" />
+			<name name="{=eq_name_nord_m_136}Anssi Metsola" />
+			<name name="{=eq_name_nord_m_137}Anssi Jarvinen" />
+			<name name="{=eq_name_nord_m_138}Anssi Lehto" />
+			<name name="{=eq_name_nord_m_139}Anssi Salonen" />
+			<name name="{=eq_name_nord_m_140}Anssi Korpi" />
+			<name name="{=eq_name_nord_m_141}Anssi Vironen" />
+			<name name="{=eq_name_nord_m_142}Anssi Aalto" />
+			<name name="{=eq_name_nord_m_143}Anssi Hirvi" />
+			<name name="{=eq_name_nord_m_144}Urho Jelzek" />
+			<name name="{=eq_name_nord_m_145}Urho Kudlinen" />
+			<name name="{=eq_name_nord_m_146}Urho Hjort" />
+			<name name="{=eq_name_nord_m_147}Urho Sarvinen" />
+			<name name="{=eq_name_nord_m_148}Urho Metsola" />
+			<name name="{=eq_name_nord_m_149}Urho Jarvinen" />
+			<name name="{=eq_name_nord_m_150}Urho Lehto" />
+			<name name="{=eq_name_nord_m_151}Urho Salonen" />
+			<name name="{=eq_name_nord_m_152}Urho Korpi" />
+			<name name="{=eq_name_nord_m_153}Urho Vironen" />
+			<name name="{=eq_name_nord_m_154}Urho Aalto" />
+			<name name="{=eq_name_nord_m_155}Urho Hirvi" />
+			<name name="{=eq_name_nord_m_156}Kauko Jelzek" />
+			<name name="{=eq_name_nord_m_157}Kauko Kudlinen" />
+			<name name="{=eq_name_nord_m_158}Kauko Hjort" />
+			<name name="{=eq_name_nord_m_159}Kauko Sarvinen" />
+			<name name="{=eq_name_nord_m_160}Kauko Metsola" />
+			<name name="{=eq_name_nord_m_161}Kauko Jarvinen" />
+			<name name="{=eq_name_nord_m_162}Kauko Lehto" />
+			<name name="{=eq_name_nord_m_163}Kauko Salonen" />
+			<name name="{=eq_name_nord_m_164}Kauko Korpi" />
+			<name name="{=eq_name_nord_m_165}Kauko Vironen" />
+			<name name="{=eq_name_nord_m_166}Kauko Aalto" />
+			<name name="{=eq_name_nord_m_167}Kauko Hirvi" />
+			<name name="{=eq_name_nord_m_168}Lauri Jelzek" />
+			<name name="{=eq_name_nord_m_169}Lauri Kudlinen" />
+			<name name="{=eq_name_nord_m_170}Lauri Hjort" />
+			<name name="{=eq_name_nord_m_171}Lauri Sarvinen" />
+			<name name="{=eq_name_nord_m_172}Lauri Metsola" />
+			<name name="{=eq_name_nord_m_173}Lauri Jarvinen" />
+			<name name="{=eq_name_nord_m_174}Lauri Lehto" />
+			<name name="{=eq_name_nord_m_175}Lauri Salonen" />
+			<name name="{=eq_name_nord_m_176}Lauri Korpi" />
+			<name name="{=eq_name_nord_m_177}Lauri Vironen" />
+			<name name="{=eq_name_nord_m_178}Lauri Aalto" />
+			<name name="{=eq_name_nord_m_179}Lauri Hirvi" />
+			<name name="{=eq_name_nord_m_180}Eero Jelzek" />
+			<name name="{=eq_name_nord_m_181}Eero Kudlinen" />
+			<name name="{=eq_name_nord_m_182}Eero Hjort" />
+			<name name="{=eq_name_nord_m_183}Eero Sarvinen" />
+			<name name="{=eq_name_nord_m_184}Eero Metsola" />
+			<name name="{=eq_name_nord_m_185}Eero Jarvinen" />
+			<name name="{=eq_name_nord_m_186}Eero Lehto" />
+			<name name="{=eq_name_nord_m_187}Eero Salonen" />
+			<name name="{=eq_name_nord_m_188}Eero Korpi" />
+			<name name="{=eq_name_nord_m_189}Eero Vironen" />
+			<name name="{=eq_name_nord_m_190}Eero Aalto" />
+			<name name="{=eq_name_nord_m_191}Eero Hirvi" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_nord_f_0}Velvet Jelzek" />
+			<name name="{=eq_name_nord_f_1}Velvet Kudlinen" />
+			<name name="{=eq_name_nord_f_2}Velvet Hjort" />
+			<name name="{=eq_name_nord_f_3}Velvet Sarvinen" />
+			<name name="{=eq_name_nord_f_4}Velvet Metsola" />
+			<name name="{=eq_name_nord_f_5}Velvet Jarvinen" />
+			<name name="{=eq_name_nord_f_6}Velvet Lehto" />
+			<name name="{=eq_name_nord_f_7}Velvet Salonen" />
+			<name name="{=eq_name_nord_f_8}Velvet Korpi" />
+			<name name="{=eq_name_nord_f_9}Velvet Vironen" />
+			<name name="{=eq_name_nord_f_10}Velvet Aalto" />
+			<name name="{=eq_name_nord_f_11}Velvet Hirvi" />
+			<name name="{=eq_name_nord_f_12}Aslaug Jelzek" />
+			<name name="{=eq_name_nord_f_13}Aslaug Kudlinen" />
+			<name name="{=eq_name_nord_f_14}Aslaug Hjort" />
+			<name name="{=eq_name_nord_f_15}Aslaug Sarvinen" />
+			<name name="{=eq_name_nord_f_16}Aslaug Metsola" />
+			<name name="{=eq_name_nord_f_17}Aslaug Jarvinen" />
+			<name name="{=eq_name_nord_f_18}Aslaug Lehto" />
+			<name name="{=eq_name_nord_f_19}Aslaug Salonen" />
+			<name name="{=eq_name_nord_f_20}Aslaug Korpi" />
+			<name name="{=eq_name_nord_f_21}Aslaug Vironen" />
+			<name name="{=eq_name_nord_f_22}Aslaug Aalto" />
+			<name name="{=eq_name_nord_f_23}Aslaug Hirvi" />
+			<name name="{=eq_name_nord_f_24}Ilta Jelzek" />
+			<name name="{=eq_name_nord_f_25}Ilta Kudlinen" />
+			<name name="{=eq_name_nord_f_26}Ilta Hjort" />
+			<name name="{=eq_name_nord_f_27}Ilta Sarvinen" />
+			<name name="{=eq_name_nord_f_28}Ilta Metsola" />
+			<name name="{=eq_name_nord_f_29}Ilta Jarvinen" />
+			<name name="{=eq_name_nord_f_30}Ilta Lehto" />
+			<name name="{=eq_name_nord_f_31}Ilta Salonen" />
+			<name name="{=eq_name_nord_f_32}Ilta Korpi" />
+			<name name="{=eq_name_nord_f_33}Ilta Vironen" />
+			<name name="{=eq_name_nord_f_34}Ilta Aalto" />
+			<name name="{=eq_name_nord_f_35}Ilta Hirvi" />
+			<name name="{=eq_name_nord_f_36}Signe Jelzek" />
+			<name name="{=eq_name_nord_f_37}Signe Kudlinen" />
+			<name name="{=eq_name_nord_f_38}Signe Hjort" />
+			<name name="{=eq_name_nord_f_39}Signe Sarvinen" />
+			<name name="{=eq_name_nord_f_40}Signe Metsola" />
+			<name name="{=eq_name_nord_f_41}Signe Jarvinen" />
+			<name name="{=eq_name_nord_f_42}Signe Lehto" />
+			<name name="{=eq_name_nord_f_43}Signe Salonen" />
+			<name name="{=eq_name_nord_f_44}Signe Korpi" />
+			<name name="{=eq_name_nord_f_45}Signe Vironen" />
+			<name name="{=eq_name_nord_f_46}Signe Aalto" />
+			<name name="{=eq_name_nord_f_47}Signe Hirvi" />
+			<name name="{=eq_name_nord_f_48}Helmi Jelzek" />
+			<name name="{=eq_name_nord_f_49}Helmi Kudlinen" />
+			<name name="{=eq_name_nord_f_50}Helmi Hjort" />
+			<name name="{=eq_name_nord_f_51}Helmi Sarvinen" />
+			<name name="{=eq_name_nord_f_52}Helmi Metsola" />
+			<name name="{=eq_name_nord_f_53}Helmi Jarvinen" />
+			<name name="{=eq_name_nord_f_54}Helmi Lehto" />
+			<name name="{=eq_name_nord_f_55}Helmi Salonen" />
+			<name name="{=eq_name_nord_f_56}Helmi Korpi" />
+			<name name="{=eq_name_nord_f_57}Helmi Vironen" />
+			<name name="{=eq_name_nord_f_58}Helmi Aalto" />
+			<name name="{=eq_name_nord_f_59}Helmi Hirvi" />
+			<name name="{=eq_name_nord_f_60}Aino Jelzek" />
+			<name name="{=eq_name_nord_f_61}Aino Kudlinen" />
+			<name name="{=eq_name_nord_f_62}Aino Hjort" />
+			<name name="{=eq_name_nord_f_63}Aino Sarvinen" />
+			<name name="{=eq_name_nord_f_64}Aino Metsola" />
+			<name name="{=eq_name_nord_f_65}Aino Jarvinen" />
+			<name name="{=eq_name_nord_f_66}Aino Lehto" />
+			<name name="{=eq_name_nord_f_67}Aino Salonen" />
+			<name name="{=eq_name_nord_f_68}Aino Korpi" />
+			<name name="{=eq_name_nord_f_69}Aino Vironen" />
+			<name name="{=eq_name_nord_f_70}Aino Aalto" />
+			<name name="{=eq_name_nord_f_71}Aino Hirvi" />
+			<name name="{=eq_name_nord_f_72}Kaisa Jelzek" />
+			<name name="{=eq_name_nord_f_73}Kaisa Kudlinen" />
+			<name name="{=eq_name_nord_f_74}Kaisa Hjort" />
+			<name name="{=eq_name_nord_f_75}Kaisa Sarvinen" />
+			<name name="{=eq_name_nord_f_76}Kaisa Metsola" />
+			<name name="{=eq_name_nord_f_77}Kaisa Jarvinen" />
+			<name name="{=eq_name_nord_f_78}Kaisa Lehto" />
+			<name name="{=eq_name_nord_f_79}Kaisa Salonen" />
+			<name name="{=eq_name_nord_f_80}Kaisa Korpi" />
+			<name name="{=eq_name_nord_f_81}Kaisa Vironen" />
+			<name name="{=eq_name_nord_f_82}Kaisa Aalto" />
+			<name name="{=eq_name_nord_f_83}Kaisa Hirvi" />
+			<name name="{=eq_name_nord_f_84}Merja Jelzek" />
+			<name name="{=eq_name_nord_f_85}Merja Kudlinen" />
+			<name name="{=eq_name_nord_f_86}Merja Hjort" />
+			<name name="{=eq_name_nord_f_87}Merja Sarvinen" />
+			<name name="{=eq_name_nord_f_88}Merja Metsola" />
+			<name name="{=eq_name_nord_f_89}Merja Jarvinen" />
+			<name name="{=eq_name_nord_f_90}Merja Lehto" />
+			<name name="{=eq_name_nord_f_91}Merja Salonen" />
+			<name name="{=eq_name_nord_f_92}Merja Korpi" />
+			<name name="{=eq_name_nord_f_93}Merja Vironen" />
+			<name name="{=eq_name_nord_f_94}Merja Aalto" />
+			<name name="{=eq_name_nord_f_95}Merja Hirvi" />
+			<name name="{=eq_name_nord_f_96}Tuulikki Jelzek" />
+			<name name="{=eq_name_nord_f_97}Tuulikki Kudlinen" />
+			<name name="{=eq_name_nord_f_98}Tuulikki Hjort" />
+			<name name="{=eq_name_nord_f_99}Tuulikki Sarvinen" />
+			<name name="{=eq_name_nord_f_100}Tuulikki Metsola" />
+			<name name="{=eq_name_nord_f_101}Tuulikki Jarvinen" />
+			<name name="{=eq_name_nord_f_102}Tuulikki Lehto" />
+			<name name="{=eq_name_nord_f_103}Tuulikki Salonen" />
+			<name name="{=eq_name_nord_f_104}Tuulikki Korpi" />
+			<name name="{=eq_name_nord_f_105}Tuulikki Vironen" />
+			<name name="{=eq_name_nord_f_106}Tuulikki Aalto" />
+			<name name="{=eq_name_nord_f_107}Tuulikki Hirvi" />
+			<name name="{=eq_name_nord_f_108}Pihla Jelzek" />
+			<name name="{=eq_name_nord_f_109}Pihla Kudlinen" />
+			<name name="{=eq_name_nord_f_110}Pihla Hjort" />
+			<name name="{=eq_name_nord_f_111}Pihla Sarvinen" />
+			<name name="{=eq_name_nord_f_112}Pihla Metsola" />
+			<name name="{=eq_name_nord_f_113}Pihla Jarvinen" />
+			<name name="{=eq_name_nord_f_114}Pihla Lehto" />
+			<name name="{=eq_name_nord_f_115}Pihla Salonen" />
+			<name name="{=eq_name_nord_f_116}Pihla Korpi" />
+			<name name="{=eq_name_nord_f_117}Pihla Vironen" />
+			<name name="{=eq_name_nord_f_118}Pihla Aalto" />
+			<name name="{=eq_name_nord_f_119}Pihla Hirvi" />
+			<name name="{=eq_name_nord_f_120}Vesa Jelzek" />
+			<name name="{=eq_name_nord_f_121}Vesa Kudlinen" />
+			<name name="{=eq_name_nord_f_122}Vesa Hjort" />
+			<name name="{=eq_name_nord_f_123}Vesa Sarvinen" />
+			<name name="{=eq_name_nord_f_124}Vesa Metsola" />
+			<name name="{=eq_name_nord_f_125}Vesa Jarvinen" />
+			<name name="{=eq_name_nord_f_126}Vesa Lehto" />
+			<name name="{=eq_name_nord_f_127}Vesa Salonen" />
+			<name name="{=eq_name_nord_f_128}Vesa Korpi" />
+			<name name="{=eq_name_nord_f_129}Vesa Vironen" />
+			<name name="{=eq_name_nord_f_130}Vesa Aalto" />
+			<name name="{=eq_name_nord_f_131}Vesa Hirvi" />
+			<name name="{=eq_name_nord_f_132}Marjatta Jelzek" />
+			<name name="{=eq_name_nord_f_133}Marjatta Kudlinen" />
+			<name name="{=eq_name_nord_f_134}Marjatta Hjort" />
+			<name name="{=eq_name_nord_f_135}Marjatta Sarvinen" />
+			<name name="{=eq_name_nord_f_136}Marjatta Metsola" />
+			<name name="{=eq_name_nord_f_137}Marjatta Jarvinen" />
+			<name name="{=eq_name_nord_f_138}Marjatta Lehto" />
+			<name name="{=eq_name_nord_f_139}Marjatta Salonen" />
+			<name name="{=eq_name_nord_f_140}Marjatta Korpi" />
+			<name name="{=eq_name_nord_f_141}Marjatta Vironen" />
+			<name name="{=eq_name_nord_f_142}Marjatta Aalto" />
+			<name name="{=eq_name_nord_f_143}Marjatta Hirvi" />
+			<name name="{=eq_name_nord_f_144}Satu Jelzek" />
+			<name name="{=eq_name_nord_f_145}Satu Kudlinen" />
+			<name name="{=eq_name_nord_f_146}Satu Hjort" />
+			<name name="{=eq_name_nord_f_147}Satu Sarvinen" />
+			<name name="{=eq_name_nord_f_148}Satu Metsola" />
+			<name name="{=eq_name_nord_f_149}Satu Jarvinen" />
+			<name name="{=eq_name_nord_f_150}Satu Lehto" />
+			<name name="{=eq_name_nord_f_151}Satu Salonen" />
+			<name name="{=eq_name_nord_f_152}Satu Korpi" />
+			<name name="{=eq_name_nord_f_153}Satu Vironen" />
+			<name name="{=eq_name_nord_f_154}Satu Aalto" />
+			<name name="{=eq_name_nord_f_155}Satu Hirvi" />
+			<name name="{=eq_name_nord_f_156}Elina Jelzek" />
+			<name name="{=eq_name_nord_f_157}Elina Kudlinen" />
+			<name name="{=eq_name_nord_f_158}Elina Hjort" />
+			<name name="{=eq_name_nord_f_159}Elina Sarvinen" />
+			<name name="{=eq_name_nord_f_160}Elina Metsola" />
+			<name name="{=eq_name_nord_f_161}Elina Jarvinen" />
+			<name name="{=eq_name_nord_f_162}Elina Lehto" />
+			<name name="{=eq_name_nord_f_163}Elina Salonen" />
+			<name name="{=eq_name_nord_f_164}Elina Korpi" />
+			<name name="{=eq_name_nord_f_165}Elina Vironen" />
+			<name name="{=eq_name_nord_f_166}Elina Aalto" />
+			<name name="{=eq_name_nord_f_167}Elina Hirvi" />
+			<name name="{=eq_name_nord_f_168}Kirsi Jelzek" />
+			<name name="{=eq_name_nord_f_169}Kirsi Kudlinen" />
+			<name name="{=eq_name_nord_f_170}Kirsi Hjort" />
+			<name name="{=eq_name_nord_f_171}Kirsi Sarvinen" />
+			<name name="{=eq_name_nord_f_172}Kirsi Metsola" />
+			<name name="{=eq_name_nord_f_173}Kirsi Jarvinen" />
+			<name name="{=eq_name_nord_f_174}Kirsi Lehto" />
+			<name name="{=eq_name_nord_f_175}Kirsi Salonen" />
+			<name name="{=eq_name_nord_f_176}Kirsi Korpi" />
+			<name name="{=eq_name_nord_f_177}Kirsi Vironen" />
+			<name name="{=eq_name_nord_f_178}Kirsi Aalto" />
+			<name name="{=eq_name_nord_f_179}Kirsi Hirvi" />
+			<name name="{=eq_name_nord_f_180}Linnea Jelzek" />
+			<name name="{=eq_name_nord_f_181}Linnea Kudlinen" />
+			<name name="{=eq_name_nord_f_182}Linnea Hjort" />
+			<name name="{=eq_name_nord_f_183}Linnea Sarvinen" />
+			<name name="{=eq_name_nord_f_184}Linnea Metsola" />
+			<name name="{=eq_name_nord_f_185}Linnea Jarvinen" />
+			<name name="{=eq_name_nord_f_186}Linnea Lehto" />
+			<name name="{=eq_name_nord_f_187}Linnea Salonen" />
+			<name name="{=eq_name_nord_f_188}Linnea Korpi" />
+			<name name="{=eq_name_nord_f_189}Linnea Vironen" />
+			<name name="{=eq_name_nord_f_190}Linnea Aalto" />
+			<name name="{=eq_name_nord_f_191}Linnea Hirvi" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_nord_0}House Jelzek" />
+			<name name="{=eq_clanname_nord_1}House of Kudlinen" />
+			<name name="{=eq_clanname_nord_2}House Hjort" />
+			<name name="{=eq_clanname_nord_3}House Sarvinen" />
+			<name name="{=eq_clanname_nord_4}House Metsola" />
+			<name name="{=eq_clanname_nord_5}House Jarvinen" />
+			<name name="{=eq_clanname_nord_6}House Lehto" />
+			<name name="{=eq_clanname_nord_7}House Salonen" />
+			<name name="{=eq_clanname_nord_8}House Korpi" />
+			<name name="{=eq_clanname_nord_9}House Vironen" />
+			<name name="{=eq_clanname_nord_10}House Aalto" />
+			<name name="{=eq_clanname_nord_11}House Hirvi" />
+		</clan_names>
+	</Culture>
+	<Culture id="sturgia" name="{=culture_sturgia}Dragons" text="{=culture_sturgia_text}The dragons of the volcanic lands: strength, hoards, and the Gauntlet of Fire for the Bloodstone Scepter." color="0xFFB71C1C" color2="0xFFFFAB00"
+		elite_basic_troop="NPCCharacter.vlandian_squire"
+		basic_troop="NPCCharacter.vlandian_recruit"
+		melee_militia_troop="NPCCharacter.vlandian_militia_spearman"
+		ranged_militia_troop="NPCCharacter.vlandian_militia_archer"
+		melee_elite_militia_troop="NPCCharacter.vlandian_militia_veteran_spearman"
+		ranged_elite_militia_troop="NPCCharacter.vlandian_militia_veteran_archer"
+		can_have_settlement="true"
+		villager_party_template="PartyTemplate.villager_vlandia_template"
+		default_party_template="PartyTemplate.kingdom_hero_party_vlandia_template"
+		settlement_patrol_template_level_1="PartyTemplate.patrol_party_vlandia_template_level_1"
+		settlement_patrol_template_level_2="PartyTemplate.patrol_party_vlandia_template_level_2"
+		settlement_patrol_template_level_3="PartyTemplate.patrol_party_vlandia_template_level_3"
+		encounter_background_mesh="encounter_vlandia"
+		militia_party_template="PartyTemplate.militia_vlandia_template"
+		rebels_party_template="PartyTemplate.rebels_vlandia_template"
+		vassal_reward_party_template="PartyTemplate.vassal_reward_troops_vlandia"
+		tournament_master="NPCCharacter.tournament_master_vlandia"
+		villager="NPCCharacter.villager_vlandia"
+		caravan_master="NPCCharacter.caravan_master_vlandia"
+		caravan_guard="NPCCharacter.caravan_guard_vlandia"
+		veteran_caravan_guard="NPCCharacter.veteran_caravan_guard_vlandia"
+		prison_guard="NPCCharacter.prison_guard_vlandia"
+		guard="NPCCharacter.guard_vlandia"
+		blacksmith="NPCCharacter.blacksmith_vlandia"
+		weaponsmith="NPCCharacter.weaponsmith_vlandia"
+		townswoman="NPCCharacter.townswoman_vlandia"
+		townswoman_infant="NPCCharacter.townswoman_infant_vlandia"
+		townswoman_child="NPCCharacter.townswoman_child_vlandia"
+		townswoman_teenager="NPCCharacter.townswoman_teenager_vlandia"
+		townsman="NPCCharacter.townsman_vlandia"
+		townsman_infant="NPCCharacter.townsman_infant_vlandia"
+		townsman_child="NPCCharacter.townsman_child_vlandia"
+		townsman_teenager="NPCCharacter.townsman_teenager_vlandia"
+		village_woman="NPCCharacter.village_woman_vlandia"
+		villager_male_child="NPCCharacter.villager_child_vlandia"
+		villager_male_teenager="NPCCharacter.villager_teenager_vlandia"
+		villager_female_child="NPCCharacter.village_woman_child_vlandia"
+		villager_female_teenager="NPCCharacter.village_woman_teenager_vlandia"
+		ransom_broker="NPCCharacter.ransom_broker_vlandia"
+		gangleader_bodyguard="NPCCharacter.gangleader_bodyguard_vlandia"
+		merchant_notary="NPCCharacter.merchant_notary_vlandia"
+		artisan_notary="NPCCharacter.artisan_notary_vlandia"
+		preacher_notary="NPCCharacter.preacher_notary_vlandia"
+		rural_notable_notary="NPCCharacter.rural_notable_notary_vlandia"
+		shop_worker="NPCCharacter.shop_worker_vlandia"
+		tavernkeeper="NPCCharacter.tavernkeeper_vlandia"
+		taverngamehost="NPCCharacter.taverngamehost_vlandia"
+		musician="NPCCharacter.musician_vlandia"
+		tavern_wench="NPCCharacter.tavern_wench_vlandia"
+		armorer="NPCCharacter.armorer_vlandia"
+		horseMerchant="NPCCharacter.horseMerchant_vlandia"
+		barber="NPCCharacter.barber_vlandia"
+		merchant="NPCCharacter.merchant_vlandia"
+		beggar="NPCCharacter.beggar_vlandia"
+		female_beggar="NPCCharacter.female_beggar_vlandia"
+		female_dancer="NPCCharacter.female_dancer_vlandia"
+		default_battle_equipment_roster="EquipmentRoster.vla_civ_template_default"
+		default_civilian_equipment_roster="EquipmentRoster.vla_civ_template_default"
+		default_stealth_equipment_roster="EquipmentRoster.default_stealth_equipment_roster"
+		duel_preset_equipment_roster="EquipmentRoster.vla_duel_preset_template"
+		marriage_bride_equipment_roster="EquipmentRoster.marriage_female_vla_cutscene_template"
+		board_game_type="MuTorere"
+		default_character_creation_body_property="BodyProperty.default_character_creation_body_property_vlandia">
+		<caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.caravan_template_vlandia" />
+				</caravan_party_templates>
+		<elite_caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.elite_caravan_template_vlandia" />
+				</elite_caravan_party_templates>
+		<available_ship_hulls />
+		<vassal_reward_items>
+					<item id="Item.sentinel_2hsword" />
+				</vassal_reward_items>
+		<banner_bearer_replacement_weapons>
+					<item id="Item.vlandia_sword_1_t2" />
+					<item id="Item.vlandia_sword_2_t3" />
+					<item id="Item.vlandia_sword_3_t4" />
+					<item id="Item.vlandia_sword_5_t5" />
+				</banner_bearer_replacement_weapons>
+		<default_policies>
+					<policy id="policy_feudal_inheritance" />
+					<policy id="policy_castle_charters" />
+				</default_policies>
+		<cultural_feats>
+					<feat id="vlandian_renown_mercenary_income" />
+					<feat id="vlandian_villages_production_bonus" />
+					<feat id="vlandian_increased_army_influence_cost" />
+				</cultural_feats>
+		<possible_clan_banner_icon_ids>
+					<icon id="140" />
+					<icon id="141" />
+					<icon id="142" />
+					<icon id="143" />
+					<icon id="144" />
+					<icon id="145" />
+					<icon id="146" />
+					<icon id="159" />
+					<icon id="205" />
+					<icon id="206" />
+					<icon id="207" />
+					<icon id="417" />
+					<icon id="418" />
+					<icon id="419" />
+					<icon id="300" />
+					<icon id="301" />
+					<icon id="302" />
+					<icon id="303" />
+					<icon id="315" />
+				</possible_clan_banner_icon_ids>
+		<notable_templates>
+					<template name="NPCCharacter.spc_notable_vlandia_merch1" />
+					<template name="NPCCharacter.spc_notable_vlandia_merch2" />
+					<template name="NPCCharacter.spc_notable_vlandia_merch3" />
+					<template name="NPCCharacter.spc_notable_vlandia_merch4" />
+					<template name="NPCCharacter.spc_notable_vlandia_merch5" />
+					<template name="NPCCharacter.spc_notable_vlandia_1" />
+					<template name="NPCCharacter.spc_notable_vlandia_1b" />
+					<template name="NPCCharacter.spc_notable_vlandia_2" />
+					<template name="NPCCharacter.spc_notable_vlandia_3" />
+					<template name="NPCCharacter.spc_vlandia_gangleader_1" />
+					<template name="NPCCharacter.spc_vlandia_gangleader_2" />
+					<template name="NPCCharacter.spc_vlandia_gangleader_3" />
+					<template name="NPCCharacter.spc_notable_vlandia_artisan_1" />
+					<template name="NPCCharacter.spc_notable_vlandia_artisan_2" />
+					<template name="NPCCharacter.spc_notable_vlandia_rural_1" />
+					<template name="NPCCharacter.spc_notable_vlandia_rural_2" />
+					<template name="NPCCharacter.spc_vlandia_headman_1" />
+					<template name="NPCCharacter.spc_vlandia_headman_2" />
+					<template name="NPCCharacter.spc_vlandia_headman_3" />
+				</notable_templates>
+		<lord_templates>
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_0" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_1" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_2" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_3" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_0" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_1" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_2" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_3" />
+				</lord_templates>
+		<rebellion_hero_templates>
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_0" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_1" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_2" />
+					<template name="NPCCharacter.spc_company_of_the_boar_leader_3" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_0" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_1" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_2" />
+					<template name="NPCCharacter.spc_brotherhood_of_woods_leader_3" />
+				</rebellion_hero_templates>
+		<tournament_team_templates_one_participant>
+					<template name="NPCCharacter.tournament_template_vlandia_one_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_vlandia_one_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_vlandia_one_participant_set_v3" />
+				</tournament_team_templates_one_participant>
+		<tournament_team_templates_two_participant>
+					<template name="NPCCharacter.tournament_template_vlandia_two_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_vlandia_two_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_vlandia_two_participant_set_v3" />
+					<template name="NPCCharacter.tournament_template_vlandia_two_participant_set_v4" />
+				</tournament_team_templates_two_participant>
+		<tournament_team_templates_four_participant>
+					<template name="NPCCharacter.tournament_template_vlandia_four_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_vlandia_four_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_vlandia_four_participant_set_v3" />
+					<template name="NPCCharacter.tournament_template_vlandia_four_participant_set_v4" />
+				</tournament_team_templates_four_participant>
+		<basic_mercenary_troops>
+					<template name="NPCCharacter.western_mercenary" />
+					<template name="NPCCharacter.sword_sisters_sister_t3" />
+				</basic_mercenary_troops>
+		<male_names>
+			<name name="{=eq_name_sturgia_m_0}Torch" />
+			<name name="{=eq_name_sturgia_m_1}Garble" />
+			<name name="{=eq_name_sturgia_m_2}Clump" />
+			<name name="{=eq_name_sturgia_m_3}Fume" />
+			<name name="{=eq_name_sturgia_m_4}Sludge" />
+			<name name="{=eq_name_sturgia_m_5}Scorch" />
+			<name name="{=eq_name_sturgia_m_6}Clinker" />
+			<name name="{=eq_name_sturgia_m_7}Flint" />
+			<name name="{=eq_name_sturgia_m_8}Blast" />
+			<name name="{=eq_name_sturgia_m_9}Grimmer" />
+			<name name="{=eq_name_sturgia_m_10}Soot" />
+			<name name="{=eq_name_sturgia_m_11}Rumble" />
+			<name name="{=eq_name_sturgia_m_12}Coal" />
+			<name name="{=eq_name_sturgia_m_13}Cinderblock" />
+			<name name="{=eq_name_sturgia_m_14}Ashpit" />
+			<name name="{=eq_name_sturgia_m_15}Heat" />
+			<name name="{=eq_name_sturgia_m_16}Basalt" />
+			<name name="{=eq_name_sturgia_m_17}Ignis" />
+			<name name="{=eq_name_sturgia_m_18}Crag" />
+			<name name="{=eq_name_sturgia_m_19}Molten" />
+			<name name="{=eq_name_sturgia_m_20}Obsidian" />
+			<name name="{=eq_name_sturgia_m_21}Pyrite" />
+			<name name="{=eq_name_sturgia_m_22}Smog" />
+			<name name="{=eq_name_sturgia_m_23}Tinder" />
+			<name name="{=eq_name_sturgia_m_24}Furnace" />
+			<name name="{=eq_name_sturgia_m_25}Char" />
+			<name name="{=eq_name_sturgia_m_26}Shale" />
+			<name name="{=eq_name_sturgia_m_27}Ember-Claw" />
+			<name name="{=eq_name_sturgia_m_28}Brazier" />
+			<name name="{=eq_name_sturgia_m_29}Calder" />
+			<name name="{=eq_name_sturgia_m_30}Slag" />
+			<name name="{=eq_name_sturgia_m_31}Fury" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_sturgia_f_0}Ember" />
+			<name name="{=eq_name_sturgia_f_1}Smolder" />
+			<name name="{=eq_name_sturgia_f_2}Flame" />
+			<name name="{=eq_name_sturgia_f_3}Spark" />
+			<name name="{=eq_name_sturgia_f_4}Cindra" />
+			<name name="{=eq_name_sturgia_f_5}Lava" />
+			<name name="{=eq_name_sturgia_f_6}Ash" />
+			<name name="{=eq_name_sturgia_f_7}Magma" />
+			<name name="{=eq_name_sturgia_f_8}Flare" />
+			<name name="{=eq_name_sturgia_f_9}Opaline" />
+			<name name="{=eq_name_sturgia_f_10}Flash" />
+			<name name="{=eq_name_sturgia_f_11}Ashlyn" />
+			<name name="{=eq_name_sturgia_f_12}Ruby" />
+			<name name="{=eq_name_sturgia_f_13}Garnet" />
+			<name name="{=eq_name_sturgia_f_14}Zharina" />
+			<name name="{=eq_name_sturgia_f_15}Smoulder" />
+			<name name="{=eq_name_sturgia_f_16}Ashera" />
+			<name name="{=eq_name_sturgia_f_17}Blasta" />
+			<name name="{=eq_name_sturgia_f_18}Glowin" />
+			<name name="{=eq_name_sturgia_f_19}Drake" />
+			<name name="{=eq_name_sturgia_f_20}Caldera" />
+			<name name="{=eq_name_sturgia_f_21}Carmina" />
+			<name name="{=eq_name_sturgia_f_22}Pyrra" />
+			<name name="{=eq_name_sturgia_f_23}Scintilla" />
+			<name name="{=eq_name_sturgia_f_24}Tephra" />
+			<name name="{=eq_name_sturgia_f_25}Fyra" />
+			<name name="{=eq_name_sturgia_f_26}Haze" />
+			<name name="{=eq_name_sturgia_f_27}Emberly" />
+			<name name="{=eq_name_sturgia_f_28}Ardora" />
+			<name name="{=eq_name_sturgia_f_29}Vulcana" />
+			<name name="{=eq_name_sturgia_f_30}Ignita" />
+			<name name="{=eq_name_sturgia_f_31}Scarlet" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_sturgia_0}Clan Torch" />
+			<name name="{=eq_clanname_sturgia_1}Clan Garble" />
+			<name name="{=eq_clanname_sturgia_2}Clan Clump" />
+			<name name="{=eq_clanname_sturgia_3}Clan Fume" />
+			<name name="{=eq_clanname_sturgia_4}Clan Sludge" />
+			<name name="{=eq_clanname_sturgia_5}Clan Scorch" />
+			<name name="{=eq_clanname_sturgia_6}Clan Clinker" />
+			<name name="{=eq_clanname_sturgia_7}Clan Flint" />
+			<name name="{=eq_clanname_sturgia_8}Clan Blast" />
+			<name name="{=eq_clanname_sturgia_9}Clan Grimmer" />
+			<name name="{=eq_clanname_sturgia_10}Clan Soot" />
+			<name name="{=eq_clanname_sturgia_11}Clan Rumble" />
+			<name name="{=eq_clanname_sturgia_12}Clan Coal" />
+			<name name="{=eq_clanname_sturgia_13}Clan Cinderblock" />
+			<name name="{=eq_clanname_sturgia_14}Clan Ashpit" />
+			<name name="{=eq_clanname_sturgia_15}Clan Heat" />
+			<name name="{=eq_clanname_sturgia_16}Clan Basalt" />
+			<name name="{=eq_clanname_sturgia_17}Clan Ignis" />
+			<name name="{=eq_clanname_sturgia_18}Clan Crag" />
+			<name name="{=eq_clanname_sturgia_19}Clan Molten" />
+			<name name="{=eq_clanname_sturgia_20}Clan Obsidian" />
+			<name name="{=eq_clanname_sturgia_21}Clan Pyrite" />
+			<name name="{=eq_clanname_sturgia_22}Clan Smog" />
+			<name name="{=eq_clanname_sturgia_23}Clan Tinder" />
+			<name name="{=eq_clanname_sturgia_24}Clan Furnace" />
+			<name name="{=eq_clanname_sturgia_25}Clan Char" />
+			<name name="{=eq_clanname_sturgia_26}Clan Shale" />
+			<name name="{=eq_clanname_sturgia_27}Clan Ember-Claw" />
+			<name name="{=eq_clanname_sturgia_28}Clan Brazier" />
+			<name name="{=eq_clanname_sturgia_29}Clan Calder" />
+		</clan_names>
+	</Culture>
+	<Culture id="khuzait" name="{=culture_khuzait}Yaks" text="{=culture_khuzait_text}The yaks of Yakyakistan: loud, honest and very fond of smashing things." color="0xFF8D6E63" color2="0xFFD7CCC8"
+		elite_basic_troop="NPCCharacter.sturgian_warrior_son"
+		basic_troop="NPCCharacter.sturgian_recruit"
+		melee_militia_troop="NPCCharacter.sturgian_militia_spearman"
+		ranged_militia_troop="NPCCharacter.sturgian_militia_archer"
+		melee_elite_militia_troop="NPCCharacter.sturgian_militia_veteran_spearman"
+		ranged_elite_militia_troop="NPCCharacter.sturgian_militia_veteran_archer"
+		can_have_settlement="true"
+		villager_party_template="PartyTemplate.villager_sturgia_template"
+		default_party_template="PartyTemplate.kingdom_hero_party_sturgia_template"
+		settlement_patrol_template_level_1="PartyTemplate.patrol_party_sturgia_template_level_1"
+		settlement_patrol_template_level_2="PartyTemplate.patrol_party_sturgia_template_level_2"
+		settlement_patrol_template_level_3="PartyTemplate.patrol_party_sturgia_template_level_3"
+		encounter_background_mesh="encounter_sturgia"
+		militia_party_template="PartyTemplate.militia_sturgia_template"
+		rebels_party_template="PartyTemplate.rebels_sturgia_template"
+		vassal_reward_party_template="PartyTemplate.vassal_reward_troops_sturgia"
+		tournament_master="NPCCharacter.tournament_master_sturgia"
+		villager="NPCCharacter.villager_sturgia"
+		caravan_master="NPCCharacter.caravan_master_sturgia"
+		caravan_guard="NPCCharacter.caravan_guard_sturgia"
+		veteran_caravan_guard="NPCCharacter.veteran_caravan_guard_sturgia"
+		prison_guard="NPCCharacter.prison_guard_sturgia"
+		guard="NPCCharacter.guard_sturgia"
+		blacksmith="NPCCharacter.blacksmith_sturgia"
+		weaponsmith="NPCCharacter.weaponsmith_sturgia"
+		townswoman="NPCCharacter.townswoman_sturgia"
+		townswoman_infant="NPCCharacter.townswoman_infant_sturgia"
+		townswoman_child="NPCCharacter.townswoman_child_sturgia"
+		townswoman_teenager="NPCCharacter.townswoman_teenager_sturgia"
+		townsman="NPCCharacter.townsman_sturgia"
+		townsman_infant="NPCCharacter.townsman_infant_sturgia"
+		townsman_child="NPCCharacter.townsman_child_sturgia"
+		townsman_teenager="NPCCharacter.townsman_teenager_sturgia"
+		village_woman="NPCCharacter.village_woman_sturgia"
+		villager_male_child="NPCCharacter.villager_child_sturgia"
+		villager_male_teenager="NPCCharacter.villager_teenager_sturgia"
+		villager_female_child="NPCCharacter.village_woman_child_sturgia"
+		villager_female_teenager="NPCCharacter.village_woman_teenager_sturgia"
+		ransom_broker="NPCCharacter.ransom_broker_sturgia"
+		gangleader_bodyguard="NPCCharacter.gangleader_bodyguard_sturgia"
+		merchant_notary="NPCCharacter.merchant_notary_sturgia"
+		artisan_notary="NPCCharacter.artisan_notary_sturgia"
+		preacher_notary="NPCCharacter.preacher_notary_sturgia"
+		rural_notable_notary="NPCCharacter.rural_notable_notary_sturgia"
+		shop_worker="NPCCharacter.shop_worker_sturgia"
+		tavernkeeper="NPCCharacter.tavernkeeper_sturgia"
+		taverngamehost="NPCCharacter.taverngamehost_sturgia"
+		musician="NPCCharacter.musician_sturgia"
+		tavern_wench="NPCCharacter.tavern_wench_sturgia"
+		armorer="NPCCharacter.armorer_sturgia"
+		horseMerchant="NPCCharacter.horseMerchant_sturgia"
+		barber="NPCCharacter.barber_sturgia"
+		merchant="NPCCharacter.merchant_sturgia"
+		beggar="NPCCharacter.beggar_sturgia"
+		female_beggar="NPCCharacter.female_beggar_sturgia"
+		female_dancer="NPCCharacter.female_dancer_sturgia"
+		default_battle_equipment_roster="EquipmentRoster.stu_civ_template_default"
+		default_civilian_equipment_roster="EquipmentRoster.stu_civ_template_default"
+		default_stealth_equipment_roster="EquipmentRoster.default_stealth_equipment_roster"
+		duel_preset_equipment_roster="EquipmentRoster.stu_duel_preset_template"
+		marriage_bride_equipment_roster="EquipmentRoster.marriage_female_stu_cutscene_template"
+		board_game_type="Konane"
+		default_character_creation_body_property="BodyProperty.default_character_creation_body_property_sturgia">
+		<caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.caravan_template_sturgia" />
+				</caravan_party_templates>
+		<elite_caravan_party_templates>
+					<caravan_party_template id="PartyTemplate.elite_caravan_template_sturgia" />
+				</elite_caravan_party_templates>
+		<available_ship_hulls />
+		<vassal_reward_items>
+					<item id="Item.avalanche_2haxe" />
+				</vassal_reward_items>
+		<banner_bearer_replacement_weapons>
+					<item id="Item.sturgia_sword_1_t2" />
+					<item id="Item.sturgia_sword_2_t3" />
+					<item id="Item.sturgia_sword_4_t4" />
+					<item id="Item.sturgia_sword_5_t5" />
+				</banner_bearer_replacement_weapons>
+		<default_policies>
+					<policy id="policy_lawspeakers" />
+					<policy id="policy_precarial_land_tenure" />
+				</default_policies>
+		<cultural_feats>
+					<feat id="sturgian_increased_grain_production" />
+					<feat id="sturgian_decreased_army_influence_cost" />
+					<feat id="sturgian_increased_decision_penalty" />
+				</cultural_feats>
+		<possible_clan_banner_icon_ids>
+					<icon id="112" />
+					<icon id="113" />
+					<icon id="114" />
+					<icon id="115" />
+					<icon id="116" />
+					<icon id="117" />
+					<icon id="118" />
+					<icon id="132" />
+					<icon id="138" />
+					<icon id="139" />
+					<icon id="307" />
+					<icon id="331" />
+					<icon id="407" />
+					<icon id="408" />
+					<icon id="409" />
+					<icon id="410" />
+					<icon id="439" />
+					<icon id="440" />
+					<icon id="441" />
+					<icon id="442" />
+					<icon id="443" />
+					<icon id="444" />
+					<icon id="445" />
+				</possible_clan_banner_icon_ids>
+		<notable_templates>
+					<template name="NPCCharacter.spc_notable_sturgia_0" />
+					<template name="NPCCharacter.spc_notable_sturgia_0b" />
+					<template name="NPCCharacter.spc_notable_sturgia_1" />
+					<template name="NPCCharacter.spc_notable_sturgia_2" />
+					<template name="NPCCharacter.spc_notable_sturgia_2b" />
+					<template name="NPCCharacter.spc_notable_sturgia_3" />
+					<template name="NPCCharacter.spc_notable_sturgia_3b" />
+					<template name="NPCCharacter.spc_notable_sturgia_3c" />
+					<template name="NPCCharacter.spc_notable_sturgia_4" />
+					<template name="NPCCharacter.spc_notable_sturgia_5" />
+					<template name="NPCCharacter.spc_notable_sturgia_6" />
+					<template name="NPCCharacter.spc_notable_sturgia_7" />
+					<template name="NPCCharacter.spc_notable_sturgia_8" />
+					<template name="NPCCharacter.spc_notable_sturgia_9" />
+					<template name="NPCCharacter.spc_notable_sturgia_10" />
+					<template name="NPCCharacter.spc_sturgia_headman_1" />
+					<template name="NPCCharacter.spc_sturgia_headman_2" />
+					<template name="NPCCharacter.spc_sturgia_headman_3" />
+				</notable_templates>
+		<lord_templates>
+					<template name="NPCCharacter.spc_skolderbrotva_leader_0" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_1" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_2" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_3" />
+					<template name="NPCCharacter.spc_lakepike_leader_0" />
+					<template name="NPCCharacter.spc_lakepike_leader_1" />
+					<template name="NPCCharacter.spc_lakepike_leader_2" />
+					<template name="NPCCharacter.spc_lakepike_leader_3" />
+					<template name="NPCCharacter.spc_forest_people_leader_0" />
+					<template name="NPCCharacter.spc_forest_people_leader_1" />
+					<template name="NPCCharacter.spc_forest_people_leader_2" />
+					<template name="NPCCharacter.spc_forest_people_leader_3" />
+				</lord_templates>
+		<rebellion_hero_templates>
+					<template name="NPCCharacter.spc_skolderbrotva_leader_0" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_1" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_2" />
+					<template name="NPCCharacter.spc_skolderbrotva_leader_3" />
+					<template name="NPCCharacter.spc_lakepike_leader_0" />
+					<template name="NPCCharacter.spc_lakepike_leader_1" />
+					<template name="NPCCharacter.spc_lakepike_leader_2" />
+					<template name="NPCCharacter.spc_lakepike_leader_3" />
+					<template name="NPCCharacter.spc_forest_people_leader_0" />
+					<template name="NPCCharacter.spc_forest_people_leader_1" />
+					<template name="NPCCharacter.spc_forest_people_leader_2" />
+					<template name="NPCCharacter.spc_forest_people_leader_3" />
+				</rebellion_hero_templates>
+		<tournament_team_templates_one_participant>
+					<template name="NPCCharacter.tournament_template_sturgia_one_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_sturgia_one_participant_set_v2" />
+				</tournament_team_templates_one_participant>
+		<tournament_team_templates_two_participant>
+					<template name="NPCCharacter.tournament_template_sturgia_two_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_sturgia_two_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_sturgia_two_participant_set_v3" />
+				</tournament_team_templates_two_participant>
+		<tournament_team_templates_four_participant>
+					<template name="NPCCharacter.tournament_template_sturgia_four_participant_set_v1" />
+					<template name="NPCCharacter.tournament_template_sturgia_four_participant_set_v2" />
+					<template name="NPCCharacter.tournament_template_sturgia_four_participant_set_v3" />
+				</tournament_team_templates_four_participant>
+		<basic_mercenary_troops>
+					<template name="NPCCharacter.eastern_mercenary" />
+					<template name="NPCCharacter.western_mercenary" />
+					<template name="NPCCharacter.sword_sisters_sister_t3" />
+				</basic_mercenary_troops>
+		<male_names>
+			<name name="{=eq_name_khuzait_m_0}Yord" />
+			<name name="{=eq_name_khuzait_m_1}Gurt" />
+			<name name="{=eq_name_khuzait_m_2}Torvald" />
+			<name name="{=eq_name_khuzait_m_3}Byorn" />
+			<name name="{=eq_name_khuzait_m_4}Hrolf" />
+			<name name="{=eq_name_khuzait_m_5}Sven" />
+			<name name="{=eq_name_khuzait_m_6}Ragnar" />
+			<name name="{=eq_name_khuzait_m_7}Magnus" />
+			<name name="{=eq_name_khuzait_m_8}Odd" />
+			<name name="{=eq_name_khuzait_m_9}Hakon" />
+			<name name="{=eq_name_khuzait_m_10}Einar" />
+			<name name="{=eq_name_khuzait_m_11}Grimm" />
+			<name name="{=eq_name_khuzait_m_12}Snorri" />
+			<name name="{=eq_name_khuzait_m_13}Ulf" />
+			<name name="{=eq_name_khuzait_m_14}Hrodgar" />
+			<name name="{=eq_name_khuzait_m_15}Bardi" />
+			<name name="{=eq_name_khuzait_m_16}Arvid" />
+			<name name="{=eq_name_khuzait_m_17}Baldur" />
+			<name name="{=eq_name_khuzait_m_18}Viggo" />
+			<name name="{=eq_name_khuzait_m_19}Gunnar" />
+			<name name="{=eq_name_khuzait_m_20}Dagfinn" />
+			<name name="{=eq_name_khuzait_m_21}Ivar" />
+			<name name="{=eq_name_khuzait_m_22}Ketil" />
+			<name name="{=eq_name_khuzait_m_23}Leyf" />
+			<name name="{=eq_name_khuzait_m_24}Orm" />
+			<name name="{=eq_name_khuzait_m_25}Rollo" />
+			<name name="{=eq_name_khuzait_m_26}Sigurd" />
+			<name name="{=eq_name_khuzait_m_27}Steyn" />
+			<name name="{=eq_name_khuzait_m_28}Tormod" />
+			<name name="{=eq_name_khuzait_m_29}Halvar" />
+			<name name="{=eq_name_khuzait_m_30}Egil" />
+			<name name="{=eq_name_khuzait_m_31}Yarl" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_khuzait_f_0}Helga" />
+			<name name="{=eq_name_khuzait_f_1}Ingrid" />
+			<name name="{=eq_name_khuzait_f_2}Sigrid" />
+			<name name="{=eq_name_khuzait_f_3}Astrid" />
+			<name name="{=eq_name_khuzait_f_4}Gunhild" />
+			<name name="{=eq_name_khuzait_f_5}Freyya" />
+			<name name="{=eq_name_khuzait_f_6}Tordis" />
+			<name name="{=eq_name_khuzait_f_7}Svana" />
+			<name name="{=eq_name_khuzait_f_8}Yardis" />
+			<name name="{=eq_name_khuzait_f_9}Bergdis" />
+			<name name="{=eq_name_khuzait_f_10}Hilda" />
+			<name name="{=eq_name_khuzait_f_11}Runa" />
+			<name name="{=eq_name_khuzait_f_12}Solveyg" />
+			<name name="{=eq_name_khuzait_f_13}Idunn" />
+			<name name="{=eq_name_khuzait_f_14}Gudrun" />
+			<name name="{=eq_name_khuzait_f_15}Asta" />
+			<name name="{=eq_name_khuzait_f_16}Alva" />
+			<name name="{=eq_name_khuzait_f_17}Borgni" />
+			<name name="{=eq_name_khuzait_f_18}Vigdis" />
+			<name name="{=eq_name_khuzait_f_19}Geyra" />
+			<name name="{=eq_name_khuzait_f_20}Dagni" />
+			<name name="{=eq_name_khuzait_f_21}Ingunn" />
+			<name name="{=eq_name_khuzait_f_22}Yorunn" />
+			<name name="{=eq_name_khuzait_f_23}Liv" />
+			<name name="{=eq_name_khuzait_f_24}Oda" />
+			<name name="{=eq_name_khuzait_f_25}Ranveyg" />
+			<name name="{=eq_name_khuzait_f_26}Signe" />
+			<name name="{=eq_name_khuzait_f_27}Torunn" />
+			<name name="{=eq_name_khuzait_f_28}Ulva" />
+			<name name="{=eq_name_khuzait_f_29}Herdis" />
+			<name name="{=eq_name_khuzait_f_30}Eydis" />
+			<name name="{=eq_name_khuzait_f_31}Embla" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_khuzait_0}Clan Yord" />
+			<name name="{=eq_clanname_khuzait_1}Clan Gurt" />
+			<name name="{=eq_clanname_khuzait_2}Clan Torvald" />
+			<name name="{=eq_clanname_khuzait_3}Clan Byorn" />
+			<name name="{=eq_clanname_khuzait_4}Clan Hrolf" />
+			<name name="{=eq_clanname_khuzait_5}Clan Sven" />
+			<name name="{=eq_clanname_khuzait_6}Clan Ragnar" />
+			<name name="{=eq_clanname_khuzait_7}Clan Magnus" />
+			<name name="{=eq_clanname_khuzait_8}Clan Odd" />
+			<name name="{=eq_clanname_khuzait_9}Clan Hakon" />
+			<name name="{=eq_clanname_khuzait_10}Clan Einar" />
+			<name name="{=eq_clanname_khuzait_11}Clan Grimm" />
+			<name name="{=eq_clanname_khuzait_12}Clan Snorri" />
+			<name name="{=eq_clanname_khuzait_13}Clan Ulf" />
+			<name name="{=eq_clanname_khuzait_14}Clan Hrodgar" />
+			<name name="{=eq_clanname_khuzait_15}Clan Bardi" />
+			<name name="{=eq_clanname_khuzait_16}Clan Arvid" />
+			<name name="{=eq_clanname_khuzait_17}Clan Baldur" />
+			<name name="{=eq_clanname_khuzait_18}Clan Viggo" />
+			<name name="{=eq_clanname_khuzait_19}Clan Gunnar" />
+			<name name="{=eq_clanname_khuzait_20}Clan Dagfinn" />
+			<name name="{=eq_clanname_khuzait_21}Clan Ivar" />
+			<name name="{=eq_clanname_khuzait_22}Clan Ketil" />
+			<name name="{=eq_clanname_khuzait_23}Clan Leif" />
+			<name name="{=eq_clanname_khuzait_24}Clan Orm" />
+			<name name="{=eq_clanname_khuzait_25}Clan Rollo" />
+			<name name="{=eq_clanname_khuzait_26}Clan Sigurd" />
+			<name name="{=eq_clanname_khuzait_27}Clan Steyn" />
+			<name name="{=eq_clanname_khuzait_28}Clan Tormod" />
+			<name name="{=eq_clanname_khuzait_29}Clan Halvar" />
+		</clan_names>
+	</Culture>
+	<Culture id="aserai" name="{=culture_aserai}Changelings" text="{=culture_aserai_text}The changelings of the hives: shapeshifters who feed on the love of others." color="0xFF101A16" color2="0xFF1FA9A0">
+		<male_names>
+			<name name="{=eq_name_aserai_m_0}Kriksus" />
+			<name name="{=eq_name_aserai_m_1}Zummer" />
+			<name name="{=eq_name_aserai_m_2}Hitin" />
+			<name name="{=eq_name_aserai_m_3}Vrax" />
+			<name name="{=eq_name_aserai_m_4}Sorit" />
+			<name name="{=eq_name_aserai_m_5}Liktid" />
+			<name name="{=eq_name_aserai_m_6}Mimik" />
+			<name name="{=eq_name_aserai_m_7}Skarabey" />
+			<name name="{=eq_name_aserai_m_8}Dron" />
+			<name name="{=eq_name_aserai_m_9}Panter" />
+			<name name="{=eq_name_aserai_m_10}Molt" />
+			<name name="{=eq_name_aserai_m_11}Cocoon" />
+			<name name="{=eq_name_aserai_m_12}Zhuzhzha" />
+			<name name="{=eq_name_aserai_m_13}Stryokot" />
+			<name name="{=eq_name_aserai_m_14}Prorez" />
+			<name name="{=eq_name_aserai_m_15}Shelest" />
+			<name name="{=eq_name_aserai_m_16}Apis" />
+			<name name="{=eq_name_aserai_m_17}Bombus" />
+			<name name="{=eq_name_aserai_m_18}Vespa" />
+			<name name="{=eq_name_aserai_m_19}Gloss" />
+			<name name="{=eq_name_aserai_m_20}Karapaks" />
+			<name name="{=eq_name_aserai_m_21}Larvus" />
+			<name name="{=eq_name_aserai_m_22}Mandibul" />
+			<name name="{=eq_name_aserai_m_23}Nektaris" />
+			<name name="{=eq_name_aserai_m_24}Ocellus" />
+			<name name="{=eq_name_aserai_m_25}Prokris" />
+			<name name="{=eq_name_aserai_m_26}Spirakl" />
+			<name name="{=eq_name_aserai_m_27}Tarsus" />
+			<name name="{=eq_name_aserai_m_28}Feromon" />
+			<name name="{=eq_name_aserai_m_29}Hiazm" />
+			<name name="{=eq_name_aserai_m_30}Tsikad" />
+			<name name="{=eq_name_aserai_m_31}Elitron" />
+		</male_names>
+		<female_names>
+			<name name="{=eq_name_aserai_f_0}Krizi" />
+			<name name="{=eq_name_aserai_f_1}Mirra" />
+			<name name="{=eq_name_aserai_f_2}Shella" />
+			<name name="{=eq_name_aserai_f_3}Nimfa" />
+			<name name="{=eq_name_aserai_f_4}Eho" />
+			<name name="{=eq_name_aserai_f_5}Vual" />
+			<name name="{=eq_name_aserai_f_6}Dymka" />
+			<name name="{=eq_name_aserai_f_7}Morok" />
+			<name name="{=eq_name_aserai_f_8}Lichina" />
+			<name name="{=eq_name_aserai_f_9}Obmana" />
+			<name name="{=eq_name_aserai_f_10}Ten" />
+			<name name="{=eq_name_aserai_f_11}Set" />
+			<name name="{=eq_name_aserai_f_12}Smola" />
+			<name name="{=eq_name_aserai_f_13}Pryad" />
+			<name name="{=eq_name_aserai_f_14}Rosa" />
+			<name name="{=eq_name_aserai_f_15}Chara" />
+			<name name="{=eq_name_aserai_f_16}Aglaya" />
+			<name name="{=eq_name_aserai_f_17}Vanessa" />
+			<name name="{=eq_name_aserai_f_18}Gema" />
+			<name name="{=eq_name_aserai_f_19}Doliya" />
+			<name name="{=eq_name_aserai_f_20}Imago" />
+			<name name="{=eq_name_aserai_f_21}Krizanta" />
+			<name name="{=eq_name_aserai_f_22}Lamiya" />
+			<name name="{=eq_name_aserai_f_23}Melissa" />
+			<name name="{=eq_name_aserai_f_24}Nimfeya" />
+			<name name="{=eq_name_aserai_f_25}Otsella" />
+			<name name="{=eq_name_aserai_f_26}Pupa" />
+			<name name="{=eq_name_aserai_f_27}Selena" />
+			<name name="{=eq_name_aserai_f_28}Titiya" />
+			<name name="{=eq_name_aserai_f_29}Fasma" />
+			<name name="{=eq_name_aserai_f_30}Hrizanta" />
+			<name name="{=eq_name_aserai_f_31}Efira" />
+		</female_names>
+		<clan_names>
+			<name name="{=eq_clanname_aserai_0}Hive Kriksus" />
+			<name name="{=eq_clanname_aserai_1}Hive Zummer" />
+			<name name="{=eq_clanname_aserai_2}Hive Hitin" />
+			<name name="{=eq_clanname_aserai_3}Hive Vrax" />
+			<name name="{=eq_clanname_aserai_4}Hive Sorit" />
+			<name name="{=eq_clanname_aserai_5}Hive Liktid" />
+			<name name="{=eq_clanname_aserai_6}Hive Mimik" />
+			<name name="{=eq_clanname_aserai_7}Hive Skarabey" />
+			<name name="{=eq_clanname_aserai_8}Hive Dron" />
+			<name name="{=eq_clanname_aserai_9}Hive Panter" />
+			<name name="{=eq_clanname_aserai_10}Hive Molt" />
+			<name name="{=eq_clanname_aserai_11}Hive Cocoon" />
+			<name name="{=eq_clanname_aserai_12}Hive Buzz" />
+			<name name="{=eq_clanname_aserai_13}Hive Stryokot" />
+			<name name="{=eq_clanname_aserai_14}Hive Slit" />
+			<name name="{=eq_clanname_aserai_15}Hive Shelest" />
+			<name name="{=eq_clanname_aserai_16}Hive Apis" />
+			<name name="{=eq_clanname_aserai_17}Hive Bombus" />
+			<name name="{=eq_clanname_aserai_18}Hive Vespa" />
+			<name name="{=eq_clanname_aserai_19}Hive Gloss" />
+			<name name="{=eq_clanname_aserai_20}Hive Karapaks" />
+			<name name="{=eq_clanname_aserai_21}Hive Larvus" />
+			<name name="{=eq_clanname_aserai_22}Hive Mandibul" />
+			<name name="{=eq_clanname_aserai_23}Hive Nektaris" />
+			<name name="{=eq_clanname_aserai_24}Hive Ocellus" />
+			<name name="{=eq_clanname_aserai_25}Hive Prokris" />
+			<name name="{=eq_clanname_aserai_26}Hive Spirakl" />
+			<name name="{=eq_clanname_aserai_27}Hive Tarsus" />
+			<name name="{=eq_clanname_aserai_28}Hive Feromon" />
+			<name name="{=eq_clanname_aserai_29}Hive Hiazm" />
+		</clan_names>
+	</Culture>
+</Cultures>

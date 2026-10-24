@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Свой экшен для свитка полёта (src/EquestriaFlightScroll.cs), 6-я попытка (08.10.2026).
+     Регистрация должна идти СТАНДАРТНЫМ id="soln_action_types" в project.mbproj — нестандартный
+     id движок молча игнорирует, даже если файл корректен и лежит на диске (независимо
+     подтверждено сообществом: docs.bannerlordmodding.lt/guides/custom_creature_xml/). См.
+     bannerlord-animation-pipeline.md раздел 7. -->
+<!-- Без type (10.10.2026): действия типа actt_idle ИИ сбрасывает с канала 0 (act_none) каждый кадр,
+     пока боец идёт в строю по приказу «Move» — поза мельтешила с ходьбой. У ванильных действий,
+     которые играются на ходу (act_main_story_*_walk_loop, act_conversation_*, act_cheer_*),
+     атрибута type нет вовсе. -->
+<action_types>
+	<action
+		name="act_eq_flight_pose" />
+</action_types>

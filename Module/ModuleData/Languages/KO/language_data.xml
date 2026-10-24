@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Тексты мода на этом языке. Файлы грузятся после ванильных,
+     поэтому одинаковые id перекрывают их. Список собран tools/lang.py. -->
+<LanguageData id="한국어">
+  <LanguageFile xml_path="KO/eq_bandits_kor.xml" />
+  <LanguageFile xml_path="KO/eq_items_kor.xml" />
+  <LanguageFile xml_path="KO/eq_lords_kor.xml" />
+  <LanguageFile xml_path="KO/eq_misc_ui_kor.xml" />
+  <LanguageFile xml_path="KO/eq_npc_kor.xml" />
+  <LanguageFile xml_path="KO/eq_spells_kor.xml" />
+  <LanguageFile xml_path="KO/eq_troops_kor.xml" />
+  <LanguageFile xml_path="KO/eq_world_kor.xml" />
+</LanguageData>

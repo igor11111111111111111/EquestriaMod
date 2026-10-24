@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Дипломатия на старте кампании. Собран tools/make_world.py из world_data.DIPLOMACY —
+     правьте таблицу, не этот файл. Применяет src/EquestriaDiplomacy.cs. -->
+<Diplomacy>
+	<Stance kind="war" a="kingdom_changeling" b="kingdom_friendship" />
+	<Stance kind="war" a="kingdom_changeling" b="kingdom_equestria" />
+	<Stance kind="war" a="kingdom_dragons" b="kingdom_griffonia" />
+	<Stance kind="war" a="kingdom_yakyakistan" b="kingdom_crystal" />
+	<Stance kind="alliance" a="kingdom_equestria" b="kingdom_friendship" />
+	<Stance kind="alliance" a="kingdom_equestria" b="kingdom_crystal" />
+	<Stance kind="alliance" a="kingdom_friendship" b="kingdom_hippogriffia" />
+	<Stance kind="trade" a="kingdom_equestria" b="kingdom_griffonia" />
+	<Stance kind="trade" a="kingdom_friendship" b="kingdom_yakyakistan" />
+	<Stance kind="trade" a="kingdom_lunar" b="kingdom_olenia" />
+	<Stance kind="trade" a="kingdom_crystal" b="kingdom_griffonia" />
+	<Stance kind="trade" a="kingdom_lunar" b="kingdom_hippogriffia" />
+	<Stance kind="tribute" a="kingdom_olenia" b="kingdom_dragons" gold="150" />
+	<Stance kind="tribute" a="kingdom_changeling" b="kingdom_lunar" gold="200" />
+	<Stance kind="tribute" a="kingdom_griffonia" b="kingdom_yakyakistan" gold="100" />
+</Diplomacy>

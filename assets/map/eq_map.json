@@ -1,0 +1,2867 @@
+{
+ "frame_hoi4": [
+  190,
+  0,
+  1290,
+  1100
+ ],
+ "map_size": 1024.0,
+ "nodes": 16,
+ "node_size": 64.0,
+ "samples": 1025,
+ "min_height": -3.0,
+ "max_height": 32.0,
+ "terrain_types": {
+  "plains": 1,
+  "urban": 1,
+  "farmlands": 1,
+  "desert": 2,
+  "arctic": 3,
+  "snow": 3,
+  "forest": 4,
+  "jungle": 4,
+  "hills": 5,
+  "mountain": 7,
+  "marsh": 15,
+  "ocean": 10,
+  "lakes": 8,
+  "water_fjords": 10,
+  "water_shallow_sea": 10,
+  "water_deep_ocean": 10
+ },
+ "owners": [
+  "EQS",
+  "CRY",
+  "STG",
+  "YAK",
+  "CHN",
+  "OLE",
+  "PLB",
+  "GRF",
+  "DRG",
+  "JAK",
+  "GFF",
+  "PNG",
+  "BUF",
+  "STL"
+ ],
+ "cities": [
+  {
+   "name": "Весалиполис",
+   "owner": "CHN",
+   "value": 50.0,
+   "state": "Весалиполис",
+   "x": 282.3,
+   "y": 808.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Мейнхеттен",
+   "owner": "EQS",
+   "value": 50.0,
+   "state": "Мейнхеттен",
+   "x": 802.4,
+   "y": 505.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Дитрисиум",
+   "owner": "CHN",
+   "value": 40.0,
+   "state": "Дитрисиум",
+   "x": 236.0,
+   "y": 855.1,
+   "terrain": "urban"
+  },
+  {
+   "name": "Кристальный Город",
+   "owner": "CRY",
+   "value": 40.0,
+   "state": "Центр Кристального Города",
+   "x": 650.7,
+   "y": 660.0,
+   "terrain": "urban"
+  },
+  {
+   "name": "Лас-Пегасус",
+   "owner": "EQS",
+   "value": 40.0,
+   "state": "Лас-Пегасус",
+   "x": 421.4,
+   "y": 457.0,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сталлионград",
+   "owner": "STG",
+   "value": 40.0,
+   "state": "Сталлионград",
+   "x": 782.3,
+   "y": 679.6,
+   "terrain": "urban"
+  },
+  {
+   "name": "Филлидельфия",
+   "owner": "EQS",
+   "value": 40.0,
+   "state": "Филлидельфия",
+   "x": 717.0,
+   "y": 456.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Хьёртланд",
+   "owner": "OLE",
+   "value": 40.0,
+   "state": "Хьёртланд",
+   "x": 187.9,
+   "y": 570.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Кантерлот",
+   "owner": "EQS",
+   "value": 35.0,
+   "state": "Кантерлот",
+   "x": 600.9,
+   "y": 505.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Балтимейр",
+   "owner": "EQS",
+   "value": 30.0,
+   "state": "Балтимейр",
+   "x": 745.3,
+   "y": 407.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Ванхувер",
+   "owner": "EQS",
+   "value": 30.0,
+   "state": "Ванхувер",
+   "x": 329.8,
+   "y": 622.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Вракс",
+   "owner": "CHN",
+   "value": 30.0,
+   "state": "Вракс",
+   "x": 316.5,
+   "y": 769.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Ликтида",
+   "owner": "CHN",
+   "value": 30.0,
+   "state": "Ликтида",
+   "x": 240.2,
+   "y": 799.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Петерсхуф",
+   "owner": "STG",
+   "value": 30.0,
+   "state": "Петерсхуф",
+   "x": 869.4,
+   "y": 645.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сориф",
+   "owner": "CHN",
+   "value": 30.0,
+   "state": "Сориф",
+   "x": 412.5,
+   "y": 896.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Уэтер",
+   "owner": "GRF",
+   "value": 30.0,
+   "state": "Уэтер",
+   "x": 994.7,
+   "y": 805.6,
+   "terrain": "urban"
+  },
+  {
+   "name": "Яктаун",
+   "owner": "YAK",
+   "value": 25.0,
+   "state": "Якистанская Долина",
+   "x": 563.0,
+   "y": 771.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Аглоссата",
+   "owner": "CHN",
+   "value": 20.0,
+   "state": "Фьорды Чейнджлингов",
+   "x": 232.6,
+   "y": 913.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Акорнидж",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Акорнидж",
+   "x": 394.1,
+   "y": 702.0,
+   "terrain": "urban"
+  },
+  {
+   "name": "Альбион",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Альбион",
+   "x": 868.9,
+   "y": 566.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Антакс",
+   "owner": "CHN",
+   "value": 20.0,
+   "state": "Логово",
+   "x": 460.9,
+   "y": 835.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Бэйлс",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Бэйлс",
+   "x": 636.9,
+   "y": 553.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Вейверфронт",
+   "owner": "OLE",
+   "value": 20.0,
+   "state": "Вейверфронт",
+   "x": 299.5,
+   "y": 636.0,
+   "terrain": "urban"
+  },
+  {
+   "name": "Винниаполис",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Виннисота",
+   "x": 583.8,
+   "y": 591.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Волистад",
+   "owner": "CHN",
+   "value": 20.0,
+   "state": "Сварм",
+   "x": 402.0,
+   "y": 746.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Горак",
+   "owner": "CHN",
+   "value": 20.0,
+   "state": "Горак",
+   "x": 309.4,
+   "y": 915.2,
+   "terrain": "urban"
+  },
+  {
+   "name": "Дахи",
+   "owner": "PNG",
+   "value": 20.0,
+   "state": "Дахи",
+   "x": 883.4,
+   "y": 1010.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Карамель Маркс",
+   "owner": "STG",
+   "value": 20.0,
+   "state": "Карамель Маркс",
+   "x": 757.3,
+   "y": 686.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Коньзань",
+   "owner": "STG",
+   "value": 20.0,
+   "state": "Зефирка",
+   "x": 818.8,
+   "y": 676.2,
+   "terrain": "urban"
+  },
+  {
+   "name": "Нуво Аквила",
+   "owner": "GRF",
+   "value": 20.0,
+   "state": "Нуво Аквила",
+   "x": 925.2,
+   "y": 764.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Роквилль",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Роквилль",
+   "x": 437.8,
+   "y": 402.6,
+   "terrain": "urban"
+  },
+  {
+   "name": "Стейблсайд",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Стейблсайд",
+   "x": 582.0,
+   "y": 271.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Толл Тейл",
+   "owner": "EQS",
+   "value": 20.0,
+   "state": "Толл Тейл",
+   "x": 345.0,
+   "y": 568.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Цервус",
+   "owner": "OLE",
+   "value": 20.0,
+   "state": "Цервус",
+   "x": 111.2,
+   "y": 616.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Амундсен",
+   "owner": "PNG",
+   "value": 15.0,
+   "state": "Пингвинья Земля",
+   "x": 730.4,
+   "y": 1003.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Бридлполис",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Мейрленд",
+   "x": 752.8,
+   "y": 528.1,
+   "terrain": "urban"
+  },
+  {
+   "name": "Додж-Сити",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Додж Джанкшн",
+   "x": 520.1,
+   "y": 381.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Звездопадово",
+   "owner": "STG",
+   "value": 15.0,
+   "state": "Звездопадово",
+   "x": 850.2,
+   "y": 725.1,
+   "terrain": "urban"
+  },
+  {
+   "name": "Зеркшед Скалл",
+   "owner": "GRF",
+   "value": 15.0,
+   "state": "Зеркшед Скалл",
+   "x": 952.4,
+   "y": 779.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Махарь-Фьяранн",
+   "owner": "PLB",
+   "value": 15.0,
+   "state": "Махарь-Фьяранн",
+   "x": 531.5,
+   "y": 931.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Мейрвей",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Аметистовый Бассейн",
+   "x": 654.6,
+   "y": 444.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Наш Городок",
+   "owner": "STL",
+   "value": 15.0,
+   "state": "Наш Городок",
+   "x": 798.4,
+   "y": 727.1,
+   "terrain": "urban"
+  },
+  {
+   "name": "Никогданетёплое Место",
+   "owner": "CHN",
+   "value": 15.0,
+   "state": "Никогданетёплое Место",
+   "x": 175.3,
+   "y": 860.5,
+   "terrain": "urban"
+  },
+  {
+   "name": "Пранциско",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Кольтифоалния",
+   "x": 320.0,
+   "y": 533.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сайхан Толгод",
+   "owner": "JAK",
+   "value": 15.0,
+   "state": "Сайхан Толгод",
+   "x": 706.9,
+   "y": 779.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сакара",
+   "owner": "OLE",
+   "value": 15.0,
+   "state": "Порола",
+   "x": 36.9,
+   "y": 658.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Санни Шоалс",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Солнечный Берег",
+   "x": 685.5,
+   "y": 444.1,
+   "terrain": "urban"
+  },
+  {
+   "name": "Северохолм",
+   "owner": "STG",
+   "value": 15.0,
+   "state": "Северохолм",
+   "x": 839.2,
+   "y": 650.7,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сиддл",
+   "owner": "OLE",
+   "value": 15.0,
+   "state": "Мьютфлоу",
+   "x": 330.2,
+   "y": 645.2,
+   "terrain": "urban"
+  },
+  {
+   "name": "Сикарус",
+   "owner": "CHN",
+   "value": 15.0,
+   "state": "Большое Болото",
+   "x": 348.4,
+   "y": 736.2,
+   "terrain": "urban"
+  },
+  {
+   "name": "Ставропонь",
+   "owner": "STG",
+   "value": 15.0,
+   "state": "Величественные Сады",
+   "x": 852.2,
+   "y": 670.3,
+   "terrain": "urban"
+  },
+  {
+   "name": "Теночтитлан",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Теночтитлан",
+   "x": 730.3,
+   "y": 303.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Троттингем",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Грифьи Острова",
+   "x": 927.1,
+   "y": 668.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Фантин",
+   "owner": "CHN",
+   "value": 15.0,
+   "state": "Таинахольм",
+   "x": 222.9,
+   "y": 759.8,
+   "terrain": "urban"
+  },
+  {
+   "name": "Хеджводс",
+   "owner": "CRY",
+   "value": 15.0,
+   "state": "Ясный Предел",
+   "x": 522.1,
+   "y": 628.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Хирвикаупунки",
+   "owner": "OLE",
+   "value": 15.0,
+   "state": "Пеурамаа",
+   "x": 111.1,
+   "y": 654.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Хуфингтон",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Хуфингтон",
+   "x": 534.4,
+   "y": 338.9,
+   "terrain": "urban"
+  },
+  {
+   "name": "Шир",
+   "owner": "EQS",
+   "value": 15.0,
+   "state": "Долина Витого Хвоста",
+   "x": 446.6,
+   "y": 564.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Апсихос",
+   "owner": "CHN",
+   "value": 10.0,
+   "state": "Бездушные Горы",
+   "x": 207.0,
+   "y": 794.9,
+   "terrain": "hills"
+  },
+  {
+   "name": "Аякачтли",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Аякачтли",
+   "x": 650.0,
+   "y": 341.2,
+   "terrain": "mountain"
+  },
+  {
+   "name": "Баккасл",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Луговина",
+   "x": 618.1,
+   "y": 430.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Бара'дур",
+   "owner": "YAK",
+   "value": 10.0,
+   "state": "Бара'дур",
+   "x": 707.0,
+   "y": 826.6,
+   "terrain": "hills"
+  },
+  {
+   "name": "Борейфьорд",
+   "owner": "GRF",
+   "value": 10.0,
+   "state": "Замёрзший Берег",
+   "x": 980.8,
+   "y": 847.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Вессландия",
+   "owner": "PLB",
+   "value": 10.0,
+   "state": "Вессландия",
+   "x": 640.3,
+   "y": 903.4,
+   "terrain": "hills"
+  },
+  {
+   "name": "Вудсвилль",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Высокий Лес",
+   "x": 372.9,
+   "y": 564.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Гейрфугльвидда",
+   "owner": "PLB",
+   "value": 10.0,
+   "state": "Гейрфугльвидда",
+   "x": 672.7,
+   "y": 996.5,
+   "terrain": "hills"
+  },
+  {
+   "name": "Джемтаун",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Вафлеземье",
+   "x": 371.7,
+   "y": 436.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Заятск",
+   "owner": "STG",
+   "value": 10.0,
+   "state": "Заятск",
+   "x": 772.8,
+   "y": 704.2,
+   "terrain": "forest"
+  },
+  {
+   "name": "Златоцвет",
+   "owner": "STG",
+   "value": 10.0,
+   "state": "Колхоз \"Светлый Путь\"",
+   "x": 806.1,
+   "y": 700.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кантербьюри",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Алгонквин",
+   "x": 827.7,
+   "y": 528.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Клаудсдейл",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Клаудсдейл",
+   "x": 573.1,
+   "y": 493.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Красивск",
+   "owner": "STG",
+   "value": 10.0,
+   "state": "Красивск",
+   "x": 829.1,
+   "y": 704.5,
+   "terrain": "forest"
+  },
+  {
+   "name": "Ларкорикс",
+   "owner": "CHN",
+   "value": 10.0,
+   "state": "Свартфорест",
+   "x": 291.6,
+   "y": 870.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Луна Нова",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Равнина Сестёр-Аликорнов",
+   "x": 584.4,
+   "y": 529.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мейрчестер",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Блюбелл Филдс",
+   "x": 497.1,
+   "y": 582.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Нейтон",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Мустангия",
+   "x": 677.3,
+   "y": 478.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Новочернушск",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Закатные Земли",
+   "x": 768.0,
+   "y": 619.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Новый Хорслеан",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Луносветный Берег",
+   "x": 692.9,
+   "y": 415.3,
+   "terrain": "forest"
+  },
+  {
+   "name": "Пондероса",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Пондероса",
+   "x": 484.6,
+   "y": 460.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Понивилль",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Понивилль",
+   "x": 591.3,
+   "y": 481.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Понитаун",
+   "owner": "CRY",
+   "value": 10.0,
+   "state": "Селеститовые земли",
+   "x": 574.5,
+   "y": 643.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Равенское",
+   "owner": "STG",
+   "value": 10.0,
+   "state": "Земля Равенства",
+   "x": 866.5,
+   "y": 691.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Роузмейрин",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Кло-дих",
+   "x": 496.8,
+   "y": 309.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Саммерфилд",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Фрисайд",
+   "x": 767.4,
+   "y": 507.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Свенхольм",
+   "owner": "OLE",
+   "value": 10.0,
+   "state": "Южный Берег",
+   "x": 241.9,
+   "y": 599.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Спайктаун",
+   "owner": "CRY",
+   "value": 10.0,
+   "state": "Кристальные Пашни",
+   "x": 659.8,
+   "y": 646.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Тротгарон",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Тротгарон",
+   "x": 313.7,
+   "y": 327.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Фоаледо",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Эфирные Земли",
+   "x": 353.4,
+   "y": 410.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Формицида",
+   "owner": "CHN",
+   "value": 10.0,
+   "state": "Убийственные Болота",
+   "x": 277.3,
+   "y": 744.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Фростхилл",
+   "owner": "GFF",
+   "value": 10.0,
+   "state": "Вот",
+   "x": 754.2,
+   "y": 860.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Хорслеан",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Пранция",
+   "x": 849.0,
+   "y": 544.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хоуп Холлоу",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Сирень",
+   "x": 552.6,
+   "y": 546.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Хэйстин",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Хэйшар",
+   "x": 289.4,
+   "y": 352.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Цветочный Венок",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Цветочный Венок",
+   "x": 733.2,
+   "y": 556.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Чикольтго",
+   "owner": "EQS",
+   "value": 10.0,
+   "state": "Солсайдские Равнины",
+   "x": 500.2,
+   "y": 624.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Эндрект",
+   "owner": "OLE",
+   "value": 10.0,
+   "state": "Гранхалвон",
+   "x": 142.2,
+   "y": 533.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Агония",
+   "owner": "CHN",
+   "value": 5.0,
+   "state": "Смертельный Лес",
+   "x": 354.8,
+   "y": 769.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Буннуа",
+   "owner": "GRF",
+   "value": 5.0,
+   "state": "Рудегин Та Син Хо Мат",
+   "x": 835.8,
+   "y": 858.3,
+   "terrain": "forest"
+  },
+  {
+   "name": "Гора",
+   "owner": "DRG",
+   "value": 5.0,
+   "state": "Гора",
+   "x": 858.4,
+   "y": 270.0,
+   "terrain": "mountain"
+  },
+  {
+   "name": "Ингстад",
+   "owner": "PNG",
+   "value": 5.0,
+   "state": "Нихан Талав Ард",
+   "x": 896.2,
+   "y": 964.4,
+   "terrain": "hills"
+  },
+  {
+   "name": "Карсакаг",
+   "owner": "YAK",
+   "value": 5.0,
+   "state": "Шидетгасар",
+   "x": 648.0,
+   "y": 774.7,
+   "terrain": "forest"
+  },
+  {
+   "name": "Квебак",
+   "owner": "CRY",
+   "value": 5.0,
+   "state": "Агатовые Поля",
+   "x": 525.0,
+   "y": 672.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Колдспарк",
+   "owner": "CRY",
+   "value": 5.0,
+   "state": "Небокаменная Земля",
+   "x": 602.0,
+   "y": 641.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Круцис",
+   "owner": "CHN",
+   "value": 5.0,
+   "state": "Квадрат Призраков",
+   "x": 371.8,
+   "y": 793.1,
+   "terrain": "marsh"
+  },
+  {
+   "name": "Медовый Курорт",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Озеро Мид",
+   "x": 388.4,
+   "y": 511.5,
+   "terrain": "forest"
+  },
+  {
+   "name": "Ми Аморе",
+   "owner": "CRY",
+   "value": 5.0,
+   "state": "Равнина Ми Аморе",
+   "x": 620.4,
+   "y": 649.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Нокхорсаг Ой",
+   "owner": "JAK",
+   "value": 5.0,
+   "state": "Нокхорсаг Ой",
+   "x": 703.2,
+   "y": 791.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ню Вингхаген",
+   "owner": "GRF",
+   "value": 5.0,
+   "state": "Бьёрнхольм",
+   "x": 907.4,
+   "y": 719.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Олеандр",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Долина Олеандр",
+   "x": 514.1,
+   "y": 541.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Онлартир",
+   "owner": "PLB",
+   "value": 5.0,
+   "state": "Онлартир",
+   "x": 513.9,
+   "y": 876.3,
+   "terrain": "mountain"
+  },
+  {
+   "name": "Племя Тандерхувса",
+   "owner": "BUF",
+   "value": 5.0,
+   "state": "Айаниди",
+   "x": 466.3,
+   "y": 349.7,
+   "terrain": "desert"
+  },
+  {
+   "name": "Пурифия",
+   "owner": "CHN",
+   "value": 5.0,
+   "state": "Кальског",
+   "x": 318.8,
+   "y": 709.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Рэйнбоу Фоллс",
+   "owner": "CRY",
+   "value": 5.0,
+   "state": "Рэйнбоу Фоллс",
+   "x": 713.1,
+   "y": 688.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Сайрс Холлоу",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Сайрс Холлоу",
+   "x": 589.7,
+   "y": 382.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сайхандейл",
+   "owner": "YAK",
+   "value": 5.0,
+   "state": "Сайхандейл",
+   "x": 608.4,
+   "y": 756.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Солт-Лик-Сити",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Ржаные Поля",
+   "x": 355.9,
+   "y": 621.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Стратусбург",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Поля Кемоно",
+   "x": 768.9,
+   "y": 545.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Тсасбаатар",
+   "owner": "GFF",
+   "value": 5.0,
+   "state": "Амдрал Нуур",
+   "x": 704.3,
+   "y": 874.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Умберфоал",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Равнина Флоксов",
+   "x": 591.0,
+   "y": 566.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Фейрфланкс",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Фейрфланкс",
+   "x": 350.2,
+   "y": 670.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хорстон",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Кантерстин",
+   "x": 339.7,
+   "y": 303.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хурорнд",
+   "owner": "CHN",
+   "value": 5.0,
+   "state": "Хурорнд",
+   "x": 466.9,
+   "y": 793.4,
+   "terrain": "hills"
+  },
+  {
+   "name": "Эпплвуд",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Кольтифоалния",
+   "x": 333.7,
+   "y": 525.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Эпплуза",
+   "owner": "EQS",
+   "value": 5.0,
+   "state": "Эпплуза",
+   "x": 461.0,
+   "y": 372.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Апрельская Роща",
+   "owner": "EQS",
+   "value": 4.0,
+   "state": "Апрельская Роща",
+   "x": 704.3,
+   "y": 495.4,
+   "terrain": "hills"
+  },
+  {
+   "name": "Боулдертон",
+   "owner": "EQS",
+   "value": 4.0,
+   "state": "Боулдерфилд",
+   "x": 611.9,
+   "y": 559.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Долина Лета",
+   "owner": "EQS",
+   "value": 4.0,
+   "state": "Долина Лета",
+   "x": 566.8,
+   "y": 463.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Солтмейн",
+   "owner": "EQS",
+   "value": 4.0,
+   "state": "Берег Ицомитл",
+   "x": 744.8,
+   "y": 282.5,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Фризвилль",
+   "owner": "EQS",
+   "value": 4.0,
+   "state": "Фризские Восточные Земли",
+   "x": 731.9,
+   "y": 518.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Хярлигхамн",
+   "owner": "OLE",
+   "value": 4.0,
+   "state": "Хярлигхамн",
+   "x": 52.4,
+   "y": 694.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Яльгстад",
+   "owner": "OLE",
+   "value": 4.0,
+   "state": "Лосий Берег",
+   "x": 143.4,
+   "y": 606.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Акадия Бэй",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Мыс Акадия",
+   "x": 310.6,
+   "y": 605.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ариун Ордон",
+   "owner": "YAK",
+   "value": 3.0,
+   "state": "Уулан Баавгуй",
+   "x": 603.4,
+   "y": 852.0,
+   "terrain": "hills"
+  },
+  {
+   "name": "Ассина",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Они-Слышат",
+   "x": 262.7,
+   "y": 720.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Байкалл",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Байкалл",
+   "x": 722.1,
+   "y": 624.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Белый Хвост",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Белохвостый Лес",
+   "x": 442.2,
+   "y": 455.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Блэкторн",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Долина Терновника",
+   "x": 541.9,
+   "y": 572.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Бордо",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Птичья Территория",
+   "x": 840.5,
+   "y": 600.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Боринг",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Скучные Поля",
+   "x": 566.2,
+   "y": 430.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Бронклин",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Мейнхеттен",
+   "x": 796.2,
+   "y": 500.4,
+   "terrain": "urban"
+  },
+  {
+   "name": "Винтерхоум",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Незабудковые Луга",
+   "x": 540.9,
+   "y": 476.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Вудсберг",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Кольтхиллс",
+   "x": 588.4,
+   "y": 411.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Гардис",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Тёмный Сад",
+   "x": 276.8,
+   "y": 791.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Гине",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Остров Королевы",
+   "x": 284.9,
+   "y": 936.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Голденшор",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Голденшор",
+   "x": 99.1,
+   "y": 579.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Голииг Хуваах",
+   "owner": "YAK",
+   "value": 3.0,
+   "state": "Дунд Аймаг",
+   "x": 644.4,
+   "y": 799.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Грунштейн",
+   "owner": "GRF",
+   "value": 3.0,
+   "state": "Замёрзший Берег",
+   "x": 950.4,
+   "y": 937.5,
+   "terrain": "forest"
+  },
+  {
+   "name": "Детрот",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Трайкорн",
+   "x": 785.5,
+   "y": 554.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кесапуоли",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Вуонола",
+   "x": 65.5,
+   "y": 588.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кладисиум",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Кладбище",
+   "x": 331.9,
+   "y": 861.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Кобылкино",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Кобылкино",
+   "x": 814.7,
+   "y": 607.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Копытобойск",
+   "owner": "STG",
+   "value": 3.0,
+   "state": "Копытный Край",
+   "x": 766.7,
+   "y": 659.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Красносердечный Край",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Красносердечный Край",
+   "x": 839.3,
+   "y": 621.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Крупочкино",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Крупочкино",
+   "x": 776.8,
+   "y": 629.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кумулус",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Облачные Холмы",
+   "x": 772.1,
+   "y": 575.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Кэрроттоп",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Кэрроттоп",
+   "x": 464.7,
+   "y": 422.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Лесное",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Тихие Просторы",
+   "x": 847.7,
+   "y": 581.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Лошадск",
+   "owner": "STG",
+   "value": 3.0,
+   "state": "Краснопшеница",
+   "x": 805.3,
+   "y": 634.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мейнсбьюри",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Малиновые Поля",
+   "x": 664.3,
+   "y": 559.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мейрпоза",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Мейрпоза",
+   "x": 465.1,
+   "y": 609.2,
+   "terrain": "forest"
+  },
+  {
+   "name": "Мираж",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Мираж",
+   "x": 897.2,
+   "y": 606.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мифика",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Магическое Плато",
+   "x": 804.8,
+   "y": 586.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Моднихенди",
+   "owner": "JAK",
+   "value": 3.0,
+   "state": "Моднихенди",
+   "x": 751.8,
+   "y": 792.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Нейгарские Водопады",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Нейгарские Водопады",
+   "x": 668.4,
+   "y": 607.0,
+   "terrain": "hills"
+  },
+  {
+   "name": "Нижний Понск",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Чиллвинг",
+   "x": 857.1,
+   "y": 625.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ньив Мирабель",
+   "owner": "GRF",
+   "value": 3.0,
+   "state": "Ламмия",
+   "x": 868.0,
+   "y": 768.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Овсянкино",
+   "owner": "CRY",
+   "value": 3.0,
+   "state": "Млечное Поле",
+   "x": 717.2,
+   "y": 651.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Оршаб",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Оршаб",
+   "x": 464.1,
+   "y": 450.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Пентатома",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Большой Лес",
+   "x": 423.4,
+   "y": 804.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Перополис",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Долина Падающих Перьев",
+   "x": 438.5,
+   "y": 701.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Понидейл",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Долина Маленькой Пони",
+   "x": 515.8,
+   "y": 492.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Портленд",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Портленд",
+   "x": 621.9,
+   "y": 213.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Празепис",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Где-Начинается-Рой",
+   "x": 429.2,
+   "y": 726.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Призрачное Ущелье",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Призрачное Ущелье",
+   "x": 536.9,
+   "y": 455.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Рейвенхольм",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Воронье Нагорье",
+   "x": 812.1,
+   "y": 561.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Риверпул",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Долина Ноктюрнал",
+   "x": 576.5,
+   "y": 589.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Роща Медовых Сот",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Медовый Лес",
+   "x": 490.7,
+   "y": 557.1,
+   "terrain": "forest"
+  },
+  {
+   "name": "Рубрум",
+   "owner": "CRY",
+   "value": 3.0,
+   "state": "Гиацинтовые холмы",
+   "x": 686.3,
+   "y": 657.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ручей Манти",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Ручей Манти",
+   "x": 200.4,
+   "y": 665.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сан Мейнтонио",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Тротгарон",
+   "x": 312.6,
+   "y": 302.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сарлаг Хот",
+   "owner": "JAK",
+   "value": 3.0,
+   "state": "Западный Лес Розочек",
+   "x": 719.8,
+   "y": 796.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Саутпойнт",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Острова Спа",
+   "x": 763.9,
+   "y": 216.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сивард Шоалс",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Толл Тейл",
+   "x": 297.3,
+   "y": 583.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сладкий",
+   "owner": "STG",
+   "value": 3.0,
+   "state": "Зефирка",
+   "x": 838.1,
+   "y": 685.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сноуибьюри",
+   "owner": "CRY",
+   "value": 3.0,
+   "state": "Селенитовый Разрыв",
+   "x": 605.1,
+   "y": 682.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Солтликингхэм",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Дасквей",
+   "x": 753.7,
+   "y": 366.2,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Тепловодье",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Тепловодный Путь",
+   "x": 607.9,
+   "y": 242.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Тотлес",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Тотлес",
+   "x": 351.6,
+   "y": 821.1,
+   "terrain": "forest"
+  },
+  {
+   "name": "Тротленд",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Тротленд",
+   "x": 505.5,
+   "y": 435.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Троттерфилд",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Троттерфилд",
+   "x": 693.9,
+   "y": 567.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Туурайхан",
+   "owner": "YAK",
+   "value": 3.0,
+   "state": "Туурайхан",
+   "x": 687.5,
+   "y": 815.5,
+   "terrain": "forest"
+  },
+  {
+   "name": "Уайтбелл",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Уайтбелл",
+   "x": 426.8,
+   "y": 637.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Форт Макинтош",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Холмы Макинтоша",
+   "x": 521.2,
+   "y": 352.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Форт Морн",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Цох Халгай",
+   "x": 479.6,
+   "y": 287.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Форт Сорроу",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Берег Печали",
+   "x": 434.2,
+   "y": 296.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ховенхамн",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Копытный Полуостров",
+   "x": 195.4,
+   "y": 636.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Холлоу Шейдс",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Холлоу Шейдс",
+   "x": 686.9,
+   "y": 535.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Хорсон-Сити",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Нейвада",
+   "x": 502.8,
+   "y": 405.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хуф-Сити",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Звёздный Лес",
+   "x": 564.9,
+   "y": 410.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Черриабинск",
+   "owner": "STG",
+   "value": 3.0,
+   "state": "Карамель Маркс",
+   "x": 757.7,
+   "y": 693.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Чистое Небо",
+   "owner": "EQS",
+   "value": 3.0,
+   "state": "Чистое Небо",
+   "x": 732.8,
+   "y": 489.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Элитра",
+   "owner": "CHN",
+   "value": 3.0,
+   "state": "Дикие Земли",
+   "x": 357.8,
+   "y": 696.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Элксбург",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Палсстик Халвон",
+   "x": 57.5,
+   "y": 773.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Эслотт",
+   "owner": "OLE",
+   "value": 3.0,
+   "state": "Норра Викар",
+   "x": 32.7,
+   "y": 744.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Як Матхан Криче",
+   "owner": "PLB",
+   "value": 3.0,
+   "state": "Як Матхан Криче",
+   "x": 652.7,
+   "y": 856.4,
+   "terrain": "mountain"
+  },
+  {
+   "name": "Биттерберри",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Клюквенные Поля",
+   "x": 620.3,
+   "y": 532.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Валолахти",
+   "owner": "OLE",
+   "value": 2.0,
+   "state": "Валолахти",
+   "x": 33.6,
+   "y": 635.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Вечнозелёное",
+   "owner": "CRY",
+   "value": 2.0,
+   "state": "Вечнозелёное",
+   "x": 486.3,
+   "y": 673.9,
+   "terrain": "forest"
+  },
+  {
+   "name": "Вулфторн",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Вулфторн Фармс",
+   "x": 657.6,
+   "y": 584.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Галлопфрей",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Сириус",
+   "x": 571.6,
+   "y": 301.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Герриды",
+   "owner": "CHN",
+   "value": 2.0,
+   "state": "Кейтмарш",
+   "x": 383.3,
+   "y": 768.5,
+   "terrain": "marsh"
+  },
+  {
+   "name": "Гол Гюур",
+   "owner": "YAK",
+   "value": 2.0,
+   "state": "Ер Наг Уул",
+   "x": 623.0,
+   "y": 770.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Гудгрум",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Дружественные Холмы",
+   "x": 615.4,
+   "y": 588.5,
+   "terrain": "hills"
+  },
+  {
+   "name": "Даймонфлейк",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Алмазные Поля",
+   "x": 452.2,
+   "y": 665.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Дэпплшор",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Понуостров",
+   "x": 754.4,
+   "y": 463.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Иштапан",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Берег Ицтатль",
+   "x": 761.1,
+   "y": 320.9,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Йондерхилл",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Скачущая Теснина",
+   "x": 434.6,
+   "y": 607.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кантерин",
+   "owner": "CRY",
+   "value": 2.0,
+   "state": "Изумрудное Предгорье",
+   "x": 537.5,
+   "y": 697.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Карабид",
+   "owner": "CHN",
+   "value": 2.0,
+   "state": "Тонущие болота",
+   "x": 310.9,
+   "y": 739.6,
+   "terrain": "marsh"
+  },
+  {
+   "name": "Клув Хот",
+   "owner": "GRF",
+   "value": 2.0,
+   "state": "Долина Клув",
+   "x": 818.3,
+   "y": 777.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Комет-Кейп",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Провинция Комет",
+   "x": 551.8,
+   "y": 248.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Комсомольск",
+   "owner": "STG",
+   "value": 2.0,
+   "state": "Земля Равенства",
+   "x": 848.7,
+   "y": 688.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кристалвилль",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Кристальный Район",
+   "x": 546.2,
+   "y": 606.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кукурузза",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Кукурузза",
+   "x": 754.4,
+   "y": 637.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Куувалоранта",
+   "owner": "OLE",
+   "value": 2.0,
+   "state": "Синептичий Лес",
+   "x": 281.0,
+   "y": 620.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Малиновая Роща",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Чернолесье",
+   "x": 410.3,
+   "y": 492.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мейридиан",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Восточный Юколтан",
+   "x": 694.0,
+   "y": 271.4,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Нансен",
+   "owner": "PNG",
+   "value": 2.0,
+   "state": "Пингвинья Земля",
+   "x": 810.7,
+   "y": 995.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Ойн Щилтджин",
+   "owner": "JAK",
+   "value": 2.0,
+   "state": "Восточный Лес Розочек",
+   "x": 771.2,
+   "y": 801.9,
+   "terrain": "forest"
+  },
+  {
+   "name": "Пичвилль",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Персиковые Леса",
+   "x": 456.6,
+   "y": 499.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сарвисуо",
+   "owner": "OLE",
+   "value": 2.0,
+   "state": "Болото Утонувших Рогов",
+   "x": 136.9,
+   "y": 628.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Снёфлинга",
+   "owner": "OLE",
+   "value": 2.0,
+   "state": "Снежинка",
+   "x": 183.2,
+   "y": 618.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сосновый Ручей",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Сосновый Ручей",
+   "x": 410.3,
+   "y": 583.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Тоналцинтли",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Тоналцинтли",
+   "x": 731.6,
+   "y": 326.0,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Фетлок Твист",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Фетлок Твист",
+   "x": 686.4,
+   "y": 559.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Фидерштадт",
+   "owner": "GRF",
+   "value": 2.0,
+   "state": "Вейдадехудедайер",
+   "x": 860.0,
+   "y": 836.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Хартом",
+   "owner": "CRY",
+   "value": 2.0,
+   "state": "Поле Согревающего Очага",
+   "x": 580.3,
+   "y": 626.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хэйстон",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Мейнхеттен",
+   "x": 793.6,
+   "y": 506.2,
+   "terrain": "urban"
+  },
+  {
+   "name": "Шакалмойотль",
+   "owner": "EQS",
+   "value": 2.0,
+   "state": "Комариный Лес",
+   "x": 611.2,
+   "y": 257.1,
+   "terrain": "forest"
+  },
+  {
+   "name": "Эквадо",
+   "owner": "OLE",
+   "value": 2.0,
+   "state": "Мяннико",
+   "x": 94.2,
+   "y": 623.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Аксомолли",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Западный Юколтан",
+   "x": 683.2,
+   "y": 282.7,
+   "terrain": "marsh"
+  },
+  {
+   "name": "Аметист",
+   "owner": "CRY",
+   "value": 1.0,
+   "state": "Аметистовый дол",
+   "x": 621.3,
+   "y": 627.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Баранск",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Восточный Козказ",
+   "x": 736.6,
+   "y": 607.8,
+   "terrain": "hills"
+  },
+  {
+   "name": "Блюсайд",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Восточный Екон",
+   "x": 460.9,
+   "y": 648.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Болор Уул",
+   "owner": "YAK",
+   "value": 1.0,
+   "state": "Северная Якская Гряда",
+   "x": 573.1,
+   "y": 740.4,
+   "terrain": "mountain"
+  },
+  {
+   "name": "Болотовка",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Заболоченные Земли",
+   "x": 613.5,
+   "y": 612.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Вайннипег",
+   "owner": "CRY",
+   "value": 1.0,
+   "state": "Нефритовые Холмы",
+   "x": 508.4,
+   "y": 716.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Верхний Макинтош",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Горы Макинтоша",
+   "x": 571.6,
+   "y": 356.9,
+   "terrain": "forest"
+  },
+  {
+   "name": "Вихерлааксо",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Зелёная Лощина",
+   "x": 122.7,
+   "y": 692.1,
+   "terrain": "hills"
+  },
+  {
+   "name": "Гвидонуово",
+   "owner": "GRF",
+   "value": 1.0,
+   "state": "Долина Кингсмир",
+   "x": 821.5,
+   "y": 844.7,
+   "terrain": "plains"
+  },
+  {
+   "name": "Гриллоблатод",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Бортбайтинг Хоглант",
+   "x": 144.2,
+   "y": 839.1,
+   "terrain": "hills"
+  },
+  {
+   "name": "Далма",
+   "owner": "YAK",
+   "value": 1.0,
+   "state": "Далмадолина",
+   "x": 727.0,
+   "y": 829.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Замок Двух Сестёр",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Замок Двух Сестёр",
+   "x": 613.5,
+   "y": 470.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Зимняя виверна",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Зимние Земли Виверн",
+   "x": 257.7,
+   "y": 627.5,
+   "terrain": "hills"
+  },
+  {
+   "name": "Ишемн",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Тревлигвинд",
+   "x": 119.4,
+   "y": 794.1,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кейхолм",
+   "owner": "CHN",
+   "value": 1.0,
+   "state": "Высокогорье Джем",
+   "x": 422.8,
+   "y": 867.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Керех Давсаг",
+   "owner": "YAK",
+   "value": 1.0,
+   "state": "Керех Давсаг",
+   "x": 653.8,
+   "y": 816.8,
+   "terrain": "forest"
+  },
+  {
+   "name": "Клюква",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Клюквенное Болото",
+   "x": 785.3,
+   "y": 603.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Кристалл",
+   "owner": "STG",
+   "value": 1.0,
+   "state": "Туманные Холмы",
+   "x": 737.7,
+   "y": 662.4,
+   "terrain": "hills"
+  },
+  {
+   "name": "Кулулу",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Лес Кулулу",
+   "x": 706.0,
+   "y": 391.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Куэцпаллицтли",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Куэцпаллицтли",
+   "x": 686.0,
+   "y": 233.3,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Ларве",
+   "owner": "CHN",
+   "value": 1.0,
+   "state": "Острова Личинок",
+   "x": 225.6,
+   "y": 939.0,
+   "terrain": "plains"
+  },
+  {
+   "name": "Летний приют",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Летние Острова",
+   "x": 794.5,
+   "y": 99.3,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Лэндиш",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Поля Ландышей",
+   "x": 729.4,
+   "y": 639.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Малинин",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Малиновка",
+   "x": 750.3,
+   "y": 620.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мангифер",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Провинция Манго",
+   "x": 632.7,
+   "y": 382.8,
+   "terrain": "hills"
+  },
+  {
+   "name": "Маффинское",
+   "owner": "STG",
+   "value": 1.0,
+   "state": "Краснопшеница",
+   "x": 808.7,
+   "y": 652.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Микс",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Ивен",
+   "x": 555.0,
+   "y": 386.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Мёрон",
+   "owner": "GRF",
+   "value": 1.0,
+   "state": "Бисайд",
+   "x": 792.4,
+   "y": 774.5,
+   "terrain": "forest"
+  },
+  {
+   "name": "Надкрылье",
+   "owner": "CHN",
+   "value": 1.0,
+   "state": "Лес Виндиго",
+   "x": 465.6,
+   "y": 750.7,
+   "terrain": "forest"
+  },
+  {
+   "name": "Ней Крона",
+   "owner": "GRF",
+   "value": 1.0,
+   "state": "Холмистые Холмы",
+   "x": 922.5,
+   "y": 849.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Обнимашкин",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Холмы Обнимашек",
+   "x": 611.5,
+   "y": 318.8,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Пастбище",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Пастбища",
+   "x": 501.0,
+   "y": 457.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Пеурамется",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Пеураметса",
+   "x": 65.7,
+   "y": 663.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Пинто Крик",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Цох Халгай",
+   "x": 464.0,
+   "y": 322.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Подковка",
+   "owner": "STG",
+   "value": 1.0,
+   "state": "Колхоз \"Светлый Путь\"",
+   "x": 810.8,
+   "y": 682.2,
+   "terrain": "forest"
+  },
+  {
+   "name": "Понидена",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Кольтифоалния",
+   "x": 342.3,
+   "y": 530.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Предгорный форт",
+   "owner": "CRY",
+   "value": 1.0,
+   "state": "Кварцевые Предгория",
+   "x": 672.1,
+   "y": 683.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Рог изобилия",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Единорожья Гряда",
+   "x": 404.4,
+   "y": 565.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Рогово",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Верхняя Единорожья Гряда",
+   "x": 379.2,
+   "y": 609.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Рокридж",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Гряда Разбросанных Камней",
+   "x": 647.9,
+   "y": 480.5,
+   "terrain": "plains"
+  },
+  {
+   "name": "Ручей Кантер",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Ручей Кантер",
+   "x": 367.1,
+   "y": 329.3,
+   "terrain": "hills"
+  },
+  {
+   "name": "Самоцветное",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Холмы Виверн",
+   "x": 450.8,
+   "y": 535.1,
+   "terrain": "hills"
+  },
+  {
+   "name": "Саскияуитль",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Саскияуитль",
+   "x": 741.9,
+   "y": 348.1,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Свердруп",
+   "owner": "PNG",
+   "value": 1.0,
+   "state": "Химинколлие",
+   "x": 826.7,
+   "y": 920.6,
+   "terrain": "forest"
+  },
+  {
+   "name": "Светлопонь",
+   "owner": "STG",
+   "value": 1.0,
+   "state": "Краснопшеница",
+   "x": 790.0,
+   "y": 660.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Северная Деревня",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Северная Деревня",
+   "x": 873.3,
+   "y": 733.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Сили",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Мелколесье",
+   "x": 631.6,
+   "y": 423.2,
+   "terrain": "plains"
+  },
+  {
+   "name": "Скоргово",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Мираж",
+   "x": 866.3,
+   "y": 606.3,
+   "terrain": "plains"
+  },
+  {
+   "name": "Смальштад",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Смала Скогар",
+   "x": 317.7,
+   "y": 675.5,
+   "terrain": "hills"
+  },
+  {
+   "name": "Совёнок",
+   "owner": "STG",
+   "value": 1.0,
+   "state": "Совёнок",
+   "x": 799.5,
+   "y": 721.3,
+   "terrain": "forest"
+  },
+  {
+   "name": "Сольгуд",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Сольгуд Бергскедья",
+   "x": 185.6,
+   "y": 688.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Сомленд",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Сомленд",
+   "x": 904.2,
+   "y": 577.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Старлейс",
+   "owner": "CRY",
+   "value": 1.0,
+   "state": "Ручьи Воды Жизни",
+   "x": 617.9,
+   "y": 684.9,
+   "terrain": "hills"
+  },
+  {
+   "name": "Талвиваара",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Винтерфелл",
+   "x": 96.2,
+   "y": 671.6,
+   "terrain": "hills"
+  },
+  {
+   "name": "Текискьяк",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Восточные Джунгли Теопикски",
+   "x": 681.6,
+   "y": 303.3,
+   "terrain": "marsh"
+  },
+  {
+   "name": "Теццилли",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Западные Джунгли Теопикски",
+   "x": 653.3,
+   "y": 299.9,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Траборг",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Традвягг",
+   "x": 93.2,
+   "y": 712.1,
+   "terrain": "forest"
+  },
+  {
+   "name": "Тротсильвания",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Тёмные Страшные Леса",
+   "x": 724.8,
+   "y": 594.1,
+   "terrain": "forest"
+  },
+  {
+   "name": "Уайтхорс",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Западный Екон",
+   "x": 385.8,
+   "y": 623.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Уинсом-Фоллс",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Уинсом Фоллс",
+   "x": 695.4,
+   "y": 513.2,
+   "terrain": "hills"
+  },
+  {
+   "name": "Утстёттбюгд",
+   "owner": "PLB",
+   "value": 1.0,
+   "state": "Восточное Ключ-Озеро",
+   "x": 475.9,
+   "y": 960.7,
+   "terrain": "hills"
+  },
+  {
+   "name": "Уульсин Хооронд",
+   "owner": "YAK",
+   "value": 1.0,
+   "state": "Хуурамч Ой",
+   "x": 549.0,
+   "y": 784.4,
+   "terrain": "forest"
+  },
+  {
+   "name": "Ферма Камней Семьи Пай",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Каменные Фермы",
+   "x": 460.3,
+   "y": 402.8,
+   "terrain": "plains"
+  },
+  {
+   "name": "Феслотт",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Фир Далар",
+   "x": 174.2,
+   "y": 773.0,
+   "terrain": "forest"
+  },
+  {
+   "name": "Форт Саншайн",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "П-ов Солнечного Света",
+   "x": 460.5,
+   "y": 292.4,
+   "terrain": "plains"
+  },
+  {
+   "name": "Халдун",
+   "owner": "YAK",
+   "value": 1.0,
+   "state": "Манай Газар",
+   "x": 687.8,
+   "y": 840.9,
+   "terrain": "forest"
+  },
+  {
+   "name": "Хейня",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Хорн Ског",
+   "x": 228.7,
+   "y": 635.9,
+   "terrain": "plains"
+  },
+  {
+   "name": "Хэйсид Джанкшн",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Семенные Болота",
+   "x": 667.7,
+   "y": 397.7,
+   "terrain": "forest"
+  },
+  {
+   "name": "Чайнамитл",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Чайнамитл",
+   "x": 673.9,
+   "y": 246.4,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Чильчомолли",
+   "owner": "EQS",
+   "value": 1.0,
+   "state": "Высокогорье Чилчотль",
+   "x": 635.4,
+   "y": 317.7,
+   "terrain": "jungle"
+  },
+  {
+   "name": "Шнееталь",
+   "owner": "GRF",
+   "value": 1.0,
+   "state": "Снежные Горы",
+   "x": 836.2,
+   "y": 739.6,
+   "terrain": "plains"
+  },
+  {
+   "name": "Эстског",
+   "owner": "OLE",
+   "value": 1.0,
+   "state": "Эстског",
+   "x": 274.8,
+   "y": 659.1,
+   "terrain": "forest"
+  }
+ ]
+}

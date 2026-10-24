@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="简体中文" />
+  </tags>
+  <strings>
+    <string id="eq_changeling_aserai_civil_e" text="Hive Thawb" />
+    <string id="eq_changeling_eastern_leather_boots" text="Hive Leather Riding Boots" />
+    <string id="eq_changeling_aserai_civil_c" text="Hive Colored Kaftan" />
+    <string id="eq_changeling_buttoned_leather_bracers" text="Hive Buttoned Leather Bracers" />
+    <string id="eq_changeling_desert_padded_cloth" text="Hive Light Long Padded Armor" />
+    <string id="eq_changeling_rough_tied_bracers" text="Hive Rough Tied Bracers" />
+    <string id="eq_changeling_long_padded_robe" text="Hive Long Padded Robe" />
+    <string id="eq_changeling_steppe_leather_boots" text="Hive Sturdy Leather Boots" />
+    <string id="eq_changeling_aserai_chain_plate_armor_d" text="Hive Southern Reinforced Short Mail Armor" />
+    <string id="eq_changeling_aserai_archer_armor" text="Hive Gambeson over Mail Armor" />
+    <string id="eq_changeling_plated_strip_boots" text="Hive Splint Boots" />
+    <string id="eq_changeling_reinforced_leather_vambraces" text="Hive Splint Vambraces" />
+    <string id="eq_changeling_leather_strips_over_padded_robe" text="Hive Leather Strips over Padded Robe" />
+    <string id="eq_changeling_eastern_plated_leather_vambraces" text="Hive Plated Leather Vambraces" />
+    <string id="eq_changeling_desert_lamellar" text="Hive Light Lamellar Armor" />
+    <string id="eq_changeling_reinforced_mail_mitten" text="Hive Reinforced Mail Mittens" />
+    <string id="eq_changeling_mail_mitten_h" text="Hive Mail Mittens with Plate Guard" />
+    <string id="eq_changeling_mail_mitten_e" text="Hive Wrapped Mail Mittens" />
+    <string id="eq_changeling_studded_leather_coat" text="Hive Studded Leather Coat" />
+    <string id="eq_changeling_guarded_padded_vambrace" text="Hive Guarded Padded Vambraces" />
+    <string id="eq_changeling_aserai_chain_plate_armor_b" text="Hive Southern Reinforced Sleeveless Mail Armor" />
+    <string id="eq_changeling_strapped_mail_chausses" text="Hive Strapped Mail Chausses" />
+    <string id="eq_changeling_aserai_chain_plate_armor_a" text="Hive Southern Reinforced Mail Armor" />
+    <string id="eq_changeling_ringed_desert_armor" text="Hive Heavy Ring Mail" />
+    <string id="eq_changeling_aserai_armor_02" text="Hive Southern Chain Mail" />
+    <string id="eq_changeling_aserai_armor_02_b" text="Hive Southern Decorated Chain Mail" />
+    <string id="eq_changeling_mail_cavalier_boots" text="Hive Mail Cavalier Boots" />
+    <string id="eq_changeling_mail_mitten_f" text="Hive Mail Mittens with Bronze Plate" />
+    <string id="eq_changeling_aserai_horseman_armor" text="Hive Ring Mail" />
+    <string id="eq_changeling_studded_leather_vambraces" text="Hive Studded Leather Vambraces" />
+    <string id="eq_changeling_aserai_scale_armor_on_cloth" text="Hive Mastercrafted Southern Scale Mail" />
+    <string id="eq_changeling_aserai_scale_armor_on_chain" text="Hive Mastercrafted Southern Scale over Chain Mail" />
+    <string id="eq_changeling_aserai_full_scale_armor_on_chain" text="Hive Mastercrafted Southern Scale over Chain Hauberk" />
+    <string id="eq_changeling_aserai_civil_a" text="Hive Luxury Kaftan with Waistband" />
+    <string id="eq_changeling_khuzait_curved_boots" text="Hive Curved Boots" />
+    <string id="eq_changeling_layered_robe" text="Hive Layered Robe" />
+    <string id="eq_changeling_aserai_civil_d" text="Hive Colored Bisht" />
+    <string id="eq_changeling_short_padded_robe" text="Hive Short Padded Robe" />
+    <string id="eq_changeling_leather_boots" text="Hive Fur Rimmed Curved Boots" />
+    <string id="eq_prisoner_meat" text="Delicacy" />
+    <string id="eq_flight_scroll_50" text="Greater Scroll of Flight" />
+    <string id="eq_flight_scroll_40" text="Scroll of Flight" />
+    <string id="eq_flight_scroll_30" text="Lesser Scroll of Flight" />
+    <string id="P1rL28RT" text="Cart{@Plural}carts{\@}" />
+    <string id="VqCS28U1" text="Handcart{@Plural}handcarts{\@}" />
+    <string id="1O761hqN" text="Wagon{@Plural}wagons{\@}" />
+  </strings>
+</base>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Тексты мода на этом языке. Файлы грузятся после ванильных,
+     поэтому одинаковые id перекрывают их. Список собран tools/lang.py. -->
+<LanguageData id="Français">
+  <LanguageFile xml_path="FR/eq_bandits_fra.xml" />
+  <LanguageFile xml_path="FR/eq_items_fra.xml" />
+  <LanguageFile xml_path="FR/eq_lords_fra.xml" />
+  <LanguageFile xml_path="FR/eq_misc_ui_fra.xml" />
+  <LanguageFile xml_path="FR/eq_npc_fra.xml" />
+  <LanguageFile xml_path="FR/eq_spells_fra.xml" />
+  <LanguageFile xml_path="FR/eq_troops_fra.xml" />
+  <LanguageFile xml_path="FR/eq_world_fra.xml" />
+</LanguageData>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="Deutsch" />
+  </tags>
+  <strings>
+    <string id="eq_merc_camp_name" text="Mercenary camp" />
+    <string id="eq_merc_camp_hire_option" text="Hire mercenaries" />
+    <string id="eq_merc_camp_line_empty" text="Nothing here. Every blade's been taken - come back in a day or two." />
+    <string id="eq_merc_camp_line_greet" text="Camp of the free companies. We sell blades one at a time - if you've got the coin." />
+    <string id="eq_merc_camp_line_show" text="Show me who you've got." />
+    <string id="eq_merc_camp_line_ask_discount" text="Any chance of a discount?" />
+    <string id="eq_merc_camp_line_discount" text="Depends who's asking. Every three points of trust is one percent off the hiring price. Your trust here is {EQ_MERC_RELATION} of {EQ_MERC_RELATION_MAX} - that's {EQ_MERC_DISCOUNT}% off. It grows with coin: one point for every four hundred spent here. And we only count our own - other camps keep their own trust." />
+    <string id="eq_merc_camp_line_ask_stock" text="When will more mercenaries show up?" />
+    <string id="eq_merc_camp_line_stock" text="About {EQ_MERC_COME} show up each day, and those who wait too long go looking for work elsewhere. We can't fit more than {EQ_MERC_LIMIT}; right now we've got {EQ_MERC_STOCK}. The more trust, the more room and the more who come - one extra spot per point of trust, one more recruit for every ten." />
+    <string id="eq_merc_camp_line_leave" text="Some other time." />
+    <string id="eq_merc_camp_empty_tooltip" text="Nobody's here right now - come back in a day or two." />
+    <string id="eq_merc_camp_title" text="Mercenary camp near {TOWN}" />
+    <string id="eq_prisoner_butcher_hint" text="Turn into mincemeat" />
+    <string id="eq_hair_plain" text="Solid" />
+    <string id="eq_hair_stripe" text="Striped" />
+    <string id="eq_wings_label" text="Wings: {STATE}" />
+    <string id="eq_tail_label" text="Tail: {STATE}" />
+    <string id="eq_horn_label" text="Horn: {STATE}" />
+    <string id="eq_state_on" text="on" />
+    <string id="eq_state_off" text="off" />
+    <string id="eq_race_party_menu" text="Equestria: race review" />
+    <string id="eq_race_restored_note" text="Equestria: restored race for {COUNT} hero(es)" />
+    <string id="eq_start_poor" text="Ordinary humble start" />
+    <string id="eq_start_mercenary" text="Mercenary of a kingdom (clan tier 1)" />
+    <string id="eq_start_vassal" text="Vassal of a kingdom (clan tier 3, one fief)" />
+    <string id="eq_start_king" text="Ruler of a kingdom (clan tier 4, one fief)" />
+    <string id="eq_start_title" text="Choose your start" />
+    <string id="eq_start_desc" text="How do you begin your adventure in Equestria?" />
+    <string id="eq_start_confirm" text="Confirm" />
+    <string id="eq_start_poor_note" text="Equestria: an ordinary humble start" />
+    <string id="eq_start_kingdom_title" text="Choose a kingdom" />
+    <string id="eq_start_kingdom_desc" text="Which kingdom will you serve?" />
+    <string id="eq_start_done" text="Equestria: start applied ({TYPE} of {KINGDOM})" />
+    <string id="eq_start_type_mercenary" text="mercenary" />
+    <string id="eq_start_type_vassal" text="vassal" />
+    <string id="eq_start_type_king" text="ruler" />
+    <string id="eq_flight_speed" text="Flight speed" />
+    <string id="eq_race_tooltip" text="Race" />
+    <string id="eq_butcher_meat" text="+{MEAT} meat (party total: {TOTAL})" />
+    <string id="eq_banner_group" text="Equestria" />
+  </strings>
+</base>

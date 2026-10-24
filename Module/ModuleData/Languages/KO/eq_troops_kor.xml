@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="한국어" />
+  </tags>
+  <strings>
+    <string id="eq_troop_imperial_recruit" text="Equestrian Recruit" />
+    <string id="eq_troop_imperial_infantryman" text="Equestrian Guard" />
+    <string id="eq_troop_imperial_trained_infantryman" text="Royal Guard" />
+    <string id="eq_troop_imperial_veteran_infantryman" text="Royal Guard Veteran" />
+    <string id="eq_troop_imperial_legionary" text="Solar Guard" />
+    <string id="eq_troop_imperial_menavliaton" text="Canterlot Halberdier" />
+    <string id="eq_troop_imperial_elite_menavliaton" text="Warden of the Canterlot Gates" />
+    <string id="eq_troop_imperial_archer" text="Unicorn Archer" />
+    <string id="eq_troop_imperial_trained_archer" text="Veteran Unicorn Archer" />
+    <string id="eq_troop_imperial_veteran_archer" text="Unicorn Spellcaster" />
+    <string id="eq_troop_imperial_palatine_guard" text="Princess's Arcane Guard" />
+    <string id="eq_troop_bucellarii" text="Luna's Night Guard" />
+    <string id="eq_troop_imperial_crossbowman" text="Manehattan Crossbowpony" />
+    <string id="eq_troop_imperial_sergeant_crossbowman" text="Manehattan Crossbow Sergeant" />
+    <string id="eq_troop_imperial_vigla_recruit" text="Flight Academy Cadet" />
+    <string id="eq_troop_imperial_equite" text="Pegasus Scout" />
+    <string id="eq_troop_imperial_heavy_horseman" text="Pegasus Stormflyer" />
+    <string id="eq_troop_imperial_cataphract" text="Wonderbolt" />
+    <string id="eq_troop_imperial_elite_cataphract" text="Wonderbolt Ace" />
+    <string id="eq_troop_imperial_militia_spearman" text="Ponyville Militia" />
+    <string id="eq_troop_imperial_militia_archer" text="Militia Archer" />
+    <string id="eq_troop_imperial_militia_veteran_spearman" text="Seasoned Militia" />
+    <string id="eq_troop_imperial_militia_veteran_archer" text="Seasoned Militia Archer" />
+    <string id="eq_troop_looter" text="Looter" />
+    <string id="eq_troop_deserter" text="Deserter" />
+    <string id="eq_troop_sea_raiders_bandit" text="Storm King Pirate" />
+    <string id="eq_troop_sea_raiders_raider" text="Storm King Boarder" />
+    <string id="eq_troop_sea_raiders_chief" text="Storm King Captain" />
+    <string id="eq_troop_mountain_bandits_bandit" text="Mountain Prospector" />
+    <string id="eq_troop_mountain_bandits_raider" text="Diamond Dog Bruiser" />
+    <string id="eq_troop_mountain_bandits_chief" text="Diamond Dog Leader" />
+    <string id="eq_troop_forest_bandits_bandit" text="Forest Wanderer" />
+    <string id="eq_troop_forest_bandits_raider" text="Everfree Free Archer" />
+    <string id="eq_troop_forest_bandits_chief" text="Timberwolf Chieftain" />
+    <string id="eq_troop_desert_bandits_bandit" text="Badlands Drifter" />
+    <string id="eq_troop_desert_bandits_raider" text="Desert Raider" />
+    <string id="eq_troop_desert_bandits_chief" text="Vulture" />
+    <string id="eq_troop_steppe_bandits_bandit" text="Steppe Raider" />
+    <string id="eq_troop_steppe_bandits_raider" text="Buffalo Raider" />
+    <string id="eq_troop_steppe_bandits_chief" text="Raid Leader" />
+    <string id="eq_troop_sea_raiders_boss" text="Storm King Admiral" />
+    <string id="eq_troop_mountain_bandits_boss" text="Diamond Dog King" />
+    <string id="eq_troop_forest_bandits_boss" text="Master of the Everfree" />
+    <string id="eq_troop_desert_bandits_boss" text="Vulture Boss" />
+    <string id="eq_troop_steppe_bandits_boss" text="Buffalo Raid Chief" />
+    <string id="eq_troop_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_aserai_recruit" text="Young Drone" />
+    <string id="eq_troop_aserai_tribesman" text="Swarm Drone" />
+    <string id="eq_troop_aserai_skirmisher" text="Spitter" />
+    <string id="eq_troop_aserai_archer" text="Hive Shooter" />
+    <string id="eq_troop_aserai_master_archer" text="Queen's True Spitter" />
+    <string id="eq_troop_aserai_footman" text="Swarm Fighter" />
+    <string id="eq_troop_aserai_infantry" text="Hive Warrior" />
+    <string id="eq_troop_aserai_veteran_infantry" text="Hive Veteran" />
+    <string id="eq_troop_aserai_mameluke_soldier" text="Shapeshifter Infiltrator" />
+    <string id="eq_troop_aserai_mameluke_regular" text="Shapeshifter Rider" />
+    <string id="eq_troop_aserai_mameluke_cavalry" text="Winged Hunter" />
+    <string id="eq_troop_aserai_mameluke_heavy_cavalry" text="Queen's Winged Catcher" />
+    <string id="eq_troop_aserai_mameluke_axeman" text="Infiltrator Chopper" />
+    <string id="eq_troop_aserai_mameluke_guard" text="Hive Warden" />
+    <string id="eq_troop_mamluke_palace_guard" text="Throne Room Warden" />
+    <string id="eq_troop_aserai_youth" text="Grub Runner" />
+    <string id="eq_troop_aserai_tribal_horseman" text="Swarm Rider" />
+    <string id="eq_troop_aserai_faris" text="Hive Rider" />
+    <string id="eq_troop_aserai_veteran_faris" text="Senior Hive Rider" />
+    <string id="eq_troop_aserai_vanguard_faris" text="Queen's Vanguard" />
+    <string id="eq_troop_aserai_militia_spearman" text="Hive Militia" />
+    <string id="eq_troop_aserai_militia_archer" text="Spitter Militia" />
+    <string id="eq_troop_aserai_militia_veteran_spearman" text="Veteran Hive Militia" />
+    <string id="eq_troop_aserai_militia_veteran_archer" text="Veteran Spitter Militia" />
+    <string id="eq_troop_khuzait_nomad" text="Griffonstone Fledgling" />
+    <string id="eq_troop_khuzait_tribal_warrior" text="Gryphon Fighter" />
+    <string id="eq_troop_khuzait_raider" text="Gryphon Raider" />
+    <string id="eq_troop_khuzait_horse_archer" text="Griffonstone Sky Archer" />
+    <string id="eq_troop_khuzait_heavy_horse_archer" text="Heavy Sky Archer" />
+    <string id="eq_troop_khuzait_horseman" text="Sky Watcher" />
+    <string id="eq_troop_khuzait_lancer" text="Winged Lancer of Griffonstone" />
+    <string id="eq_troop_khuzait_heavy_lancer" text="Winged Raider" />
+    <string id="eq_troop_khuzait_footman" text="Nest Guard" />
+    <string id="eq_troop_khuzait_hunter" text="Cliff Hunter" />
+    <string id="eq_troop_khuzait_archer" text="Griffonstone Archer" />
+    <string id="eq_troop_khuzait_marksman" text="Keen Eye of Boreas" />
+    <string id="eq_troop_khuzait_spearman" text="Nest Spearman" />
+    <string id="eq_troop_khuzait_spear_infantry" text="Veteran Nest Spearman" />
+    <string id="eq_troop_khuzait_darkhan" text="Griffonstone Axebearer" />
+    <string id="eq_troop_khuzait_noble_son" text="Highborn Nest Son" />
+    <string id="eq_troop_khuzait_qanqli" text="Squire of the Idol" />
+    <string id="eq_troop_khuzait_torguud" text="Young Talonbearer" />
+    <string id="eq_troop_khuzait_kheshig" text="Talonbearer of Griffonstone" />
+    <string id="eq_troop_khuzait_khans_guard" text="Guard of the Idol of Boreas" />
+    <string id="eq_troop_khuzait_militia_spearman" text="Griffonstone Militia" />
+    <string id="eq_troop_khuzait_militia_archer" text="Griffonstone Militia Archer" />
+    <string id="eq_troop_khuzait_militia_veteran_spearman" text="Veteran Griffonstone Militia" />
+    <string id="eq_troop_khuzait_militia_veteran_archer" text="Veteran Griffonstone Militia Archer" />
+    <string id="eq_troop_battanian_volunteer" text="Young Stag" />
+    <string id="eq_troop_battanian_clanwarrior" text="Woodland Fighter" />
+    <string id="eq_troop_battanian_trained_warrior" text="Olenian Warrior" />
+    <string id="eq_troop_battanian_picked_warrior" text="Picked Olenian Warrior" />
+    <string id="eq_troop_battanian_oathsworn" text="Guard of Deer Grove" />
+    <string id="eq_troop_battanian_scout" text="Olenian Scout" />
+    <string id="eq_troop_battanian_horseman" text="Antlered Raider" />
+    <string id="eq_troop_battanian_woodrunner" text="Woodsman" />
+    <string id="eq_troop_battanian_raider" text="Olenian Brigand" />
+    <string id="eq_troop_battanian_falxman" text="Thicket Spearman" />
+    <string id="eq_troop_battanian_veteran_falxman" text="Heavy Olenian Spearman" />
+    <string id="eq_troop_battanian_skirmisher" text="Olenian Javelineer" />
+    <string id="eq_troop_battanian_veteran_skirmisher" text="Veteran Olenian Javelineer" />
+    <string id="eq_troop_battanian_wildling" text="Antlered Batterer" />
+    <string id="eq_troop_battanian_mounted_skirmisher" text="Olenian Skirmisher" />
+    <string id="eq_troop_battanian_highborn_youth" text="Son of a Deer House" />
+    <string id="eq_troop_battanian_highborn_warrior" text="Highborn Olenian Warrior" />
+    <string id="eq_troop_battanian_hero" text="Retainer of the King of Olenia" />
+    <string id="eq_troop_battanian_fian" text="Archer of the Council of Seven" />
+    <string id="eq_troop_battanian_fian_champion" text="Champion of the Council of Seven" />
+    <string id="eq_troop_battanian_militia_spearman" text="Olenian Militia" />
+    <string id="eq_troop_battanian_militia_archer" text="Olenian Militia Archer" />
+    <string id="eq_troop_battanian_militia_veteran_spearman" text="Veteran Olenian Militia" />
+    <string id="eq_troop_battanian_militia_veteran_archer" text="Veteran Olenian Militia Archer" />
+    <string id="eq_troop_vlandian_recruit" text="Young Dragon" />
+    <string id="eq_troop_vlandian_levy_crossbowman" text="Dragon Crossbowman" />
+    <string id="eq_troop_vlandian_crossbowman" text="Ash Crossbowman" />
+    <string id="eq_troop_vlandian_hardened_crossbowman" text="Hardened Ash Crossbowman" />
+    <string id="eq_troop_vlandian_sharpshooter" text="Volcano Marksman" />
+    <string id="eq_troop_vlandian_footman" text="Dragon Fighter" />
+    <string id="eq_troop_vlandian_spearman" text="Ash Spearman" />
+    <string id="eq_troop_vlandian_billman" text="Hooked Dragon" />
+    <string id="eq_troop_vlandian_voulgier" text="Lava Axebearer" />
+    <string id="eq_troop_vlandian_pikeman" text="Volcano Pikeman" />
+    <string id="eq_troop_vlandian_swordsman" text="Blade of the Dragon Lands" />
+    <string id="eq_troop_vlandian_sergeant" text="Dragon Warrior" />
+    <string id="eq_troop_vlandian_light_cavalry" text="Canyon Prowler" />
+    <string id="eq_troop_vlandian_cavalry" text="Flying Raider" />
+    <string id="eq_troop_vlandian_vanguard" text="Vanguard of the Gauntlet" />
+    <string id="eq_troop_vlandian_squire" text="Scion of a Dragon Clan" />
+    <string id="eq_troop_vlandian_gallant" text="Young Warden of the Scepter" />
+    <string id="eq_troop_vlandian_knight" text="Warden of the Scepter" />
+    <string id="eq_troop_vlandian_champion" text="Champion of the Gauntlet" />
+    <string id="eq_troop_vlandian_banner_knight" text="Dragon Lord's Retainer" />
+    <string id="eq_troop_vlandian_militia_spearman" text="Dragon Lands Militia" />
+    <string id="eq_troop_vlandian_militia_archer" text="Dragon Lands Militia Crossbowman" />
+    <string id="eq_troop_vlandian_militia_veteran_spearman" text="Veteran Dragon Lands Militia" />
+    <string id="eq_troop_vlandian_militia_veteran_archer" text="Veteran Dragon Lands Militia Crossbowman" />
+    <string id="eq_troop_vlandian_infantry" text="Dragon Lands Infantryman" />
+    <string id="eq_troop_sturgian_recruit" text="Young Yak" />
+    <string id="eq_troop_sturgian_warrior" text="Yak Fighter" />
+    <string id="eq_troop_sturgian_soldier" text="Yak Footman" />
+    <string id="eq_troop_sturgian_spearman" text="Yakistown Spearman" />
+    <string id="eq_troop_sturgian_shock_troop" text="Veteran Yakistown Spearman" />
+    <string id="eq_troop_sturgian_veteran_warrior" text="Yakyakistan Axebearer" />
+    <string id="eq_troop_sturgian_berzerker" text="Smasher" />
+    <string id="eq_troop_sturgian_ulfhednar" text="Fury of the Glacier" />
+    <string id="eq_troop_sturgian_woodsman" text="Glacier Hunter" />
+    <string id="eq_troop_sturgian_brigand" text="Yak Raider" />
+    <string id="eq_troop_sturgian_hardened_brigand" text="Hardened Glacier Raider" />
+    <string id="eq_troop_sturgian_horse_raider" text="Tundra Raider" />
+    <string id="eq_troop_sturgian_hunter" text="Tundra Tracker" />
+    <string id="eq_troop_sturgian_archer" text="Yakyakistan Archer" />
+    <string id="eq_troop_sturgian_veteran_bowman" text="Glacier Marksman" />
+    <string id="eq_troop_sturgian_warrior_son" text="Highborn Yak's Son" />
+    <string id="eq_troop_varyag" text="Yakistown Guard" />
+    <string id="eq_troop_varyag_veteran" text="Senior Yakistown Guard" />
+    <string id="eq_troop_druzhinnik" text="Prince's Bodyguard" />
+    <string id="eq_troop_druzhinnik_champion" text="Prince Rutherford's Guard" />
+    <string id="eq_troop_sturgian_militia_spearman" text="Yakyakistan Militia" />
+    <string id="eq_troop_sturgian_militia_archer" text="Yakyakistan Militia Archer" />
+    <string id="eq_troop_sturgian_militia_veteran_spearman" text="Veteran Yakyakistan Militia" />
+    <string id="eq_troop_sturgian_militia_veteran_archer" text="Veteran Yakyakistan Militia Archer" />
+    <string id="eq_troop_armed_trader_aserai" text="Armed Trader of the Hive" />
+    <string id="eq_troop_armed_trader_battania" text="Armed Trader of Olenia" />
+    <string id="eq_troop_armed_trader_empire" text="Armed Trader of Equestria" />
+    <string id="eq_troop_armed_trader_khuzait" text="Armed Trader of Griffonstone" />
+    <string id="eq_troop_armed_trader_sturgia" text="Armed Trader of Yakyakistan" />
+    <string id="eq_troop_armed_trader_vlandia" text="Armed Trader of the Dragon Lands" />
+    <string id="eq_troop_caravan_guard_aserai" text="Caravan Guard of the Hive" />
+    <string id="eq_troop_caravan_guard_battania" text="Caravan Guard of Olenia" />
+    <string id="eq_troop_caravan_guard_empire" text="Caravan Guard of Equestria" />
+    <string id="eq_troop_caravan_guard_khuzait" text="Caravan Guard of Griffonstone" />
+    <string id="eq_troop_caravan_guard_sturgia" text="Caravan Guard of Yakyakistan" />
+    <string id="eq_troop_caravan_guard_vlandia" text="Caravan Guard of the Dragon Lands" />
+    <string id="eq_troop_caravan_master_aserai" text="Caravan Master of the Hive" />
+    <string id="eq_troop_caravan_master_battania" text="Caravan Master of Olenia" />
+    <string id="eq_troop_caravan_master_empire" text="Caravan Master of Equestria" />
+    <string id="eq_troop_caravan_master_khuzait" text="Caravan Master of Griffonstone" />
+    <string id="eq_troop_caravan_master_sturgia" text="Caravan Master of Yakyakistan" />
+    <string id="eq_troop_caravan_master_vlandia" text="Caravan Master of the Dragon Lands" />
+    <string id="eq_troop_fighter_aserai" text="Village Fighter of the Hive" />
+    <string id="eq_troop_fighter_battania" text="Village Fighter of Olenia" />
+    <string id="eq_troop_fighter_empire" text="Village Fighter of Equestria" />
+    <string id="eq_troop_fighter_khuzait" text="Village Fighter of Griffonstone" />
+    <string id="eq_troop_fighter_sturgia" text="Village Fighter of Yakyakistan" />
+    <string id="eq_troop_fighter_vlandia" text="Village Fighter of the Dragon Lands" />
+    <string id="eq_troop_veteran_caravan_guard_aserai" text="Veteran Caravan Guard of the Hive" />
+    <string id="eq_troop_veteran_caravan_guard_battania" text="Veteran Caravan Guard of Olenia" />
+    <string id="eq_troop_veteran_caravan_guard_empire" text="Veteran Caravan Guard of Equestria" />
+    <string id="eq_troop_veteran_caravan_guard_khuzait" text="Veteran Caravan Guard of Griffonstone" />
+    <string id="eq_troop_veteran_caravan_guard_sturgia" text="Veteran Caravan Guard of Yakyakistan" />
+    <string id="eq_troop_veteran_caravan_guard_vlandia" text="Veteran Caravan Guard of the Dragon Lands" />
+    <string id="eq_troop_village_woman_aserai" text="Peasant Woman of the Hive" />
+    <string id="eq_troop_village_woman_battania" text="Peasant Woman of Olenia" />
+    <string id="eq_troop_village_woman_empire" text="Peasant Woman of Equestria" />
+    <string id="eq_troop_village_woman_khuzait" text="Peasant Woman of Griffonstone" />
+    <string id="eq_troop_village_woman_sturgia" text="Peasant Woman of Yakyakistan" />
+    <string id="eq_troop_village_woman_vlandia" text="Peasant Woman of the Dragon Lands" />
+    <string id="eq_troop_villager_aserai" text="Peasant of the Hive" />
+    <string id="eq_troop_villager_battania" text="Peasant of Olenia" />
+    <string id="eq_troop_villager_empire" text="Peasant of Equestria" />
+    <string id="eq_troop_villager_khuzait" text="Peasant of Griffonstone" />
+    <string id="eq_troop_villager_sturgia" text="Peasant of Yakyakistan" />
+    <string id="eq_troop_villager_vlandia" text="Peasant of the Dragon Lands" />
+    <string id="eq_troop_spc_aserai_headman_1" text="Headman of the Hive" />
+    <string id="eq_troop_spc_aserai_headman_2" text="Headman of the Hive" />
+    <string id="eq_troop_spc_aserai_headman_3" text="Headman of the Hive" />
+    <string id="eq_troop_spc_battania_artisan_1" text="Artisan of Olenia" />
+    <string id="eq_troop_spc_battania_artisan_2" text="Artisan of Olenia" />
+    <string id="eq_troop_spc_battania_artisan_3" text="Artisan of Olenia" />
+    <string id="eq_troop_spc_battania_headman_1" text="Headman of Olenia" />
+    <string id="eq_troop_spc_battania_headman_2" text="Headman of Olenia" />
+    <string id="eq_troop_spc_battania_headman_3" text="Headman of Olenia" />
+    <string id="eq_troop_spc_battania_rural_notable_2" text="Rural Notable of Olenia" />
+    <string id="eq_troop_spc_e3_character_1" text="Artisan of the Hive" />
+    <string id="eq_troop_spc_e3_character_2" text="Artisan of Mount Aris" />
+    <string id="eq_troop_spc_e3_character_3" text="Artisan of Yakyakistan" />
+    <string id="eq_troop_spc_e3_character_4" text="Artisan of Yakyakistan" />
+    <string id="eq_troop_spc_e3_character_5" text="Artisan of Equestria" />
+    <string id="eq_troop_spc_e3_character_6" text="Artisan of Mount Aris" />
+    <string id="eq_troop_spc_empire_headman_1" text="Headman of Equestria" />
+    <string id="eq_troop_spc_empire_headman_2" text="Headman of Equestria" />
+    <string id="eq_troop_spc_empire_headman_3" text="Headman of Equestria" />
+    <string id="eq_troop_spc_khuzait_artisan_1" text="Artisan of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_artisan_2" text="Artisan of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_artisan_3" text="Artisan of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_gangleader_1" text="Gang Leader of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_gangleader_2" text="Gang Leader of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_gangleader_3" text="Gang Leader of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_headman_1" text="Headman of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_headman_2" text="Headman of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_headman_3" text="Headman of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_rural_notable_1" text="Rural Notable of Griffonstone" />
+    <string id="eq_troop_spc_khuzait_rural_notable_2" text="Rural Notable of Griffonstone" />
+    <string id="eq_troop_spc_notable_aserai_0" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_0b" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_1" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_10" text="Artisan of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_11" text="Rural Notable of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_12" text="Rural Notable of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_1b" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_2" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_2b" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_3" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_3b" text="Merchant of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_4" text="Preacher of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_5" text="Preacher of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_6" text="Preacher of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_7" text="Gang Leader of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_8" text="Gang Leader of the Hive" />
+    <string id="eq_troop_spc_notable_aserai_9" text="Gang Leader of the Hive" />
+    <string id="eq_troop_spc_notable_battania_0b" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_0c" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_0d" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_0e" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_1" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_1b" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_battania_2" text="Preacher of Olenia" />
+    <string id="eq_troop_spc_notable_battania_3" text="Preacher of Olenia" />
+    <string id="eq_troop_spc_notable_battania_4" text="Gang Leader of Olenia" />
+    <string id="eq_troop_spc_notable_battania_5" text="Gang Leader of Olenia" />
+    <string id="eq_troop_spc_notable_battania_merchant_1" text="Merchant of Olenia" />
+    <string id="eq_troop_spc_notable_empire_0" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_0b" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_1" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_10" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_empire_11" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_empire_12" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_empire_13" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_empire_1b" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_2" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_21" text="Rural Notable of Equestria" />
+    <string id="eq_troop_spc_notable_empire_22" text="Rural Notable of Equestria" />
+    <string id="eq_troop_spc_notable_empire_2b" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_3" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_3b" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_4" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_4b" text="Merchant of Equestria" />
+    <string id="eq_troop_spc_notable_empire_5" text="Preacher of Equestria" />
+    <string id="eq_troop_spc_notable_empire_6" text="Preacher of Equestria" />
+    <string id="eq_troop_spc_notable_empire_7" text="Preacher of Equestria" />
+    <string id="eq_troop_spc_notable_empire_8" text="Artisan of Equestria" />
+    <string id="eq_troop_spc_notable_empire_9" text="Artisan of Equestria" />
+    <string id="eq_troop_spc_notable_empire_gl1" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_empire_gl4" text="Gang Leader of Equestria" />
+    <string id="eq_troop_spc_notable_khuzait_0b" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_1" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_1b" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_1c" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_2" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_2b" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_3" text="Preacher of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_4" text="Preacher of Griffonstone" />
+    <string id="eq_troop_spc_notable_khuzait_merchant_1" text="Merchant of Griffonstone" />
+    <string id="eq_troop_spc_notable_rural_notable_1" text="Rural Notable of Mount Aris" />
+    <string id="eq_troop_spc_notable_sturgia_0" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_0b" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_1" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_10" text="Rural Notable of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_2" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_2b" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_3" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_3b" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_3c" text="Merchant of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_4" text="Preacher of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_5" text="Preacher of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_6" text="Gang Leader of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_7" text="Gang Leader of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_8" text="Artisan of Yakyakistan" />
+    <string id="eq_troop_spc_notable_sturgia_9" text="Rural Notable of Yakyakistan" />
+    <string id="eq_troop_spc_notable_vlandia_1" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_1b" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_2" text="Preacher of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_3" text="Preacher of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_artisan_1" text="Artisan of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_artisan_2" text="Artisan of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_merch1" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_merch2" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_merch3" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_merch4" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_merch5" text="Merchant of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_rural_1" text="Rural Notable of the Dragon Lands" />
+    <string id="eq_troop_spc_notable_vlandia_rural_2" text="Rural Notable of the Dragon Lands" />
+    <string id="eq_troop_spc_sturgia_headman_1" text="Headman of Yakyakistan" />
+    <string id="eq_troop_spc_sturgia_headman_2" text="Headman of Yakyakistan" />
+    <string id="eq_troop_spc_sturgia_headman_3" text="Headman of Yakyakistan" />
+    <string id="eq_troop_spc_vlandia_gangleader_1" text="Gang Leader of the Dragon Lands" />
+    <string id="eq_troop_spc_vlandia_gangleader_2" text="Gang Leader of the Dragon Lands" />
+    <string id="eq_troop_spc_vlandia_gangleader_3" text="Gang Leader of the Dragon Lands" />
+    <string id="eq_troop_spc_vlandia_headman_1" text="Headman of the Dragon Lands" />
+    <string id="eq_troop_spc_vlandia_headman_2" text="Headman of the Dragon Lands" />
+    <string id="eq_troop_spc_vlandia_headman_3" text="Headman of the Dragon Lands" />
+    <string id="eq_troop_spc_beni_zilal_leader_0" text="Chief of the Shadows of the Hive" />
+    <string id="eq_troop_spc_beni_zilal_leader_1" text="Chief of the Shadows of the Hive" />
+    <string id="eq_troop_spc_beni_zilal_leader_2" text="Chief of the Shadows of the Hive" />
+    <string id="eq_troop_spc_beni_zilal_leader_3" text="Chief of the Shadows of the Hive" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_0" text="Chief of the Brotherhood of the Everfree" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_1" text="Chief of the Brotherhood of the Everfree" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_2" text="Chief of the Brotherhood of the Everfree" />
+    <string id="eq_troop_spc_brotherhood_of_woods_leader_3" text="Chief of the Brotherhood of the Everfree" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_0" text="Chief of the Captain Celaeno's Sky Pirates" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_1" text="Chief of the Captain Celaeno's Sky Pirates" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_2" text="Chief of the Captain Celaeno's Sky Pirates" />
+    <string id="eq_troop_spc_company_of_the_boar_leader_3" text="Chief of the Captain Celaeno's Sky Pirates" />
+    <string id="eq_troop_spc_eleftheroi_leader_0" text="Chief of the The Equals of Our Town" />
+    <string id="eq_troop_spc_eleftheroi_leader_1" text="Chief of the The Equals of Our Town" />
+    <string id="eq_troop_spc_eleftheroi_leader_2" text="Chief of the The Equals of Our Town" />
+    <string id="eq_troop_spc_eleftheroi_leader_3" text="Chief of the The Equals of Our Town" />
+    <string id="eq_troop_spc_embers_of_flame_leader_0" text="Chief of the The Golden Horseshoe Company" />
+    <string id="eq_troop_spc_embers_of_flame_leader_1" text="Chief of the The Golden Horseshoe Company" />
+    <string id="eq_troop_spc_embers_of_flame_leader_2" text="Chief of the The Golden Horseshoe Company" />
+    <string id="eq_troop_spc_embers_of_flame_leader_3" text="Chief of the The Golden Horseshoe Company" />
+    <string id="eq_troop_spc_forest_people_leader_0" text="Chief of the Garble's Gang" />
+    <string id="eq_troop_spc_forest_people_leader_1" text="Chief of the Garble's Gang" />
+    <string id="eq_troop_spc_forest_people_leader_2" text="Chief of the Garble's Gang" />
+    <string id="eq_troop_spc_forest_people_leader_3" text="Chief of the Garble's Gang" />
+    <string id="eq_troop_spc_ghilman_leader_0" text="Chief of the Abyssinian Mercenaries" />
+    <string id="eq_troop_spc_ghilman_leader_1" text="Chief of the Abyssinian Mercenaries" />
+    <string id="eq_troop_spc_ghilman_leader_2" text="Chief of the Abyssinian Mercenaries" />
+    <string id="eq_troop_spc_ghilman_leader_3" text="Chief of the Abyssinian Mercenaries" />
+    <string id="eq_troop_spc_hidden_hand_leader_0" text="Chief of the The Flim Flam Brothers' Enterprise" />
+    <string id="eq_troop_spc_hidden_hand_leader_1" text="Chief of the The Flim Flam Brothers' Enterprise" />
+    <string id="eq_troop_spc_hidden_hand_leader_2" text="Chief of the The Flim Flam Brothers' Enterprise" />
+    <string id="eq_troop_spc_hidden_hand_leader_3" text="Chief of the The Flim Flam Brothers' Enterprise" />
+    <string id="eq_troop_spc_jawwal_leader_0" text="Chief of the Chrysalis's Faithful" />
+    <string id="eq_troop_spc_jawwal_leader_1" text="Chief of the Chrysalis's Faithful" />
+    <string id="eq_troop_spc_jawwal_leader_2" text="Chief of the Chrysalis's Faithful" />
+    <string id="eq_troop_spc_jawwal_leader_3" text="Chief of the Chrysalis's Faithful" />
+    <string id="eq_troop_spc_karakhuzaits_leader_0" text="Chief of the Black Yaks" />
+    <string id="eq_troop_spc_karakhuzaits_leader_1" text="Chief of the Black Yaks" />
+    <string id="eq_troop_spc_karakhuzaits_leader_2" text="Chief of the Black Yaks" />
+    <string id="eq_troop_spc_karakhuzaits_leader_3" text="Chief of the Black Yaks" />
+    <string id="eq_troop_spc_lakepike_leader_0" text="Chief of the Dragonfire" />
+    <string id="eq_troop_spc_lakepike_leader_1" text="Chief of the Dragonfire" />
+    <string id="eq_troop_spc_lakepike_leader_2" text="Chief of the Dragonfire" />
+    <string id="eq_troop_spc_lakepike_leader_3" text="Chief of the Dragonfire" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_0" text="Chief of the Moon Wolves" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_1" text="Chief of the Moon Wolves" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_2" text="Chief of the Moon Wolves" />
+    <string id="eq_troop_spc_legion_of_the_betrayed_leader_3" text="Chief of the Moon Wolves" />
+    <string id="eq_troop_spc_skolderbrotva_leader_0" text="Chief of the Free Blades of Klugetown" />
+    <string id="eq_troop_spc_skolderbrotva_leader_1" text="Chief of the Free Blades of Klugetown" />
+    <string id="eq_troop_spc_skolderbrotva_leader_2" text="Chief of the Free Blades of Klugetown" />
+    <string id="eq_troop_spc_skolderbrotva_leader_3" text="Chief of the Free Blades of Klugetown" />
+    <string id="eq_troop_spc_wolfskins_leader_0" text="Chief of the Blades of Mount Aris" />
+    <string id="eq_troop_spc_wolfskins_leader_1" text="Chief of the Blades of Mount Aris" />
+    <string id="eq_troop_spc_wolfskins_leader_2" text="Chief of the Blades of Mount Aris" />
+    <string id="eq_troop_spc_wolfskins_leader_3" text="Chief of the Blades of Mount Aris" />
+    <string id="eq_troop_beni_zilal_tier_1" text="Young Shadow" />
+    <string id="eq_troop_beni_zilal_tier_2" text="Hive Shadow" />
+    <string id="eq_troop_beni_zilal_tier_3" text="Elder Shadow" />
+    <string id="eq_troop_brotherhood_of_woods_tier_1" text="Novice Ranger" />
+    <string id="eq_troop_brotherhood_of_woods_tier_2" text="Brotherhood Ranger" />
+    <string id="eq_troop_brotherhood_of_woods_tier_3" text="Brotherhood Elder Ranger" />
+    <string id="eq_troop_company_of_the_boar_tier_1" text="Skyship Deckhand" />
+    <string id="eq_troop_company_of_the_boar_tier_2" text="Sky Pirate" />
+    <string id="eq_troop_company_of_the_boar_tier_3" text="Celaeno's Master Gunner" />
+    <string id="eq_troop_eleftheroi_tier_1" text="Equal Militiaman" />
+    <string id="eq_troop_eleftheroi_tier_2" text="Equal Spearpony" />
+    <string id="eq_troop_eleftheroi_tier_3" text="Senior Equal" />
+    <string id="eq_troop_embers_of_flame_tier_1" text="Golden Horseshoe Recruit" />
+    <string id="eq_troop_embers_of_flame_tier_2" text="Golden Horseshoe Soldier" />
+    <string id="eq_troop_embers_of_flame_tier_3" text="Golden Horseshoe Veteran" />
+    <string id="eq_troop_forest_people_tier_1" text="Garble's Punk" />
+    <string id="eq_troop_forest_people_tier_2" text="Gang Bully" />
+    <string id="eq_troop_forest_people_tier_3" text="Garble's Right Claw" />
+    <string id="eq_troop_ghilman_tier_1" text="Klugetown Hireling" />
+    <string id="eq_troop_ghilman_tier_2" text="Abyssinian Blade" />
+    <string id="eq_troop_ghilman_tier_3" text="Abyssinian Veteran" />
+    <string id="eq_troop_hidden_hand_tier_1" text="Fairground Barker" />
+    <string id="eq_troop_hidden_hand_tier_2" text="Wagon Guard" />
+    <string id="eq_troop_hidden_hand_tier_3" text="Brothers' Enforcer" />
+    <string id="eq_troop_jawwal_tier_1" text="Loyal Drone" />
+    <string id="eq_troop_jawwal_tier_2" text="Chrysalis Avenger" />
+    <string id="eq_troop_jawwal_tier_3" text="Chrysalis Blade" />
+    <string id="eq_troop_karakhuzaits_tier_1" text="Young Black Yak" />
+    <string id="eq_troop_karakhuzaits_tier_2" text="Black Yak" />
+    <string id="eq_troop_karakhuzaits_tier_3" text="Black Yak Smasher" />
+    <string id="eq_troop_lakepike_tier_1" text="Young Firebreather" />
+    <string id="eq_troop_lakepike_tier_2" text="Dragon Hireling" />
+    <string id="eq_troop_lakepike_tier_3" text="Dragonflame Veteran" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_1" text="Night Watchpony" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_2" text="Moon Wolf" />
+    <string id="eq_troop_legion_of_the_betrayed_tier_3" text="Midnight Blade" />
+    <string id="eq_troop_skolderbrotva_tier_1" text="Harbour Brawler" />
+    <string id="eq_troop_skolderbrotva_tier_2" text="Free Blade" />
+    <string id="eq_troop_skolderbrotva_tier_3" text="Scaled Veteran" />
+    <string id="eq_troop_wolfskins_tier_1" text="Young Aris Blade" />
+    <string id="eq_troop_wolfskins_tier_2" text="Mount Aris Blade" />
+    <string id="eq_troop_wolfskins_tier_3" text="Aris Sea Veteran" />
+    <string id="eq_troop_eq_hg_caravan_guard_sturgia" text="Caravan Guard of Mount Aris" />
+    <string id="eq_troop_eq_hg_caravan_master_sturgia" text="Caravan Master of Mount Aris" />
+    <string id="eq_troop_eq_hg_druzhinnik" text="Warden of the Pearl" />
+    <string id="eq_troop_eq_hg_druzhinnik_champion" text="Champion of the Pearl" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_0" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_0b" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_1" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_10" text="Rural Notable of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_2" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_2b" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3b" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_3c" text="Merchant of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_4" text="Preacher of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_5" text="Preacher of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_6" text="Gang Leader of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_7" text="Gang Leader of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_8" text="Artisan of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_notable_sturgia_9" text="Rural Notable of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_1" text="Headman of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_2" text="Headman of Mount Aris" />
+    <string id="eq_troop_eq_hg_spc_sturgia_headman_3" text="Headman of Mount Aris" />
+    <string id="eq_troop_eq_hg_sturgian_archer" text="Mount Aris Archer" />
+    <string id="eq_troop_eq_hg_sturgian_berzerker" text="Reef Wildling" />
+    <string id="eq_troop_eq_hg_sturgian_brigand" text="Seaquestria Raider" />
+    <string id="eq_troop_eq_hg_sturgian_hardened_brigand" text="Hardened Seaquestria Raider" />
+    <string id="eq_troop_eq_hg_sturgian_horse_raider" text="Flying Harpooner" />
+    <string id="eq_troop_eq_hg_sturgian_hunter" text="Sky Scout" />
+    <string id="eq_troop_eq_hg_sturgian_militia_archer" text="Mount Aris Militia Archer" />
+    <string id="eq_troop_eq_hg_sturgian_militia_spearman" text="Mount Aris Militia" />
+    <string id="eq_troop_eq_hg_sturgian_militia_veteran_archer" text="Veteran Mount Aris Militia Archer" />
+    <string id="eq_troop_eq_hg_sturgian_militia_veteran_spearman" text="Veteran Mount Aris Militia" />
+    <string id="eq_troop_eq_hg_sturgian_recruit" text="Mount Aris Volunteer" />
+    <string id="eq_troop_eq_hg_sturgian_shock_troop" text="Heavy Aris Harpooner" />
+    <string id="eq_troop_eq_hg_sturgian_soldier" text="Trained Warrior of Aris" />
+    <string id="eq_troop_eq_hg_sturgian_spearman" text="Surf Harpooner" />
+    <string id="eq_troop_eq_hg_sturgian_ulfhednar" text="Fury of the Surf" />
+    <string id="eq_troop_eq_hg_sturgian_veteran_bowman" text="Aris Marksman" />
+    <string id="eq_troop_eq_hg_sturgian_veteran_warrior" text="Surf Veteran" />
+    <string id="eq_troop_eq_hg_sturgian_warrior" text="Mount Aris Warrior" />
+    <string id="eq_troop_eq_hg_sturgian_warrior_son" text="Highborn Fledgling" />
+    <string id="eq_troop_eq_hg_sturgian_woodsman" text="Reef Runner" />
+    <string id="eq_troop_eq_hg_varyag" text="Highborn Warrior of Aris" />
+    <string id="eq_troop_eq_hg_varyag_veteran" text="Hero of Mount Aris" />
+    <string id="eq_troop_eq_hg_veteran_caravan_guard_sturgia" text="Veteran Caravan Guard of Mount Aris" />
+    <string id="eq_troop_eq_hg_village_woman_sturgia" text="Peasant Woman of Mount Aris" />
+    <string id="eq_troop_eq_hg_villager_sturgia" text="Peasant of Mount Aris" />
+    <string id="eq_troop_eq_griffon_looter" text="Looter" />
+    <string id="eq_troop_eq_griffon_deserter" text="Deserter" />
+    <string id="eq_troop_eq_griffon_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_griffon_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_eq_hippogriff_looter" text="Looter" />
+    <string id="eq_troop_eq_hippogriff_deserter" text="Deserter" />
+    <string id="eq_troop_eq_hippogriff_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_hippogriff_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_eq_dragon_looter" text="Looter" />
+    <string id="eq_troop_eq_dragon_deserter" text="Deserter" />
+    <string id="eq_troop_eq_dragon_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_dragon_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_eq_yak_looter" text="Looter" />
+    <string id="eq_troop_eq_yak_deserter" text="Deserter" />
+    <string id="eq_troop_eq_yak_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_yak_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_eq_changeling_looter" text="Looter" />
+    <string id="eq_troop_eq_changeling_deserter" text="Deserter" />
+    <string id="eq_troop_eq_changeling_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_changeling_mounted_ransacker" text="Mounted Raider" />
+    <string id="eq_troop_eq_deer_looter" text="Looter" />
+    <string id="eq_troop_eq_deer_deserter" text="Deserter" />
+    <string id="eq_troop_eq_deer_mounted_pillager" text="Mounted Robber" />
+    <string id="eq_troop_eq_deer_mounted_ransacker" text="Mounted Raider" />
+  </strings>
+</base>

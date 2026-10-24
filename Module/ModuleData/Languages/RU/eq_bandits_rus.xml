@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<!-- Постоянные реплики разбойников (BanditInteractionsCampaignBehavior, HideoutConversationsCampaignBehavior).
+
+     У ванильных id вместо текста стоит переменная {EQV_EQ_ГРУППА}, а сами фразы — ниже, вариантами
+     eq_группа_1, _2, ... (подробно — в начале eq_npc_rus.xml). Перед каждым разговором
+     src/EquestriaGreetings.cs выбирает случайный вариант каждой группы.
+     Чтобы добавить фразу — допишите строку со следующим номером (без пропусков), пересборка не нужна.
+     Метки [if:...] и [ib:...] в конце — выражение лица и поза, в игре их не видно.
+     Приветствия и угрозы при встрече — в src/EquestriaGreetings.cs. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <!-- ванильные реплики -> переменные -->
+    <string id="ji2eenPE" text="{EQV_EQ_SURRENDER}" />
+    <string id="n99VA8KP" text="{EQV_EQ_NOSURRENDER}" />
+    <string id="LDhU5urT" text="{EQV_EQ_NOMERCY}" />
+    <string id="IDdyHef9" text="{EQV_EQ_LEAVE}" />
+    <string id="6Wc1XErN" text="{EQV_EQ_NOLEAVE}" />
+    <string id="nYCXzAYH" text="{EQV_EQ_HIDEOUTDUEL}" />
+
+    <!-- разбойники сдаются -->
+    <string id="eq_surrender_1" text="Ладно, ладно, мы сдаёмся! Мы просто хотели дружить... по-своему. Прояви хоть немного доброты." />
+    <string id="eq_surrender_2" text="Всё, всё! Сдаёмся! Только не зови Флаттершай, у неё Взгляд!" />
+    <string id="eq_surrender_3" text="Мы сдаёмся! Честное пони-слово — сердце крест-накрест, кекс в глаз!" />
+    <string id="eq_surrender_4" text="Хорошо, твоя взяла. Можно мы хотя бы оставим себе кексы?" />
+    <string id="eq_surrender_5" text="Сдаёмся! Считай это уроком дружбы — для нас. Мы его выучили, честно-честно." />
+    <string id="eq_surrender_6" text="Не бей! Мы вообще-то хотели стать Вандерболтами, но нас не взяли..." />
+
+    <!-- отказываются сдаваться, начинается бой -->
+    <string id="eq_nosurrender_1" text="Наша дружба крепче твоих мечей! Живыми не возьмёшь![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_2" text="Сдаться? Мы что, похожи на пони, которые сдаются? Ну, может немного... Но не сегодня![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_3" text="Двадцать процентов крутости — и вперёд! В атаку![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_4" text="Тебе нужны наши подковы? Приди и возьми![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_5" text="Ни за что! Мы будем держаться, как Эпплджек за последнее яблоко![if:convo_angry][ib:aggressive]" />
+
+    <!-- игрок отказал в пощаде -->
+    <string id="eq_nomercy_1" text="Вот, значит, как? Ну держись — хоть одному из вас я покажу, что такое крепкая дружба![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_2" text="И это называется гармония?! Ладно, раз так — будет тебе урок, который не забудешь![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_3" text="Ну всё! Сейчас кто-то получит копытом так, что метка отвалится![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_4" text="Без пощады? Тогда и от нас не жди ни кексов, ни открыток![if:convo_angry][ib:aggressive]" />
+
+    <!-- игрок отпустил, разбойники уходят -->
+    <string id="eq_leave_1" text="Ну и славно! Дружеской тебе дороги!" />
+    <string id="eq_leave_2" text="Спасибо, добрый пони! Мы пошли... искать кого-нибудь попроще." />
+    <string id="eq_leave_3" text="Ты не пожалеешь! Наверное. Мы пришлём тебе открытку. Может быть." />
+    <string id="eq_leave_4" text="Уходим, уходим! Никому ни слова, ладно? Особенно Королевской страже." />
+
+    <!-- уйти от разбойников не вышло -->
+    <string id="eq_noleave_1" text="Погоди-погоди... Куда же ты, друг? Мы ещё не закончили." />
+    <string id="eq_noleave_2" text="Не так быстро, Рэйнбоу Дэш! Мы с тобой не договорили." />
+    <string id="eq_noleave_3" text="Эй-эй-эй, вечеринка ещё не кончилась! Пинки бы обиделась." />
+    <string id="eq_noleave_4" text="Уже уходишь? А как же прощальный подарок? Твой кошелёк, например." />
+
+    <!-- главарь логова вызывает на поединок -->
+    <string id="eq_hideoutduel_1" text="Ты! Ты разогнал всех моих друзей! Давай решим это честно — один на один, как старые друзья-враги." />
+    <string id="eq_hideoutduel_2" text="Ты разгромил моё логово и распугал моих ребят. Выходи один на один — посмотрим, чья метка круче!" />
+    <string id="eq_hideoutduel_3" text="Неплохо для туриста. А теперь попробуй меня — без свиты, копыто к копыту." />
+    <string id="eq_hideoutduel_4" text="Ты испортил нам всю вечеринку! Хочешь закончить её? Давай один на один!" />
+
+    <!-- игрок напал — разбойники отвечают первыми (переменная BANDIT_NEUTRAL_GREETING, ставит код) -->
+    <string id="eq_neutral_1" text="Дружба — это чудо, путник. Только наша дружба кусается. Проезжай мимо.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_2" text="Ты не представляешь, какая крепкая у нас дружба. Хочешь почувствовать её на своей шкуре?[if:convo_bared_teeth]" />
+    <string id="eq_neutral_3" text="Мы тут устроили пикник дружбы. Незваных гостей на нём не жалуют." />
+    <string id="eq_neutral_4" text="Улыбнись, путник! Последний, кто не улыбнулся, до сих пор ищет свои подковы.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_5" text="Любовь и терпимость, помнишь? Мы пока терпим. Не испытывай нас.[if:convo_angry]" />
+    <string id="eq_neutral_6" text="Мы просто компания лучших друзей... очень голодных лучших друзей." />
+    <string id="eq_neutral_7" text="Тронешь одного из нас — будешь иметь дело со всеми. Вот такая у нас дружба.[if:convo_aggressive]" />
+    <string id="eq_neutral_8" text="Гармония — это когда ты идёшь своей дорогой, а мы своей. Давай так и сделаем." />
+    <string id="eq_neutral_9" text="Нас больше, чем кажется. За тем холмом ждут друзья — очень много друзей." />
+    <string id="eq_neutral_10" text="Чего тебе? Если пришёл дружить — дружба у нас платная.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_11" text="Ещё шаг — и твоя метка превратится в мишень.[if:convo_bared_teeth]" />
+    <string id="eq_neutral_12" text="Мы не разбойники, мы... искатели меток. Сейчас как раз ищем метку «ограбил путника».[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_13" text="Осторожно! Наш главарь однажды съел целый торт принцессы Селестии. Сам. Без спроса." />
+    <string id="eq_neutral_14" text="Ты что, из Эвервольного леса вышел? Тимбервульфы и то вежливее здороваются." />
+    <string id="eq_neutral_15" text="Великая и Могучая Трикси велела передать: никаких автографов и никаких драк!" />
+    <string id="eq_neutral_16" text="Мы тут пересчитываем камушки для Алмазных Псов. Не мешай, а то собьёмся и расстроимся.[if:convo_angry]" />
+    <string id="eq_neutral_17" text="У нас приказ: всех чужаков угощать кексами. Правда, кексы у нас... особые. Как у Пинки в тёмные дни.[if:convo_bared_teeth]" />
+    <string id="eq_neutral_18" text="Не подходи! У нас тут параспрайты на привязи, и они голодные." />
+    <string id="eq_neutral_19" text="Слыхал про звуковую радугу? Сейчас услышишь, как она звучит у тебя над ухом.[if:convo_aggressive]" />
+    <string id="eq_neutral_20" text="Думаешь, Ночная Кобыла — страшилка для жеребят? Мы тебе её в кошмарах покажем.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_21" text="Уходи подобру-поздорову. Даже Урса Минор с нами не связывается." />
+    <string id="eq_neutral_22" text="Эй! Тут частное яблочное поле. Ну, было частным... до вчерашнего дня." />
+    <string id="eq_neutral_23" text="Мы здесь проездом. Как Флим и Флэм — только без сидра и с дубинками.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_24" text="Скажи спасибо, что сегодня не Ночь Кошмаров. Тогда бы мы не разговаривали." />
+
+    <!-- разбойники напали на игрока. Четыре реплики с одним номером — один разговор: угроза,
+         согласие на выкуп, прощание после выкупа, начало боя. Код берёт номер по отряду и дню. -->
+    <string id="eq_robbery_threat_1" text="Стой, путник! Почувствуй силу нашей дружбы! Или поделись кошельком — друзья ведь делятся.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_1" text="Вот это по-дружески! Показывай, чем богат." />
+    <string id="eq_robbery_done_1" text="Видишь, как легко дружить? Счастливого пути, приятель!" />
+    <string id="eq_robbery_fight_1" text="Не хочешь дружить по-хорошему? Значит, подружимся по-плохому![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_2" text="Эй, пони! Мы собираем пожертвования в фонд дружбы. Взнос обязательный.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_2" text="Щедрость — один из Элементов Гармонии. Посмотрим, насколько ты щедр." />
+    <string id="eq_robbery_done_2" text="Вот это щедрость! Сама Рарити бы тобой гордилась. А теперь проваливай." />
+    <string id="eq_robbery_fight_2" text="Жадничать — не по-дружески. Сейчас мы тебя этому научим![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_3" text="Какая встреча! Мы как раз искали новых друзей. И их золото.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_3" text="Умница. Новые друзья всегда приносят подарки." />
+    <string id="eq_robbery_done_3" text="Лучший подарок — подарок от друга. Беги, пока мы добрые." />
+    <string id="eq_robbery_fight_3" text="Значит, без подарка? Тогда получишь урок дружбы — копытом![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_4" text="Стоять! Дружба — это магия, а магия нынче дорогая. Плати или пожалеешь.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_4" text="Разумно. Обсудим цену нашей дружбы." />
+    <string id="eq_robbery_done_4" text="С тобой приятно иметь дело. До новых встреч, друг!" />
+    <string id="eq_robbery_fight_4" text="Ну держись! Сейчас узнаешь, какова сила нашей дружбы![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_5" text="Попался! Не бойся, мы добрые. Пока ты не начал жадничать.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_5" text="Вот и славно. Выкладывай, что у тебя там." />
+    <string id="eq_robbery_done_5" text="Видишь? Все остались друзьями. Иди и неси гармонию дальше." />
+    <string id="eq_robbery_fight_5" text="Всё-таки начал жадничать... Друзья, за мной![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_6" text="Ни шагу дальше! На этой дороге действует закон дружбы: всё твоё — общее.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_6" text="Правильно. Делиться — это весело!" />
+    <string id="eq_robbery_done_6" text="Вот теперь мы настоящие друзья. Проезжай." />
+    <string id="eq_robbery_fight_6" text="Не хочешь делиться? Тогда возьмём сами — всем дружным табором![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_7" text="Улыбнись, приятель! Это ограбление, но очень дружелюбное.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_7" text="Давай решим всё мирно, как настоящие друзья." />
+    <string id="eq_robbery_done_7" text="Дружба победила! А ты свободен." />
+    <string id="eq_robbery_fight_7" text="Ладно, по-дружески не вышло. Будет больно![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_8" text="Смотрите-ка, одинокий путник. Одному ведь так грустно... Давай мы облегчим твою ношу.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_8" text="Вот и договорились. Показывай свою ношу." />
+    <string id="eq_robbery_done_8" text="Шагается легче, правда? Не благодари, друг." />
+    <string id="eq_robbery_fight_8" text="Сам напросился. Сейчас мы окружим тебя заботой — со всех сторон![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_9" text="Стоять! Братья Флим и Флэм представляют: суперсборщик ваших монет, модель шесть тысяч! Всего один кошелёк![if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_9" text="Отличный выбор, уважаемый покупатель! Гарантия — ровно до ближайшего поворота." />
+    <string id="eq_robbery_done_9" text="Спасибо за покупку! Претензии принимаются в Мейнхеттене. Наверное." />
+    <string id="eq_robbery_fight_9" text="Возврат товара не предусмотрен. Зато предусмотрены тумаки![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_10" text="Ага! Великая и Могучая Трикси предсказала: сегодня ты расстанешься с деньгами![if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_10" text="Мудрое решение. Звёзды одобряют. И Трикси тоже." />
+    <string id="eq_robbery_done_10" text="Представление окончено! Аплодисменты можно оставить при себе, а монеты — нет." />
+    <string id="eq_robbery_fight_10" text="Не веришь в предсказания? Сейчас увидишь фокус «исчезающий путник»![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_11" text="Стой! Это застава Алмазных Псов. За проход — одна блестяшка. Нет блестяшек — значит, копать будешь ты.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_11" text="Блестяшки? Давай сюда, давай! Псы любят блестяшки." />
+    <string id="eq_robbery_done_11" text="Хорошие блестяшки. Проходи, пока мы их нюхаем." />
+    <string id="eq_robbery_fight_11" text="Нет блестяшек — бери лопату! Или получай![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_12" text="Ни с места! Мы тут случайно рассыпали кексы, и за каждый раздавленный — штраф. Ты уже раздавил три.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_12" text="Вот это честно. Кексы оплачены, претензий нет." />
+    <string id="eq_robbery_done_12" text="Приятного аппетита! Только в следующий раз смотри под копыта." />
+    <string id="eq_robbery_fight_12" text="Не будешь платить за кексы? Тогда будешь их отрабатывать — с синяками![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_13" text="Попался, пегасик... ой, то есть пони! Звуковая радуга не спасёт — у нас тут сети натянуты.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_13" text="Не дёргайся, и всё пройдёт быстрее хорошего полёта Вандерболтов." />
+    <string id="eq_robbery_done_13" text="Лети... то есть иди. Двадцать процентов крутости мы у тебя забрали." />
+    <string id="eq_robbery_fight_13" text="Хочешь проверить, кто быстрее? Мы проверим твои рёбра![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_14" text="Тише, путник... Ночная Кобыла вернулась, и ей нужна дань. Нам, то есть.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_14" text="Правильно. Ночь добра к тем, кто платит." />
+    <string id="eq_robbery_done_14" text="Спи спокойно. Если сможешь." />
+    <string id="eq_robbery_fight_14" text="Не боишься темноты? Сейчас станет очень темно![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_15" text="Эй, фермер! Урожай зап-яблок в этом году наш. Вместе с твоими деньгами.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_15" text="Вот это по-соседски. Бабуля Смит бы одобрила. Наверное." />
+    <string id="eq_robbery_done_15" text="Джем из зап-яблок пришлём по почте. Может быть." />
+    <string id="eq_robbery_fight_15" text="Не отдашь урожай — соберём его сами, прямо с твоей шкуры![if:convo_angry][ib:aggressive]" />
+  </strings>
+</base>

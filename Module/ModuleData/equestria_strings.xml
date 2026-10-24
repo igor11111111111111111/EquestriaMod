@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+	<!-- Экран выбора культуры при создании героя (CharacterCreationCultureVM) -->
+	<string
+		id="str_culture_rich_name.equestria"
+		text="{=eq_culture_rich_name}Pony" />
+	<string
+		id="str_culture_description.equestria"
+		text="{=eq_culture_description}You were born a pony — a unicorn, a pegasus or an earth pony. Fate brought your family to the lands of the Empire, and there you grew up: your childhood and youth follow imperial custom." />
+</strings>

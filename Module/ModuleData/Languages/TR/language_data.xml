@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Тексты мода на этом языке. Файлы грузятся после ванильных,
+     поэтому одинаковые id перекрывают их. Список собран tools/lang.py. -->
+<LanguageData id="Türkçe">
+  <LanguageFile xml_path="TR/eq_bandits_tur.xml" />
+  <LanguageFile xml_path="TR/eq_items_tur.xml" />
+  <LanguageFile xml_path="TR/eq_lords_tur.xml" />
+  <LanguageFile xml_path="TR/eq_misc_ui_tur.xml" />
+  <LanguageFile xml_path="TR/eq_npc_tur.xml" />
+  <LanguageFile xml_path="TR/eq_spells_tur.xml" />
+  <LanguageFile xml_path="TR/eq_troops_tur.xml" />
+  <LanguageFile xml_path="TR/eq_world_tur.xml" />
+</LanguageData>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<!-- Приветствия лордов (LordConversationsCampaignBehavior). src/EquestriaGreetings.cs после ванильного
+     выбора подставляет случайный вариант подходящей группы; один лорд в течение дня говорит одно и то же.
+
+     Группы (варианты нумеруются подряд, с 1, без пропусков; пересборка не нужна):
+       eq_lord_meet_    — первая встреча
+       eq_lord_greet_   — обычное приветствие
+       eq_lord_friend_  — отношения с игроком 20 и выше
+       eq_lord_cold_    — отношения -10 и ниже (но не война)
+       eq_lord_attack_  — лорд нападает (война)
+       eq_lord_short_   — снова встретились меньше чем через сутки
+
+     Переменные: {PLAYER.NAME} — имя игрока, {LORD.NAME} — имя лорда, {EQ_LORD_CLAN} — его клан,
+     {EQ_LORD_KINGDOM} — его держава (или клан, если державы нет).
+     Метки [if:...] и [ib:...] — выражение лица и поза, в игре их не видно. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <!-- первая встреча -->
+    <string id="eq_lord_meet_1" text="Приветствую, путник. Я {LORD.NAME} из рода «{EQ_LORD_CLAN}». Не припомню твоей метки — кто ты такой?" />
+    <string id="eq_lord_meet_2" text="Новое лицо! Я {LORD.NAME}, и я служу державе {EQ_LORD_KINGDOM}. А ты, должно быть, из тех, о ком шепчутся в тавернах?" />
+    <string id="eq_lord_meet_3" text="Стой, не спеши. Я {LORD.NAME}. В этих краях принято представляться — даже если ты очень занятой пони." />
+    <string id="eq_lord_meet_4" text="Здравствуй! Я {LORD.NAME} из рода «{EQ_LORD_CLAN}». Селестия учит нас: каждый незнакомец — это друг, с которым мы ещё не выпили чаю." />
+    <string id="eq_lord_meet_5" text="Кого это ветер занёс? Я {LORD.NAME}. Говори, кто ты и зачем пожаловал.[if:convo_thinking]" />
+
+    <!-- обычное приветствие -->
+    <string id="eq_lord_greet_1" text="А, {PLAYER.NAME}. Что привело тебя ко мне?" />
+    <string id="eq_lord_greet_2" text="{PLAYER.NAME}! Какие новости в Эквусе?" />
+    <string id="eq_lord_greet_3" text="Снова ты, {PLAYER.NAME}. Надеюсь, по делу — у меня отряд не кормлен." />
+    <string id="eq_lord_greet_4" text="Приветствую, {PLAYER.NAME}. Говори, только коротко: солнце само себя не поднимет. Хотя у нас для этого есть принцесса." />
+    <string id="eq_lord_greet_5" text="{PLAYER.NAME}. Рад встрече. Чаю? Нет? Тогда к делу." />
+    <string id="eq_lord_greet_6" text="Здравствуй, {PLAYER.NAME}. Чем может помочь род «{EQ_LORD_CLAN}»?" />
+
+    <!-- друзья -->
+    <string id="eq_lord_friend_1" text="{PLAYER.NAME}, друг мой! Как же я рад тебя видеть![if:convo_happy]" />
+    <string id="eq_lord_friend_2" text="Ха! {PLAYER.NAME}! Вот это встреча! Пинки бы уже устроила вечеринку.[if:convo_happy]" />
+    <string id="eq_lord_friend_3" text="{PLAYER.NAME}! Для тебя у меня всегда найдётся время — и кусок яблочного пирога.[if:convo_happy]" />
+    <string id="eq_lord_friend_4" text="Мой добрый друг {PLAYER.NAME}! Говори, чем помочь, — род «{EQ_LORD_CLAN}» помнит добро.[if:convo_happy]" />
+
+    <!-- холодные отношения -->
+    <string id="eq_lord_cold_1" text="{PLAYER.NAME}. Не скажу, что рад встрече.[if:convo_annoyed]" />
+    <string id="eq_lord_cold_2" text="Опять ты. Говори быстрее — у меня от тебя грива секётся.[if:convo_annoyed]" />
+    <string id="eq_lord_cold_3" text="{PLAYER.NAME}... Любовь и терпимость, любовь и терпимость... Чего тебе?[if:convo_annoyed]" />
+    <string id="eq_lord_cold_4" text="Хм. Если бы не законы гостеприимства, этого разговора бы не было.[if:convo_annoyed]" />
+
+    <!-- нападение -->
+    <string id="eq_lord_attack_1" text="{PLAYER.NAME}! Именем {EQ_LORD_KINGDOM} — сложи оружие или приготовься к бою![if:convo_angry][ib:aggressive]" />
+    <string id="eq_lord_attack_2" text="Ты выбрал не ту сторону, {PLAYER.NAME}. Сейчас узнаешь, чего стоит род «{EQ_LORD_CLAN}»![if:convo_angry][ib:aggressive]" />
+    <string id="eq_lord_attack_3" text="Попался! Сдавайся, {PLAYER.NAME}, — и, может быть, тебя ждёт тёплая камера, а не холодная земля.[if:convo_angry][ib:aggressive]" />
+    <string id="eq_lord_attack_4" text="Сегодня гармонии не будет, {PLAYER.NAME}. Только сталь![if:convo_angry][ib:aggressive]" />
+    <string id="eq_lord_attack_5" text="За {EQ_LORD_KINGDOM}! Взять их![if:convo_angry][ib:aggressive]" />
+
+    <!-- снова меньше чем через сутки -->
+    <string id="eq_lord_short_1" text="Снова ты, {PLAYER.NAME}? Мы же только что виделись..." />
+    <string id="eq_lord_short_2" text="{PLAYER.NAME}? Что-то забыл?" />
+    <string id="eq_lord_short_3" text="Опять? Ты прямо как Пинки — везде и сразу." />
+    <string id="eq_lord_short_4" text="Да-да, {PLAYER.NAME}, я слушаю..." />
+  </strings>
+</base>

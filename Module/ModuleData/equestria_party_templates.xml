@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Отряды мародёров: по стопке на народ, чтобы в ватаге встречались все расы.
+     Файл собран tools/make_troops.py — правьте скрипт, не его. -->
+<MBPartyTemplates>
+	<MBPartyTemplate id="looters_template" _replaceWhileMerging="true">
+		<stacks>
+			<PartyTemplateStack min_value="1" max_value="6" troop="NPCCharacter.looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_griffon_looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_hippogriff_looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_dragon_looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_yak_looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_changeling_looter" />
+			<PartyTemplateStack min_value="1" max_value="5" troop="NPCCharacter.eq_deer_looter" />
+		</stacks>
+	</MBPartyTemplate>
+	<MBPartyTemplate id="looters_quest_template" _replaceWhileMerging="true">
+		<stacks>
+			<PartyTemplateStack min_value="3" max_value="3" troop="NPCCharacter.looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_griffon_looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_hippogriff_looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_dragon_looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_yak_looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_changeling_looter" />
+			<PartyTemplateStack min_value="2" max_value="2" troop="NPCCharacter.eq_deer_looter" />
+		</stacks>
+	</MBPartyTemplate>
+</MBPartyTemplates>

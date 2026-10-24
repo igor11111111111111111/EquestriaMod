@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="Türkçe" />
+  </tags>
+  <strings>
+    <string id="eq_spell_fireball_name" text="Fireball" />
+    <string id="eq_spell_fireball_text" text="A ball of flame: it bursts where it lands and scorches everyone nearby. Dragons spit it from birth; unicorns study for years." />
+    <string id="eq_mana_label" text="Mana" />
+    <string id="eq_mana_hint" text="Mana builds up as you travel the map and is spent on spells." />
+    <string id="eq_spell_no_mana" text="Not enough mana" />
+    <string id="eq_spell_cooldown" text="Spell is not ready yet" />
+    <string id="eq_spell_none" text="No spells known" />
+    <string id="eq_spell_aim_hint" text="Left click to cast, right click to cancel" />
+  </strings>
+</base>

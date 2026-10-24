@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>EquestriaMod</AssemblyName>
+    <RootNamespace>EquestriaMod</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <GameFolder>D:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <!-- Папка мода — ..\Module репозитория; в игре Modules\EquestriaMod — ссылка (junction) на неё -->
+    <ModuleFolder>$(MSBuildProjectDirectory)\..\Module</ModuleFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Позволяет собирать net472 без установленного Developer Pack -->
+    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Библиотеки игры: только для компиляции, в мод не копируются -->
+    <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll" Exclude="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.Native.dll" Private="false" />
+    <!-- Виды миссии (MissionView, GauntletLayer) лежат в модуле Native, а не в bin игры -->
+    <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.View.dll" Private="false" />
+    <!-- SandBoxGameManager нужен кнопке быстрого старта (SandBox — модуль игры, тоже только для компиляции) -->
+    <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll" Private="false" />
+    <!-- SettlementPositionScript (скрипт сцены карты) — его патчим из-за кэша расстояний -->
+    <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.View.dll" Private="false" />
+    <!-- LoadingWindowViewModel (подпись на загрузочном экране) лежит в модуле Native -->
+    <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.GauntletUI.dll" Private="false" />
+    <!-- Vector2 используется базовым классом Widget (TaleWorlds.GauntletUI.BaseTypes) —
+         EquestriaTimePanel.cs наследует MapCurrentTimeVisualWidget : Widget -->
+    <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\System.Numerics.Vectors.dll" Private="false" />
+  </ItemGroup>
+
+  <!-- После сборки DLL кладётся в папку мода. Игра видит её через ссылку Modules\EquestriaMod.
+       Открытые игра/редактор блокируют DLL — тогда только предупреждение, сборка не падает. -->
+  <Target Name="CopyToModule" AfterTargets="Build">
+    <ItemGroup>
+      <!-- Наша DLL + 0Harmony.dll рядом с ней: мод несёт Harmony с собой, отдельный модуль
+           Bannerlord.Harmony ставить не нужно. -->
+      <ModuleBinaries Include="$(TargetPath)" />
+      <ModuleBinaries Include="$(TargetDir)0Harmony.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ModuleBinaries)" DestinationFolder="$(ModuleFolder)\bin\Win64_Shipping_Client" SkipUnchangedFiles="true" Retries="0" ContinueOnError="WarnAndContinue" />
+    <!-- Редактор Modding Kit загружает DLL модулей из своей папки -->
+    <Copy SourceFiles="@(ModuleBinaries)" DestinationFolder="$(ModuleFolder)\bin\Win64_Shipping_wEditor" SkipUnchangedFiles="true" Retries="0" ContinueOnError="WarnAndContinue" />
+    <Warning Condition="!Exists('$(GameFolder)\Modules\$(AssemblyName)\SubModule.xml')" Text="В игре нет ссылки Modules\$(AssemblyName) на папку Module. Создать: New-Item -ItemType Junction -Path '$(GameFolder)\Modules\$(AssemblyName)' -Target '$(ModuleFolder)'" />
+  </Target>
+
+</Project>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="solution">
+	<file id="soln_soundtrack" name="Music/soundtrack.xml" type="soundtrack" />
+	<file id="soln_skins" name="ModuleData/pony_skins.xml" type="skin" />
+	<file id="soln_action_sets" name="ModuleData/pony_action_sets.xml" type="action_set" />
+	<file id="soln_monsters" name="ModuleData/pony_monsters.xml" type="monster" />
+	<file id="soln_particle_systems" name="ModuleData/equestria_more_blood.xml" type="particle_system" />
+	<file id="soln_action_types" name="ModuleData/action_types.xml" type="action_type" />
+</base>

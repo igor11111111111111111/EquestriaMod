@@ -1,0 +1,49 @@
+<!-- Крылья/хвост/рог вкл-выкл — временные кнопки, левый верхний угол экрана внешности, видны на
+     любой вкладке (не только причёска), пока раса — пони. Отдельный movie, а не второй корневой
+     виджет в EquestriaHairStyle.xml: под <Window> можно класть только один корневой виджет, второй
+     соседний просто не подхватывался (замечено 29.09.2026). Оба movie грузятся на один и тот же
+     слой в EquestriaHairStyleView.cs, с общего ViewModel. -->
+<Prefab>
+  <Window>
+    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren"
+            HorizontalAlignment="Left" VerticalAlignment="Top"
+            MarginLeft="40" MarginTop="40" IsVisible="@IsWingsVisible">
+      <Children>
+        <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="150" SuggestedHeight="36"
+                      DoNotPassEventsToChildren="true" UpdateChildrenStates="true"
+                      Brush="FaceGen.Extension.Button" Command.Click="ExecuteToggleWings">
+          <Children>
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Text="@WingsLabel" Brush.FontSize="18" />
+          </Children>
+        </ButtonWidget>
+
+        <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="150" SuggestedHeight="36"
+                      MarginTop="44"
+                      DoNotPassEventsToChildren="true" UpdateChildrenStates="true"
+                      Brush="FaceGen.Extension.Button" Command.Click="ExecuteToggleTail">
+          <Children>
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Text="@TailLabel" Brush.FontSize="18" />
+          </Children>
+        </ButtonWidget>
+
+        <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed"
+                      SuggestedWidth="150" SuggestedHeight="36"
+                      MarginTop="88"
+                      DoNotPassEventsToChildren="true" UpdateChildrenStates="true"
+                      Brush="FaceGen.Extension.Button" Command.Click="ExecuteToggleHorn">
+          <Children>
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Text="@HornLabel" Brush.FontSize="18" />
+          </Children>
+        </ButtonWidget>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

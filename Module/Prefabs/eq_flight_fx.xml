@@ -1,0 +1,83 @@
+<!-- Вихрь-торнадо под ногами носителя свитка полёта ("пони-джинн на вихре"), 10.10.2026.
+     Код: src/EquestriaFlightScroll.cs — GameEntity.Instantiate(scene, "eq_flight_vortex") на
+     отдельную сущность, которая каждый тик ставится на землю под агентом (Agent.Position).
+
+     Как добавлять СВОИ частицы в моде (выяснено 10.10.2026, см. equestria-flight-scroll.md):
+     - ModuleData/*.xml с id="soln_particle_systems" только ПЕРЕОПРЕДЕЛЯЕТ существующие эффекты
+       (equestria_more_blood.xml), новое имя не регистрируется (GetRuntimeIdByName = -1);
+     - inline-определение <effect name=...><emitters>... в prefab (как Native/Prefabs/
+       props_particles.xml) в бою не работает: "Unable to find particle system" и пусто —
+       такие эффекты компилируются вместе со сценой в редакторе;
+     - РАБОТАЕТ: ванильный эффект по GUID + <emitter_overrides> (так сделан хвост огненного
+       шара в eq_spell_fx.xml, приём из The Old Realms). Здесь так и сделано.
+
+     В overrides размер области испускания задаётся ключом emit_box_size (как в lighting.xml),
+     а не emit_volume из ModuleData-XML: emit_volume там молча игнорируется, частицы идут из
+     точки (проверено 10.10.2026). Воронка дыма возвращена 10.10.2026 с минимумом частиц (три цветных эмиттера по 1.4/с, не больше 3 живых каждый).
+
+     ОСТАВЛЕНЫ ТОЛЬКО ЛИСТЬЯ (10.10.2026, по просьбе пользователя): воронка дыма и кольцо пыли убраны.
+     Спрайты воронки лежат в плоскости земли (флаг + параметр fixed_billboard_direction (0,0,1)),
+     поэтому их спин (emit_rotation_speed) выглядит как кружение по земле, а не в плоскости экрана.
+
+     У движка нет орбитальной скорости частиц, поэтому "кручение" — спин спрайтов
+     (emit_rotation_speed) + turbulence_strength, форма воронки — particle_size по жизни
+     (узко у земли, шире вверху) и подъём (emit_velocity_z / gravity +z).
+     База: psys_game_hoof_dust_on_default {A7AAEF26-...} (эмиттер "hoof_dust", без звука; у
+     него emit_while_moving=true — переопределяем в false/false => эмитит всегда) и
+     falling_leaves {FC91714C-...} (эмиттер "leaves", мешевые листья dry_leaf_red_g).
+     Костёр psys_game_campfire не взят: у него свой звук (sound_code), его не переопределить.
+
+     Эмиттер в <emitter_overrides> выбирается ТОЛЬКО по guid — <emitter name="..."> роняет
+     игру при загрузке прафабов (краш 10.10.2026). GUID эмиттеров в XML игры НЕТ, они лежат в
+     Modules/Native/AssetPackages/particles.tpac (LZ4-блок на эффект: за строкой звука идёт
+     "02 00 00 00", GUID эмиттера, 32 байта (GUID меша для sample_mesh или нули), GUID
+     материала, u32 длина + имя эмиттера; дальше следующий эмиттер). Достаются скриптом
+     tools/tpac_emitter_guids.py. Проверено на psys_game_burning_agent: три GUID совпали с
+     теми, что использует The Old Realms. hoof_dust = {CD71EBE4-E27F-4822-8337-8D46EA41B169},
+     campfire: flames {7B6024C2-C6E3-46EE-A281-293D2C8382CA}, sparks {701B7C58-700C-45BF-B4A2-
+     70B5BF833B55}, smoke {BC205D4E-2845-4F89-9D92-3BE302E8AAAC}; leaves = {12D167CF-412F-4F18-
+     9405-FDFBB0B88D6A}.
+
+     Кривые (<curve>) в переопределениях: первый и последний ключ по одному разу, КАЖДЫЙ
+     внутренний ключ — дважды подряд (вход/выход, как в lighting.xml и у TOR). С одиночным
+     внутренним ключом игра падает на старте: ASSERT tixmlhelper.cpp:739 "element"
+     (найдено бисекцией в редакторе 10.10.2026). -->
+<prefabs>
+	<game_entity name="eq_flight_vortex" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<!-- листья, закрученные вихрем -->
+			<particle_system_instanced_component _index_="0">
+				<effect base_effect="{FC91714C-B292-49A6-8BBA-8E379D48906B}">
+					<emitter_overrides>
+						<emitter guid="{12D167CF-412F-4F18-9405-FDFBB0B88D6A}">
+							<flags>
+								<flag name="emit_while_moving" value="false"/>
+								<flag name="dont_emit_while_moving" value="false"/>
+								<flag name="emit_on_terrain" value="false"/>
+							</flags>
+							<parameters>
+								<parameter name="inherit_emitter_velocity" value="0.300"/>
+								<parameter name="emit_box_size" value="0.600, 0.600, 0.100"/>
+								<parameter name="gravity" value="0.000, 0.000, 0.150"/>
+								<parameter name="emission_speed_limit" value="0.000"/>
+								<parameter name="max_alive_particle_count" value="18"/>
+								<parameter name="damping" base="0.500" bias="0.050"/>
+								<parameter name="particle_life" base="1.600" bias="0.400"/>
+								<parameter name="emission_rate" base="9.000" bias="0.000"/>
+								<parameter name="emit_velocity_x" base="0.000" bias="0.300"/>
+								<parameter name="emit_velocity_y" base="0.000" bias="0.300"/>
+								<parameter name="emit_velocity_z" base="0.300" bias="0.100"/>
+								<parameter name="emit_rotation_speed" base="0.000" bias="360.000"/>
+								<parameter name="wind_effect" base="0.000" bias="0.000"/>
+								<parameter name="particle_size" base="2.000" bias="0.500"/>
+							</parameters>
+						</emitter>
+					</emitter_overrides>
+				</effect>
+			</particle_system_instanced_component>
+		</components>
+	</game_entity>
+</prefabs>

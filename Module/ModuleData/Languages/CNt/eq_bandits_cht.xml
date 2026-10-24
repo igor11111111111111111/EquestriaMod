@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран tools/make_dialogue.py из RU/eq_bandits_rus.xml: перенаправления те же, фразы —
+     из tools/dialogue_en.py. Правьте их, не этот файл.
+     Постоянные реплики разбойников (BanditInteractionsCampaignBehavior, HideoutConversationsCampaignBehavior). У ванильных id вместо текста стоит переменная {EQV_EQ_ГРУППА}, а сами фразы — ниже, вариантами eq_группа_1, _2, ... (подробно — в начале eq_npc_rus.xml). Перед каждым разговором src/EquestriaGreetings.cs выбирает случайный вариант каждой группы. Чтобы добавить фразу — допишите строку со следующим номером (без пропусков), пересборка не нужна. Метки [if:...] и [ib:...] в конце — выражение лица и поза, в игре их не видно. Приветствия и угрозы при встрече — в src/EquestriaGreetings.cs. -->
+  <tags>
+    <tag language="繁體中文" />
+  </tags>
+  <strings>
+
+    <!-- ванильные реплики -> переменные -->
+    <string id="ji2eenPE" text="{EQV_EQ_SURRENDER}" />
+    <string id="n99VA8KP" text="{EQV_EQ_NOSURRENDER}" />
+    <string id="LDhU5urT" text="{EQV_EQ_NOMERCY}" />
+    <string id="IDdyHef9" text="{EQV_EQ_LEAVE}" />
+    <string id="6Wc1XErN" text="{EQV_EQ_NOLEAVE}" />
+    <string id="nYCXzAYH" text="{EQV_EQ_HIDEOUTDUEL}" />
+
+    <!-- разбойники сдаются -->
+    <string id="eq_surrender_1" text="All right, all right, we give up! We just wanted to make friends... our way. Show a little kindness." />
+    <string id="eq_surrender_2" text="Okay, okay! We surrender! Just don't call Fluttershy, she's got The Stare!" />
+    <string id="eq_surrender_3" text="We surrender! Pony promise — cross my heart and hope to fly, stick a cupcake in my eye!" />
+    <string id="eq_surrender_4" text="Fine, you win. Can we at least keep the cupcakes?" />
+    <string id="eq_surrender_5" text="We give up! Call it a friendship lesson — for us. We've learned it, honest." />
+    <string id="eq_surrender_6" text="Don't hit us! We actually wanted to be Wonderbolts, but they wouldn't take us..." />
+
+    <!-- отказываются сдаваться, начинается бой -->
+    <string id="eq_nosurrender_1" text="Our friendship is stronger than your swords! You'll never take us alive![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_2" text="Surrender? Do we look like ponies who surrender? Well, maybe a little... But not today![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_3" text="Twenty percent cooler — and charge! Attack![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_4" text="You want our horseshoes? Come and take them![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nosurrender_5" text="Never! We'll hold on like Applejack to the last apple![if:convo_angry][ib:aggressive]" />
+
+    <!-- игрок отказал в пощаде -->
+    <string id="eq_nomercy_1" text="So that's how it is? Fine — I'll show at least one of you what real friendship feels like![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_2" text="And you call that harmony?! All right, then — here's a lesson you won't forget![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_3" text="That's it! Somepony's about to get bucked so hard their cutie mark falls off![if:convo_angry][ib:aggressive]" />
+    <string id="eq_nomercy_4" text="No mercy? Then don't expect any cupcakes or greeting cards from us either![if:convo_angry][ib:aggressive]" />
+
+    <!-- игрок отпустил, разбойники уходят -->
+    <string id="eq_leave_1" text="Well, that's just fine! Friendly roads to you!" />
+    <string id="eq_leave_2" text="Thank you, kind pony! We're off... to find somepony easier." />
+    <string id="eq_leave_3" text="You won't regret it! Probably. We'll send you a card. Maybe." />
+    <string id="eq_leave_4" text="We're going, we're going! Not a word to anypony, okay? Especially the Royal Guard." />
+
+    <!-- уйти от разбойников не вышло -->
+    <string id="eq_noleave_1" text="Wait, wait... Where are you off to, friend? We're not done yet." />
+    <string id="eq_noleave_2" text="Not so fast, Rainbow Dash! We haven't finished talking." />
+    <string id="eq_noleave_3" text="Hey, hey, hey, the party's not over yet! Pinkie would be hurt." />
+    <string id="eq_noleave_4" text="Leaving already? What about a parting gift? Your purse, for instance." />
+
+    <!-- главарь логова вызывает на поединок -->
+    <string id="eq_hideoutduel_1" text="You! You scattered all my friends! Let's settle this fair — one on one, like old friend-enemies." />
+    <string id="eq_hideoutduel_2" text="You wrecked my hideout and scared off my crew. Face me one on one — let's see whose cutie mark is tougher!" />
+    <string id="eq_hideoutduel_3" text="Not bad for a tourist. Now try me — no entourage, hoof to hoof." />
+    <string id="eq_hideoutduel_4" text="You ruined our whole party! Want to finish it? One on one, then!" />
+
+    <!-- игрок напал — разбойники отвечают первыми (переменная BANDIT_NEUTRAL_GREETING, ставит код) -->
+    <string id="eq_neutral_1" text="Friendship is magic, traveler. Ours just bites. Keep moving.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_2" text="You have no idea how strong our friendship is. Want to feel it on your own hide?[if:convo_bared_teeth]" />
+    <string id="eq_neutral_3" text="We're having a friendship picnic here. Uninvited guests aren't welcome." />
+    <string id="eq_neutral_4" text="Smile, traveler! The last one who didn't is still looking for his horseshoes.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_5" text="Love and tolerance, remember? We're still tolerating. Don't test us.[if:convo_angry]" />
+    <string id="eq_neutral_6" text="We're just a bunch of best friends... very hungry best friends." />
+    <string id="eq_neutral_7" text="Touch one of us and you deal with all of us. That's the kind of friends we are.[if:convo_aggressive]" />
+    <string id="eq_neutral_8" text="Harmony is you going your way and us going ours. Let's do that." />
+    <string id="eq_neutral_9" text="There are more of us than it looks. Behind that hill our friends are waiting — a lot of friends." />
+    <string id="eq_neutral_10" text="What do you want? If you came for friendship — ours costs money.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_11" text="One more step and your cutie mark becomes a target.[if:convo_bared_teeth]" />
+    <string id="eq_neutral_12" text="We're not bandits, we're... cutie mark crusaders. Right now we're crusading for the 'robbed a traveler' mark.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_13" text="Careful! Our boss once ate an entire cake of Princess Celestia's. By himself. Without asking." />
+    <string id="eq_neutral_14" text="Did you just walk out of the Everfree? Timberwolves say hello more politely." />
+    <string id="eq_neutral_15" text="The Great and Powerful Trixie says: no autographs and no fights!" />
+    <string id="eq_neutral_16" text="We're counting pebbles for the Diamond Dogs. Don't interrupt, or we'll lose count and get upset.[if:convo_angry]" />
+    <string id="eq_neutral_17" text="Our orders: treat every stranger to cupcakes. Only our cupcakes are... special. Like Pinkie's on a dark day.[if:convo_bared_teeth]" />
+    <string id="eq_neutral_18" text="Stay back! We've got parasprites on a leash here, and they're hungry." />
+    <string id="eq_neutral_19" text="Heard of the sonic rainboom? You're about to hear one right next to your ear.[if:convo_aggressive]" />
+    <string id="eq_neutral_20" text="Think Nightmare Moon is just a foal's tale? We'll show her to you in your nightmares.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_21" text="Leave while you can. Even an Ursa Minor doesn't mess with us." />
+    <string id="eq_neutral_22" text="Hey! This is a private apple field. Well, it was private... until yesterday." />
+    <string id="eq_neutral_23" text="Just passing through. Like Flim and Flam — only without the cider and with clubs.[if:convo_mocking_revenge]" />
+    <string id="eq_neutral_24" text="Be glad it's not Nightmare Night. We wouldn't be talking then." />
+
+    <!-- разбойники напали на игрока. Четыре реплики с одним номером — один разговор: угроза, согласие на выкуп, прощание после выкупа, начало боя. Код берёт номер по отряду и дню. -->
+    <string id="eq_robbery_threat_1" text="Halt, traveler! Feel the power of our friendship! Or share your purse — friends share, after all.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_1" text="Now that's friendly! Show us what you've got." />
+    <string id="eq_robbery_done_1" text="See how easy friendship is? Safe travels, pal!" />
+    <string id="eq_robbery_fight_1" text="Won't be friends the nice way? Then we'll be friends the hard way![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_2" text="Hey, pony! We're collecting donations for the friendship fund. Contributions are mandatory.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_2" text="Generosity is one of the Elements of Harmony. Let's see how generous you are." />
+    <string id="eq_robbery_done_2" text="Now that's generosity! Rarity herself would be proud of you. Now scram." />
+    <string id="eq_robbery_fight_2" text="Being stingy isn't friendly. We'll teach you that right now![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_3" text="What a meeting! We were just looking for new friends. And their gold.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_3" text="Good pony. New friends always bring gifts." />
+    <string id="eq_robbery_done_3" text="The best gift is a gift from a friend. Run along while we're feeling nice." />
+    <string id="eq_robbery_fight_3" text="No gift, then? Then you get a friendship lesson — with a hoof![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_4" text="Stop right there! Friendship is magic, and magic is expensive these days. Pay up or regret it.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_4" text="Sensible. Let's discuss the price of our friendship." />
+    <string id="eq_robbery_done_4" text="A pleasure doing business with you. Until next time, friend!" />
+    <string id="eq_robbery_fight_4" text="Have it your way! Now you'll learn the true power of our friendship![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_5" text="Gotcha! Don't worry, we're nice. Until you get greedy.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_5" text="That's the spirit. Hand over whatever you've got in there." />
+    <string id="eq_robbery_done_5" text="See? Everypony's still friends. Go on and spread the harmony." />
+    <string id="eq_robbery_fight_5" text="Getting greedy after all... Friends, with me![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_6" text="Not one step further! The law of friendship rules this road: what's yours is everypony's.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_6" text="That's right. Sharing is fun!" />
+    <string id="eq_robbery_done_6" text="Now we're real friends. Ride on." />
+    <string id="eq_robbery_fight_6" text="Won't share? Then we'll take it ourselves — the whole friendly gang![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_7" text="Smile, pal! This is a robbery, but a very friendly one.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_7" text="Let's settle this peacefully, like real friends." />
+    <string id="eq_robbery_done_7" text="Friendship wins! And you're free to go." />
+    <string id="eq_robbery_fight_7" text="Fine, the friendly way didn't work. This is going to hurt![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_8" text="Look, a lonely traveler. It's so sad being alone... Let us lighten your load.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_8" text="Then we have a deal. Show us that load." />
+    <string id="eq_robbery_done_8" text="Walking's easier now, isn't it? Don't mention it, friend." />
+    <string id="eq_robbery_fight_8" text="You asked for it. We're about to surround you with care — from every side![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_9" text="Halt! The Flim Flam Brothers present: the Super Speedy Coin Collector 6000! Only one purse![if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_9" text="Excellent choice, valued customer! Guaranteed — right up to the next bend in the road." />
+    <string id="eq_robbery_done_9" text="Thank you for your purchase! Complaints accepted in Manehattan. Probably." />
+    <string id="eq_robbery_fight_9" text="No refunds. Beatings, however, are included![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_10" text="Aha! The Great and Powerful Trixie foretold it: today you part with your money![if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_10" text="A wise decision. The stars approve. So does Trixie." />
+    <string id="eq_robbery_done_10" text="The show is over! You may keep your applause — but not your coins." />
+    <string id="eq_robbery_fight_10" text="Don't believe in prophecy? Then watch the 'vanishing traveler' trick![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_11" text="Stop! This is a Diamond Dog checkpoint. One shiny to pass. No shinies — then you dig.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_11" text="Shinies? Give them here, give them here! Dogs love shinies." />
+    <string id="eq_robbery_done_11" text="Good shinies. Go on through while we sniff them." />
+    <string id="eq_robbery_fight_11" text="No shinies — take a shovel! Or take a beating![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_12" text="Don't move! We accidentally spilled cupcakes here, and there's a fine for every one you squash. You've squashed three already.[if:convo_mocking_revenge]" />
+    <string id="eq_robbery_pay_12" text="Now that's fair. Cupcakes paid for, no complaints." />
+    <string id="eq_robbery_done_12" text="Enjoy! Just watch your hooves next time." />
+    <string id="eq_robbery_fight_12" text="Won't pay for the cupcakes? Then you'll work them off — in bruises![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_13" text="Gotcha, little pegasus... oops, I mean pony! A sonic rainboom won't save you — we've got nets strung up.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_13" text="Hold still and it'll be over faster than a good Wonderbolts flyby." />
+    <string id="eq_robbery_done_13" text="Fly... I mean, walk. We took twenty percent of your coolness." />
+    <string id="eq_robbery_fight_13" text="Want to see who's faster? We'll test your ribs![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_14" text="Hush, traveler... Nightmare Moon has returned, and she demands tribute. Through us, that is.[if:convo_bared_teeth]" />
+    <string id="eq_robbery_pay_14" text="Good. The night is kind to those who pay." />
+    <string id="eq_robbery_done_14" text="Sleep well. If you can." />
+    <string id="eq_robbery_fight_14" text="Not afraid of the dark? It's about to get very dark![if:convo_angry][ib:aggressive]" />
+    <string id="eq_robbery_threat_15" text="Hey, farmer! This year's zap apple harvest is ours. Along with your money.[if:convo_aggressive]" />
+    <string id="eq_robbery_pay_15" text="Now that's neighborly. Granny Smith would approve. Probably." />
+    <string id="eq_robbery_done_15" text="We'll mail you some zap apple jam. Maybe." />
+    <string id="eq_robbery_fight_15" text="Won't hand over the harvest? Then we'll gather it ourselves — straight off your hide![if:convo_angry][ib:aggressive]" />
+  </strings>
+</base>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Заклинания. Файл собран tools/make_spells.py — правьте таблицу SPELLS в нём.
+     Читается модом напрямую (EquestriaSpells.cs), в SubModule.xml не значится. -->
+<Spells>
+	<Spell
+		id="fireball"
+		name="{=eq_spell_fireball_name}Fireball"
+		text="{=eq_spell_fireball_text}A ball of flame: it bursts where it lands and scorches everyone nearby. Dragons spit it from birth; unicorns study for years."
+		mana="15"
+		cooldown="12"
+		damage="60"
+		radius="4"
+		speed="35"
+		life="3"
+		cast="0.5"
+		trail="prefab:eq_fireball_trail"
+		burst="psys_fireball_explosion_1"
+		light="255,170,0,50,10" />
+</Spells>

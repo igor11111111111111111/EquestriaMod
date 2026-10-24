@@ -1,0 +1,4985 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Кто в каком клане и кто кому родня. Ванильные герои удаляются преобразованием:
+     их кланов больше нет, и ссылки повисли бы в пустоте.
+     Файл собран tools/make_world.py из tools/world_data.py — правьте таблицу, не его. -->
+<Heroes>
+	<Hero
+		id="eq_celestia"
+		faction="Faction.clan_eq_royal"
+		text="{=eq_celestia_text}The elder sister who raises the sun. She has ruled Equestria for a thousand years." />
+	<Hero
+		id="eq_blueblood"
+		faction="Faction.clan_eq_royal"
+		father="Hero.eq_equestria_28"
+		mother="Hero.eq_equestria_29"
+		text="{=eq_blueblood_text}A distant relative of the princesses and a Canterlot snob." />
+	<Hero
+		id="eq_equestria_1"
+		faction="Faction.clan_eq_royal"
+		father="Hero.eq_equestria_26"
+		mother="Hero.eq_equestria_27"
+		text="{=eq_equestria_1_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_2"
+		faction="Faction.clan_eq_royal"
+		father="Hero.eq_equestria_26"
+		mother="Hero.eq_equestria_27"
+		text="{=eq_equestria_2_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_26"
+		faction="Faction.clan_eq_royal"
+		alive="false"
+		spouse="Hero.eq_equestria_27"
+		text="{=eq_equestria_26_text}Father of Star Field. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_27"
+		faction="Faction.clan_eq_royal"
+		alive="false"
+		spouse="Hero.eq_equestria_26"
+		text="{=eq_equestria_27_text}Mother of Star Field. Died of old age." />
+	<Hero
+		id="eq_equestria_28"
+		faction="Faction.clan_eq_royal"
+		alive="false"
+		spouse="Hero.eq_equestria_29"
+		text="{=eq_equestria_28_text}Father of Prince Blueblood. Killed by bandits on the road." />
+	<Hero
+		id="eq_equestria_29"
+		faction="Faction.clan_eq_royal"
+		spouse="Hero.eq_equestria_28"
+		text="{=eq_equestria_29_text}Mother of Prince Blueblood." />
+	<Hero
+		id="eq_spitfire"
+		faction="Faction.clan_eq_wonderbolt"
+		father="Hero.eq_equestria_30"
+		mother="Hero.eq_equestria_31"
+		text="{=eq_spitfire_text}Captain of the Wonderbolts, the finest flyer in Equestria." />
+	<Hero
+		id="eq_soarin"
+		faction="Faction.clan_eq_wonderbolt"
+		father="Hero.eq_equestria_32"
+		mother="Hero.eq_equestria_33"
+		text="{=eq_soarin_text}Spitfire's wingpony." />
+	<Hero
+		id="eq_fleetfoot"
+		faction="Faction.clan_eq_wonderbolt"
+		father="Hero.eq_equestria_34"
+		mother="Hero.eq_equestria_35"
+		text="{=eq_fleetfoot_text}A flyer of the aerobatic team." />
+	<Hero
+		id="eq_misty_fly"
+		faction="Faction.clan_eq_wonderbolt"
+		father="Hero.eq_equestria_36"
+		mother="Hero.eq_equestria_37"
+		text="{=eq_misty_fly_text}A flyer of the aerobatic team." />
+	<Hero
+		id="eq_lightning_dust"
+		faction="Faction.clan_eq_wonderbolt"
+		father="Hero.eq_equestria_38"
+		mother="Hero.eq_equestria_39"
+		text="{=eq_lightning_dust_text}A washed-out cadet, brash and dangerous." />
+	<Hero
+		id="eq_equestria_30"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_31"
+		text="{=eq_equestria_30_text}Father of Spitfire. Died in a siege." />
+	<Hero
+		id="eq_equestria_31"
+		faction="Faction.clan_eq_wonderbolt"
+		spouse="Hero.eq_equestria_30"
+		text="{=eq_equestria_31_text}Mother of Spitfire." />
+	<Hero
+		id="eq_equestria_32"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_33"
+		text="{=eq_equestria_32_text}Father of Soarin. Died of old age." />
+	<Hero
+		id="eq_equestria_33"
+		faction="Faction.clan_eq_wonderbolt"
+		spouse="Hero.eq_equestria_32"
+		text="{=eq_equestria_33_text}Mother of Soarin." />
+	<Hero
+		id="eq_equestria_34"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_35"
+		text="{=eq_equestria_34_text}Father of Flitfut. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_35"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_34"
+		text="{=eq_equestria_35_text}Mother of Flitfut. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_36"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_37"
+		text="{=eq_equestria_36_text}Father of Misty Flay. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_37"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_36"
+		text="{=eq_equestria_37_text}Mother of Misty Flay. Died in childbirth." />
+	<Hero
+		id="eq_equestria_38"
+		faction="Faction.clan_eq_wonderbolt"
+		alive="false"
+		spouse="Hero.eq_equestria_39"
+		text="{=eq_equestria_38_text}Father of Lightning Dust. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_39"
+		faction="Faction.clan_eq_wonderbolt"
+		spouse="Hero.eq_equestria_38"
+		text="{=eq_equestria_39_text}Mother of Lightning Dust." />
+	<Hero
+		id="eq_fancy_pants"
+		faction="Faction.clan_eq_pants"
+		spouse="Hero.eq_fleur"
+		father="Hero.eq_equestria_42"
+		mother="Hero.eq_equestria_43"
+		text="{=eq_fancy_pants_text}A Canterlot aristocrat who sets the fashion of high society." />
+	<Hero
+		id="eq_fleur"
+		faction="Faction.clan_eq_pants"
+		spouse="Hero.eq_fancy_pants"
+		father="Hero.eq_equestria_44"
+		mother="Hero.eq_equestria_45"
+		text="{=eq_fleur_text}A model, Fancy Pants' companion." />
+	<Hero
+		id="eq_equestria_3"
+		faction="Faction.clan_eq_pants"
+		spouse="Hero.eq_equestria_46"
+		father="Hero.eq_equestria_40"
+		mother="Hero.eq_equestria_41"
+		text="{=eq_equestria_3_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_4"
+		faction="Faction.clan_eq_pants"
+		father="Hero.eq_equestria_40"
+		mother="Hero.eq_equestria_41"
+		text="{=eq_equestria_4_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_40"
+		faction="Faction.clan_eq_pants"
+		alive="false"
+		spouse="Hero.eq_equestria_41"
+		text="{=eq_equestria_40_text}Father of Rose Shine. Died of old age." />
+	<Hero
+		id="eq_equestria_41"
+		faction="Faction.clan_eq_pants"
+		alive="false"
+		spouse="Hero.eq_equestria_40"
+		text="{=eq_equestria_41_text}Mother of Rose Shine. Died of old age." />
+	<Hero
+		id="eq_equestria_42"
+		faction="Faction.clan_eq_pants"
+		alive="false"
+		spouse="Hero.eq_equestria_43"
+		text="{=eq_equestria_42_text}Father of Fancy Pants. Died of old age." />
+	<Hero
+		id="eq_equestria_43"
+		faction="Faction.clan_eq_pants"
+		alive="false"
+		spouse="Hero.eq_equestria_42"
+		text="{=eq_equestria_43_text}Mother of Fancy Pants. Died of old age." />
+	<Hero
+		id="eq_equestria_44"
+		faction="Faction.clan_eq_pants"
+		spouse="Hero.eq_equestria_45"
+		text="{=eq_equestria_44_text}Father of Fleur de Lis." />
+	<Hero
+		id="eq_equestria_45"
+		faction="Faction.clan_eq_pants"
+		alive="false"
+		spouse="Hero.eq_equestria_44"
+		text="{=eq_equestria_45_text}Mother of Fleur de Lis. Fell in battle under the banners of Solar Equestria." />
+	<Hero
+		id="eq_equestria_46"
+		faction="Faction.clan_eq_pants"
+		spouse="Hero.eq_equestria_3"
+		text="{=eq_equestria_46_text}Husband of Rose Shine." />
+	<Hero
+		id="eq_equestria_47"
+		faction="Faction.clan_eq_pants"
+		father="Hero.eq_equestria_46"
+		mother="Hero.eq_equestria_3"
+		text="{=eq_equestria_47_text}A foal of House Fancy Pants." />
+	<Hero
+		id="eq_flash_sentry"
+		faction="Faction.clan_eq_guard"
+		father="Hero.eq_equestria_50"
+		mother="Hero.eq_equestria_51"
+		text="{=eq_flash_sentry_text}Captain of the Canterlot palace guard." />
+	<Hero
+		id="eq_gleaming_shield"
+		faction="Faction.clan_eq_guard"
+		father="Hero.eq_equestria_52"
+		mother="Hero.eq_equestria_53"
+		text="{=eq_gleaming_shield_text}A guard officer who served beside Shining Armor for years." />
+	<Hero
+		id="eq_thunderlane"
+		faction="Faction.clan_eq_guard"
+		father="Hero.eq_equestria_54"
+		mother="Hero.eq_equestria_55"
+		text="{=eq_thunderlane_text}A pegasus guard from Ponyville." />
+	<Hero
+		id="eq_equestria_5"
+		faction="Faction.clan_eq_guard"
+		spouse="Hero.eq_equestria_56"
+		father="Hero.eq_equestria_48"
+		mother="Hero.eq_equestria_49"
+		text="{=eq_equestria_5_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_48"
+		faction="Faction.clan_eq_guard"
+		alive="false"
+		spouse="Hero.eq_equestria_49"
+		text="{=eq_equestria_48_text}Father of Sweet Song. Died in a siege." />
+	<Hero
+		id="eq_equestria_49"
+		faction="Faction.clan_eq_guard"
+		spouse="Hero.eq_equestria_48"
+		text="{=eq_equestria_49_text}Mother of Sweet Song." />
+	<Hero
+		id="eq_equestria_50"
+		faction="Faction.clan_eq_guard"
+		alive="false"
+		spouse="Hero.eq_equestria_51"
+		text="{=eq_equestria_50_text}Father of Flash Sentri. Killed by bandits on the road." />
+	<Hero
+		id="eq_equestria_51"
+		faction="Faction.clan_eq_guard"
+		alive="false"
+		spouse="Hero.eq_equestria_50"
+		text="{=eq_equestria_51_text}Mother of Flash Sentri. Died in a siege." />
+	<Hero
+		id="eq_equestria_52"
+		faction="Faction.clan_eq_guard"
+		spouse="Hero.eq_equestria_53"
+		text="{=eq_equestria_52_text}Father of Gliming Shild." />
+	<Hero
+		id="eq_equestria_53"
+		faction="Faction.clan_eq_guard"
+		alive="false"
+		spouse="Hero.eq_equestria_52"
+		text="{=eq_equestria_53_text}Mother of Gliming Shild. Died in childbirth." />
+	<Hero
+		id="eq_equestria_54"
+		faction="Faction.clan_eq_guard"
+		spouse="Hero.eq_equestria_55"
+		text="{=eq_equestria_54_text}Father of Tanderleyn." />
+	<Hero
+		id="eq_equestria_55"
+		faction="Faction.clan_eq_guard"
+		alive="false"
+		spouse="Hero.eq_equestria_54"
+		text="{=eq_equestria_55_text}Mother of Tanderleyn. Died of a fever." />
+	<Hero
+		id="eq_equestria_56"
+		faction="Faction.clan_eq_guard"
+		spouse="Hero.eq_equestria_5"
+		text="{=eq_equestria_56_text}Husband of Sweet Song." />
+	<Hero
+		id="eq_equestria_57"
+		faction="Faction.clan_eq_guard"
+		father="Hero.eq_equestria_56"
+		mother="Hero.eq_equestria_5"
+		text="{=eq_equestria_57_text}A foal of Royal guard." />
+	<Hero
+		id="eq_filthy_rich"
+		faction="Faction.clan_eq_rich"
+		spouse="Hero.eq_spoiled_rich"
+		father="Hero.eq_equestria_60"
+		mother="Hero.eq_equestria_61"
+		text="{=eq_filthy_rich_text}Ponyville's richest merchant, owner of Barnyard Bargains." />
+	<Hero
+		id="eq_spoiled_rich"
+		faction="Faction.clan_eq_rich"
+		spouse="Hero.eq_filthy_rich"
+		father="Hero.eq_equestria_62"
+		mother="Hero.eq_equestria_63"
+		text="{=eq_spoiled_rich_text}Filthy Rich's wife, haughty and overbearing." />
+	<Hero
+		id="eq_diamond_tiara"
+		faction="Faction.clan_eq_rich"
+		father="Hero.eq_filthy_rich"
+		mother="Hero.eq_spoiled_rich"
+		text="{=eq_diamond_tiara_text}The Riches' daughter, the school bully." />
+	<Hero
+		id="eq_silver_spoon"
+		faction="Faction.clan_eq_rich"
+		father="Hero.eq_equestria_64"
+		mother="Hero.eq_equestria_65"
+		text="{=eq_silver_spoon_text}Diamond Tiara's best friend." />
+	<Hero
+		id="eq_equestria_6"
+		faction="Faction.clan_eq_rich"
+		spouse="Hero.eq_equestria_66"
+		father="Hero.eq_equestria_58"
+		mother="Hero.eq_equestria_59"
+		text="{=eq_equestria_6_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_7"
+		faction="Faction.clan_eq_rich"
+		father="Hero.eq_equestria_58"
+		mother="Hero.eq_equestria_59"
+		text="{=eq_equestria_7_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_58"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_59"
+		text="{=eq_equestria_58_text}Father of Iron Grove. Died of old age." />
+	<Hero
+		id="eq_equestria_59"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_58"
+		text="{=eq_equestria_59_text}Mother of Iron Grove. Died of old age." />
+	<Hero
+		id="eq_equestria_60"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_61"
+		text="{=eq_equestria_60_text}Father of Filthy Rich. Died of old age." />
+	<Hero
+		id="eq_equestria_61"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_60"
+		text="{=eq_equestria_61_text}Mother of Filthy Rich. Died of old age." />
+	<Hero
+		id="eq_equestria_62"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_63"
+		text="{=eq_equestria_62_text}Father of Spoiled Rich. Died of old age." />
+	<Hero
+		id="eq_equestria_63"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_62"
+		text="{=eq_equestria_63_text}Mother of Spoiled Rich. Died of old age." />
+	<Hero
+		id="eq_equestria_64"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_65"
+		text="{=eq_equestria_64_text}Father of Silver Spoon. Died in a siege." />
+	<Hero
+		id="eq_equestria_65"
+		faction="Faction.clan_eq_rich"
+		alive="false"
+		spouse="Hero.eq_equestria_64"
+		text="{=eq_equestria_65_text}Mother of Silver Spoon. Died in childbirth." />
+	<Hero
+		id="eq_equestria_66"
+		faction="Faction.clan_eq_rich"
+		spouse="Hero.eq_equestria_6"
+		text="{=eq_equestria_66_text}Wife of Iron Grove." />
+	<Hero
+		id="eq_equestria_67"
+		faction="Faction.clan_eq_rich"
+		father="Hero.eq_equestria_6"
+		mother="Hero.eq_equestria_66"
+		text="{=eq_equestria_67_text}A foal of House Rich." />
+	<Hero
+		id="eq_equestria_68"
+		faction="Faction.clan_eq_rich"
+		father="Hero.eq_equestria_6"
+		mother="Hero.eq_equestria_66"
+		text="{=eq_equestria_68_text}A foal of House Rich." />
+	<Hero
+		id="eq_equestria_8"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_11"
+		father="Hero.eq_equestria_69"
+		mother="Hero.eq_equestria_70"
+		text="{=eq_equestria_8_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_9"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_71"
+		father="Hero.eq_equestria_69"
+		mother="Hero.eq_equestria_70"
+		text="{=eq_equestria_9_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_10"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_73"
+		father="Hero.eq_equestria_69"
+		mother="Hero.eq_equestria_70"
+		text="{=eq_equestria_10_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_11"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_8"
+		text="{=eq_equestria_11_text}Wife of Steel Stone." />
+	<Hero
+		id="eq_equestria_12"
+		faction="Faction.clan_equestria_g6"
+		father="Hero.eq_equestria_8"
+		mother="Hero.eq_equestria_11"
+		text="{=eq_equestria_12_text}A foal of House Apple Light." />
+	<Hero
+		id="eq_equestria_69"
+		faction="Faction.clan_equestria_g6"
+		alive="false"
+		spouse="Hero.eq_equestria_70"
+		text="{=eq_equestria_69_text}Father of the head of House Apple Light. Died of old age." />
+	<Hero
+		id="eq_equestria_70"
+		faction="Faction.clan_equestria_g6"
+		alive="false"
+		spouse="Hero.eq_equestria_69"
+		text="{=eq_equestria_70_text}Mother of the head of House Apple Light. Died of old age." />
+	<Hero
+		id="eq_equestria_71"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_9"
+		text="{=eq_equestria_71_text}Wife of Midlight." />
+	<Hero
+		id="eq_equestria_72"
+		faction="Faction.clan_equestria_g6"
+		father="Hero.eq_equestria_9"
+		mother="Hero.eq_equestria_71"
+		text="{=eq_equestria_72_text}A foal of House Apple Light." />
+	<Hero
+		id="eq_equestria_73"
+		faction="Faction.clan_equestria_g6"
+		spouse="Hero.eq_equestria_10"
+		text="{=eq_equestria_73_text}Husband of Lily Flower." />
+	<Hero
+		id="eq_equestria_74"
+		faction="Faction.clan_equestria_g6"
+		father="Hero.eq_equestria_73"
+		mother="Hero.eq_equestria_10"
+		text="{=eq_equestria_74_text}A foal of House Apple Light." />
+	<Hero
+		id="eq_equestria_75"
+		faction="Faction.clan_equestria_g6"
+		father="Hero.eq_equestria_73"
+		mother="Hero.eq_equestria_10"
+		text="{=eq_equestria_75_text}A foal of House Apple Light." />
+	<Hero
+		id="eq_equestria_13"
+		faction="Faction.clan_equestria_g7"
+		spouse="Hero.eq_equestria_16"
+		father="Hero.eq_equestria_76"
+		mother="Hero.eq_equestria_77"
+		text="{=eq_equestria_13_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_14"
+		faction="Faction.clan_equestria_g7"
+		father="Hero.eq_equestria_76"
+		mother="Hero.eq_equestria_77"
+		text="{=eq_equestria_14_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_15"
+		faction="Faction.clan_equestria_g7"
+		spouse="Hero.eq_equestria_78"
+		father="Hero.eq_equestria_76"
+		mother="Hero.eq_equestria_77"
+		text="{=eq_equestria_15_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_16"
+		faction="Faction.clan_equestria_g7"
+		spouse="Hero.eq_equestria_13"
+		text="{=eq_equestria_16_text}Wife of Golden Mane." />
+	<Hero
+		id="eq_equestria_76"
+		faction="Faction.clan_equestria_g7"
+		alive="false"
+		spouse="Hero.eq_equestria_77"
+		text="{=eq_equestria_76_text}Father of the head of House Steel Stone. Died of old age." />
+	<Hero
+		id="eq_equestria_77"
+		faction="Faction.clan_equestria_g7"
+		alive="false"
+		spouse="Hero.eq_equestria_76"
+		text="{=eq_equestria_77_text}Mother of the head of House Steel Stone. Died of old age." />
+	<Hero
+		id="eq_equestria_78"
+		faction="Faction.clan_equestria_g7"
+		spouse="Hero.eq_equestria_15"
+		text="{=eq_equestria_78_text}Husband of Moon Song." />
+	<Hero
+		id="eq_equestria_79"
+		faction="Faction.clan_equestria_g7"
+		father="Hero.eq_equestria_78"
+		mother="Hero.eq_equestria_15"
+		text="{=eq_equestria_79_text}A foal of House Steel Stone." />
+	<Hero
+		id="eq_equestria_17"
+		faction="Faction.clan_equestria_g8"
+		spouse="Hero.eq_equestria_20"
+		father="Hero.eq_equestria_80"
+		mother="Hero.eq_equestria_81"
+		text="{=eq_equestria_17_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_18"
+		faction="Faction.clan_equestria_g8"
+		father="Hero.eq_equestria_80"
+		mother="Hero.eq_equestria_81"
+		text="{=eq_equestria_18_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_19"
+		faction="Faction.clan_equestria_g8"
+		father="Hero.eq_equestria_80"
+		mother="Hero.eq_equestria_81"
+		text="{=eq_equestria_19_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_20"
+		faction="Faction.clan_equestria_g8"
+		spouse="Hero.eq_equestria_17"
+		text="{=eq_equestria_20_text}Husband of Sweet Leaf." />
+	<Hero
+		id="eq_equestria_21"
+		faction="Faction.clan_equestria_g8"
+		father="Hero.eq_equestria_20"
+		mother="Hero.eq_equestria_17"
+		text="{=eq_equestria_21_text}A foal of House Bright Dash." />
+	<Hero
+		id="eq_equestria_80"
+		faction="Faction.clan_equestria_g8"
+		alive="false"
+		spouse="Hero.eq_equestria_81"
+		text="{=eq_equestria_80_text}Father of the head of House Bright Dash. Died of old age." />
+	<Hero
+		id="eq_equestria_81"
+		faction="Faction.clan_equestria_g8"
+		alive="false"
+		spouse="Hero.eq_equestria_80"
+		text="{=eq_equestria_81_text}Mother of the head of House Bright Dash. Died of old age." />
+	<Hero
+		id="eq_equestria_22"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_25"
+		father="Hero.eq_equestria_82"
+		mother="Hero.eq_equestria_83"
+		text="{=eq_equestria_22_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_23"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_84"
+		father="Hero.eq_equestria_82"
+		mother="Hero.eq_equestria_83"
+		text="{=eq_equestria_23_text}A noble pony of Solar Equestria." />
+	<Hero
+		id="eq_equestria_24"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_85"
+		father="Hero.eq_equestria_82"
+		mother="Hero.eq_equestria_83"
+		text="{=eq_equestria_24_text}A noble mare of Solar Equestria." />
+	<Hero
+		id="eq_equestria_25"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_22"
+		text="{=eq_equestria_25_text}Wife of Swift Heart." />
+	<Hero
+		id="eq_equestria_82"
+		faction="Faction.clan_equestria_g9"
+		alive="false"
+		spouse="Hero.eq_equestria_83"
+		text="{=eq_equestria_82_text}Father of the head of House Star Dash. Died of old age." />
+	<Hero
+		id="eq_equestria_83"
+		faction="Faction.clan_equestria_g9"
+		alive="false"
+		spouse="Hero.eq_equestria_82"
+		text="{=eq_equestria_83_text}Mother of the head of House Star Dash. Died of old age." />
+	<Hero
+		id="eq_equestria_84"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_23"
+		text="{=eq_equestria_84_text}Wife of Moon Dash." />
+	<Hero
+		id="eq_equestria_85"
+		faction="Faction.clan_equestria_g9"
+		spouse="Hero.eq_equestria_24"
+		text="{=eq_equestria_85_text}Husband of Pinkie Mist." />
+	<Hero
+		id="eq_equestria_86"
+		faction="Faction.clan_equestria_g9"
+		father="Hero.eq_equestria_85"
+		mother="Hero.eq_equestria_24"
+		text="{=eq_equestria_86_text}A foal of House Star Dash." />
+	<Hero
+		id="eq_luna"
+		faction="Faction.clan_lu_night"
+		text="{=eq_luna_text}The younger sister, keeper of night and dreams. Returned after a thousand years of exile." />
+	<Hero
+		id="eq_moon_dancer"
+		faction="Faction.clan_lu_night"
+		father="Hero.eq_lunar_34"
+		mother="Hero.eq_lunar_35"
+		text="{=eq_moon_dancer_text}A Canterlot unicorn who became stargazer at Luna's court." />
+	<Hero
+		id="eq_lunar_1"
+		faction="Faction.clan_lu_night"
+		father="Hero.eq_lunar_32"
+		mother="Hero.eq_lunar_33"
+		text="{=eq_lunar_1_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_2"
+		faction="Faction.clan_lu_night"
+		father="Hero.eq_lunar_32"
+		mother="Hero.eq_lunar_33"
+		text="{=eq_lunar_2_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_32"
+		faction="Faction.clan_lu_night"
+		spouse="Hero.eq_lunar_33"
+		text="{=eq_lunar_32_text}Father of Moon Mane." />
+	<Hero
+		id="eq_lunar_33"
+		faction="Faction.clan_lu_night"
+		alive="false"
+		spouse="Hero.eq_lunar_32"
+		text="{=eq_lunar_33_text}Mother of Moon Mane. Killed by bandits on the road." />
+	<Hero
+		id="eq_lunar_34"
+		faction="Faction.clan_lu_night"
+		alive="false"
+		spouse="Hero.eq_lunar_35"
+		text="{=eq_lunar_34_text}Father of Moon Danser. Died of a fever." />
+	<Hero
+		id="eq_lunar_35"
+		faction="Faction.clan_lu_night"
+		alive="false"
+		spouse="Hero.eq_lunar_34"
+		text="{=eq_lunar_35_text}Mother of Moon Danser. Died in a siege." />
+	<Hero
+		id="eq_nightshade"
+		faction="Faction.clan_lu_guard"
+		father="Hero.eq_lunar_38"
+		mother="Hero.eq_lunar_39"
+		text="{=eq_nightshade_text}Captain of the Night Guard, a thestral quieter than a shadow." />
+	<Hero
+		id="eq_moonlight_raven"
+		faction="Faction.clan_lu_guard"
+		father="Hero.eq_lunar_40"
+		mother="Hero.eq_lunar_41"
+		text="{=eq_moonlight_raven_text}Commander of the flying patrols." />
+	<Hero
+		id="eq_dusk_shine"
+		faction="Faction.clan_lu_guard"
+		father="Hero.eq_lunar_42"
+		mother="Hero.eq_lunar_43"
+		text="{=eq_dusk_shine_text}A guardian of dreams, a hunter of nightmares." />
+	<Hero
+		id="eq_lunar_3"
+		faction="Faction.clan_lu_guard"
+		spouse="Hero.eq_lunar_44"
+		father="Hero.eq_lunar_36"
+		mother="Hero.eq_lunar_37"
+		text="{=eq_lunar_3_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_36"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_37"
+		text="{=eq_lunar_36_text}Father of Moon Stone. Died of old age." />
+	<Hero
+		id="eq_lunar_37"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_36"
+		text="{=eq_lunar_37_text}Mother of Moon Stone. Died of old age." />
+	<Hero
+		id="eq_lunar_38"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_39"
+		text="{=eq_lunar_38_text}Father of Naytsheyd. Died of a fever." />
+	<Hero
+		id="eq_lunar_39"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_38"
+		text="{=eq_lunar_39_text}Mother of Naytsheyd. Fell in battle under the banners of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_40"
+		faction="Faction.clan_lu_guard"
+		spouse="Hero.eq_lunar_41"
+		text="{=eq_lunar_40_text}Father of Munlayt Reyven." />
+	<Hero
+		id="eq_lunar_41"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_40"
+		text="{=eq_lunar_41_text}Mother of Munlayt Reyven. Died of old age." />
+	<Hero
+		id="eq_lunar_42"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_43"
+		text="{=eq_lunar_42_text}Father of Dusk Shine. Died in a siege." />
+	<Hero
+		id="eq_lunar_43"
+		faction="Faction.clan_lu_guard"
+		alive="false"
+		spouse="Hero.eq_lunar_42"
+		text="{=eq_lunar_43_text}Mother of Dusk Shine. Fell in battle under the banners of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_44"
+		faction="Faction.clan_lu_guard"
+		spouse="Hero.eq_lunar_3"
+		text="{=eq_lunar_44_text}Wife of Moon Stone." />
+	<Hero
+		id="eq_lunar_45"
+		faction="Faction.clan_lu_guard"
+		father="Hero.eq_lunar_3"
+		mother="Hero.eq_lunar_44"
+		text="{=eq_lunar_45_text}A foal of Night Guard." />
+	<Hero
+		id="eq_starswirl"
+		faction="Faction.clan_lu_pillars"
+		text="{=eq_starswirl_text}The greatest wizard of old, returned from Limbo." />
+	<Hero
+		id="eq_somnambula"
+		faction="Faction.clan_lu_pillars"
+		father="Hero.eq_lunar_46"
+		mother="Hero.eq_lunar_47"
+		text="{=eq_somnambula_text}A heroine of the deserts, the spirit of hope." />
+	<Hero
+		id="eq_mistmane"
+		faction="Faction.clan_lu_pillars"
+		text="{=eq_mistmane_text}A sorceress who gave away her beauty for her homeland." />
+	<Hero
+		id="eq_rockhoof"
+		faction="Faction.clan_lu_pillars"
+		text="{=eq_rockhoof_text}A strongpony with a shovel who saved his village from a volcano." />
+	<Hero
+		id="eq_flash_magnus"
+		faction="Faction.clan_lu_pillars"
+		father="Hero.eq_lunar_48"
+		mother="Hero.eq_lunar_49"
+		text="{=eq_flash_magnus_text}A bold pegasus warrior of the ancient Cloudsdale army." />
+	<Hero
+		id="eq_meadowbrook"
+		faction="Faction.clan_lu_pillars"
+		text="{=eq_meadowbrook_text}A healer from the marshlands." />
+	<Hero
+		id="eq_lunar_46"
+		faction="Faction.clan_lu_pillars"
+		alive="false"
+		spouse="Hero.eq_lunar_47"
+		text="{=eq_lunar_46_text}Father of Somnambula. Died of old age." />
+	<Hero
+		id="eq_lunar_47"
+		faction="Faction.clan_lu_pillars"
+		alive="false"
+		spouse="Hero.eq_lunar_46"
+		text="{=eq_lunar_47_text}Mother of Somnambula. Died of old age." />
+	<Hero
+		id="eq_lunar_48"
+		faction="Faction.clan_lu_pillars"
+		alive="false"
+		spouse="Hero.eq_lunar_49"
+		text="{=eq_lunar_48_text}Father of Flash Magnus. Died of old age." />
+	<Hero
+		id="eq_lunar_49"
+		faction="Faction.clan_lu_pillars"
+		alive="false"
+		spouse="Hero.eq_lunar_48"
+		text="{=eq_lunar_49_text}Mother of Flash Magnus. Died of old age." />
+	<Hero
+		id="eq_stygian"
+		faction="Faction.clan_lu_shadow"
+		text="{=eq_stygian_text}A former Shadow Pony seeking redemption." />
+	<Hero
+		id="eq_tantabus_keeper"
+		faction="Faction.clan_lu_shadow"
+		father="Hero.eq_lunar_52"
+		mother="Hero.eq_lunar_53"
+		text="{=eq_tantabus_keeper_text}Keeper of the Tantabus, locked in the lunar tower." />
+	<Hero
+		id="eq_lunar_4"
+		faction="Faction.clan_lu_shadow"
+		father="Hero.eq_lunar_50"
+		mother="Hero.eq_lunar_51"
+		text="{=eq_lunar_4_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_5"
+		faction="Faction.clan_lu_shadow"
+		spouse="Hero.eq_lunar_54"
+		father="Hero.eq_lunar_50"
+		mother="Hero.eq_lunar_51"
+		text="{=eq_lunar_5_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_50"
+		faction="Faction.clan_lu_shadow"
+		alive="false"
+		spouse="Hero.eq_lunar_51"
+		text="{=eq_lunar_50_text}Father of Apple Glow. Died of old age." />
+	<Hero
+		id="eq_lunar_51"
+		faction="Faction.clan_lu_shadow"
+		alive="false"
+		spouse="Hero.eq_lunar_50"
+		text="{=eq_lunar_51_text}Mother of Apple Glow. Died of old age." />
+	<Hero
+		id="eq_lunar_52"
+		faction="Faction.clan_lu_shadow"
+		alive="false"
+		spouse="Hero.eq_lunar_53"
+		text="{=eq_lunar_52_text}Father of Eklips Mist. Died of old age." />
+	<Hero
+		id="eq_lunar_53"
+		faction="Faction.clan_lu_shadow"
+		alive="false"
+		spouse="Hero.eq_lunar_52"
+		text="{=eq_lunar_53_text}Mother of Eklips Mist. Died of old age." />
+	<Hero
+		id="eq_lunar_54"
+		faction="Faction.clan_lu_shadow"
+		spouse="Hero.eq_lunar_5"
+		text="{=eq_lunar_54_text}Wife of Dusty Sky." />
+	<Hero
+		id="eq_lunar_55"
+		faction="Faction.clan_lu_shadow"
+		father="Hero.eq_lunar_5"
+		mother="Hero.eq_lunar_54"
+		text="{=eq_lunar_55_text}A foal of House Shades." />
+	<Hero
+		id="eq_lunar_56"
+		faction="Faction.clan_lu_shadow"
+		father="Hero.eq_lunar_5"
+		mother="Hero.eq_lunar_54"
+		text="{=eq_lunar_56_text}A foal of House Shades." />
+	<Hero
+		id="eq_lunar_6"
+		faction="Faction.clan_lunar_g5"
+		spouse="Hero.eq_lunar_9"
+		father="Hero.eq_lunar_57"
+		mother="Hero.eq_lunar_58"
+		text="{=eq_lunar_6_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_7"
+		faction="Faction.clan_lunar_g5"
+		father="Hero.eq_lunar_57"
+		mother="Hero.eq_lunar_58"
+		text="{=eq_lunar_7_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_8"
+		faction="Faction.clan_lunar_g5"
+		spouse="Hero.eq_lunar_59"
+		father="Hero.eq_lunar_57"
+		mother="Hero.eq_lunar_58"
+		text="{=eq_lunar_8_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_9"
+		faction="Faction.clan_lunar_g5"
+		spouse="Hero.eq_lunar_6"
+		text="{=eq_lunar_9_text}Husband of Cherry Heart." />
+	<Hero
+		id="eq_lunar_10"
+		faction="Faction.clan_lunar_g5"
+		father="Hero.eq_lunar_9"
+		mother="Hero.eq_lunar_6"
+		text="{=eq_lunar_10_text}A foal of House Copper Sky." />
+	<Hero
+		id="eq_lunar_57"
+		faction="Faction.clan_lunar_g5"
+		alive="false"
+		spouse="Hero.eq_lunar_58"
+		text="{=eq_lunar_57_text}Father of the head of House Copper Sky. Died of old age." />
+	<Hero
+		id="eq_lunar_58"
+		faction="Faction.clan_lunar_g5"
+		alive="false"
+		spouse="Hero.eq_lunar_57"
+		text="{=eq_lunar_58_text}Mother of the head of House Copper Sky. Died of old age." />
+	<Hero
+		id="eq_lunar_59"
+		faction="Faction.clan_lunar_g5"
+		spouse="Hero.eq_lunar_8"
+		text="{=eq_lunar_59_text}Husband of Violet Sparkle." />
+	<Hero
+		id="eq_lunar_60"
+		faction="Faction.clan_lunar_g5"
+		father="Hero.eq_lunar_59"
+		mother="Hero.eq_lunar_8"
+		text="{=eq_lunar_60_text}A foal of House Copper Sky." />
+	<Hero
+		id="eq_lunar_11"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_14"
+		father="Hero.eq_lunar_61"
+		mother="Hero.eq_lunar_62"
+		text="{=eq_lunar_11_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_12"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_63"
+		father="Hero.eq_lunar_61"
+		mother="Hero.eq_lunar_62"
+		text="{=eq_lunar_12_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_13"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_65"
+		father="Hero.eq_lunar_61"
+		mother="Hero.eq_lunar_62"
+		text="{=eq_lunar_13_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_14"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_11"
+		text="{=eq_lunar_14_text}Wife of Noble Field." />
+	<Hero
+		id="eq_lunar_15"
+		faction="Faction.clan_lunar_g6"
+		father="Hero.eq_lunar_11"
+		mother="Hero.eq_lunar_14"
+		text="{=eq_lunar_15_text}A foal of House Apple Flame." />
+	<Hero
+		id="eq_lunar_61"
+		faction="Faction.clan_lunar_g6"
+		alive="false"
+		spouse="Hero.eq_lunar_62"
+		text="{=eq_lunar_61_text}Father of the head of House Apple Flame. Died of old age." />
+	<Hero
+		id="eq_lunar_62"
+		faction="Faction.clan_lunar_g6"
+		alive="false"
+		spouse="Hero.eq_lunar_61"
+		text="{=eq_lunar_62_text}Mother of the head of House Apple Flame. Died of old age." />
+	<Hero
+		id="eq_lunar_63"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_12"
+		text="{=eq_lunar_63_text}Wife of Sunny Brave." />
+	<Hero
+		id="eq_lunar_64"
+		faction="Faction.clan_lunar_g6"
+		father="Hero.eq_lunar_12"
+		mother="Hero.eq_lunar_63"
+		text="{=eq_lunar_64_text}A foal of House Apple Flame." />
+	<Hero
+		id="eq_lunar_65"
+		faction="Faction.clan_lunar_g6"
+		spouse="Hero.eq_lunar_13"
+		text="{=eq_lunar_65_text}Husband of Misty Heart." />
+	<Hero
+		id="eq_lunar_66"
+		faction="Faction.clan_lunar_g6"
+		father="Hero.eq_lunar_65"
+		mother="Hero.eq_lunar_13"
+		text="{=eq_lunar_66_text}A foal of House Apple Flame." />
+	<Hero
+		id="eq_lunar_16"
+		faction="Faction.clan_lunar_g7"
+		spouse="Hero.eq_lunar_19"
+		father="Hero.eq_lunar_67"
+		mother="Hero.eq_lunar_68"
+		text="{=eq_lunar_16_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_17"
+		faction="Faction.clan_lunar_g7"
+		spouse="Hero.eq_lunar_69"
+		father="Hero.eq_lunar_67"
+		mother="Hero.eq_lunar_68"
+		text="{=eq_lunar_17_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_18"
+		faction="Faction.clan_lunar_g7"
+		father="Hero.eq_lunar_67"
+		mother="Hero.eq_lunar_68"
+		text="{=eq_lunar_18_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_19"
+		faction="Faction.clan_lunar_g7"
+		spouse="Hero.eq_lunar_16"
+		text="{=eq_lunar_19_text}Husband of Apple Song." />
+	<Hero
+		id="eq_lunar_20"
+		faction="Faction.clan_lunar_g7"
+		father="Hero.eq_lunar_19"
+		mother="Hero.eq_lunar_16"
+		text="{=eq_lunar_20_text}A foal of House Silver Field." />
+	<Hero
+		id="eq_lunar_67"
+		faction="Faction.clan_lunar_g7"
+		alive="false"
+		spouse="Hero.eq_lunar_68"
+		text="{=eq_lunar_67_text}Father of the head of House Silver Field. Died of old age." />
+	<Hero
+		id="eq_lunar_68"
+		faction="Faction.clan_lunar_g7"
+		alive="false"
+		spouse="Hero.eq_lunar_67"
+		text="{=eq_lunar_68_text}Mother of the head of House Silver Field. Died of old age." />
+	<Hero
+		id="eq_lunar_69"
+		faction="Faction.clan_lunar_g7"
+		spouse="Hero.eq_lunar_17"
+		text="{=eq_lunar_69_text}Wife of Sunny Dash." />
+	<Hero
+		id="eq_lunar_70"
+		faction="Faction.clan_lunar_g7"
+		father="Hero.eq_lunar_17"
+		mother="Hero.eq_lunar_69"
+		text="{=eq_lunar_70_text}A foal of House Silver Field." />
+	<Hero
+		id="eq_lunar_21"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_24"
+		father="Hero.eq_lunar_71"
+		mother="Hero.eq_lunar_72"
+		text="{=eq_lunar_21_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_22"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_73"
+		father="Hero.eq_lunar_71"
+		mother="Hero.eq_lunar_72"
+		text="{=eq_lunar_22_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_23"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_75"
+		father="Hero.eq_lunar_71"
+		mother="Hero.eq_lunar_72"
+		text="{=eq_lunar_23_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_24"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_21"
+		text="{=eq_lunar_24_text}Wife of Noble Dash." />
+	<Hero
+		id="eq_lunar_25"
+		faction="Faction.clan_lunar_g8"
+		father="Hero.eq_lunar_21"
+		mother="Hero.eq_lunar_24"
+		text="{=eq_lunar_25_text}A foal of House Swift Wind." />
+	<Hero
+		id="eq_lunar_71"
+		faction="Faction.clan_lunar_g8"
+		alive="false"
+		spouse="Hero.eq_lunar_72"
+		text="{=eq_lunar_71_text}Father of the head of House Swift Wind. Died of old age." />
+	<Hero
+		id="eq_lunar_72"
+		faction="Faction.clan_lunar_g8"
+		alive="false"
+		spouse="Hero.eq_lunar_71"
+		text="{=eq_lunar_72_text}Mother of the head of House Swift Wind. Died of old age." />
+	<Hero
+		id="eq_lunar_73"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_22"
+		text="{=eq_lunar_73_text}Wife of Dusty Heart." />
+	<Hero
+		id="eq_lunar_74"
+		faction="Faction.clan_lunar_g8"
+		father="Hero.eq_lunar_22"
+		mother="Hero.eq_lunar_73"
+		text="{=eq_lunar_74_text}A foal of House Swift Wind." />
+	<Hero
+		id="eq_lunar_75"
+		faction="Faction.clan_lunar_g8"
+		spouse="Hero.eq_lunar_23"
+		text="{=eq_lunar_75_text}Husband of Moon Glow." />
+	<Hero
+		id="eq_lunar_26"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_29"
+		father="Hero.eq_lunar_76"
+		mother="Hero.eq_lunar_77"
+		text="{=eq_lunar_26_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_27"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_78"
+		father="Hero.eq_lunar_76"
+		mother="Hero.eq_lunar_77"
+		text="{=eq_lunar_27_text}A noble pony of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_28"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_80"
+		father="Hero.eq_lunar_76"
+		mother="Hero.eq_lunar_77"
+		text="{=eq_lunar_28_text}A noble mare of Lunar Equestria." />
+	<Hero
+		id="eq_lunar_29"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_26"
+		text="{=eq_lunar_29_text}Wife of Iron Song." />
+	<Hero
+		id="eq_lunar_30"
+		faction="Faction.clan_lunar_g9"
+		father="Hero.eq_lunar_26"
+		mother="Hero.eq_lunar_29"
+		text="{=eq_lunar_30_text}A foal of House Swift Grove." />
+	<Hero
+		id="eq_lunar_31"
+		faction="Faction.clan_lunar_g9"
+		father="Hero.eq_lunar_26"
+		mother="Hero.eq_lunar_29"
+		text="{=eq_lunar_31_text}A foal of House Swift Grove." />
+	<Hero
+		id="eq_lunar_76"
+		faction="Faction.clan_lunar_g9"
+		alive="false"
+		spouse="Hero.eq_lunar_77"
+		text="{=eq_lunar_76_text}Father of the head of House Swift Grove. Died of old age." />
+	<Hero
+		id="eq_lunar_77"
+		faction="Faction.clan_lunar_g9"
+		alive="false"
+		spouse="Hero.eq_lunar_76"
+		text="{=eq_lunar_77_text}Mother of the head of House Swift Grove. Died of old age." />
+	<Hero
+		id="eq_lunar_78"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_27"
+		text="{=eq_lunar_78_text}Wife of Cloud Light." />
+	<Hero
+		id="eq_lunar_79"
+		faction="Faction.clan_lunar_g9"
+		father="Hero.eq_lunar_27"
+		mother="Hero.eq_lunar_78"
+		text="{=eq_lunar_79_text}A foal of House Swift Grove." />
+	<Hero
+		id="eq_lunar_80"
+		faction="Faction.clan_lunar_g9"
+		spouse="Hero.eq_lunar_28"
+		text="{=eq_lunar_80_text}Husband of Misty Song." />
+	<Hero
+		id="eq_twilight"
+		faction="Faction.clan_eq_sparkle"
+		father="Hero.eq_night_light"
+		mother="Hero.eq_velvet"
+		text="{=eq_twilight_text}The Princess of Friendship, Celestia's student and the strongest mage of her generation." />
+	<Hero
+		id="eq_night_light"
+		faction="Faction.clan_eq_sparkle"
+		spouse="Hero.eq_velvet"
+		text="{=eq_night_light_text}Father of Twilight and Shining Armor, a Canterlot astronomer." />
+	<Hero
+		id="eq_velvet"
+		faction="Faction.clan_eq_sparkle"
+		spouse="Hero.eq_night_light"
+		text="{=eq_velvet_text}Twilight's mother, a writer of adventure novels." />
+	<Hero
+		id="eq_spike"
+		faction="Faction.clan_eq_sparkle"
+		father="Hero.eq_friendship_13"
+		mother="Hero.eq_friendship_14"
+		text="{=eq_spike_text}A young dragon raised by Twilight. Her assistant and faithful friend." />
+	<Hero
+		id="eq_friendship_1"
+		faction="Faction.clan_eq_sparkle"
+		spouse="Hero.eq_friendship_15"
+		father="Hero.eq_friendship_11"
+		mother="Hero.eq_friendship_12"
+		text="{=eq_friendship_1_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_11"
+		faction="Faction.clan_eq_sparkle"
+		alive="false"
+		spouse="Hero.eq_friendship_12"
+		text="{=eq_friendship_11_text}Father of Dusty Flame. Died of a fever." />
+	<Hero
+		id="eq_friendship_12"
+		faction="Faction.clan_eq_sparkle"
+		spouse="Hero.eq_friendship_11"
+		text="{=eq_friendship_12_text}Mother of Dusty Flame." />
+	<Hero
+		id="eq_friendship_13"
+		faction="Faction.clan_eq_sparkle"
+		alive="false"
+		spouse="Hero.eq_friendship_14"
+		text="{=eq_friendship_13_text}Father of Spike. Fell in battle under the banners of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_14"
+		faction="Faction.clan_eq_sparkle"
+		alive="false"
+		spouse="Hero.eq_friendship_13"
+		text="{=eq_friendship_14_text}Mother of Spike. Died in childbirth." />
+	<Hero
+		id="eq_friendship_15"
+		faction="Faction.clan_eq_sparkle"
+		spouse="Hero.eq_friendship_1"
+		text="{=eq_friendship_15_text}Wife of Dusty Flame." />
+	<Hero
+		id="eq_friendship_16"
+		faction="Faction.clan_eq_sparkle"
+		father="Hero.eq_friendship_1"
+		mother="Hero.eq_friendship_15"
+		text="{=eq_friendship_16_text}A foal of House Sparkle." />
+	<Hero
+		id="eq_applejack"
+		faction="Faction.clan_eq_apple"
+		father="Hero.eq_bright_mac"
+		mother="Hero.eq_pear_butter"
+		text="{=eq_applejack_text}Mistress of Sweet Apple Acres, the most honest pony in Equestria." />
+	<Hero
+		id="eq_big_mac"
+		faction="Faction.clan_eq_apple"
+		spouse="Hero.eq_sugar_belle"
+		father="Hero.eq_bright_mac"
+		mother="Hero.eq_pear_butter"
+		text="{=eq_big_mac_text}Applejack's big brother, the muscle of the farm." />
+	<Hero
+		id="eq_apple_bloom"
+		faction="Faction.clan_eq_apple"
+		father="Hero.eq_bright_mac"
+		mother="Hero.eq_pear_butter"
+		text="{=eq_apple_bloom_text}The younger sister who founded the Cutie Mark Crusaders." />
+	<Hero
+		id="eq_granny_smith"
+		faction="Faction.clan_eq_apple"
+		text="{=eq_granny_smith_text}Founder of Ponyville and elder of the Apple family." />
+	<Hero
+		id="eq_sugar_belle"
+		faction="Faction.clan_eq_apple"
+		spouse="Hero.eq_big_mac"
+		father="Hero.eq_friendship_17"
+		mother="Hero.eq_friendship_18"
+		text="{=eq_sugar_belle_text}A baker, Big McIntosh's wife." />
+	<Hero
+		id="eq_braeburn"
+		faction="Faction.clan_eq_apple"
+		father="Hero.eq_friendship_19"
+		mother="Hero.eq_friendship_20"
+		text="{=eq_braeburn_text}Applejack's cousin from Appleloosa." />
+	<Hero
+		id="eq_bright_mac"
+		faction="Faction.clan_eq_apple"
+		alive="false"
+		spouse="Hero.eq_pear_butter"
+		mother="Hero.eq_granny_smith"
+		text="{=eq_bright_mac_text}Applejack's father. He died when the children were small." />
+	<Hero
+		id="eq_pear_butter"
+		faction="Faction.clan_eq_apple"
+		alive="false"
+		spouse="Hero.eq_bright_mac"
+		father="Hero.eq_grand_pear"
+		text="{=eq_pear_butter_text}Applejack's mother, of the Pear family. She died alongside her husband." />
+	<Hero
+		id="eq_grand_pear"
+		faction="Faction.clan_eq_apple"
+		text="{=eq_grand_pear_text}Pear Butter's father, an old rival of the Apple family." />
+	<Hero
+		id="eq_friendship_17"
+		faction="Faction.clan_eq_apple"
+		spouse="Hero.eq_friendship_18"
+		text="{=eq_friendship_17_text}Father of Shugar Belle." />
+	<Hero
+		id="eq_friendship_18"
+		faction="Faction.clan_eq_apple"
+		spouse="Hero.eq_friendship_17"
+		text="{=eq_friendship_18_text}Mother of Shugar Belle." />
+	<Hero
+		id="eq_friendship_19"
+		faction="Faction.clan_eq_apple"
+		alive="false"
+		spouse="Hero.eq_friendship_20"
+		text="{=eq_friendship_19_text}Father of Braeburn. Fell in battle under the banners of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_20"
+		faction="Faction.clan_eq_apple"
+		alive="false"
+		spouse="Hero.eq_friendship_19"
+		text="{=eq_friendship_20_text}Mother of Braeburn. Died of a fever." />
+	<Hero
+		id="eq_rainbow_dash"
+		faction="Faction.clan_eq_dash"
+		father="Hero.eq_bow_hothoof"
+		mother="Hero.eq_windy_whistles"
+		text="{=eq_rainbow_dash_text}The fastest pegasus in Equestria, the Element of Loyalty." />
+	<Hero
+		id="eq_bow_hothoof"
+		faction="Faction.clan_eq_dash"
+		spouse="Hero.eq_windy_whistles"
+		text="{=eq_bow_hothoof_text}Rainbow Dash's father, her loudest supporter." />
+	<Hero
+		id="eq_windy_whistles"
+		faction="Faction.clan_eq_dash"
+		spouse="Hero.eq_bow_hothoof"
+		father="Hero.eq_friendship_23"
+		mother="Hero.eq_friendship_24"
+		text="{=eq_windy_whistles_text}Mother Rainbow Dash." />
+	<Hero
+		id="eq_scootaloo"
+		faction="Faction.clan_eq_dash"
+		father="Hero.eq_friendship_25"
+		mother="Hero.eq_friendship_26"
+		text="{=eq_scootaloo_text}A Cutie Mark Crusader who looks up to Rainbow Dash as a big sister." />
+	<Hero
+		id="eq_friendship_2"
+		faction="Faction.clan_eq_dash"
+		father="Hero.eq_friendship_21"
+		mother="Hero.eq_friendship_22"
+		text="{=eq_friendship_2_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_21"
+		faction="Faction.clan_eq_dash"
+		spouse="Hero.eq_friendship_22"
+		text="{=eq_friendship_21_text}Father of Shining Star." />
+	<Hero
+		id="eq_friendship_22"
+		faction="Faction.clan_eq_dash"
+		alive="false"
+		spouse="Hero.eq_friendship_21"
+		text="{=eq_friendship_22_text}Mother of Shining Star. Died of old age." />
+	<Hero
+		id="eq_friendship_23"
+		faction="Faction.clan_eq_dash"
+		alive="false"
+		spouse="Hero.eq_friendship_24"
+		text="{=eq_friendship_23_text}Father of Vindi Vissls. Died of old age." />
+	<Hero
+		id="eq_friendship_24"
+		faction="Faction.clan_eq_dash"
+		alive="false"
+		spouse="Hero.eq_friendship_23"
+		text="{=eq_friendship_24_text}Mother of Vindi Vissls. Died of old age." />
+	<Hero
+		id="eq_friendship_25"
+		faction="Faction.clan_eq_dash"
+		alive="false"
+		spouse="Hero.eq_friendship_26"
+		text="{=eq_friendship_25_text}Father of Scootaloo. Died of a fever." />
+	<Hero
+		id="eq_friendship_26"
+		faction="Faction.clan_eq_dash"
+		alive="false"
+		spouse="Hero.eq_friendship_25"
+		text="{=eq_friendship_26_text}Mother of Scootaloo. Died in a siege." />
+	<Hero
+		id="eq_rarity"
+		faction="Faction.clan_eq_belle"
+		father="Hero.eq_hondo_flanks"
+		mother="Hero.eq_cookie_crumbles"
+		text="{=eq_rarity_text}A Ponyville fashion designer, the Element of Generosity." />
+	<Hero
+		id="eq_sweetie_belle"
+		faction="Faction.clan_eq_belle"
+		father="Hero.eq_hondo_flanks"
+		mother="Hero.eq_cookie_crumbles"
+		text="{=eq_sweetie_belle_text}the Younger sister Rarity, Cutie Mark Crusader." />
+	<Hero
+		id="eq_hondo_flanks"
+		faction="Faction.clan_eq_belle"
+		spouse="Hero.eq_cookie_crumbles"
+		text="{=eq_hondo_flanks_text}Father Rarity." />
+	<Hero
+		id="eq_cookie_crumbles"
+		faction="Faction.clan_eq_belle"
+		spouse="Hero.eq_hondo_flanks"
+		text="{=eq_cookie_crumbles_text}Mother Rarity." />
+	<Hero
+		id="eq_friendship_3"
+		faction="Faction.clan_eq_belle"
+		father="Hero.eq_friendship_27"
+		mother="Hero.eq_friendship_28"
+		text="{=eq_friendship_3_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_27"
+		faction="Faction.clan_eq_belle"
+		alive="false"
+		spouse="Hero.eq_friendship_28"
+		text="{=eq_friendship_27_text}Father of Cloud Ridge. Died of old age." />
+	<Hero
+		id="eq_friendship_28"
+		faction="Faction.clan_eq_belle"
+		alive="false"
+		spouse="Hero.eq_friendship_27"
+		text="{=eq_friendship_28_text}Mother of Cloud Ridge. Died of old age." />
+	<Hero
+		id="eq_pinkie"
+		faction="Faction.clan_eq_pie"
+		father="Hero.eq_igneous"
+		mother="Hero.eq_cloudy_quartz"
+		text="{=eq_pinkie_text}A thrower of parties, the Element of Laughter." />
+	<Hero
+		id="eq_maud"
+		faction="Faction.clan_eq_pie"
+		father="Hero.eq_igneous"
+		mother="Hero.eq_cloudy_quartz"
+		text="{=eq_maud_text}Pinkie's elder sister, an expert on rocks." />
+	<Hero
+		id="eq_limestone"
+		faction="Faction.clan_eq_pie"
+		father="Hero.eq_igneous"
+		mother="Hero.eq_cloudy_quartz"
+		text="{=eq_limestone_text}Mistress of the rock farm, harsh and strict." />
+	<Hero
+		id="eq_marble"
+		faction="Faction.clan_eq_pie"
+		father="Hero.eq_igneous"
+		mother="Hero.eq_cloudy_quartz"
+		text="{=eq_marble_text}The quietest of the Pie sisters." />
+	<Hero
+		id="eq_igneous"
+		faction="Faction.clan_eq_pie"
+		spouse="Hero.eq_cloudy_quartz"
+		text="{=eq_igneous_text}Father of the Pie sisters, a rock farmer." />
+	<Hero
+		id="eq_cloudy_quartz"
+		faction="Faction.clan_eq_pie"
+		spouse="Hero.eq_igneous"
+		text="{=eq_cloudy_quartz_text}Mother sisters Pie." />
+	<Hero
+		id="eq_fluttershy"
+		faction="Faction.clan_eq_shy"
+		father="Hero.eq_gentle_breeze"
+		mother="Hero.eq_posey_shy"
+		text="{=eq_fluttershy_text}A keeper of animals, the Element of Kindness." />
+	<Hero
+		id="eq_zephyr"
+		faction="Faction.clan_eq_shy"
+		father="Hero.eq_gentle_breeze"
+		mother="Hero.eq_posey_shy"
+		text="{=eq_zephyr_text}Fluttershy's little brother, an eternal layabout." />
+	<Hero
+		id="eq_gentle_breeze"
+		faction="Faction.clan_eq_shy"
+		spouse="Hero.eq_posey_shy"
+		text="{=eq_gentle_breeze_text}Father Fluttershy." />
+	<Hero
+		id="eq_posey_shy"
+		faction="Faction.clan_eq_shy"
+		spouse="Hero.eq_gentle_breeze"
+		text="{=eq_posey_shy_text}Mother Fluttershy." />
+	<Hero
+		id="eq_starlight"
+		faction="Faction.clan_eq_glimmer"
+		father="Hero.eq_friendship_31"
+		mother="Hero.eq_friendship_32"
+		text="{=eq_starlight_text}Former leader of the Equals, now Twilight's student." />
+	<Hero
+		id="eq_trixie"
+		faction="Faction.clan_eq_glimmer"
+		father="Hero.eq_friendship_33"
+		mother="Hero.eq_friendship_34"
+		text="{=eq_trixie_text}The Great and Powerful stage magician, Starlight's friend." />
+	<Hero
+		id="eq_friendship_4"
+		faction="Faction.clan_eq_glimmer"
+		father="Hero.eq_friendship_29"
+		mother="Hero.eq_friendship_30"
+		text="{=eq_friendship_4_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_5"
+		faction="Faction.clan_eq_glimmer"
+		father="Hero.eq_friendship_29"
+		mother="Hero.eq_friendship_30"
+		text="{=eq_friendship_5_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_29"
+		faction="Faction.clan_eq_glimmer"
+		alive="false"
+		spouse="Hero.eq_friendship_30"
+		text="{=eq_friendship_29_text}Father of Copper Dash. Died of old age." />
+	<Hero
+		id="eq_friendship_30"
+		faction="Faction.clan_eq_glimmer"
+		alive="false"
+		spouse="Hero.eq_friendship_29"
+		text="{=eq_friendship_30_text}Mother of Copper Dash. Died of old age." />
+	<Hero
+		id="eq_friendship_31"
+		faction="Faction.clan_eq_glimmer"
+		spouse="Hero.eq_friendship_32"
+		text="{=eq_friendship_31_text}Father of Starlight Glimmer." />
+	<Hero
+		id="eq_friendship_32"
+		faction="Faction.clan_eq_glimmer"
+		alive="false"
+		spouse="Hero.eq_friendship_31"
+		text="{=eq_friendship_32_text}Mother of Starlight Glimmer. Died in childbirth." />
+	<Hero
+		id="eq_friendship_33"
+		faction="Faction.clan_eq_glimmer"
+		alive="false"
+		spouse="Hero.eq_friendship_34"
+		text="{=eq_friendship_33_text}Father of Trixie Lulamun. Died in a siege." />
+	<Hero
+		id="eq_friendship_34"
+		faction="Faction.clan_eq_glimmer"
+		alive="false"
+		spouse="Hero.eq_friendship_33"
+		text="{=eq_friendship_34_text}Mother of Trixie Lulamun. Killed by bandits on the road." />
+	<Hero
+		id="eq_friendship_6"
+		faction="Faction.clan_friendship_g8"
+		spouse="Hero.eq_friendship_9"
+		father="Hero.eq_friendship_35"
+		mother="Hero.eq_friendship_36"
+		text="{=eq_friendship_6_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_7"
+		faction="Faction.clan_friendship_g8"
+		father="Hero.eq_friendship_35"
+		mother="Hero.eq_friendship_36"
+		text="{=eq_friendship_7_text}A noble pony of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_8"
+		faction="Faction.clan_friendship_g8"
+		father="Hero.eq_friendship_35"
+		mother="Hero.eq_friendship_36"
+		text="{=eq_friendship_8_text}A noble mare of Equestria of Friendship." />
+	<Hero
+		id="eq_friendship_9"
+		faction="Faction.clan_friendship_g8"
+		spouse="Hero.eq_friendship_6"
+		text="{=eq_friendship_9_text}Wife of Apple Dash." />
+	<Hero
+		id="eq_friendship_10"
+		faction="Faction.clan_friendship_g8"
+		father="Hero.eq_friendship_6"
+		mother="Hero.eq_friendship_9"
+		text="{=eq_friendship_10_text}A foal of House Apple Hoof." />
+	<Hero
+		id="eq_friendship_35"
+		faction="Faction.clan_friendship_g8"
+		alive="false"
+		spouse="Hero.eq_friendship_36"
+		text="{=eq_friendship_35_text}Father of the head of House Apple Hoof. Died of old age." />
+	<Hero
+		id="eq_friendship_36"
+		faction="Faction.clan_friendship_g8"
+		alive="false"
+		spouse="Hero.eq_friendship_35"
+		text="{=eq_friendship_36_text}Mother of the head of House Apple Hoof. Died of old age." />
+	<Hero
+		id="eq_cadance"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_shining_armor"
+		text="{=eq_cadance_text}The Princess of Love, ruler of the Crystal Empire." />
+	<Hero
+		id="eq_shining_armor"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_cadance"
+		father="Hero.eq_night_light"
+		mother="Hero.eq_velvet"
+		text="{=eq_shining_armor_text}Former captain of the Royal Guard, Twilight's brother and Cadance's husband." />
+	<Hero
+		id="eq_flurry"
+		faction="Faction.clan_eq_amore"
+		father="Hero.eq_shining_armor"
+		mother="Hero.eq_cadance"
+		text="{=eq_flurry_text}Daughter of Cadance and Shining Armor, an alicorn from birth." />
+	<Hero
+		id="eq_crystal_1"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_crystal_31"
+		father="Hero.eq_crystal_29"
+		mother="Hero.eq_crystal_30"
+		text="{=eq_crystal_1_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_2"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_crystal_33"
+		father="Hero.eq_crystal_29"
+		mother="Hero.eq_crystal_30"
+		text="{=eq_crystal_2_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_29"
+		faction="Faction.clan_eq_amore"
+		alive="false"
+		spouse="Hero.eq_crystal_30"
+		text="{=eq_crystal_29_text}Father of Daisy Sparkle. Died of a fever." />
+	<Hero
+		id="eq_crystal_30"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_crystal_29"
+		text="{=eq_crystal_30_text}Mother of Daisy Sparkle." />
+	<Hero
+		id="eq_crystal_31"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_crystal_1"
+		text="{=eq_crystal_31_text}Husband of Daisy Sparkle." />
+	<Hero
+		id="eq_crystal_32"
+		faction="Faction.clan_eq_amore"
+		father="Hero.eq_crystal_31"
+		mother="Hero.eq_crystal_1"
+		text="{=eq_crystal_32_text}A foal of House Mi Amore." />
+	<Hero
+		id="eq_crystal_33"
+		faction="Faction.clan_eq_amore"
+		spouse="Hero.eq_crystal_2"
+		text="{=eq_crystal_33_text}Wife of Swift Grove." />
+	<Hero
+		id="eq_crystal_34"
+		faction="Faction.clan_eq_amore"
+		father="Hero.eq_crystal_2"
+		mother="Hero.eq_crystal_33"
+		text="{=eq_crystal_34_text}A foal of House Mi Amore." />
+	<Hero
+		id="eq_radiant_hope"
+		faction="Faction.clan_cr_hope"
+		father="Hero.eq_crystal_37"
+		mother="Hero.eq_crystal_38"
+		text="{=eq_radiant_hope_text}A crystal healer, Sombra's childhood friend." />
+	<Hero
+		id="eq_arctic_lily"
+		faction="Faction.clan_cr_hope"
+		father="Hero.eq_crystal_39"
+		mother="Hero.eq_crystal_40"
+		text="{=eq_arctic_lily_text}Chieftain of the northern crystal houses." />
+	<Hero
+		id="eq_crystal_3"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_41"
+		father="Hero.eq_crystal_35"
+		mother="Hero.eq_crystal_36"
+		text="{=eq_crystal_3_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_4"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_43"
+		father="Hero.eq_crystal_35"
+		mother="Hero.eq_crystal_36"
+		text="{=eq_crystal_4_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_35"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_36"
+		text="{=eq_crystal_35_text}Father of Misty Flower." />
+	<Hero
+		id="eq_crystal_36"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_35"
+		text="{=eq_crystal_36_text}Mother of Misty Flower." />
+	<Hero
+		id="eq_crystal_37"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_38"
+		text="{=eq_crystal_37_text}Father of Radiant Hope." />
+	<Hero
+		id="eq_crystal_38"
+		faction="Faction.clan_cr_hope"
+		alive="false"
+		spouse="Hero.eq_crystal_37"
+		text="{=eq_crystal_38_text}Mother of Radiant Hope. Died in childbirth." />
+	<Hero
+		id="eq_crystal_39"
+		faction="Faction.clan_cr_hope"
+		alive="false"
+		spouse="Hero.eq_crystal_40"
+		text="{=eq_crystal_39_text}Father of Arctic Lily. Killed by bandits on the road." />
+	<Hero
+		id="eq_crystal_40"
+		faction="Faction.clan_cr_hope"
+		alive="false"
+		spouse="Hero.eq_crystal_39"
+		text="{=eq_crystal_40_text}Mother of Arctic Lily. Died in childbirth." />
+	<Hero
+		id="eq_crystal_41"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_3"
+		text="{=eq_crystal_41_text}Husband of Misty Flower." />
+	<Hero
+		id="eq_crystal_42"
+		faction="Faction.clan_cr_hope"
+		father="Hero.eq_crystal_41"
+		mother="Hero.eq_crystal_3"
+		text="{=eq_crystal_42_text}A foal of House Radiant Hope." />
+	<Hero
+		id="eq_crystal_43"
+		faction="Faction.clan_cr_hope"
+		spouse="Hero.eq_crystal_4"
+		text="{=eq_crystal_43_text}Wife of Silver Wind." />
+	<Hero
+		id="eq_crystal_44"
+		faction="Faction.clan_cr_hope"
+		father="Hero.eq_crystal_4"
+		mother="Hero.eq_crystal_43"
+		text="{=eq_crystal_44_text}A foal of House Radiant Hope." />
+	<Hero
+		id="eq_sunburst"
+		faction="Faction.clan_cr_crystaller"
+		father="Hero.eq_firelight"
+		mother="Hero.eq_stellar_flare"
+		text="{=eq_sunburst_text}Crystaller of the Empire, a scholar-mage and Starlight's childhood friend." />
+	<Hero
+		id="eq_stellar_flare"
+		faction="Faction.clan_cr_crystaller"
+		spouse="Hero.eq_firelight"
+		text="{=eq_stellar_flare_text}Sunburst's mother, strict and very businesslike." />
+	<Hero
+		id="eq_firelight"
+		faction="Faction.clan_cr_crystaller"
+		spouse="Hero.eq_stellar_flare"
+		text="{=eq_firelight_text}Father Sunburst." />
+	<Hero
+		id="eq_crystal_5"
+		faction="Faction.clan_cr_crystaller"
+		father="Hero.eq_crystal_45"
+		mother="Hero.eq_crystal_46"
+		text="{=eq_crystal_5_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_45"
+		faction="Faction.clan_cr_crystaller"
+		alive="false"
+		spouse="Hero.eq_crystal_46"
+		text="{=eq_crystal_45_text}Father of Star Swirl. Died of old age." />
+	<Hero
+		id="eq_crystal_46"
+		faction="Faction.clan_cr_crystaller"
+		alive="false"
+		spouse="Hero.eq_crystal_45"
+		text="{=eq_crystal_46_text}Mother of Star Swirl. Died of old age." />
+	<Hero
+		id="eq_sombra"
+		faction="Faction.clan_cr_sombra"
+		father="Hero.eq_crystal_49"
+		mother="Hero.eq_crystal_50"
+		text="{=eq_sombra_text}The former tyrant king. His followers await his return." />
+	<Hero
+		id="eq_umbra"
+		faction="Faction.clan_cr_sombra"
+		father="Hero.eq_crystal_51"
+		mother="Hero.eq_crystal_52"
+		text="{=eq_umbra_text}Keeper of the shadow crystals." />
+	<Hero
+		id="eq_crystal_6"
+		faction="Faction.clan_cr_sombra"
+		spouse="Hero.eq_crystal_53"
+		father="Hero.eq_crystal_47"
+		mother="Hero.eq_crystal_48"
+		text="{=eq_crystal_6_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_7"
+		faction="Faction.clan_cr_sombra"
+		spouse="Hero.eq_crystal_56"
+		father="Hero.eq_crystal_47"
+		mother="Hero.eq_crystal_48"
+		text="{=eq_crystal_7_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_47"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_48"
+		text="{=eq_crystal_47_text}Father of Moon Sky. Died of old age." />
+	<Hero
+		id="eq_crystal_48"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_47"
+		text="{=eq_crystal_48_text}Mother of Moon Sky. Killed by bandits on the road." />
+	<Hero
+		id="eq_crystal_49"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_50"
+		text="{=eq_crystal_49_text}Father of Sombra. Died of old age." />
+	<Hero
+		id="eq_crystal_50"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_49"
+		text="{=eq_crystal_50_text}Mother of Sombra. Died of old age." />
+	<Hero
+		id="eq_crystal_51"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_52"
+		text="{=eq_crystal_51_text}Father of Umbra. Killed by bandits on the road." />
+	<Hero
+		id="eq_crystal_52"
+		faction="Faction.clan_cr_sombra"
+		alive="false"
+		spouse="Hero.eq_crystal_51"
+		text="{=eq_crystal_52_text}Mother of Umbra. Died of old age." />
+	<Hero
+		id="eq_crystal_53"
+		faction="Faction.clan_cr_sombra"
+		spouse="Hero.eq_crystal_6"
+		text="{=eq_crystal_53_text}Wife of Moon Sky." />
+	<Hero
+		id="eq_crystal_54"
+		faction="Faction.clan_cr_sombra"
+		father="Hero.eq_crystal_6"
+		mother="Hero.eq_crystal_53"
+		text="{=eq_crystal_54_text}A foal of Shades Sombra." />
+	<Hero
+		id="eq_crystal_55"
+		faction="Faction.clan_cr_sombra"
+		father="Hero.eq_crystal_6"
+		mother="Hero.eq_crystal_53"
+		text="{=eq_crystal_55_text}A foal of Shades Sombra." />
+	<Hero
+		id="eq_crystal_56"
+		faction="Faction.clan_cr_sombra"
+		spouse="Hero.eq_crystal_7"
+		text="{=eq_crystal_56_text}Husband of Raindrops." />
+	<Hero
+		id="eq_crystal_57"
+		faction="Faction.clan_cr_sombra"
+		father="Hero.eq_crystal_56"
+		mother="Hero.eq_crystal_7"
+		text="{=eq_crystal_57_text}A foal of Shades Sombra." />
+	<Hero
+		id="eq_crystal_8"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_11"
+		father="Hero.eq_crystal_58"
+		mother="Hero.eq_crystal_59"
+		text="{=eq_crystal_8_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_9"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_60"
+		father="Hero.eq_crystal_58"
+		mother="Hero.eq_crystal_59"
+		text="{=eq_crystal_9_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_10"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_62"
+		father="Hero.eq_crystal_58"
+		mother="Hero.eq_crystal_59"
+		text="{=eq_crystal_10_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_11"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_8"
+		text="{=eq_crystal_11_text}Husband of Pinkie Flower." />
+	<Hero
+		id="eq_crystal_12"
+		faction="Faction.clan_crystal_g5"
+		father="Hero.eq_crystal_11"
+		mother="Hero.eq_crystal_8"
+		text="{=eq_crystal_12_text}A foal of House Bright Song." />
+	<Hero
+		id="eq_crystal_58"
+		faction="Faction.clan_crystal_g5"
+		alive="false"
+		spouse="Hero.eq_crystal_59"
+		text="{=eq_crystal_58_text}Father of the head of House Bright Song. Fell in battle under the banners of Crystal Empire." />
+	<Hero
+		id="eq_crystal_59"
+		faction="Faction.clan_crystal_g5"
+		alive="false"
+		spouse="Hero.eq_crystal_58"
+		text="{=eq_crystal_59_text}Mother of the head of House Bright Song. Fell in battle under the banners of Crystal Empire." />
+	<Hero
+		id="eq_crystal_60"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_9"
+		text="{=eq_crystal_60_text}Wife of Steel Song." />
+	<Hero
+		id="eq_crystal_61"
+		faction="Faction.clan_crystal_g5"
+		father="Hero.eq_crystal_9"
+		mother="Hero.eq_crystal_60"
+		text="{=eq_crystal_61_text}A foal of House Bright Song." />
+	<Hero
+		id="eq_crystal_62"
+		faction="Faction.clan_crystal_g5"
+		spouse="Hero.eq_crystal_10"
+		text="{=eq_crystal_62_text}Husband of Sunny Shine." />
+	<Hero
+		id="eq_crystal_63"
+		faction="Faction.clan_crystal_g5"
+		father="Hero.eq_crystal_62"
+		mother="Hero.eq_crystal_10"
+		text="{=eq_crystal_63_text}A foal of House Bright Song." />
+	<Hero
+		id="eq_crystal_13"
+		faction="Faction.clan_crystal_g6"
+		spouse="Hero.eq_crystal_16"
+		father="Hero.eq_crystal_64"
+		mother="Hero.eq_crystal_65"
+		text="{=eq_crystal_13_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_14"
+		faction="Faction.clan_crystal_g6"
+		father="Hero.eq_crystal_64"
+		mother="Hero.eq_crystal_65"
+		text="{=eq_crystal_14_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_15"
+		faction="Faction.clan_crystal_g6"
+		spouse="Hero.eq_crystal_66"
+		father="Hero.eq_crystal_64"
+		mother="Hero.eq_crystal_65"
+		text="{=eq_crystal_15_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_16"
+		faction="Faction.clan_crystal_g6"
+		spouse="Hero.eq_crystal_13"
+		text="{=eq_crystal_16_text}Husband of Misty Dash." />
+	<Hero
+		id="eq_crystal_17"
+		faction="Faction.clan_crystal_g6"
+		father="Hero.eq_crystal_16"
+		mother="Hero.eq_crystal_13"
+		text="{=eq_crystal_17_text}A foal of House Copper Hoof." />
+	<Hero
+		id="eq_crystal_18"
+		faction="Faction.clan_crystal_g6"
+		father="Hero.eq_crystal_16"
+		mother="Hero.eq_crystal_13"
+		text="{=eq_crystal_18_text}A foal of House Copper Hoof." />
+	<Hero
+		id="eq_crystal_64"
+		faction="Faction.clan_crystal_g6"
+		alive="false"
+		spouse="Hero.eq_crystal_65"
+		text="{=eq_crystal_64_text}Father of the head of House Copper Hoof. Died of old age." />
+	<Hero
+		id="eq_crystal_65"
+		faction="Faction.clan_crystal_g6"
+		alive="false"
+		spouse="Hero.eq_crystal_64"
+		text="{=eq_crystal_65_text}Mother of the head of House Copper Hoof. Died of old age." />
+	<Hero
+		id="eq_crystal_66"
+		faction="Faction.clan_crystal_g6"
+		spouse="Hero.eq_crystal_15"
+		text="{=eq_crystal_66_text}Husband of Pinkie Sparkle." />
+	<Hero
+		id="eq_crystal_67"
+		faction="Faction.clan_crystal_g6"
+		father="Hero.eq_crystal_66"
+		mother="Hero.eq_crystal_15"
+		text="{=eq_crystal_67_text}A foal of House Copper Hoof." />
+	<Hero
+		id="eq_crystal_68"
+		faction="Faction.clan_crystal_g6"
+		father="Hero.eq_crystal_66"
+		mother="Hero.eq_crystal_15"
+		text="{=eq_crystal_68_text}A foal of House Copper Hoof." />
+	<Hero
+		id="eq_crystal_19"
+		faction="Faction.clan_crystal_g7"
+		spouse="Hero.eq_crystal_22"
+		father="Hero.eq_crystal_69"
+		mother="Hero.eq_crystal_70"
+		text="{=eq_crystal_19_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_20"
+		faction="Faction.clan_crystal_g7"
+		father="Hero.eq_crystal_69"
+		mother="Hero.eq_crystal_70"
+		text="{=eq_crystal_20_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_21"
+		faction="Faction.clan_crystal_g7"
+		father="Hero.eq_crystal_69"
+		mother="Hero.eq_crystal_70"
+		text="{=eq_crystal_21_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_22"
+		faction="Faction.clan_crystal_g7"
+		spouse="Hero.eq_crystal_19"
+		text="{=eq_crystal_22_text}Husband of Misty Shine." />
+	<Hero
+		id="eq_crystal_23"
+		faction="Faction.clan_crystal_g7"
+		father="Hero.eq_crystal_22"
+		mother="Hero.eq_crystal_19"
+		text="{=eq_crystal_23_text}A foal of House Moon Light." />
+	<Hero
+		id="eq_crystal_69"
+		faction="Faction.clan_crystal_g7"
+		alive="false"
+		spouse="Hero.eq_crystal_70"
+		text="{=eq_crystal_69_text}Father of the head of House Moon Light. Died of old age." />
+	<Hero
+		id="eq_crystal_70"
+		faction="Faction.clan_crystal_g7"
+		alive="false"
+		spouse="Hero.eq_crystal_69"
+		text="{=eq_crystal_70_text}Mother of the head of House Moon Light. Died of old age." />
+	<Hero
+		id="eq_crystal_24"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_27"
+		father="Hero.eq_crystal_71"
+		mother="Hero.eq_crystal_72"
+		text="{=eq_crystal_24_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_25"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_73"
+		father="Hero.eq_crystal_71"
+		mother="Hero.eq_crystal_72"
+		text="{=eq_crystal_25_text}A noble pony of Crystal Empire." />
+	<Hero
+		id="eq_crystal_26"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_74"
+		father="Hero.eq_crystal_71"
+		mother="Hero.eq_crystal_72"
+		text="{=eq_crystal_26_text}A noble mare of Crystal Empire." />
+	<Hero
+		id="eq_crystal_27"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_24"
+		text="{=eq_crystal_27_text}Wife of Moon Brave." />
+	<Hero
+		id="eq_crystal_28"
+		faction="Faction.clan_crystal_g8"
+		father="Hero.eq_crystal_24"
+		mother="Hero.eq_crystal_27"
+		text="{=eq_crystal_28_text}A foal of House Swift Hoof." />
+	<Hero
+		id="eq_crystal_71"
+		faction="Faction.clan_crystal_g8"
+		alive="false"
+		spouse="Hero.eq_crystal_72"
+		text="{=eq_crystal_71_text}Father of the head of House Swift Hoof. Died of old age." />
+	<Hero
+		id="eq_crystal_72"
+		faction="Faction.clan_crystal_g8"
+		alive="false"
+		spouse="Hero.eq_crystal_71"
+		text="{=eq_crystal_72_text}Mother of the head of House Swift Hoof. Died of old age." />
+	<Hero
+		id="eq_crystal_73"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_25"
+		text="{=eq_crystal_73_text}Wife of Dusty Dash." />
+	<Hero
+		id="eq_crystal_74"
+		faction="Faction.clan_crystal_g8"
+		spouse="Hero.eq_crystal_26"
+		text="{=eq_crystal_74_text}Husband of Misty Bloom." />
+	<Hero
+		id="eq_crystal_75"
+		faction="Faction.clan_crystal_g8"
+		father="Hero.eq_crystal_74"
+		mother="Hero.eq_crystal_26"
+		text="{=eq_crystal_75_text}A foal of House Swift Hoof." />
+	<Hero
+		id="eq_reyhard_ironclaw"
+		faction="Faction.clan_gr_ironclaw"
+		text="{=eq_reyhard_ironclaw_text}King of Griffonstone, descendant of the legendary King Grover." />
+	<Hero
+		id="eq_wilhelm_silverwing"
+		faction="Faction.clan_gr_ironclaw"
+		father="Hero.eq_griffonia_24"
+		mother="Hero.eq_griffonia_25"
+		text="{=eq_wilhelm_silverwing_text}The king's marshal, a veteran of the mountain wars." />
+	<Hero
+		id="eq_erika_rosetalon"
+		faction="Faction.clan_gr_ironclaw"
+		father="Hero.eq_griffonia_26"
+		mother="Hero.eq_griffonia_27"
+		text="{=eq_erika_rosetalon_text}A court adviser, a master of secret talks." />
+	<Hero
+		id="eq_griffonia_1"
+		faction="Faction.clan_gr_ironclaw"
+		father="Hero.eq_griffonia_22"
+		mother="Hero.eq_griffonia_23"
+		text="{=eq_griffonia_1_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_22"
+		faction="Faction.clan_gr_ironclaw"
+		alive="false"
+		spouse="Hero.eq_griffonia_23"
+		text="{=eq_griffonia_22_text}Father of Marta Ashclaw. Died of old age." />
+	<Hero
+		id="eq_griffonia_23"
+		faction="Faction.clan_gr_ironclaw"
+		alive="false"
+		spouse="Hero.eq_griffonia_22"
+		text="{=eq_griffonia_23_text}Mother of Marta Ashclaw. Died in childbirth." />
+	<Hero
+		id="eq_griffonia_24"
+		faction="Faction.clan_gr_ironclaw"
+		alive="false"
+		spouse="Hero.eq_griffonia_25"
+		text="{=eq_griffonia_24_text}Father of Wilhelm Silverwing. Died of old age." />
+	<Hero
+		id="eq_griffonia_25"
+		faction="Faction.clan_gr_ironclaw"
+		alive="false"
+		spouse="Hero.eq_griffonia_24"
+		text="{=eq_griffonia_25_text}Mother of Wilhelm Silverwing. Died of old age." />
+	<Hero
+		id="eq_griffonia_26"
+		faction="Faction.clan_gr_ironclaw"
+		spouse="Hero.eq_griffonia_27"
+		text="{=eq_griffonia_26_text}Father of Erika Rosetalon." />
+	<Hero
+		id="eq_griffonia_27"
+		faction="Faction.clan_gr_ironclaw"
+		alive="false"
+		spouse="Hero.eq_griffonia_26"
+		text="{=eq_griffonia_27_text}Mother of Erika Rosetalon. Killed by bandits on the road." />
+	<Hero
+		id="eq_heinrich_redtail"
+		faction="Faction.clan_gr_redtail"
+		spouse="Hero.eq_ulla_redtail"
+		father="Hero.eq_griffonia_30"
+		mother="Hero.eq_griffonia_31"
+		text="{=eq_heinrich_redtail_text}An old war leader, master of the eastern passes." />
+	<Hero
+		id="eq_ulla_redtail"
+		faction="Faction.clan_gr_redtail"
+		spouse="Hero.eq_heinrich_redtail"
+		father="Hero.eq_griffonia_32"
+		mother="Hero.eq_griffonia_33"
+		text="{=eq_ulla_redtail_text}Heinrich's wife, who rules the Frontier in his absence." />
+	<Hero
+		id="eq_triton_blackpeak"
+		faction="Faction.clan_gr_redtail"
+		father="Hero.eq_griffonia_34"
+		mother="Hero.eq_griffonia_35"
+		text="{=eq_triton_blackpeak_text}Commander of the mountain rangers." />
+	<Hero
+		id="eq_griffonia_2"
+		faction="Faction.clan_gr_redtail"
+		spouse="Hero.eq_griffonia_36"
+		father="Hero.eq_griffonia_28"
+		mother="Hero.eq_griffonia_29"
+		text="{=eq_griffonia_2_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_28"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_29"
+		text="{=eq_griffonia_28_text}Father of Heinrich Highhill. Died of old age." />
+	<Hero
+		id="eq_griffonia_29"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_28"
+		text="{=eq_griffonia_29_text}Mother of Heinrich Highhill. Died of old age." />
+	<Hero
+		id="eq_griffonia_30"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_31"
+		text="{=eq_griffonia_30_text}Father of Heinrich Redtail. Died of old age." />
+	<Hero
+		id="eq_griffonia_31"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_30"
+		text="{=eq_griffonia_31_text}Mother of Heinrich Redtail. Died of old age." />
+	<Hero
+		id="eq_griffonia_32"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_33"
+		text="{=eq_griffonia_32_text}Father of Ulla Redtail. Died of old age." />
+	<Hero
+		id="eq_griffonia_33"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_32"
+		text="{=eq_griffonia_33_text}Mother of Ulla Redtail. Died of old age." />
+	<Hero
+		id="eq_griffonia_34"
+		faction="Faction.clan_gr_redtail"
+		alive="false"
+		spouse="Hero.eq_griffonia_35"
+		text="{=eq_griffonia_34_text}Father of Triton Blackpeak. Died of old age." />
+	<Hero
+		id="eq_griffonia_35"
+		faction="Faction.clan_gr_redtail"
+		spouse="Hero.eq_griffonia_34"
+		text="{=eq_griffonia_35_text}Mother of Triton Blackpeak." />
+	<Hero
+		id="eq_griffonia_36"
+		faction="Faction.clan_gr_redtail"
+		spouse="Hero.eq_griffonia_2"
+		text="{=eq_griffonia_36_text}Wife of Heinrich Highhill." />
+	<Hero
+		id="eq_griffonia_37"
+		faction="Faction.clan_gr_redtail"
+		father="Hero.eq_griffonia_2"
+		mother="Hero.eq_griffonia_36"
+		text="{=eq_griffonia_37_text}A fledgling of House Redtail." />
+	<Hero
+		id="eq_griffonia_38"
+		faction="Faction.clan_gr_redtail"
+		father="Hero.eq_griffonia_2"
+		mother="Hero.eq_griffonia_36"
+		text="{=eq_griffonia_38_text}A fledgling of House Redtail." />
+	<Hero
+		id="eq_hector_goldcrest"
+		faction="Faction.clan_gr_goldcrest"
+		father="Hero.eq_griffonia_41"
+		mother="Hero.eq_griffonia_42"
+		text="{=eq_hector_goldcrest_text}Treasurer of the crown, the richest gryphon in the north." />
+	<Hero
+		id="eq_erwin_highhill"
+		faction="Faction.clan_gr_goldcrest"
+		father="Hero.eq_griffonia_43"
+		mother="Hero.eq_griffonia_44"
+		text="{=eq_erwin_highhill_text}Commander of the air cavalry." />
+	<Hero
+		id="eq_toki_bright"
+		faction="Faction.clan_gr_goldcrest"
+		father="Hero.eq_griffonia_45"
+		mother="Hero.eq_griffonia_46"
+		text="{=eq_toki_bright_text}A scout who knows every gorge of the Gryphon Mountains." />
+	<Hero
+		id="eq_griffonia_3"
+		faction="Faction.clan_gr_goldcrest"
+		father="Hero.eq_griffonia_39"
+		mother="Hero.eq_griffonia_40"
+		text="{=eq_griffonia_3_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_39"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_40"
+		text="{=eq_griffonia_39_text}Father of Marta Whitefeather. Died of a fever." />
+	<Hero
+		id="eq_griffonia_40"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_39"
+		text="{=eq_griffonia_40_text}Mother of Marta Whitefeather. Died of a fever." />
+	<Hero
+		id="eq_griffonia_41"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_42"
+		text="{=eq_griffonia_41_text}Father of Gektor Goldcrest. Died of old age." />
+	<Hero
+		id="eq_griffonia_42"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_41"
+		text="{=eq_griffonia_42_text}Mother of Gektor Goldcrest. Died of old age." />
+	<Hero
+		id="eq_griffonia_43"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_44"
+		text="{=eq_griffonia_43_text}Father of Erwin Highhill. Died of old age." />
+	<Hero
+		id="eq_griffonia_44"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_43"
+		text="{=eq_griffonia_44_text}Mother of Erwin Highhill. Died of old age." />
+	<Hero
+		id="eq_griffonia_45"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_46"
+		text="{=eq_griffonia_45_text}Father of Toki Bright. Fell from the cliffs of Griffonstone." />
+	<Hero
+		id="eq_griffonia_46"
+		faction="Faction.clan_gr_goldcrest"
+		alive="false"
+		spouse="Hero.eq_griffonia_45"
+		text="{=eq_griffonia_46_text}Mother of Toki Bright. Killed by bandits on the road." />
+	<Hero
+		id="eq_grampa_gruff"
+		faction="Faction.clan_gr_gruff"
+		text="{=eq_grampa_gruff_text}Keeper of the legend of the Idol of Boreas, a grumbling elder." />
+	<Hero
+		id="eq_gilda"
+		faction="Faction.clan_gr_gruff"
+		father="Hero.eq_griffonia_49"
+		mother="Hero.eq_griffonia_50"
+		text="{=eq_gilda_text}A blunt gryphon, an old friend of Rainbow Dash." />
+	<Hero
+		id="eq_gabby"
+		faction="Faction.clan_gr_gruff"
+		father="Hero.eq_griffonia_51"
+		mother="Hero.eq_griffonia_52"
+		text="{=eq_gabby_text}A cheerful mail mare still dreaming of her cutie mark." />
+	<Hero
+		id="eq_griffonia_4"
+		faction="Faction.clan_gr_gruff"
+		father="Hero.eq_griffonia_47"
+		mother="Hero.eq_griffonia_48"
+		text="{=eq_griffonia_4_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_47"
+		faction="Faction.clan_gr_gruff"
+		alive="false"
+		spouse="Hero.eq_griffonia_48"
+		text="{=eq_griffonia_47_text}Father of Greta Ashclaw. Died of old age." />
+	<Hero
+		id="eq_griffonia_48"
+		faction="Faction.clan_gr_gruff"
+		alive="false"
+		spouse="Hero.eq_griffonia_47"
+		text="{=eq_griffonia_48_text}Mother of Greta Ashclaw. Died of old age." />
+	<Hero
+		id="eq_griffonia_49"
+		faction="Faction.clan_gr_gruff"
+		alive="false"
+		spouse="Hero.eq_griffonia_50"
+		text="{=eq_griffonia_49_text}Father of Gilda. Fell in battle under the banners of Griffonstone." />
+	<Hero
+		id="eq_griffonia_50"
+		faction="Faction.clan_gr_gruff"
+		alive="false"
+		spouse="Hero.eq_griffonia_49"
+		text="{=eq_griffonia_50_text}Mother of Gilda. Fell from the cliffs of Griffonstone." />
+	<Hero
+		id="eq_griffonia_51"
+		faction="Faction.clan_gr_gruff"
+		alive="false"
+		spouse="Hero.eq_griffonia_52"
+		text="{=eq_griffonia_51_text}Father of Gabby. Died in a siege." />
+	<Hero
+		id="eq_griffonia_52"
+		faction="Faction.clan_gr_gruff"
+		spouse="Hero.eq_griffonia_51"
+		text="{=eq_griffonia_52_text}Mother of Gabby." />
+	<Hero
+		id="eq_gustave"
+		faction="Faction.clan_gr_gustave"
+		father="Hero.eq_griffonia_55"
+		mother="Hero.eq_griffonia_56"
+		text="{=eq_gustave_text}A famous pastry chef from Prance, a master of eclairs." />
+	<Hero
+		id="eq_greta"
+		faction="Faction.clan_gr_gustave"
+		father="Hero.eq_griffonia_57"
+		mother="Hero.eq_griffonia_58"
+		text="{=eq_greta_text}Gustave's niece, the finest archer of the nest." />
+	<Hero
+		id="eq_griffonia_5"
+		faction="Faction.clan_gr_gustave"
+		spouse="Hero.eq_griffonia_59"
+		father="Hero.eq_griffonia_53"
+		mother="Hero.eq_griffonia_54"
+		text="{=eq_griffonia_5_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_6"
+		faction="Faction.clan_gr_gustave"
+		father="Hero.eq_griffonia_53"
+		mother="Hero.eq_griffonia_54"
+		text="{=eq_griffonia_6_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_53"
+		faction="Faction.clan_gr_gustave"
+		spouse="Hero.eq_griffonia_54"
+		text="{=eq_griffonia_53_text}Father of Gunther Goldcrest." />
+	<Hero
+		id="eq_griffonia_54"
+		faction="Faction.clan_gr_gustave"
+		spouse="Hero.eq_griffonia_53"
+		text="{=eq_griffonia_54_text}Mother of Gunther Goldcrest." />
+	<Hero
+		id="eq_griffonia_55"
+		faction="Faction.clan_gr_gustave"
+		alive="false"
+		spouse="Hero.eq_griffonia_56"
+		text="{=eq_griffonia_55_text}Father of Gustave le Grand. Died of old age." />
+	<Hero
+		id="eq_griffonia_56"
+		faction="Faction.clan_gr_gustave"
+		alive="false"
+		spouse="Hero.eq_griffonia_55"
+		text="{=eq_griffonia_56_text}Mother of Gustave le Grand. Died of old age." />
+	<Hero
+		id="eq_griffonia_57"
+		faction="Faction.clan_gr_gustave"
+		alive="false"
+		spouse="Hero.eq_griffonia_58"
+		text="{=eq_griffonia_57_text}Father of Greta. Fell from the cliffs of Griffonstone." />
+	<Hero
+		id="eq_griffonia_58"
+		faction="Faction.clan_gr_gustave"
+		spouse="Hero.eq_griffonia_57"
+		text="{=eq_griffonia_58_text}Mother of Greta." />
+	<Hero
+		id="eq_griffonia_59"
+		faction="Faction.clan_gr_gustave"
+		spouse="Hero.eq_griffonia_5"
+		text="{=eq_griffonia_59_text}Wife of Gunther Goldcrest." />
+	<Hero
+		id="eq_griffonia_60"
+		faction="Faction.clan_gr_gustave"
+		father="Hero.eq_griffonia_5"
+		mother="Hero.eq_griffonia_59"
+		text="{=eq_griffonia_60_text}A fledgling of House Gustave." />
+	<Hero
+		id="eq_griffonia_7"
+		faction="Faction.clan_griffonia_g6"
+		spouse="Hero.eq_griffonia_10"
+		father="Hero.eq_griffonia_61"
+		mother="Hero.eq_griffonia_62"
+		text="{=eq_griffonia_7_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_8"
+		faction="Faction.clan_griffonia_g6"
+		father="Hero.eq_griffonia_61"
+		mother="Hero.eq_griffonia_62"
+		text="{=eq_griffonia_8_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_9"
+		faction="Faction.clan_griffonia_g6"
+		spouse="Hero.eq_griffonia_63"
+		father="Hero.eq_griffonia_61"
+		mother="Hero.eq_griffonia_62"
+		text="{=eq_griffonia_9_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_10"
+		faction="Faction.clan_griffonia_g6"
+		spouse="Hero.eq_griffonia_7"
+		text="{=eq_griffonia_10_text}Wife of Heinrich Silverwing." />
+	<Hero
+		id="eq_griffonia_11"
+		faction="Faction.clan_griffonia_g6"
+		father="Hero.eq_griffonia_7"
+		mother="Hero.eq_griffonia_10"
+		text="{=eq_griffonia_11_text}A fledgling of House Ironclaw." />
+	<Hero
+		id="eq_griffonia_61"
+		faction="Faction.clan_griffonia_g6"
+		alive="false"
+		spouse="Hero.eq_griffonia_62"
+		text="{=eq_griffonia_61_text}Father of the head of House Ironclaw. Died of old age." />
+	<Hero
+		id="eq_griffonia_62"
+		faction="Faction.clan_griffonia_g6"
+		alive="false"
+		spouse="Hero.eq_griffonia_61"
+		text="{=eq_griffonia_62_text}Mother of the head of House Ironclaw. Died of old age." />
+	<Hero
+		id="eq_griffonia_63"
+		faction="Faction.clan_griffonia_g6"
+		spouse="Hero.eq_griffonia_9"
+		text="{=eq_griffonia_63_text}Husband of Greta Redtail." />
+	<Hero
+		id="eq_griffonia_64"
+		faction="Faction.clan_griffonia_g6"
+		father="Hero.eq_griffonia_63"
+		mother="Hero.eq_griffonia_9"
+		text="{=eq_griffonia_64_text}A fledgling of House Ironclaw." />
+	<Hero
+		id="eq_griffonia_65"
+		faction="Faction.clan_griffonia_g6"
+		father="Hero.eq_griffonia_63"
+		mother="Hero.eq_griffonia_9"
+		text="{=eq_griffonia_65_text}A fledgling of House Ironclaw." />
+	<Hero
+		id="eq_griffonia_12"
+		faction="Faction.clan_griffonia_g7"
+		spouse="Hero.eq_griffonia_15"
+		father="Hero.eq_griffonia_66"
+		mother="Hero.eq_griffonia_67"
+		text="{=eq_griffonia_12_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_13"
+		faction="Faction.clan_griffonia_g7"
+		spouse="Hero.eq_griffonia_68"
+		father="Hero.eq_griffonia_66"
+		mother="Hero.eq_griffonia_67"
+		text="{=eq_griffonia_13_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_14"
+		faction="Faction.clan_griffonia_g7"
+		father="Hero.eq_griffonia_66"
+		mother="Hero.eq_griffonia_67"
+		text="{=eq_griffonia_14_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_15"
+		faction="Faction.clan_griffonia_g7"
+		spouse="Hero.eq_griffonia_12"
+		text="{=eq_griffonia_15_text}Husband of Ilse Ashclaw." />
+	<Hero
+		id="eq_griffonia_66"
+		faction="Faction.clan_griffonia_g7"
+		alive="false"
+		spouse="Hero.eq_griffonia_67"
+		text="{=eq_griffonia_66_text}Father of the head of House Redtail. Fell in battle under the banners of Griffonstone." />
+	<Hero
+		id="eq_griffonia_67"
+		faction="Faction.clan_griffonia_g7"
+		alive="false"
+		spouse="Hero.eq_griffonia_66"
+		text="{=eq_griffonia_67_text}Mother of the head of House Redtail. Died in a siege." />
+	<Hero
+		id="eq_griffonia_68"
+		faction="Faction.clan_griffonia_g7"
+		spouse="Hero.eq_griffonia_13"
+		text="{=eq_griffonia_68_text}Wife of Erwin Ironclaw." />
+	<Hero
+		id="eq_griffonia_69"
+		faction="Faction.clan_griffonia_g7"
+		father="Hero.eq_griffonia_13"
+		mother="Hero.eq_griffonia_68"
+		text="{=eq_griffonia_69_text}A fledgling of House Redtail." />
+	<Hero
+		id="eq_griffonia_16"
+		faction="Faction.clan_griffonia_g8"
+		spouse="Hero.eq_griffonia_19"
+		father="Hero.eq_griffonia_70"
+		mother="Hero.eq_griffonia_71"
+		text="{=eq_griffonia_16_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_17"
+		faction="Faction.clan_griffonia_g8"
+		father="Hero.eq_griffonia_70"
+		mother="Hero.eq_griffonia_71"
+		text="{=eq_griffonia_17_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_18"
+		faction="Faction.clan_griffonia_g8"
+		father="Hero.eq_griffonia_70"
+		mother="Hero.eq_griffonia_71"
+		text="{=eq_griffonia_18_text}A noble gryphon of Griffonstone." />
+	<Hero
+		id="eq_griffonia_19"
+		faction="Faction.clan_griffonia_g8"
+		spouse="Hero.eq_griffonia_16"
+		text="{=eq_griffonia_19_text}Husband of Erika Silverwing." />
+	<Hero
+		id="eq_griffonia_20"
+		faction="Faction.clan_griffonia_g8"
+		father="Hero.eq_griffonia_19"
+		mother="Hero.eq_griffonia_16"
+		text="{=eq_griffonia_20_text}A fledgling of House Stormfeather." />
+	<Hero
+		id="eq_griffonia_21"
+		faction="Faction.clan_griffonia_g8"
+		father="Hero.eq_griffonia_19"
+		mother="Hero.eq_griffonia_16"
+		text="{=eq_griffonia_21_text}A fledgling of House Stormfeather." />
+	<Hero
+		id="eq_griffonia_70"
+		faction="Faction.clan_griffonia_g8"
+		spouse="Hero.eq_griffonia_71"
+		text="{=eq_griffonia_70_text}Father of the head of House Stormfeather." />
+	<Hero
+		id="eq_griffonia_71"
+		faction="Faction.clan_griffonia_g8"
+		alive="false"
+		spouse="Hero.eq_griffonia_70"
+		text="{=eq_griffonia_71_text}Mother of the head of House Stormfeather. Died of old age." />
+	<Hero
+		id="eq_queen_novo"
+		faction="Faction.clan_hp_novo"
+		text="{=eq_queen_novo_text}Ruler of the hippogriffs and seaponies, keeper of the Pearl." />
+	<Hero
+		id="eq_skystar"
+		faction="Faction.clan_hp_novo"
+		mother="Hero.eq_queen_novo"
+		text="{=eq_skystar_text}A princess who dreams of a life above the waves." />
+	<Hero
+		id="eq_hippogriffia_1"
+		faction="Faction.clan_hp_novo"
+		spouse="Hero.eq_hippogriffia_33"
+		father="Hero.eq_hippogriffia_31"
+		mother="Hero.eq_hippogriffia_32"
+		text="{=eq_hippogriffia_1_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_2"
+		faction="Faction.clan_hp_novo"
+		father="Hero.eq_hippogriffia_31"
+		mother="Hero.eq_hippogriffia_32"
+		text="{=eq_hippogriffia_2_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_31"
+		faction="Faction.clan_hp_novo"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_32"
+		text="{=eq_hippogriffia_31_text}Father of Silver Stream. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_32"
+		faction="Faction.clan_hp_novo"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_31"
+		text="{=eq_hippogriffia_32_text}Mother of Silver Stream. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_33"
+		faction="Faction.clan_hp_novo"
+		spouse="Hero.eq_hippogriffia_1"
+		text="{=eq_hippogriffia_33_text}Husband of Silver Stream." />
+	<Hero
+		id="eq_hippogriffia_34"
+		faction="Faction.clan_hp_novo"
+		father="Hero.eq_hippogriffia_33"
+		mother="Hero.eq_hippogriffia_1"
+		text="{=eq_hippogriffia_34_text}A fledgling of House of Novo." />
+	<Hero
+		id="eq_sky_beak"
+		faction="Faction.clan_hp_silverstream"
+		spouse="Hero.eq_ocean_flow"
+		father="Hero.eq_hippogriffia_37"
+		mother="Hero.eq_hippogriffia_38"
+		text="{=eq_sky_beak_text}Father of Silverstream and Terramar, a hippogriff." />
+	<Hero
+		id="eq_ocean_flow"
+		faction="Faction.clan_hp_silverstream"
+		spouse="Hero.eq_sky_beak"
+		father="Hero.eq_hippogriffia_39"
+		mother="Hero.eq_hippogriffia_40"
+		text="{=eq_ocean_flow_text}Silverstream's mother, who chose the life of a seapony." />
+	<Hero
+		id="eq_silverstream"
+		faction="Faction.clan_hp_silverstream"
+		father="Hero.eq_sky_beak"
+		mother="Hero.eq_ocean_flow"
+		text="{=eq_silverstream_text}A curious student of the School of Friendship, delighted by staircases." />
+	<Hero
+		id="eq_terramar"
+		faction="Faction.clan_hp_silverstream"
+		father="Hero.eq_sky_beak"
+		mother="Hero.eq_ocean_flow"
+		text="{=eq_terramar_text}Silverstream's brother, living between two worlds." />
+	<Hero
+		id="eq_hippogriffia_3"
+		faction="Faction.clan_hp_silverstream"
+		father="Hero.eq_hippogriffia_35"
+		mother="Hero.eq_hippogriffia_36"
+		text="{=eq_hippogriffia_3_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_35"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_36"
+		text="{=eq_hippogriffia_35_text}Father of Tide Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_36"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_35"
+		text="{=eq_hippogriffia_36_text}Mother of Tide Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_37"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_38"
+		text="{=eq_hippogriffia_37_text}Father of Sky Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_38"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_37"
+		text="{=eq_hippogriffia_38_text}Mother of Sky Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_39"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_40"
+		text="{=eq_hippogriffia_39_text}Father of Ocean Flow. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_40"
+		faction="Faction.clan_hp_silverstream"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_39"
+		text="{=eq_hippogriffia_40_text}Mother of Ocean Flow. Died of old age." />
+	<Hero
+		id="eq_seaspray"
+		faction="Faction.clan_hp_seaspray"
+		text="{=eq_seaspray_text}Commander of Queen Novo's host." />
+	<Hero
+		id="eq_coral_wing"
+		faction="Faction.clan_hp_seaspray"
+		father="Hero.eq_hippogriffia_43"
+		mother="Hero.eq_hippogriffia_44"
+		text="{=eq_coral_wing_text}Commander of the flying guard of Mount Aris." />
+	<Hero
+		id="eq_hippogriffia_4"
+		faction="Faction.clan_hp_seaspray"
+		father="Hero.eq_hippogriffia_41"
+		mother="Hero.eq_hippogriffia_42"
+		text="{=eq_hippogriffia_4_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_5"
+		faction="Faction.clan_hp_seaspray"
+		father="Hero.eq_hippogriffia_41"
+		mother="Hero.eq_hippogriffia_42"
+		text="{=eq_hippogriffia_5_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_41"
+		faction="Faction.clan_hp_seaspray"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_42"
+		text="{=eq_hippogriffia_41_text}Father of Wave Mar. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_42"
+		faction="Faction.clan_hp_seaspray"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_41"
+		text="{=eq_hippogriffia_42_text}Mother of Wave Mar. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_43"
+		faction="Faction.clan_hp_seaspray"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_44"
+		text="{=eq_hippogriffia_43_text}Father of Coral Wing. Killed by bandits on the road." />
+	<Hero
+		id="eq_hippogriffia_44"
+		faction="Faction.clan_hp_seaspray"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_43"
+		text="{=eq_hippogriffia_44_text}Mother of Coral Wing. Died of a fever." />
+	<Hero
+		id="eq_hippogriffia_6"
+		faction="Faction.clan_hippogriffia_g4"
+		spouse="Hero.eq_hippogriffia_9"
+		father="Hero.eq_hippogriffia_45"
+		mother="Hero.eq_hippogriffia_46"
+		text="{=eq_hippogriffia_6_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_7"
+		faction="Faction.clan_hippogriffia_g4"
+		father="Hero.eq_hippogriffia_45"
+		mother="Hero.eq_hippogriffia_46"
+		text="{=eq_hippogriffia_7_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_8"
+		faction="Faction.clan_hippogriffia_g4"
+		father="Hero.eq_hippogriffia_45"
+		mother="Hero.eq_hippogriffia_46"
+		text="{=eq_hippogriffia_8_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_9"
+		faction="Faction.clan_hippogriffia_g4"
+		spouse="Hero.eq_hippogriffia_6"
+		text="{=eq_hippogriffia_9_text}Wife of Coral Spray." />
+	<Hero
+		id="eq_hippogriffia_45"
+		faction="Faction.clan_hippogriffia_g4"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_46"
+		text="{=eq_hippogriffia_45_text}Father of the head of House Pearl Mar. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_46"
+		faction="Faction.clan_hippogriffia_g4"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_45"
+		text="{=eq_hippogriffia_46_text}Mother of the head of House Pearl Mar. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_10"
+		faction="Faction.clan_hippogriffia_g5"
+		spouse="Hero.eq_hippogriffia_13"
+		father="Hero.eq_hippogriffia_47"
+		mother="Hero.eq_hippogriffia_48"
+		text="{=eq_hippogriffia_10_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_11"
+		faction="Faction.clan_hippogriffia_g5"
+		father="Hero.eq_hippogriffia_47"
+		mother="Hero.eq_hippogriffia_48"
+		text="{=eq_hippogriffia_11_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_12"
+		faction="Faction.clan_hippogriffia_g5"
+		father="Hero.eq_hippogriffia_47"
+		mother="Hero.eq_hippogriffia_48"
+		text="{=eq_hippogriffia_12_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_13"
+		faction="Faction.clan_hippogriffia_g5"
+		spouse="Hero.eq_hippogriffia_10"
+		text="{=eq_hippogriffia_13_text}Husband of Mist Flow." />
+	<Hero
+		id="eq_hippogriffia_14"
+		faction="Faction.clan_hippogriffia_g5"
+		father="Hero.eq_hippogriffia_13"
+		mother="Hero.eq_hippogriffia_10"
+		text="{=eq_hippogriffia_14_text}A fledgling of House Coral Beak." />
+	<Hero
+		id="eq_hippogriffia_47"
+		faction="Faction.clan_hippogriffia_g5"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_48"
+		text="{=eq_hippogriffia_47_text}Father of the head of House Coral Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_48"
+		faction="Faction.clan_hippogriffia_g5"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_47"
+		text="{=eq_hippogriffia_48_text}Mother of the head of House Coral Beak. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_15"
+		faction="Faction.clan_hippogriffia_g6"
+		spouse="Hero.eq_hippogriffia_18"
+		father="Hero.eq_hippogriffia_49"
+		mother="Hero.eq_hippogriffia_50"
+		text="{=eq_hippogriffia_15_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_16"
+		faction="Faction.clan_hippogriffia_g6"
+		spouse="Hero.eq_hippogriffia_51"
+		father="Hero.eq_hippogriffia_49"
+		mother="Hero.eq_hippogriffia_50"
+		text="{=eq_hippogriffia_16_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_17"
+		faction="Faction.clan_hippogriffia_g6"
+		father="Hero.eq_hippogriffia_49"
+		mother="Hero.eq_hippogriffia_50"
+		text="{=eq_hippogriffia_17_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_18"
+		faction="Faction.clan_hippogriffia_g6"
+		spouse="Hero.eq_hippogriffia_15"
+		text="{=eq_hippogriffia_18_text}Wife of Coral Stream." />
+	<Hero
+		id="eq_hippogriffia_19"
+		faction="Faction.clan_hippogriffia_g6"
+		father="Hero.eq_hippogriffia_15"
+		mother="Hero.eq_hippogriffia_18"
+		text="{=eq_hippogriffia_19_text}A fledgling of House Sea Spray." />
+	<Hero
+		id="eq_hippogriffia_49"
+		faction="Faction.clan_hippogriffia_g6"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_50"
+		text="{=eq_hippogriffia_49_text}Father of the head of House Sea Spray. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_50"
+		faction="Faction.clan_hippogriffia_g6"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_49"
+		text="{=eq_hippogriffia_50_text}Mother of the head of House Sea Spray. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_51"
+		faction="Faction.clan_hippogriffia_g6"
+		spouse="Hero.eq_hippogriffia_16"
+		text="{=eq_hippogriffia_51_text}Wife of Storm Stream." />
+	<Hero
+		id="eq_hippogriffia_52"
+		faction="Faction.clan_hippogriffia_g6"
+		father="Hero.eq_hippogriffia_16"
+		mother="Hero.eq_hippogriffia_51"
+		text="{=eq_hippogriffia_52_text}A fledgling of House Sea Spray." />
+	<Hero
+		id="eq_hippogriffia_20"
+		faction="Faction.clan_hippogriffia_g7"
+		spouse="Hero.eq_hippogriffia_23"
+		father="Hero.eq_hippogriffia_53"
+		mother="Hero.eq_hippogriffia_54"
+		text="{=eq_hippogriffia_20_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_21"
+		faction="Faction.clan_hippogriffia_g7"
+		father="Hero.eq_hippogriffia_53"
+		mother="Hero.eq_hippogriffia_54"
+		text="{=eq_hippogriffia_21_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_22"
+		faction="Faction.clan_hippogriffia_g7"
+		spouse="Hero.eq_hippogriffia_55"
+		father="Hero.eq_hippogriffia_53"
+		mother="Hero.eq_hippogriffia_54"
+		text="{=eq_hippogriffia_22_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_23"
+		faction="Faction.clan_hippogriffia_g7"
+		spouse="Hero.eq_hippogriffia_20"
+		text="{=eq_hippogriffia_23_text}Wife of Storm Spray." />
+	<Hero
+		id="eq_hippogriffia_24"
+		faction="Faction.clan_hippogriffia_g7"
+		father="Hero.eq_hippogriffia_20"
+		mother="Hero.eq_hippogriffia_23"
+		text="{=eq_hippogriffia_24_text}A fledgling of House Storm Spray." />
+	<Hero
+		id="eq_hippogriffia_25"
+		faction="Faction.clan_hippogriffia_g7"
+		father="Hero.eq_hippogriffia_20"
+		mother="Hero.eq_hippogriffia_23"
+		text="{=eq_hippogriffia_25_text}A fledgling of House Storm Spray." />
+	<Hero
+		id="eq_hippogriffia_53"
+		faction="Faction.clan_hippogriffia_g7"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_54"
+		text="{=eq_hippogriffia_53_text}Father of the head of House Storm Spray. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_54"
+		faction="Faction.clan_hippogriffia_g7"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_53"
+		text="{=eq_hippogriffia_54_text}Mother of the head of House Storm Spray. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_55"
+		faction="Faction.clan_hippogriffia_g7"
+		spouse="Hero.eq_hippogriffia_22"
+		text="{=eq_hippogriffia_55_text}Husband of Silver Star." />
+	<Hero
+		id="eq_hippogriffia_56"
+		faction="Faction.clan_hippogriffia_g7"
+		father="Hero.eq_hippogriffia_55"
+		mother="Hero.eq_hippogriffia_22"
+		text="{=eq_hippogriffia_56_text}A fledgling of House Storm Spray." />
+	<Hero
+		id="eq_hippogriffia_26"
+		faction="Faction.clan_hippogriffia_g8"
+		spouse="Hero.eq_hippogriffia_29"
+		father="Hero.eq_hippogriffia_57"
+		mother="Hero.eq_hippogriffia_58"
+		text="{=eq_hippogriffia_26_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_27"
+		faction="Faction.clan_hippogriffia_g8"
+		spouse="Hero.eq_hippogriffia_59"
+		father="Hero.eq_hippogriffia_57"
+		mother="Hero.eq_hippogriffia_58"
+		text="{=eq_hippogriffia_27_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_28"
+		faction="Faction.clan_hippogriffia_g8"
+		father="Hero.eq_hippogriffia_57"
+		mother="Hero.eq_hippogriffia_58"
+		text="{=eq_hippogriffia_28_text}A noble hippogriff of Hippogriffia." />
+	<Hero
+		id="eq_hippogriffia_29"
+		faction="Faction.clan_hippogriffia_g8"
+		spouse="Hero.eq_hippogriffia_26"
+		text="{=eq_hippogriffia_29_text}Wife of Sky Mar." />
+	<Hero
+		id="eq_hippogriffia_30"
+		faction="Faction.clan_hippogriffia_g8"
+		father="Hero.eq_hippogriffia_26"
+		mother="Hero.eq_hippogriffia_29"
+		text="{=eq_hippogriffia_30_text}A fledgling of House Tide Wing." />
+	<Hero
+		id="eq_hippogriffia_57"
+		faction="Faction.clan_hippogriffia_g8"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_58"
+		text="{=eq_hippogriffia_57_text}Father of the head of House Tide Wing. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_58"
+		faction="Faction.clan_hippogriffia_g8"
+		alive="false"
+		spouse="Hero.eq_hippogriffia_57"
+		text="{=eq_hippogriffia_58_text}Mother of the head of House Tide Wing. Died of old age." />
+	<Hero
+		id="eq_hippogriffia_59"
+		faction="Faction.clan_hippogriffia_g8"
+		spouse="Hero.eq_hippogriffia_27"
+		text="{=eq_hippogriffia_59_text}Wife of Storm River." />
+	<Hero
+		id="eq_hippogriffia_60"
+		faction="Faction.clan_hippogriffia_g8"
+		father="Hero.eq_hippogriffia_27"
+		mother="Hero.eq_hippogriffia_59"
+		text="{=eq_hippogriffia_60_text}A fledgling of House Tide Wing." />
+	<Hero
+		id="eq_hippogriffia_61"
+		faction="Faction.clan_hippogriffia_g8"
+		father="Hero.eq_hippogriffia_27"
+		mother="Hero.eq_hippogriffia_59"
+		text="{=eq_hippogriffia_61_text}A fledgling of House Tide Wing." />
+	<Hero
+		id="eq_johan_jelzek"
+		faction="Faction.clan_ol_jelzek"
+		text="{=eq_johan_jelzek_text}A bastard who took the throne of Olenia by force." />
+	<Hero
+		id="eq_aslaug_jelzek"
+		faction="Faction.clan_ol_jelzek"
+		father="Hero.eq_olenia_31"
+		mother="Hero.eq_olenia_32"
+		text="{=eq_aslaug_jelzek_text}The king's sister and his chief support at court." />
+	<Hero
+		id="eq_olenia_1"
+		faction="Faction.clan_ol_jelzek"
+		father="Hero.eq_olenia_29"
+		mother="Hero.eq_olenia_30"
+		text="{=eq_olenia_1_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_2"
+		faction="Faction.clan_ol_jelzek"
+		spouse="Hero.eq_olenia_33"
+		father="Hero.eq_olenia_29"
+		mother="Hero.eq_olenia_30"
+		text="{=eq_olenia_2_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_29"
+		faction="Faction.clan_ol_jelzek"
+		alive="false"
+		spouse="Hero.eq_olenia_30"
+		text="{=eq_olenia_29_text}Father of Anssi Jarvinen. Fell in battle under the banners of Olenia." />
+	<Hero
+		id="eq_olenia_30"
+		faction="Faction.clan_ol_jelzek"
+		alive="false"
+		spouse="Hero.eq_olenia_29"
+		text="{=eq_olenia_30_text}Mother of Anssi Jarvinen. Died of old age." />
+	<Hero
+		id="eq_olenia_31"
+		faction="Faction.clan_ol_jelzek"
+		alive="false"
+		spouse="Hero.eq_olenia_32"
+		text="{=eq_olenia_31_text}Father of Aslaug Jelzek. Died of old age." />
+	<Hero
+		id="eq_olenia_32"
+		faction="Faction.clan_ol_jelzek"
+		alive="false"
+		spouse="Hero.eq_olenia_31"
+		text="{=eq_olenia_32_text}Mother of Aslaug Jelzek. Died of old age." />
+	<Hero
+		id="eq_olenia_33"
+		faction="Faction.clan_ol_jelzek"
+		spouse="Hero.eq_olenia_2"
+		text="{=eq_olenia_33_text}Wife of Almo Hirvi." />
+	<Hero
+		id="eq_olenia_34"
+		faction="Faction.clan_ol_jelzek"
+		father="Hero.eq_olenia_2"
+		mother="Hero.eq_olenia_33"
+		text="{=eq_olenia_34_text}A fawn of House of Jelzek." />
+	<Hero
+		id="eq_queen_velvet"
+		faction="Faction.clan_ol_velvet"
+		father="Hero.eq_olenia_37"
+		mother="Hero.eq_olenia_38"
+		text="{=eq_queen_velvet_text}The rightful heir, pressing her claim against the bastard." />
+	<Hero
+		id="eq_hjalmar_velvet"
+		faction="Faction.clan_ol_velvet"
+		father="Hero.eq_olenia_39"
+		mother="Hero.eq_olenia_40"
+		text="{=eq_hjalmar_velvet_text}Her uncle and warlord, who leads the queen's supporters." />
+	<Hero
+		id="eq_olenia_3"
+		faction="Faction.clan_ol_velvet"
+		father="Hero.eq_olenia_35"
+		mother="Hero.eq_olenia_36"
+		text="{=eq_olenia_3_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_4"
+		faction="Faction.clan_ol_velvet"
+		father="Hero.eq_olenia_35"
+		mother="Hero.eq_olenia_36"
+		text="{=eq_olenia_4_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_35"
+		faction="Faction.clan_ol_velvet"
+		alive="false"
+		spouse="Hero.eq_olenia_36"
+		text="{=eq_olenia_35_text}Father of Elina Korpi. Died of old age." />
+	<Hero
+		id="eq_olenia_36"
+		faction="Faction.clan_ol_velvet"
+		spouse="Hero.eq_olenia_35"
+		text="{=eq_olenia_36_text}Mother of Elina Korpi." />
+	<Hero
+		id="eq_olenia_37"
+		faction="Faction.clan_ol_velvet"
+		spouse="Hero.eq_olenia_38"
+		text="{=eq_olenia_37_text}Father of Queen Velvet." />
+	<Hero
+		id="eq_olenia_38"
+		faction="Faction.clan_ol_velvet"
+		alive="false"
+		spouse="Hero.eq_olenia_37"
+		text="{=eq_olenia_38_text}Mother of Queen Velvet. Died of old age." />
+	<Hero
+		id="eq_olenia_39"
+		faction="Faction.clan_ol_velvet"
+		alive="false"
+		spouse="Hero.eq_olenia_40"
+		text="{=eq_olenia_39_text}Father of Hjalmar Velvet. Died of old age." />
+	<Hero
+		id="eq_olenia_40"
+		faction="Faction.clan_ol_velvet"
+		alive="false"
+		spouse="Hero.eq_olenia_39"
+		text="{=eq_olenia_40_text}Mother of Hjalmar Velvet. Died of old age." />
+	<Hero
+		id="eq_benjen_kudlinen"
+		faction="Faction.clan_ol_kudlinen"
+		text="{=eq_benjen_kudlinen_text}Elder of the Council of Seven, keeper of the forest laws." />
+	<Hero
+		id="eq_ilta_kudlinen"
+		faction="Faction.clan_ol_kudlinen"
+		father="Hero.eq_olenia_43"
+		mother="Hero.eq_olenia_44"
+		text="{=eq_ilta_kudlinen_text}The finest tracker of the deer trails." />
+	<Hero
+		id="eq_olenia_5"
+		faction="Faction.clan_ol_kudlinen"
+		father="Hero.eq_olenia_41"
+		mother="Hero.eq_olenia_42"
+		text="{=eq_olenia_5_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_6"
+		faction="Faction.clan_ol_kudlinen"
+		father="Hero.eq_olenia_41"
+		mother="Hero.eq_olenia_42"
+		text="{=eq_olenia_6_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_41"
+		faction="Faction.clan_ol_kudlinen"
+		spouse="Hero.eq_olenia_42"
+		text="{=eq_olenia_41_text}Father of Torvin Aalto." />
+	<Hero
+		id="eq_olenia_42"
+		faction="Faction.clan_ol_kudlinen"
+		alive="false"
+		spouse="Hero.eq_olenia_41"
+		text="{=eq_olenia_42_text}Mother of Torvin Aalto. Froze to death in the northern woods." />
+	<Hero
+		id="eq_olenia_43"
+		faction="Faction.clan_ol_kudlinen"
+		spouse="Hero.eq_olenia_44"
+		text="{=eq_olenia_43_text}Father of Ilta Kudlinen." />
+	<Hero
+		id="eq_olenia_44"
+		faction="Faction.clan_ol_kudlinen"
+		spouse="Hero.eq_olenia_43"
+		text="{=eq_olenia_44_text}Mother of Ilta Kudlinen." />
+	<Hero
+		id="eq_olenia_7"
+		faction="Faction.clan_olenia_g4"
+		spouse="Hero.eq_olenia_10"
+		father="Hero.eq_olenia_45"
+		mother="Hero.eq_olenia_46"
+		text="{=eq_olenia_7_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_8"
+		faction="Faction.clan_olenia_g4"
+		father="Hero.eq_olenia_45"
+		mother="Hero.eq_olenia_46"
+		text="{=eq_olenia_8_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_9"
+		faction="Faction.clan_olenia_g4"
+		spouse="Hero.eq_olenia_47"
+		father="Hero.eq_olenia_45"
+		mother="Hero.eq_olenia_46"
+		text="{=eq_olenia_9_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_10"
+		faction="Faction.clan_olenia_g4"
+		spouse="Hero.eq_olenia_7"
+		text="{=eq_olenia_10_text}Husband of Ilta Jarvinen." />
+	<Hero
+		id="eq_olenia_11"
+		faction="Faction.clan_olenia_g4"
+		father="Hero.eq_olenia_10"
+		mother="Hero.eq_olenia_7"
+		text="{=eq_olenia_11_text}A fawn of House Sarvinen." />
+	<Hero
+		id="eq_olenia_12"
+		faction="Faction.clan_olenia_g4"
+		father="Hero.eq_olenia_10"
+		mother="Hero.eq_olenia_7"
+		text="{=eq_olenia_12_text}A fawn of House Sarvinen." />
+	<Hero
+		id="eq_olenia_45"
+		faction="Faction.clan_olenia_g4"
+		alive="false"
+		spouse="Hero.eq_olenia_46"
+		text="{=eq_olenia_45_text}Father of the head of House Sarvinen. Died of old age." />
+	<Hero
+		id="eq_olenia_46"
+		faction="Faction.clan_olenia_g4"
+		spouse="Hero.eq_olenia_45"
+		text="{=eq_olenia_46_text}Mother of the head of House Sarvinen." />
+	<Hero
+		id="eq_olenia_47"
+		faction="Faction.clan_olenia_g4"
+		spouse="Hero.eq_olenia_9"
+		text="{=eq_olenia_47_text}Husband of Satu Hjort." />
+	<Hero
+		id="eq_olenia_48"
+		faction="Faction.clan_olenia_g4"
+		father="Hero.eq_olenia_47"
+		mother="Hero.eq_olenia_9"
+		text="{=eq_olenia_48_text}A fawn of House Sarvinen." />
+	<Hero
+		id="eq_olenia_13"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_16"
+		father="Hero.eq_olenia_49"
+		mother="Hero.eq_olenia_50"
+		text="{=eq_olenia_13_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_14"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_51"
+		father="Hero.eq_olenia_49"
+		mother="Hero.eq_olenia_50"
+		text="{=eq_olenia_14_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_15"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_53"
+		father="Hero.eq_olenia_49"
+		mother="Hero.eq_olenia_50"
+		text="{=eq_olenia_15_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_16"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_13"
+		text="{=eq_olenia_16_text}Wife of Svein Sarvinen." />
+	<Hero
+		id="eq_olenia_49"
+		faction="Faction.clan_olenia_g5"
+		alive="false"
+		spouse="Hero.eq_olenia_50"
+		text="{=eq_olenia_49_text}Father of the head of House Lehto. Died of old age." />
+	<Hero
+		id="eq_olenia_50"
+		faction="Faction.clan_olenia_g5"
+		alive="false"
+		spouse="Hero.eq_olenia_49"
+		text="{=eq_olenia_50_text}Mother of the head of House Lehto. Died of old age." />
+	<Hero
+		id="eq_olenia_51"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_14"
+		text="{=eq_olenia_51_text}Wife of Torvin Sarvinen." />
+	<Hero
+		id="eq_olenia_52"
+		faction="Faction.clan_olenia_g5"
+		father="Hero.eq_olenia_14"
+		mother="Hero.eq_olenia_51"
+		text="{=eq_olenia_52_text}A fawn of House Lehto." />
+	<Hero
+		id="eq_olenia_53"
+		faction="Faction.clan_olenia_g5"
+		spouse="Hero.eq_olenia_15"
+		text="{=eq_olenia_53_text}Husband of Aino Hirvi." />
+	<Hero
+		id="eq_olenia_54"
+		faction="Faction.clan_olenia_g5"
+		father="Hero.eq_olenia_53"
+		mother="Hero.eq_olenia_15"
+		text="{=eq_olenia_54_text}A fawn of House Lehto." />
+	<Hero
+		id="eq_olenia_55"
+		faction="Faction.clan_olenia_g5"
+		father="Hero.eq_olenia_53"
+		mother="Hero.eq_olenia_15"
+		text="{=eq_olenia_55_text}A fawn of House Lehto." />
+	<Hero
+		id="eq_olenia_17"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_20"
+		father="Hero.eq_olenia_56"
+		mother="Hero.eq_olenia_57"
+		text="{=eq_olenia_17_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_18"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_58"
+		father="Hero.eq_olenia_56"
+		mother="Hero.eq_olenia_57"
+		text="{=eq_olenia_18_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_19"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_61"
+		father="Hero.eq_olenia_56"
+		mother="Hero.eq_olenia_57"
+		text="{=eq_olenia_19_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_20"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_17"
+		text="{=eq_olenia_20_text}Husband of Merja Lehto." />
+	<Hero
+		id="eq_olenia_56"
+		faction="Faction.clan_olenia_g6"
+		alive="false"
+		spouse="Hero.eq_olenia_57"
+		text="{=eq_olenia_56_text}Father of the head of House Salonen. Died of old age." />
+	<Hero
+		id="eq_olenia_57"
+		faction="Faction.clan_olenia_g6"
+		alive="false"
+		spouse="Hero.eq_olenia_56"
+		text="{=eq_olenia_57_text}Mother of the head of House Salonen. Killed by bandits on the road." />
+	<Hero
+		id="eq_olenia_58"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_18"
+		text="{=eq_olenia_58_text}Wife of Anssi Aalto." />
+	<Hero
+		id="eq_olenia_59"
+		faction="Faction.clan_olenia_g6"
+		father="Hero.eq_olenia_18"
+		mother="Hero.eq_olenia_58"
+		text="{=eq_olenia_59_text}A fawn of House Salonen." />
+	<Hero
+		id="eq_olenia_60"
+		faction="Faction.clan_olenia_g6"
+		father="Hero.eq_olenia_18"
+		mother="Hero.eq_olenia_58"
+		text="{=eq_olenia_60_text}A fawn of House Salonen." />
+	<Hero
+		id="eq_olenia_61"
+		faction="Faction.clan_olenia_g6"
+		spouse="Hero.eq_olenia_19"
+		text="{=eq_olenia_61_text}Husband of Helmi Korpi." />
+	<Hero
+		id="eq_olenia_62"
+		faction="Faction.clan_olenia_g6"
+		father="Hero.eq_olenia_61"
+		mother="Hero.eq_olenia_19"
+		text="{=eq_olenia_62_text}A fawn of House Salonen." />
+	<Hero
+		id="eq_olenia_21"
+		faction="Faction.clan_olenia_g7"
+		spouse="Hero.eq_olenia_24"
+		father="Hero.eq_olenia_63"
+		mother="Hero.eq_olenia_64"
+		text="{=eq_olenia_21_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_22"
+		faction="Faction.clan_olenia_g7"
+		father="Hero.eq_olenia_63"
+		mother="Hero.eq_olenia_64"
+		text="{=eq_olenia_22_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_23"
+		faction="Faction.clan_olenia_g7"
+		spouse="Hero.eq_olenia_65"
+		father="Hero.eq_olenia_63"
+		mother="Hero.eq_olenia_64"
+		text="{=eq_olenia_23_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_24"
+		faction="Faction.clan_olenia_g7"
+		spouse="Hero.eq_olenia_21"
+		text="{=eq_olenia_24_text}Wife of Tapio Metsola." />
+	<Hero
+		id="eq_olenia_63"
+		faction="Faction.clan_olenia_g7"
+		alive="false"
+		spouse="Hero.eq_olenia_64"
+		text="{=eq_olenia_63_text}Father of the head of House Korpi. Died of old age." />
+	<Hero
+		id="eq_olenia_64"
+		faction="Faction.clan_olenia_g7"
+		alive="false"
+		spouse="Hero.eq_olenia_63"
+		text="{=eq_olenia_64_text}Mother of the head of House Korpi. Died of old age." />
+	<Hero
+		id="eq_olenia_65"
+		faction="Faction.clan_olenia_g7"
+		spouse="Hero.eq_olenia_23"
+		text="{=eq_olenia_65_text}Husband of Tuulikki Salonen." />
+	<Hero
+		id="eq_olenia_66"
+		faction="Faction.clan_olenia_g7"
+		father="Hero.eq_olenia_65"
+		mother="Hero.eq_olenia_23"
+		text="{=eq_olenia_66_text}A fawn of House Korpi." />
+	<Hero
+		id="eq_olenia_25"
+		faction="Faction.clan_olenia_g8"
+		spouse="Hero.eq_olenia_28"
+		father="Hero.eq_olenia_67"
+		mother="Hero.eq_olenia_68"
+		text="{=eq_olenia_25_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_26"
+		faction="Faction.clan_olenia_g8"
+		father="Hero.eq_olenia_67"
+		mother="Hero.eq_olenia_68"
+		text="{=eq_olenia_26_text}A noble stag of Olenia." />
+	<Hero
+		id="eq_olenia_27"
+		faction="Faction.clan_olenia_g8"
+		spouse="Hero.eq_olenia_69"
+		father="Hero.eq_olenia_67"
+		mother="Hero.eq_olenia_68"
+		text="{=eq_olenia_27_text}A noble doe of Olenia." />
+	<Hero
+		id="eq_olenia_28"
+		faction="Faction.clan_olenia_g8"
+		spouse="Hero.eq_olenia_25"
+		text="{=eq_olenia_28_text}Wife of Ville Korpi." />
+	<Hero
+		id="eq_olenia_67"
+		faction="Faction.clan_olenia_g8"
+		alive="false"
+		spouse="Hero.eq_olenia_68"
+		text="{=eq_olenia_67_text}Father of the head of House Hirvi. Died of old age." />
+	<Hero
+		id="eq_olenia_68"
+		faction="Faction.clan_olenia_g8"
+		alive="false"
+		spouse="Hero.eq_olenia_67"
+		text="{=eq_olenia_68_text}Mother of the head of House Hirvi. Froze to death in the northern woods." />
+	<Hero
+		id="eq_olenia_69"
+		faction="Faction.clan_olenia_g8"
+		spouse="Hero.eq_olenia_27"
+		text="{=eq_olenia_69_text}Husband of Marjatta Aalto." />
+	<Hero
+		id="eq_olenia_70"
+		faction="Faction.clan_olenia_g8"
+		father="Hero.eq_olenia_69"
+		mother="Hero.eq_olenia_27"
+		text="{=eq_olenia_70_text}A fawn of House Hirvi." />
+	<Hero
+		id="eq_ember"
+		faction="Faction.clan_dr_ember"
+		father="Hero.eq_torch"
+		text="{=eq_ember_text}The Dragon Lord, who won the Scepter in the Gauntlet of Fire." />
+	<Hero
+		id="eq_torch"
+		faction="Faction.clan_dr_ember"
+		text="{=eq_torch_text}The former Dragon Lord, Ember's father." />
+	<Hero
+		id="eq_dragons_1"
+		faction="Faction.clan_dr_ember"
+		father="Hero.eq_dragons_33"
+		mother="Hero.eq_dragons_34"
+		text="{=eq_dragons_1_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_2"
+		faction="Faction.clan_dr_ember"
+		spouse="Hero.eq_dragons_35"
+		father="Hero.eq_dragons_33"
+		mother="Hero.eq_dragons_34"
+		text="{=eq_dragons_2_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_33"
+		faction="Faction.clan_dr_ember"
+		alive="false"
+		spouse="Hero.eq_dragons_34"
+		text="{=eq_dragons_33_text}Father of Cindra. Killed by bandits on the road." />
+	<Hero
+		id="eq_dragons_34"
+		faction="Faction.clan_dr_ember"
+		spouse="Hero.eq_dragons_33"
+		text="{=eq_dragons_34_text}Mother of Cindra." />
+	<Hero
+		id="eq_dragons_35"
+		faction="Faction.clan_dr_ember"
+		spouse="Hero.eq_dragons_2"
+		text="{=eq_dragons_35_text}Husband of Zharina." />
+	<Hero
+		id="eq_dragons_36"
+		faction="Faction.clan_dr_ember"
+		father="Hero.eq_dragons_35"
+		mother="Hero.eq_dragons_2"
+		text="{=eq_dragons_36_text}A young dragon of House of Torch." />
+	<Hero
+		id="eq_garble"
+		faction="Faction.clan_dr_garble"
+		father="Hero.eq_dragons_39"
+		mother="Hero.eq_dragons_40"
+		text="{=eq_garble_text}A bully who secretly writes poetry." />
+	<Hero
+		id="eq_clump"
+		faction="Faction.clan_dr_garble"
+		father="Hero.eq_dragons_41"
+		mother="Hero.eq_dragons_42"
+		text="{=eq_clump_text}Garble's mate, a strongarm." />
+	<Hero
+		id="eq_fume"
+		faction="Faction.clan_dr_garble"
+		father="Hero.eq_dragons_43"
+		mother="Hero.eq_dragons_44"
+		text="{=eq_fume_text}Another of Garble's friends, a master of smoke rings." />
+	<Hero
+		id="eq_dragons_3"
+		faction="Faction.clan_dr_garble"
+		father="Hero.eq_dragons_37"
+		mother="Hero.eq_dragons_38"
+		text="{=eq_dragons_3_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_37"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_38"
+		text="{=eq_dragons_37_text}Father of Flint. Died of old age." />
+	<Hero
+		id="eq_dragons_38"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_37"
+		text="{=eq_dragons_38_text}Mother of Flint. Died of old age." />
+	<Hero
+		id="eq_dragons_39"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_40"
+		text="{=eq_dragons_39_text}Father of Garble. Died of a fever." />
+	<Hero
+		id="eq_dragons_40"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_39"
+		text="{=eq_dragons_40_text}Mother of Garble. Died in childbirth." />
+	<Hero
+		id="eq_dragons_41"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_42"
+		text="{=eq_dragons_41_text}Father of Clump. Died of a fever." />
+	<Hero
+		id="eq_dragons_42"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_41"
+		text="{=eq_dragons_42_text}Mother of Clump. Killed by bandits on the road." />
+	<Hero
+		id="eq_dragons_43"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_44"
+		text="{=eq_dragons_43_text}Father of Fume. Died in a siege." />
+	<Hero
+		id="eq_dragons_44"
+		faction="Faction.clan_dr_garble"
+		alive="false"
+		spouse="Hero.eq_dragons_43"
+		text="{=eq_dragons_44_text}Mother of Fume. Died in a siege." />
+	<Hero
+		id="eq_smolder"
+		faction="Faction.clan_dr_smolder"
+		father="Hero.eq_dragons_47"
+		mother="Hero.eq_dragons_48"
+		text="{=eq_smolder_text}A student of the School of Friendship with a secret love of tea parties." />
+	<Hero
+		id="eq_sludge"
+		faction="Faction.clan_dr_smolder"
+		text="{=eq_sludge_text}A cunning old dragon, a master of persuasion." />
+	<Hero
+		id="eq_dragons_4"
+		faction="Faction.clan_dr_smolder"
+		spouse="Hero.eq_dragons_49"
+		father="Hero.eq_dragons_45"
+		mother="Hero.eq_dragons_46"
+		text="{=eq_dragons_4_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_5"
+		faction="Faction.clan_dr_smolder"
+		spouse="Hero.eq_dragons_52"
+		father="Hero.eq_dragons_45"
+		mother="Hero.eq_dragons_46"
+		text="{=eq_dragons_5_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_45"
+		faction="Faction.clan_dr_smolder"
+		alive="false"
+		spouse="Hero.eq_dragons_46"
+		text="{=eq_dragons_45_text}Father of Coal. Fell in battle under the banners of Dragons." />
+	<Hero
+		id="eq_dragons_46"
+		faction="Faction.clan_dr_smolder"
+		alive="false"
+		spouse="Hero.eq_dragons_45"
+		text="{=eq_dragons_46_text}Mother of Coal. Died in childbirth." />
+	<Hero
+		id="eq_dragons_47"
+		faction="Faction.clan_dr_smolder"
+		alive="false"
+		spouse="Hero.eq_dragons_48"
+		text="{=eq_dragons_47_text}Father of Smolder. Died in a siege." />
+	<Hero
+		id="eq_dragons_48"
+		faction="Faction.clan_dr_smolder"
+		alive="false"
+		spouse="Hero.eq_dragons_47"
+		text="{=eq_dragons_48_text}Mother of Smolder. Died in a siege." />
+	<Hero
+		id="eq_dragons_49"
+		faction="Faction.clan_dr_smolder"
+		spouse="Hero.eq_dragons_4"
+		text="{=eq_dragons_49_text}Wife of Coal." />
+	<Hero
+		id="eq_dragons_50"
+		faction="Faction.clan_dr_smolder"
+		father="Hero.eq_dragons_4"
+		mother="Hero.eq_dragons_49"
+		text="{=eq_dragons_50_text}A young dragon of Nest Smolder." />
+	<Hero
+		id="eq_dragons_51"
+		faction="Faction.clan_dr_smolder"
+		father="Hero.eq_dragons_4"
+		mother="Hero.eq_dragons_49"
+		text="{=eq_dragons_51_text}A young dragon of Nest Smolder." />
+	<Hero
+		id="eq_dragons_52"
+		faction="Faction.clan_dr_smolder"
+		spouse="Hero.eq_dragons_5"
+		text="{=eq_dragons_52_text}Wife of Scorch." />
+	<Hero
+		id="eq_dragons_6"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_9"
+		father="Hero.eq_dragons_53"
+		mother="Hero.eq_dragons_54"
+		text="{=eq_dragons_6_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_7"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_55"
+		father="Hero.eq_dragons_53"
+		mother="Hero.eq_dragons_54"
+		text="{=eq_dragons_7_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_8"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_57"
+		father="Hero.eq_dragons_53"
+		mother="Hero.eq_dragons_54"
+		text="{=eq_dragons_8_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_9"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_6"
+		text="{=eq_dragons_9_text}Husband of Ardora." />
+	<Hero
+		id="eq_dragons_10"
+		faction="Faction.clan_dragons_g4"
+		father="Hero.eq_dragons_9"
+		mother="Hero.eq_dragons_6"
+		text="{=eq_dragons_10_text}A young dragon of Clan Furnace." />
+	<Hero
+		id="eq_dragons_11"
+		faction="Faction.clan_dragons_g4"
+		father="Hero.eq_dragons_9"
+		mother="Hero.eq_dragons_6"
+		text="{=eq_dragons_11_text}A young dragon of Clan Furnace." />
+	<Hero
+		id="eq_dragons_53"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_54"
+		text="{=eq_dragons_53_text}Father of the head of Clan Furnace." />
+	<Hero
+		id="eq_dragons_54"
+		faction="Faction.clan_dragons_g4"
+		alive="false"
+		spouse="Hero.eq_dragons_53"
+		text="{=eq_dragons_54_text}Mother of the head of Clan Furnace. Died of old age." />
+	<Hero
+		id="eq_dragons_55"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_7"
+		text="{=eq_dragons_55_text}Wife of Calder." />
+	<Hero
+		id="eq_dragons_56"
+		faction="Faction.clan_dragons_g4"
+		father="Hero.eq_dragons_7"
+		mother="Hero.eq_dragons_55"
+		text="{=eq_dragons_56_text}A young dragon of Clan Furnace." />
+	<Hero
+		id="eq_dragons_57"
+		faction="Faction.clan_dragons_g4"
+		spouse="Hero.eq_dragons_8"
+		text="{=eq_dragons_57_text}Husband of Tephra." />
+	<Hero
+		id="eq_dragons_12"
+		faction="Faction.clan_dragons_g5"
+		spouse="Hero.eq_dragons_15"
+		father="Hero.eq_dragons_58"
+		mother="Hero.eq_dragons_59"
+		text="{=eq_dragons_12_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_13"
+		faction="Faction.clan_dragons_g5"
+		father="Hero.eq_dragons_58"
+		mother="Hero.eq_dragons_59"
+		text="{=eq_dragons_13_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_14"
+		faction="Faction.clan_dragons_g5"
+		spouse="Hero.eq_dragons_60"
+		father="Hero.eq_dragons_58"
+		mother="Hero.eq_dragons_59"
+		text="{=eq_dragons_14_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_15"
+		faction="Faction.clan_dragons_g5"
+		spouse="Hero.eq_dragons_12"
+		text="{=eq_dragons_15_text}Husband of Flare." />
+	<Hero
+		id="eq_dragons_16"
+		faction="Faction.clan_dragons_g5"
+		father="Hero.eq_dragons_15"
+		mother="Hero.eq_dragons_12"
+		text="{=eq_dragons_16_text}A young dragon of Clan Clump." />
+	<Hero
+		id="eq_dragons_17"
+		faction="Faction.clan_dragons_g5"
+		father="Hero.eq_dragons_15"
+		mother="Hero.eq_dragons_12"
+		text="{=eq_dragons_17_text}A young dragon of Clan Clump." />
+	<Hero
+		id="eq_dragons_58"
+		faction="Faction.clan_dragons_g5"
+		alive="false"
+		spouse="Hero.eq_dragons_59"
+		text="{=eq_dragons_58_text}Father of the head of Clan Clump. Died in a siege." />
+	<Hero
+		id="eq_dragons_59"
+		faction="Faction.clan_dragons_g5"
+		spouse="Hero.eq_dragons_58"
+		text="{=eq_dragons_59_text}Mother of the head of Clan Clump." />
+	<Hero
+		id="eq_dragons_60"
+		faction="Faction.clan_dragons_g5"
+		spouse="Hero.eq_dragons_14"
+		text="{=eq_dragons_60_text}Husband of Drake." />
+	<Hero
+		id="eq_dragons_61"
+		faction="Faction.clan_dragons_g5"
+		father="Hero.eq_dragons_60"
+		mother="Hero.eq_dragons_14"
+		text="{=eq_dragons_61_text}A young dragon of Clan Clump." />
+	<Hero
+		id="eq_dragons_18"
+		faction="Faction.clan_dragons_g6"
+		spouse="Hero.eq_dragons_21"
+		father="Hero.eq_dragons_62"
+		mother="Hero.eq_dragons_63"
+		text="{=eq_dragons_18_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_19"
+		faction="Faction.clan_dragons_g6"
+		spouse="Hero.eq_dragons_64"
+		father="Hero.eq_dragons_62"
+		mother="Hero.eq_dragons_63"
+		text="{=eq_dragons_19_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_20"
+		faction="Faction.clan_dragons_g6"
+		father="Hero.eq_dragons_62"
+		mother="Hero.eq_dragons_63"
+		text="{=eq_dragons_20_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_21"
+		faction="Faction.clan_dragons_g6"
+		spouse="Hero.eq_dragons_18"
+		text="{=eq_dragons_21_text}Wife of Clinker." />
+	<Hero
+		id="eq_dragons_22"
+		faction="Faction.clan_dragons_g6"
+		father="Hero.eq_dragons_18"
+		mother="Hero.eq_dragons_21"
+		text="{=eq_dragons_22_text}A young dragon of Clan Ember-Claw." />
+	<Hero
+		id="eq_dragons_62"
+		faction="Faction.clan_dragons_g6"
+		alive="false"
+		spouse="Hero.eq_dragons_63"
+		text="{=eq_dragons_62_text}Father of the head of Clan Ember-Claw. Died of old age." />
+	<Hero
+		id="eq_dragons_63"
+		faction="Faction.clan_dragons_g6"
+		alive="false"
+		spouse="Hero.eq_dragons_62"
+		text="{=eq_dragons_63_text}Mother of the head of Clan Ember-Claw. Died of old age." />
+	<Hero
+		id="eq_dragons_64"
+		faction="Faction.clan_dragons_g6"
+		spouse="Hero.eq_dragons_19"
+		text="{=eq_dragons_64_text}Wife of Molten." />
+	<Hero
+		id="eq_dragons_65"
+		faction="Faction.clan_dragons_g6"
+		father="Hero.eq_dragons_19"
+		mother="Hero.eq_dragons_64"
+		text="{=eq_dragons_65_text}A young dragon of Clan Ember-Claw." />
+	<Hero
+		id="eq_dragons_66"
+		faction="Faction.clan_dragons_g6"
+		father="Hero.eq_dragons_19"
+		mother="Hero.eq_dragons_64"
+		text="{=eq_dragons_66_text}A young dragon of Clan Ember-Claw." />
+	<Hero
+		id="eq_dragons_23"
+		faction="Faction.clan_dragons_g7"
+		spouse="Hero.eq_dragons_26"
+		father="Hero.eq_dragons_67"
+		mother="Hero.eq_dragons_68"
+		text="{=eq_dragons_23_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_24"
+		faction="Faction.clan_dragons_g7"
+		father="Hero.eq_dragons_67"
+		mother="Hero.eq_dragons_68"
+		text="{=eq_dragons_24_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_25"
+		faction="Faction.clan_dragons_g7"
+		father="Hero.eq_dragons_67"
+		mother="Hero.eq_dragons_68"
+		text="{=eq_dragons_25_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_26"
+		faction="Faction.clan_dragons_g7"
+		spouse="Hero.eq_dragons_23"
+		text="{=eq_dragons_26_text}Husband of Lava." />
+	<Hero
+		id="eq_dragons_67"
+		faction="Faction.clan_dragons_g7"
+		alive="false"
+		spouse="Hero.eq_dragons_68"
+		text="{=eq_dragons_67_text}Father of the head of Clan Crag. Died of old age." />
+	<Hero
+		id="eq_dragons_68"
+		faction="Faction.clan_dragons_g7"
+		spouse="Hero.eq_dragons_67"
+		text="{=eq_dragons_68_text}Mother of the head of Clan Crag." />
+	<Hero
+		id="eq_dragons_27"
+		faction="Faction.clan_dragons_g8"
+		spouse="Hero.eq_dragons_30"
+		father="Hero.eq_dragons_69"
+		mother="Hero.eq_dragons_70"
+		text="{=eq_dragons_27_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_28"
+		faction="Faction.clan_dragons_g8"
+		father="Hero.eq_dragons_69"
+		mother="Hero.eq_dragons_70"
+		text="{=eq_dragons_28_text}A noble dragon of Dragons." />
+	<Hero
+		id="eq_dragons_29"
+		faction="Faction.clan_dragons_g8"
+		spouse="Hero.eq_dragons_71"
+		father="Hero.eq_dragons_69"
+		mother="Hero.eq_dragons_70"
+		text="{=eq_dragons_29_text}A noble dragoness of Dragons." />
+	<Hero
+		id="eq_dragons_30"
+		faction="Faction.clan_dragons_g8"
+		spouse="Hero.eq_dragons_27"
+		text="{=eq_dragons_30_text}Wife of Blast." />
+	<Hero
+		id="eq_dragons_31"
+		faction="Faction.clan_dragons_g8"
+		father="Hero.eq_dragons_27"
+		mother="Hero.eq_dragons_30"
+		text="{=eq_dragons_31_text}A young dragon of Clan Smog." />
+	<Hero
+		id="eq_dragons_32"
+		faction="Faction.clan_dragons_g8"
+		father="Hero.eq_dragons_27"
+		mother="Hero.eq_dragons_30"
+		text="{=eq_dragons_32_text}A young dragon of Clan Smog." />
+	<Hero
+		id="eq_dragons_69"
+		faction="Faction.clan_dragons_g8"
+		alive="false"
+		spouse="Hero.eq_dragons_70"
+		text="{=eq_dragons_69_text}Father of the head of Clan Smog. Died of old age." />
+	<Hero
+		id="eq_dragons_70"
+		faction="Faction.clan_dragons_g8"
+		alive="false"
+		spouse="Hero.eq_dragons_69"
+		text="{=eq_dragons_70_text}Mother of the head of Clan Smog. Died of old age." />
+	<Hero
+		id="eq_dragons_71"
+		faction="Faction.clan_dragons_g8"
+		spouse="Hero.eq_dragons_29"
+		text="{=eq_dragons_71_text}Husband of Flash." />
+	<Hero
+		id="eq_dragons_72"
+		faction="Faction.clan_dragons_g8"
+		father="Hero.eq_dragons_71"
+		mother="Hero.eq_dragons_29"
+		text="{=eq_dragons_72_text}A young dragon of Clan Smog." />
+	<Hero
+		id="eq_rutherford"
+		faction="Faction.clan_yk_rutherford"
+		text="{=eq_rutherford_text}A yak prince, loud and honest." />
+	<Hero
+		id="eq_yona"
+		faction="Faction.clan_yk_rutherford"
+		father="Hero.eq_rutherford"
+		text="{=eq_yona_text}A young yak who studied in Equestria." />
+	<Hero
+		id="eq_yakyakistan_1"
+		faction="Faction.clan_yk_rutherford"
+		father="Hero.eq_yakyakistan_33"
+		mother="Hero.eq_yakyakistan_34"
+		text="{=eq_yakyakistan_1_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_2"
+		faction="Faction.clan_yk_rutherford"
+		spouse="Hero.eq_yakyakistan_35"
+		father="Hero.eq_yakyakistan_33"
+		mother="Hero.eq_yakyakistan_34"
+		text="{=eq_yakyakistan_2_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_33"
+		faction="Faction.clan_yk_rutherford"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_34"
+		text="{=eq_yakyakistan_33_text}Father of Halvar. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_34"
+		faction="Faction.clan_yk_rutherford"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_33"
+		text="{=eq_yakyakistan_34_text}Mother of Halvar. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_35"
+		faction="Faction.clan_yk_rutherford"
+		spouse="Hero.eq_yakyakistan_2"
+		text="{=eq_yakyakistan_35_text}Husband of Geyra." />
+	<Hero
+		id="eq_yakyakistan_36"
+		faction="Faction.clan_yk_rutherford"
+		father="Hero.eq_yakyakistan_35"
+		mother="Hero.eq_yakyakistan_2"
+		text="{=eq_yakyakistan_36_text}A yak calf of House of Rutherford." />
+	<Hero
+		id="eq_yakyakistan_37"
+		faction="Faction.clan_yk_rutherford"
+		father="Hero.eq_yakyakistan_35"
+		mother="Hero.eq_yakyakistan_2"
+		text="{=eq_yakyakistan_37_text}A yak calf of House of Rutherford." />
+	<Hero
+		id="eq_thyra"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_yngvar"
+		father="Hero.eq_yakyakistan_40"
+		mother="Hero.eq_yakyakistan_41"
+		text="{=eq_thyra_text}Chieftain of the mountain herds." />
+	<Hero
+		id="eq_yngvar"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_thyra"
+		text="{=eq_yngvar_text}An elder who remembers every yak grievance by name." />
+	<Hero
+		id="eq_yakyakistan_3"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_yakyakistan_42"
+		father="Hero.eq_yakyakistan_38"
+		mother="Hero.eq_yakyakistan_39"
+		text="{=eq_yakyakistan_3_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_4"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_yakyakistan_44"
+		father="Hero.eq_yakyakistan_38"
+		mother="Hero.eq_yakyakistan_39"
+		text="{=eq_yakyakistan_4_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_38"
+		faction="Faction.clan_yk_thyra"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_39"
+		text="{=eq_yakyakistan_38_text}Father of Oda. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_39"
+		faction="Faction.clan_yk_thyra"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_38"
+		text="{=eq_yakyakistan_39_text}Mother of Oda. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_40"
+		faction="Faction.clan_yk_thyra"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_41"
+		text="{=eq_yakyakistan_40_text}Father of Tira. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_41"
+		faction="Faction.clan_yk_thyra"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_40"
+		text="{=eq_yakyakistan_41_text}Mother of Tira. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_42"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_yakyakistan_3"
+		text="{=eq_yakyakistan_42_text}Husband of Oda." />
+	<Hero
+		id="eq_yakyakistan_43"
+		faction="Faction.clan_yk_thyra"
+		father="Hero.eq_yakyakistan_42"
+		mother="Hero.eq_yakyakistan_3"
+		text="{=eq_yakyakistan_43_text}A yak calf of House of Thyra." />
+	<Hero
+		id="eq_yakyakistan_44"
+		faction="Faction.clan_yk_thyra"
+		spouse="Hero.eq_yakyakistan_4"
+		text="{=eq_yakyakistan_44_text}Wife of Ulf." />
+	<Hero
+		id="eq_yakyakistan_45"
+		faction="Faction.clan_yk_thyra"
+		father="Hero.eq_yakyakistan_4"
+		mother="Hero.eq_yakyakistan_44"
+		text="{=eq_yakyakistan_45_text}A yak calf of House of Thyra." />
+	<Hero
+		id="eq_bradford"
+		faction="Faction.clan_yk_jaki"
+		father="Hero.eq_yakyakistan_48"
+		mother="Hero.eq_yakyakistan_49"
+		text="{=eq_bradford_text}Prince of a breakaway yak line." />
+	<Hero
+		id="eq_kerr"
+		faction="Faction.clan_yk_jaki"
+		father="Hero.eq_yakyakistan_50"
+		mother="Hero.eq_yakyakistan_51"
+		text="{=eq_kerr_text}A steppe chieftain, Bradford's ally." />
+	<Hero
+		id="eq_yakyakistan_5"
+		faction="Faction.clan_yk_jaki"
+		father="Hero.eq_yakyakistan_46"
+		mother="Hero.eq_yakyakistan_47"
+		text="{=eq_yakyakistan_5_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_6"
+		faction="Faction.clan_yk_jaki"
+		father="Hero.eq_yakyakistan_46"
+		mother="Hero.eq_yakyakistan_47"
+		text="{=eq_yakyakistan_6_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_46"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_47"
+		text="{=eq_yakyakistan_46_text}Father of Liv. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_47"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_46"
+		text="{=eq_yakyakistan_47_text}Mother of Liv. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_48"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_49"
+		text="{=eq_yakyakistan_48_text}Father of Bredford. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_49"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_48"
+		text="{=eq_yakyakistan_49_text}Mother of Bredford. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_50"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_51"
+		text="{=eq_yakyakistan_50_text}Father of Han Kerr. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_51"
+		faction="Faction.clan_yk_jaki"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_50"
+		text="{=eq_yakyakistan_51_text}Mother of Han Kerr. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_7"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_10"
+		father="Hero.eq_yakyakistan_52"
+		mother="Hero.eq_yakyakistan_53"
+		text="{=eq_yakyakistan_7_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_8"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_54"
+		father="Hero.eq_yakyakistan_52"
+		mother="Hero.eq_yakyakistan_53"
+		text="{=eq_yakyakistan_8_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_9"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_56"
+		father="Hero.eq_yakyakistan_52"
+		mother="Hero.eq_yakyakistan_53"
+		text="{=eq_yakyakistan_9_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_10"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_7"
+		text="{=eq_yakyakistan_10_text}Wife of Sven." />
+	<Hero
+		id="eq_yakyakistan_11"
+		faction="Faction.clan_yakyakistan_g4"
+		father="Hero.eq_yakyakistan_7"
+		mother="Hero.eq_yakyakistan_10"
+		text="{=eq_yakyakistan_11_text}A yak calf of Clan Gurt." />
+	<Hero
+		id="eq_yakyakistan_12"
+		faction="Faction.clan_yakyakistan_g4"
+		father="Hero.eq_yakyakistan_7"
+		mother="Hero.eq_yakyakistan_10"
+		text="{=eq_yakyakistan_12_text}A yak calf of Clan Gurt." />
+	<Hero
+		id="eq_yakyakistan_52"
+		faction="Faction.clan_yakyakistan_g4"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_53"
+		text="{=eq_yakyakistan_52_text}Father of the head of Clan Gurt. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_53"
+		faction="Faction.clan_yakyakistan_g4"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_52"
+		text="{=eq_yakyakistan_53_text}Mother of the head of Clan Gurt. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_54"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_8"
+		text="{=eq_yakyakistan_54_text}Wife of Torvald." />
+	<Hero
+		id="eq_yakyakistan_55"
+		faction="Faction.clan_yakyakistan_g4"
+		father="Hero.eq_yakyakistan_8"
+		mother="Hero.eq_yakyakistan_54"
+		text="{=eq_yakyakistan_55_text}A yak calf of Clan Gurt." />
+	<Hero
+		id="eq_yakyakistan_56"
+		faction="Faction.clan_yakyakistan_g4"
+		spouse="Hero.eq_yakyakistan_9"
+		text="{=eq_yakyakistan_56_text}Husband of Ingunn." />
+	<Hero
+		id="eq_yakyakistan_13"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_16"
+		father="Hero.eq_yakyakistan_57"
+		mother="Hero.eq_yakyakistan_58"
+		text="{=eq_yakyakistan_13_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_14"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_59"
+		father="Hero.eq_yakyakistan_57"
+		mother="Hero.eq_yakyakistan_58"
+		text="{=eq_yakyakistan_14_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_15"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_62"
+		father="Hero.eq_yakyakistan_57"
+		mother="Hero.eq_yakyakistan_58"
+		text="{=eq_yakyakistan_15_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_16"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_13"
+		text="{=eq_yakyakistan_16_text}Wife of Arvid." />
+	<Hero
+		id="eq_yakyakistan_57"
+		faction="Faction.clan_yakyakistan_g5"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_58"
+		text="{=eq_yakyakistan_57_text}Father of the head of Clan Byorn. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_58"
+		faction="Faction.clan_yakyakistan_g5"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_57"
+		text="{=eq_yakyakistan_58_text}Mother of the head of Clan Byorn. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_59"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_14"
+		text="{=eq_yakyakistan_59_text}Wife of Hrolf." />
+	<Hero
+		id="eq_yakyakistan_60"
+		faction="Faction.clan_yakyakistan_g5"
+		father="Hero.eq_yakyakistan_14"
+		mother="Hero.eq_yakyakistan_59"
+		text="{=eq_yakyakistan_60_text}A yak calf of Clan Byorn." />
+	<Hero
+		id="eq_yakyakistan_61"
+		faction="Faction.clan_yakyakistan_g5"
+		father="Hero.eq_yakyakistan_14"
+		mother="Hero.eq_yakyakistan_59"
+		text="{=eq_yakyakistan_61_text}A yak calf of Clan Byorn." />
+	<Hero
+		id="eq_yakyakistan_62"
+		faction="Faction.clan_yakyakistan_g5"
+		spouse="Hero.eq_yakyakistan_15"
+		text="{=eq_yakyakistan_62_text}Husband of Alva." />
+	<Hero
+		id="eq_yakyakistan_63"
+		faction="Faction.clan_yakyakistan_g5"
+		father="Hero.eq_yakyakistan_62"
+		mother="Hero.eq_yakyakistan_15"
+		text="{=eq_yakyakistan_63_text}A yak calf of Clan Byorn." />
+	<Hero
+		id="eq_yakyakistan_17"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_20"
+		father="Hero.eq_yakyakistan_64"
+		mother="Hero.eq_yakyakistan_65"
+		text="{=eq_yakyakistan_17_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_18"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_66"
+		father="Hero.eq_yakyakistan_64"
+		mother="Hero.eq_yakyakistan_65"
+		text="{=eq_yakyakistan_18_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_19"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_69"
+		father="Hero.eq_yakyakistan_64"
+		mother="Hero.eq_yakyakistan_65"
+		text="{=eq_yakyakistan_19_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_20"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_17"
+		text="{=eq_yakyakistan_20_text}Wife of Steyn." />
+	<Hero
+		id="eq_yakyakistan_21"
+		faction="Faction.clan_yakyakistan_g6"
+		father="Hero.eq_yakyakistan_17"
+		mother="Hero.eq_yakyakistan_20"
+		text="{=eq_yakyakistan_21_text}A yak calf of Clan Orm." />
+	<Hero
+		id="eq_yakyakistan_64"
+		faction="Faction.clan_yakyakistan_g6"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_65"
+		text="{=eq_yakyakistan_64_text}Father of the head of Clan Orm. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_65"
+		faction="Faction.clan_yakyakistan_g6"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_64"
+		text="{=eq_yakyakistan_65_text}Mother of the head of Clan Orm. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_66"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_18"
+		text="{=eq_yakyakistan_66_text}Wife of Hrodgar." />
+	<Hero
+		id="eq_yakyakistan_67"
+		faction="Faction.clan_yakyakistan_g6"
+		father="Hero.eq_yakyakistan_18"
+		mother="Hero.eq_yakyakistan_66"
+		text="{=eq_yakyakistan_67_text}A yak calf of Clan Orm." />
+	<Hero
+		id="eq_yakyakistan_68"
+		faction="Faction.clan_yakyakistan_g6"
+		father="Hero.eq_yakyakistan_18"
+		mother="Hero.eq_yakyakistan_66"
+		text="{=eq_yakyakistan_68_text}A yak calf of Clan Orm." />
+	<Hero
+		id="eq_yakyakistan_69"
+		faction="Faction.clan_yakyakistan_g6"
+		spouse="Hero.eq_yakyakistan_19"
+		text="{=eq_yakyakistan_69_text}Husband of Gudrun." />
+	<Hero
+		id="eq_yakyakistan_22"
+		faction="Faction.clan_yakyakistan_g7"
+		spouse="Hero.eq_yakyakistan_25"
+		father="Hero.eq_yakyakistan_70"
+		mother="Hero.eq_yakyakistan_71"
+		text="{=eq_yakyakistan_22_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_23"
+		faction="Faction.clan_yakyakistan_g7"
+		father="Hero.eq_yakyakistan_70"
+		mother="Hero.eq_yakyakistan_71"
+		text="{=eq_yakyakistan_23_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_24"
+		faction="Faction.clan_yakyakistan_g7"
+		spouse="Hero.eq_yakyakistan_72"
+		father="Hero.eq_yakyakistan_70"
+		mother="Hero.eq_yakyakistan_71"
+		text="{=eq_yakyakistan_24_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_25"
+		faction="Faction.clan_yakyakistan_g7"
+		spouse="Hero.eq_yakyakistan_22"
+		text="{=eq_yakyakistan_25_text}Wife of Sigurd." />
+	<Hero
+		id="eq_yakyakistan_26"
+		faction="Faction.clan_yakyakistan_g7"
+		father="Hero.eq_yakyakistan_22"
+		mother="Hero.eq_yakyakistan_25"
+		text="{=eq_yakyakistan_26_text}A yak calf of Clan Gunnar." />
+	<Hero
+		id="eq_yakyakistan_27"
+		faction="Faction.clan_yakyakistan_g7"
+		father="Hero.eq_yakyakistan_22"
+		mother="Hero.eq_yakyakistan_25"
+		text="{=eq_yakyakistan_27_text}A yak calf of Clan Gunnar." />
+	<Hero
+		id="eq_yakyakistan_70"
+		faction="Faction.clan_yakyakistan_g7"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_71"
+		text="{=eq_yakyakistan_70_text}Father of the head of Clan Gunnar. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_71"
+		faction="Faction.clan_yakyakistan_g7"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_70"
+		text="{=eq_yakyakistan_71_text}Mother of the head of Clan Gunnar. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_72"
+		faction="Faction.clan_yakyakistan_g7"
+		spouse="Hero.eq_yakyakistan_24"
+		text="{=eq_yakyakistan_72_text}Husband of Ranveyg." />
+	<Hero
+		id="eq_yakyakistan_73"
+		faction="Faction.clan_yakyakistan_g7"
+		father="Hero.eq_yakyakistan_72"
+		mother="Hero.eq_yakyakistan_24"
+		text="{=eq_yakyakistan_73_text}A yak calf of Clan Gunnar." />
+	<Hero
+		id="eq_yakyakistan_28"
+		faction="Faction.clan_yakyakistan_g8"
+		spouse="Hero.eq_yakyakistan_31"
+		father="Hero.eq_yakyakistan_74"
+		mother="Hero.eq_yakyakistan_75"
+		text="{=eq_yakyakistan_28_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_29"
+		faction="Faction.clan_yakyakistan_g8"
+		spouse="Hero.eq_yakyakistan_76"
+		father="Hero.eq_yakyakistan_74"
+		mother="Hero.eq_yakyakistan_75"
+		text="{=eq_yakyakistan_29_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_30"
+		faction="Faction.clan_yakyakistan_g8"
+		father="Hero.eq_yakyakistan_74"
+		mother="Hero.eq_yakyakistan_75"
+		text="{=eq_yakyakistan_30_text}A noble yak of Yakyakistan." />
+	<Hero
+		id="eq_yakyakistan_31"
+		faction="Faction.clan_yakyakistan_g8"
+		spouse="Hero.eq_yakyakistan_28"
+		text="{=eq_yakyakistan_31_text}Wife of Gunnar." />
+	<Hero
+		id="eq_yakyakistan_32"
+		faction="Faction.clan_yakyakistan_g8"
+		father="Hero.eq_yakyakistan_28"
+		mother="Hero.eq_yakyakistan_31"
+		text="{=eq_yakyakistan_32_text}A yak calf of Clan Yarl." />
+	<Hero
+		id="eq_yakyakistan_74"
+		faction="Faction.clan_yakyakistan_g8"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_75"
+		text="{=eq_yakyakistan_74_text}Father of the head of Clan Yarl. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_75"
+		faction="Faction.clan_yakyakistan_g8"
+		alive="false"
+		spouse="Hero.eq_yakyakistan_74"
+		text="{=eq_yakyakistan_75_text}Mother of the head of Clan Yarl. Died of old age." />
+	<Hero
+		id="eq_yakyakistan_76"
+		faction="Faction.clan_yakyakistan_g8"
+		spouse="Hero.eq_yakyakistan_29"
+		text="{=eq_yakyakistan_76_text}Wife of Magnus." />
+	<Hero
+		id="eq_yakyakistan_77"
+		faction="Faction.clan_yakyakistan_g8"
+		father="Hero.eq_yakyakistan_29"
+		mother="Hero.eq_yakyakistan_76"
+		text="{=eq_yakyakistan_77_text}A yak calf of Clan Yarl." />
+	<Hero
+		id="eq_yakyakistan_78"
+		faction="Faction.clan_yakyakistan_g8"
+		father="Hero.eq_yakyakistan_29"
+		mother="Hero.eq_yakyakistan_76"
+		text="{=eq_yakyakistan_78_text}A yak calf of Clan Yarl." />
+	<Hero
+		id="eq_chrysalis"
+		faction="Faction.clan_ch_chrysalis"
+		text="{=eq_chrysalis_text}Queen of the hives, a master of disguise." />
+	<Hero
+		id="eq_synovial"
+		faction="Faction.clan_ch_chrysalis"
+		father="Hero.eq_changeling_41"
+		mother="Hero.eq_changeling_42"
+		text="{=eq_synovial_text}Hive marshal, war leader of the swarm." />
+	<Hero
+		id="eq_changeling_1"
+		faction="Faction.clan_ch_chrysalis"
+		spouse="Hero.eq_changeling_43"
+		father="Hero.eq_changeling_39"
+		mother="Hero.eq_changeling_40"
+		text="{=eq_changeling_1_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_2"
+		faction="Faction.clan_ch_chrysalis"
+		spouse="Hero.eq_changeling_45"
+		father="Hero.eq_changeling_39"
+		mother="Hero.eq_changeling_40"
+		text="{=eq_changeling_2_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_39"
+		faction="Faction.clan_ch_chrysalis"
+		alive="false"
+		spouse="Hero.eq_changeling_40"
+		text="{=eq_changeling_39_text}Father of Vanessa. Died of old age." />
+	<Hero
+		id="eq_changeling_40"
+		faction="Faction.clan_ch_chrysalis"
+		alive="false"
+		spouse="Hero.eq_changeling_39"
+		text="{=eq_changeling_40_text}Mother of Vanessa. Died of old age." />
+	<Hero
+		id="eq_changeling_41"
+		faction="Faction.clan_ch_chrysalis"
+		alive="false"
+		spouse="Hero.eq_changeling_42"
+		text="{=eq_changeling_41_text}Father of Sinovial. Died of old age." />
+	<Hero
+		id="eq_changeling_42"
+		faction="Faction.clan_ch_chrysalis"
+		alive="false"
+		spouse="Hero.eq_changeling_41"
+		text="{=eq_changeling_42_text}Mother of Sinovial. Died of old age." />
+	<Hero
+		id="eq_changeling_43"
+		faction="Faction.clan_ch_chrysalis"
+		spouse="Hero.eq_changeling_1"
+		text="{=eq_changeling_43_text}Husband of Vanessa." />
+	<Hero
+		id="eq_changeling_44"
+		faction="Faction.clan_ch_chrysalis"
+		father="Hero.eq_changeling_43"
+		mother="Hero.eq_changeling_1"
+		text="{=eq_changeling_44_text}A grub of Hive Chrysalis." />
+	<Hero
+		id="eq_changeling_45"
+		faction="Faction.clan_ch_chrysalis"
+		spouse="Hero.eq_changeling_2"
+		text="{=eq_changeling_45_text}Husband of Lichina." />
+	<Hero
+		id="eq_changeling_46"
+		faction="Faction.clan_ch_chrysalis"
+		father="Hero.eq_changeling_45"
+		mother="Hero.eq_changeling_2"
+		text="{=eq_changeling_46_text}A grub of Hive Chrysalis." />
+	<Hero
+		id="eq_thorax"
+		faction="Faction.clan_ch_thorax"
+		father="Hero.eq_changeling_49"
+		mother="Hero.eq_changeling_50"
+		text="{=eq_thorax_text}Leader of the breakaway changelings who chose friendship." />
+	<Hero
+		id="eq_pharynx"
+		faction="Faction.clan_ch_thorax"
+		father="Hero.eq_changeling_51"
+		mother="Hero.eq_changeling_52"
+		text="{=eq_pharynx_text}Thorax's brother, commander of the patrols." />
+	<Hero
+		id="eq_changeling_3"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_53"
+		father="Hero.eq_changeling_47"
+		mother="Hero.eq_changeling_48"
+		text="{=eq_changeling_3_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_4"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_56"
+		father="Hero.eq_changeling_47"
+		mother="Hero.eq_changeling_48"
+		text="{=eq_changeling_4_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_47"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_48"
+		text="{=eq_changeling_47_text}Father of Nektaris." />
+	<Hero
+		id="eq_changeling_48"
+		faction="Faction.clan_ch_thorax"
+		alive="false"
+		spouse="Hero.eq_changeling_47"
+		text="{=eq_changeling_48_text}Mother of Nektaris. Died defending the hive." />
+	<Hero
+		id="eq_changeling_49"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_50"
+		text="{=eq_changeling_49_text}Father of Thorax." />
+	<Hero
+		id="eq_changeling_50"
+		faction="Faction.clan_ch_thorax"
+		alive="false"
+		spouse="Hero.eq_changeling_49"
+		text="{=eq_changeling_50_text}Mother of Thorax. Died in a siege." />
+	<Hero
+		id="eq_changeling_51"
+		faction="Faction.clan_ch_thorax"
+		alive="false"
+		spouse="Hero.eq_changeling_52"
+		text="{=eq_changeling_51_text}Father of Pharynx. Fell in battle under the banners of Hives." />
+	<Hero
+		id="eq_changeling_52"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_51"
+		text="{=eq_changeling_52_text}Mother of Pharynx." />
+	<Hero
+		id="eq_changeling_53"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_3"
+		text="{=eq_changeling_53_text}Wife of Nektaris." />
+	<Hero
+		id="eq_changeling_54"
+		faction="Faction.clan_ch_thorax"
+		father="Hero.eq_changeling_3"
+		mother="Hero.eq_changeling_53"
+		text="{=eq_changeling_54_text}A grub of Hive Thorax." />
+	<Hero
+		id="eq_changeling_55"
+		faction="Faction.clan_ch_thorax"
+		father="Hero.eq_changeling_3"
+		mother="Hero.eq_changeling_53"
+		text="{=eq_changeling_55_text}A grub of Hive Thorax." />
+	<Hero
+		id="eq_changeling_56"
+		faction="Faction.clan_ch_thorax"
+		spouse="Hero.eq_changeling_4"
+		text="{=eq_changeling_56_text}Husband of Krizi." />
+	<Hero
+		id="eq_changeling_57"
+		faction="Faction.clan_ch_thorax"
+		father="Hero.eq_changeling_56"
+		mother="Hero.eq_changeling_4"
+		text="{=eq_changeling_57_text}A grub of Hive Thorax." />
+	<Hero
+		id="eq_gold_muffin"
+		faction="Faction.clan_ch_muffin"
+		father="Hero.eq_changeling_60"
+		mother="Hero.eq_changeling_61"
+		text="{=eq_gold_muffin_text}The merchant queen of the hives." />
+	<Hero
+		id="eq_vraks"
+		faction="Faction.clan_ch_muffin"
+		father="Hero.eq_changeling_62"
+		mother="Hero.eq_changeling_63"
+		text="{=eq_vraks_text}Keeper of the southern trails." />
+	<Hero
+		id="eq_changeling_5"
+		faction="Faction.clan_ch_muffin"
+		spouse="Hero.eq_changeling_64"
+		father="Hero.eq_changeling_58"
+		mother="Hero.eq_changeling_59"
+		text="{=eq_changeling_5_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_6"
+		faction="Faction.clan_ch_muffin"
+		spouse="Hero.eq_changeling_65"
+		father="Hero.eq_changeling_58"
+		mother="Hero.eq_changeling_59"
+		text="{=eq_changeling_6_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_58"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_59"
+		text="{=eq_changeling_58_text}Father of Aglaya. Died of old age." />
+	<Hero
+		id="eq_changeling_59"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_58"
+		text="{=eq_changeling_59_text}Mother of Aglaya. Died of old age." />
+	<Hero
+		id="eq_changeling_60"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_61"
+		text="{=eq_changeling_60_text}Father of Gold Muffin. Died of old age." />
+	<Hero
+		id="eq_changeling_61"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_60"
+		text="{=eq_changeling_61_text}Mother of Gold Muffin. Died of old age." />
+	<Hero
+		id="eq_changeling_62"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_63"
+		text="{=eq_changeling_62_text}Father of Vrax. Died of old age." />
+	<Hero
+		id="eq_changeling_63"
+		faction="Faction.clan_ch_muffin"
+		alive="false"
+		spouse="Hero.eq_changeling_62"
+		text="{=eq_changeling_63_text}Mother of Vrax. Died of old age." />
+	<Hero
+		id="eq_changeling_64"
+		faction="Faction.clan_ch_muffin"
+		spouse="Hero.eq_changeling_5"
+		text="{=eq_changeling_64_text}Husband of Aglaya." />
+	<Hero
+		id="eq_changeling_65"
+		faction="Faction.clan_ch_muffin"
+		spouse="Hero.eq_changeling_6"
+		text="{=eq_changeling_65_text}Husband of Pupa." />
+	<Hero
+		id="eq_changeling_66"
+		faction="Faction.clan_ch_muffin"
+		father="Hero.eq_changeling_65"
+		mother="Hero.eq_changeling_6"
+		text="{=eq_changeling_66_text}A grub of House Gold Muffin." />
+	<Hero
+		id="eq_changeling_7"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_10"
+		father="Hero.eq_changeling_67"
+		mother="Hero.eq_changeling_68"
+		text="{=eq_changeling_7_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_8"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_69"
+		father="Hero.eq_changeling_67"
+		mother="Hero.eq_changeling_68"
+		text="{=eq_changeling_8_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_9"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_70"
+		father="Hero.eq_changeling_67"
+		mother="Hero.eq_changeling_68"
+		text="{=eq_changeling_9_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_10"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_7"
+		text="{=eq_changeling_10_text}Wife of Vespa." />
+	<Hero
+		id="eq_changeling_11"
+		faction="Faction.clan_changeling_g4"
+		father="Hero.eq_changeling_7"
+		mother="Hero.eq_changeling_10"
+		text="{=eq_changeling_11_text}A grub of Hive Slit." />
+	<Hero
+		id="eq_changeling_67"
+		faction="Faction.clan_changeling_g4"
+		alive="false"
+		spouse="Hero.eq_changeling_68"
+		text="{=eq_changeling_67_text}Father of the head of Hive Slit. Died of old age." />
+	<Hero
+		id="eq_changeling_68"
+		faction="Faction.clan_changeling_g4"
+		alive="false"
+		spouse="Hero.eq_changeling_67"
+		text="{=eq_changeling_68_text}Mother of the head of Hive Slit. Died of old age." />
+	<Hero
+		id="eq_changeling_69"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_8"
+		text="{=eq_changeling_69_text}Wife of Feromon." />
+	<Hero
+		id="eq_changeling_70"
+		faction="Faction.clan_changeling_g4"
+		spouse="Hero.eq_changeling_9"
+		text="{=eq_changeling_70_text}Husband of Hrizanta." />
+	<Hero
+		id="eq_changeling_71"
+		faction="Faction.clan_changeling_g4"
+		father="Hero.eq_changeling_70"
+		mother="Hero.eq_changeling_9"
+		text="{=eq_changeling_71_text}A grub of Hive Slit." />
+	<Hero
+		id="eq_changeling_12"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_15"
+		father="Hero.eq_changeling_72"
+		mother="Hero.eq_changeling_73"
+		text="{=eq_changeling_12_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_13"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_74"
+		father="Hero.eq_changeling_72"
+		mother="Hero.eq_changeling_73"
+		text="{=eq_changeling_13_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_14"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_77"
+		father="Hero.eq_changeling_72"
+		mother="Hero.eq_changeling_73"
+		text="{=eq_changeling_14_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_15"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_12"
+		text="{=eq_changeling_15_text}Wife of Karapaks." />
+	<Hero
+		id="eq_changeling_16"
+		faction="Faction.clan_changeling_g5"
+		father="Hero.eq_changeling_12"
+		mother="Hero.eq_changeling_15"
+		text="{=eq_changeling_16_text}A grub of Hive Cocoon." />
+	<Hero
+		id="eq_changeling_17"
+		faction="Faction.clan_changeling_g5"
+		father="Hero.eq_changeling_12"
+		mother="Hero.eq_changeling_15"
+		text="{=eq_changeling_17_text}A grub of Hive Cocoon." />
+	<Hero
+		id="eq_changeling_72"
+		faction="Faction.clan_changeling_g5"
+		alive="false"
+		spouse="Hero.eq_changeling_73"
+		text="{=eq_changeling_72_text}Father of the head of Hive Cocoon. Died of old age." />
+	<Hero
+		id="eq_changeling_73"
+		faction="Faction.clan_changeling_g5"
+		alive="false"
+		spouse="Hero.eq_changeling_72"
+		text="{=eq_changeling_73_text}Mother of the head of Hive Cocoon. Died of old age." />
+	<Hero
+		id="eq_changeling_74"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_13"
+		text="{=eq_changeling_74_text}Wife of Cocoon." />
+	<Hero
+		id="eq_changeling_75"
+		faction="Faction.clan_changeling_g5"
+		father="Hero.eq_changeling_13"
+		mother="Hero.eq_changeling_74"
+		text="{=eq_changeling_75_text}A grub of Hive Cocoon." />
+	<Hero
+		id="eq_changeling_76"
+		faction="Faction.clan_changeling_g5"
+		father="Hero.eq_changeling_13"
+		mother="Hero.eq_changeling_74"
+		text="{=eq_changeling_76_text}A grub of Hive Cocoon." />
+	<Hero
+		id="eq_changeling_77"
+		faction="Faction.clan_changeling_g5"
+		spouse="Hero.eq_changeling_14"
+		text="{=eq_changeling_77_text}Husband of Obmana." />
+	<Hero
+		id="eq_changeling_78"
+		faction="Faction.clan_changeling_g5"
+		father="Hero.eq_changeling_77"
+		mother="Hero.eq_changeling_14"
+		text="{=eq_changeling_78_text}A grub of Hive Cocoon." />
+	<Hero
+		id="eq_changeling_18"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_21"
+		father="Hero.eq_changeling_79"
+		mother="Hero.eq_changeling_80"
+		text="{=eq_changeling_18_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_19"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_81"
+		father="Hero.eq_changeling_79"
+		mother="Hero.eq_changeling_80"
+		text="{=eq_changeling_19_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_20"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_82"
+		father="Hero.eq_changeling_79"
+		mother="Hero.eq_changeling_80"
+		text="{=eq_changeling_20_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_21"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_18"
+		text="{=eq_changeling_21_text}Wife of Ocellus." />
+	<Hero
+		id="eq_changeling_79"
+		faction="Faction.clan_changeling_g6"
+		alive="false"
+		spouse="Hero.eq_changeling_80"
+		text="{=eq_changeling_79_text}Father of the head of Hive Panter. Died of old age." />
+	<Hero
+		id="eq_changeling_80"
+		faction="Faction.clan_changeling_g6"
+		alive="false"
+		spouse="Hero.eq_changeling_79"
+		text="{=eq_changeling_80_text}Mother of the head of Hive Panter. Died of old age." />
+	<Hero
+		id="eq_changeling_81"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_19"
+		text="{=eq_changeling_81_text}Wife of Tarsus." />
+	<Hero
+		id="eq_changeling_82"
+		faction="Faction.clan_changeling_g6"
+		spouse="Hero.eq_changeling_20"
+		text="{=eq_changeling_82_text}Husband of Pryad." />
+	<Hero
+		id="eq_changeling_83"
+		faction="Faction.clan_changeling_g6"
+		father="Hero.eq_changeling_82"
+		mother="Hero.eq_changeling_20"
+		text="{=eq_changeling_83_text}A grub of Hive Panter." />
+	<Hero
+		id="eq_changeling_22"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_25"
+		father="Hero.eq_changeling_84"
+		mother="Hero.eq_changeling_85"
+		text="{=eq_changeling_22_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_23"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_86"
+		father="Hero.eq_changeling_84"
+		mother="Hero.eq_changeling_85"
+		text="{=eq_changeling_23_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_24"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_88"
+		father="Hero.eq_changeling_84"
+		mother="Hero.eq_changeling_85"
+		text="{=eq_changeling_24_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_25"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_22"
+		text="{=eq_changeling_25_text}Husband of Gema." />
+	<Hero
+		id="eq_changeling_26"
+		faction="Faction.clan_changeling_g7"
+		father="Hero.eq_changeling_25"
+		mother="Hero.eq_changeling_22"
+		text="{=eq_changeling_26_text}A grub of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_27"
+		faction="Faction.clan_changeling_g7"
+		father="Hero.eq_changeling_25"
+		mother="Hero.eq_changeling_22"
+		text="{=eq_changeling_27_text}A grub of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_84"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_85"
+		text="{=eq_changeling_84_text}Father of the head of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_85"
+		faction="Faction.clan_changeling_g7"
+		alive="false"
+		spouse="Hero.eq_changeling_84"
+		text="{=eq_changeling_85_text}Mother of the head of Hive Ocellus. Died in childbirth." />
+	<Hero
+		id="eq_changeling_86"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_23"
+		text="{=eq_changeling_86_text}Wife of Molt." />
+	<Hero
+		id="eq_changeling_87"
+		faction="Faction.clan_changeling_g7"
+		father="Hero.eq_changeling_23"
+		mother="Hero.eq_changeling_86"
+		text="{=eq_changeling_87_text}A grub of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_88"
+		faction="Faction.clan_changeling_g7"
+		spouse="Hero.eq_changeling_24"
+		text="{=eq_changeling_88_text}Husband of Lamiya." />
+	<Hero
+		id="eq_changeling_89"
+		faction="Faction.clan_changeling_g7"
+		father="Hero.eq_changeling_88"
+		mother="Hero.eq_changeling_24"
+		text="{=eq_changeling_89_text}A grub of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_90"
+		faction="Faction.clan_changeling_g7"
+		father="Hero.eq_changeling_88"
+		mother="Hero.eq_changeling_24"
+		text="{=eq_changeling_90_text}A grub of Hive Ocellus." />
+	<Hero
+		id="eq_changeling_28"
+		faction="Faction.clan_changeling_g8"
+		spouse="Hero.eq_changeling_31"
+		father="Hero.eq_changeling_91"
+		mother="Hero.eq_changeling_92"
+		text="{=eq_changeling_28_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_29"
+		faction="Faction.clan_changeling_g8"
+		father="Hero.eq_changeling_91"
+		mother="Hero.eq_changeling_92"
+		text="{=eq_changeling_29_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_30"
+		faction="Faction.clan_changeling_g8"
+		father="Hero.eq_changeling_91"
+		mother="Hero.eq_changeling_92"
+		text="{=eq_changeling_30_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_31"
+		faction="Faction.clan_changeling_g8"
+		spouse="Hero.eq_changeling_28"
+		text="{=eq_changeling_31_text}Husband of Efira." />
+	<Hero
+		id="eq_changeling_32"
+		faction="Faction.clan_changeling_g8"
+		father="Hero.eq_changeling_31"
+		mother="Hero.eq_changeling_28"
+		text="{=eq_changeling_32_text}A grub of Hive Spirakl." />
+	<Hero
+		id="eq_changeling_33"
+		faction="Faction.clan_changeling_g8"
+		father="Hero.eq_changeling_31"
+		mother="Hero.eq_changeling_28"
+		text="{=eq_changeling_33_text}A grub of Hive Spirakl." />
+	<Hero
+		id="eq_changeling_91"
+		faction="Faction.clan_changeling_g8"
+		alive="false"
+		spouse="Hero.eq_changeling_92"
+		text="{=eq_changeling_91_text}Father of the head of Hive Spirakl. Died of old age." />
+	<Hero
+		id="eq_changeling_92"
+		faction="Faction.clan_changeling_g8"
+		alive="false"
+		spouse="Hero.eq_changeling_91"
+		text="{=eq_changeling_92_text}Mother of the head of Hive Spirakl. Died of a fever." />
+	<Hero
+		id="eq_changeling_34"
+		faction="Faction.clan_changeling_g9"
+		spouse="Hero.eq_changeling_37"
+		father="Hero.eq_changeling_93"
+		mother="Hero.eq_changeling_94"
+		text="{=eq_changeling_34_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_35"
+		faction="Faction.clan_changeling_g9"
+		spouse="Hero.eq_changeling_95"
+		father="Hero.eq_changeling_93"
+		mother="Hero.eq_changeling_94"
+		text="{=eq_changeling_35_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_36"
+		faction="Faction.clan_changeling_g9"
+		father="Hero.eq_changeling_93"
+		mother="Hero.eq_changeling_94"
+		text="{=eq_changeling_36_text}A noble changeling of Hives." />
+	<Hero
+		id="eq_changeling_37"
+		faction="Faction.clan_changeling_g9"
+		spouse="Hero.eq_changeling_34"
+		text="{=eq_changeling_37_text}Wife of Bombus." />
+	<Hero
+		id="eq_changeling_38"
+		faction="Faction.clan_changeling_g9"
+		father="Hero.eq_changeling_34"
+		mother="Hero.eq_changeling_37"
+		text="{=eq_changeling_38_text}A grub of Hive Skarabey." />
+	<Hero
+		id="eq_changeling_93"
+		faction="Faction.clan_changeling_g9"
+		alive="false"
+		spouse="Hero.eq_changeling_94"
+		text="{=eq_changeling_93_text}Father of the head of Hive Skarabey. Died of old age." />
+	<Hero
+		id="eq_changeling_94"
+		faction="Faction.clan_changeling_g9"
+		alive="false"
+		spouse="Hero.eq_changeling_93"
+		text="{=eq_changeling_94_text}Mother of the head of Hive Skarabey. Died of old age." />
+	<Hero
+		id="eq_changeling_95"
+		faction="Faction.clan_changeling_g9"
+		spouse="Hero.eq_changeling_35"
+		text="{=eq_changeling_95_text}Wife of Dron." />
+</Heroes>

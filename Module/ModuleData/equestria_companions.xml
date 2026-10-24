@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Спутники, которых игрок нанимает в тавернах. Ванильные шаблоны перекрываем по id:
+     раса пони и русское прозвище, имя игра подставит из списка имён культуры.
+     Ниже — канонные спутники с фиксированными именами (world_data.CANON_COMPANIONS).
+     Файл собран tools/make_world.py из tools/world_data.py — правьте таблицу, не его. -->
+<NPCCharacters>
+	<NPCCharacter id="spc_wanderer_empire_0" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_0_name}{FIRSTNAME} the Bookmare" />
+	<NPCCharacter id="spc_wanderer_empire_1" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_1_name}{FIRSTNAME} — Pathfinder" />
+	<NPCCharacter id="spc_wanderer_empire_2" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_2_name}{FIRSTNAME} the Herder" />
+	<NPCCharacter id="spc_wanderer_empire_3" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_3_name}{FIRSTNAME} the Sky Courier" />
+	<NPCCharacter id="spc_wanderer_empire_4" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_4_name}{FIRSTNAME} the Gardener" />
+	<NPCCharacter id="spc_wanderer_empire_5" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_5_name}{FIRSTNAME} the Chronicler" />
+	<NPCCharacter id="spc_wanderer_empire_6" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_6_name}{FIRSTNAME} the Spellweaver" />
+	<NPCCharacter id="spc_wanderer_empire_7" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_7_name}{FIRSTNAME} the Courier" />
+	<NPCCharacter id="spc_wanderer_empire_8" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_8_name}{FIRSTNAME} the Songstress" />
+	<NPCCharacter id="spc_wanderer_empire_9" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_9_name}{FIRSTNAME} the City Dandy" />
+	<NPCCharacter id="spc_wanderer_empire_10" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_10_name}{FIRSTNAME} the Apple Picker" />
+	<NPCCharacter id="spc_wanderer_empire_11" race="pony" culture="Culture.empire" name="{=spc_wanderer_empire_11_name}{FIRSTNAME} the Guard Veteran" />
+	<NPCCharacter id="spc_wanderer_sturgia_0" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_0_name}{FIRSTNAME} the Gem Gatherer" />
+	<NPCCharacter id="spc_wanderer_sturgia_1" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_1_name}{FIRSTNAME} the Firebreathing Sellsword" />
+	<NPCCharacter id="spc_wanderer_sturgia_2" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_2_name}{FIRSTNAME} the Hoard Keeper" />
+	<NPCCharacter id="spc_wanderer_sturgia_3" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_3_name}{FIRSTNAME} the Volcano Watcher" />
+	<NPCCharacter id="spc_wanderer_sturgia_4" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_4_name}{FIRSTNAME} the Flame Poet" />
+	<NPCCharacter id="spc_wanderer_sturgia_5" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_5_name}{FIRSTNAME} — Bully" />
+	<NPCCharacter id="spc_wanderer_sturgia_6" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_6_name}{FIRSTNAME} the Lava Flyer" />
+	<NPCCharacter id="spc_wanderer_sturgia_7" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_7_name}{FIRSTNAME} the Scale Smith" />
+	<NPCCharacter id="spc_wanderer_sturgia_8" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_8_name}{FIRSTNAME} — Storyteller" />
+	<NPCCharacter id="spc_wanderer_sturgia_9" race="dragon" culture="Culture.sturgia" name="{=spc_wanderer_sturgia_9_name}{FIRSTNAME} the Lair Guard" />
+	<NPCCharacter id="spc_wanderer_battania_0" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_0_name}{FIRSTNAME} the Sky Guard" />
+	<NPCCharacter id="spc_wanderer_battania_1" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_1_name}{FIRSTNAME} the Pearl Diver" />
+	<NPCCharacter id="spc_wanderer_battania_2" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_2_name}{FIRSTNAME} — Sea Scout" />
+	<NPCCharacter id="spc_wanderer_battania_3" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_3_name}{FIRSTNAME} the Storm Flyer" />
+	<NPCCharacter id="spc_wanderer_battania_4" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_4_name}{FIRSTNAME} the Surf Singer" />
+	<NPCCharacter id="spc_wanderer_battania_5" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_5_name}{FIRSTNAME} the Shell Keeper" />
+	<NPCCharacter id="spc_wanderer_battania_6" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_6_name}{FIRSTNAME} the Shipwright" />
+	<NPCCharacter id="spc_wanderer_battania_7" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_7_name}{FIRSTNAME} the Tide Healer" />
+	<NPCCharacter id="spc_wanderer_battania_8" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_8_name}{FIRSTNAME} the Cloud Tracker" />
+	<NPCCharacter id="spc_wanderer_battania_9" race="hippogriff" culture="Culture.battania" name="{=spc_wanderer_battania_9_name}{FIRSTNAME} the Fisher" />
+	<NPCCharacter id="spc_wanderer_vlandia_0" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_0_name}{FIRSTNAME} the Sky Knight" />
+	<NPCCharacter id="spc_wanderer_vlandia_1" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_1_name}{FIRSTNAME} the Hired Talon" />
+	<NPCCharacter id="spc_wanderer_vlandia_2" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_2_name}{FIRSTNAME} the Mail Carrier" />
+	<NPCCharacter id="spc_wanderer_vlandia_3" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_3_name}{FIRSTNAME} the Mountain Ranger" />
+	<NPCCharacter id="spc_wanderer_vlandia_4" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_4_name}{FIRSTNAME} the Pass Guard" />
+	<NPCCharacter id="spc_wanderer_vlandia_5" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_5_name}{FIRSTNAME} — Smith" />
+	<NPCCharacter id="spc_wanderer_vlandia_6" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_6_name}{FIRSTNAME} the Mapmaker" />
+	<NPCCharacter id="spc_wanderer_vlandia_7" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_7_name}{FIRSTNAME} the Storyteller" />
+	<NPCCharacter id="spc_wanderer_vlandia_8" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_8_name}{FIRSTNAME} — Trader" />
+	<NPCCharacter id="spc_wanderer_vlandia_9" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_9_name}{FIRSTNAME} the Frontier Tracker" />
+	<NPCCharacter id="spc_wanderer_vlandia_10" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_10_name}{FIRSTNAME} the Sheriff" />
+	<NPCCharacter id="spc_wanderer_vlandia_11" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_11_name}{FIRSTNAME} — Flyer" />
+	<NPCCharacter id="spc_wanderer_vlandia_12" race="griffon" culture="Culture.vlandia" name="{=spc_wanderer_vlandia_12_name}{FIRSTNAME} the Treasure Hunter" />
+	<NPCCharacter id="spc_wanderer_aserai_0" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_0_name}{FIRSTNAME} the Mimic" />
+	<NPCCharacter id="spc_wanderer_aserai_1" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_1_name}{FIRSTNAME} the Feeling Catcher" />
+	<NPCCharacter id="spc_wanderer_aserai_2" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_2_name}{FIRSTNAME} the Swarm Scout" />
+	<NPCCharacter id="spc_wanderer_aserai_3" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_3_name}{FIRSTNAME} the Brood Keeper" />
+	<NPCCharacter id="spc_wanderer_aserai_4" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_4_name}{FIRSTNAME} the Infiltrator" />
+	<NPCCharacter id="spc_wanderer_aserai_5" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_5_name}{FIRSTNAME} the Interpreter" />
+	<NPCCharacter id="spc_wanderer_aserai_6" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_6_name}{FIRSTNAME} the Glamour Weaver" />
+	<NPCCharacter id="spc_wanderer_aserai_7" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_7_name}{FIRSTNAME} the Trail Warden" />
+	<NPCCharacter id="spc_wanderer_aserai_8" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_8_name}{FIRSTNAME} the Gatherer" />
+	<NPCCharacter id="spc_wanderer_aserai_9" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_9_name}{FIRSTNAME} the Hive Sentry" />
+	<NPCCharacter id="spc_wanderer_aserai_10" race="changeling" culture="Culture.aserai" name="{=spc_wanderer_aserai_10_name}{FIRSTNAME} — Trader" />
+	<NPCCharacter id="spc_wanderer_khuzait_0" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_0_name}{FIRSTNAME} the Icebreaker" />
+	<NPCCharacter id="spc_wanderer_khuzait_1" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_1_name}{FIRSTNAME} the Herd Driver" />
+	<NPCCharacter id="spc_wanderer_khuzait_2" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_2_name}{FIRSTNAME} the Cliff Guide" />
+	<NPCCharacter id="spc_wanderer_khuzait_3" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_3_name}{FIRSTNAME} the Horn Carver" />
+	<NPCCharacter id="spc_wanderer_khuzait_4" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_4_name}{FIRSTNAME} the Saga Keeper" />
+	<NPCCharacter id="spc_wanderer_khuzait_5" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_5_name}{FIRSTNAME} — Snow Hunter" />
+	<NPCCharacter id="spc_wanderer_khuzait_6" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_6_name}{FIRSTNAME} the Mountain Smith" />
+	<NPCCharacter id="spc_wanderer_khuzait_7" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_7_name}{FIRSTNAME} the Herbalist" />
+	<NPCCharacter id="spc_wanderer_khuzait_8" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_8_name}{FIRSTNAME} the Pass Watcher" />
+	<NPCCharacter id="spc_wanderer_khuzait_9" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_9_name}{FIRSTNAME} the Brewer" />
+	<NPCCharacter id="spc_wanderer_khuzait_10" race="yak" culture="Culture.khuzait" name="{=spc_wanderer_khuzait_10_name}{FIRSTNAME} — Storyteller" />
+
+	<!-- канонные спутники: имя фиксированное, шаблон скопирован у ванильного -->
+	<NPCCharacter id="spc_eq_lyra" name="{=spc_eq_lyra_name}Lyra Heartstrings" voice="curt" age="24" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_0_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_bon_bon" name="{=spc_eq_bon_bon_name}Bon Bon" voice="earnest" age="24" is_template="true" default_group="Infantry" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_1_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="-1" />
+			<Trait id="Calculating" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_octavia" name="{=spc_eq_octavia_name}Octavia Melody" voice="softspoken" age="26" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_2_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_vinyl" name="{=spc_eq_vinyl_name}Vinyl Scratch" voice="ironic" age="25" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_3_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="1" />
+			<Trait id="Mercy" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_derpy" name="{=spc_eq_derpy_name}Derpy Hooves" voice="ironic" age="27" default_group="Infantry" is_hero="false" is_template="true" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_4_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Honor" value="-1" />
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_doctor" name="{=spc_eq_doctor_name}Doctor Whooves" voice="curt" age="38" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_5_skills" is_female="false" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Mercy" value="-1" />
+			<Trait id="Honor" value="-1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_cheerilee" name="{=spc_eq_cheerilee_name}Cheerilee" voice="curt" age="32" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_6_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_zecora" name="{=spc_eq_zecora_name}Zecora" voice="ironic" age="40" is_template="true" default_group="Infantry" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_7_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Calculating" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_cheese" name="{=spc_eq_cheese_name}Cheese Sandwich" voice="curt" age="27" default_group="Infantry" is_template="true" is_female="false" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_8_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			
+			<Trait id="Honor" value="1" />
+			<Trait id="Mercy" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_daring_do" name="{=spc_eq_daring_do_name}Daring Do" voice="curt" age="33" default_group="Infantry" is_template="true" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_9_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Generosity" value="1" />
+			
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_coco" name="{=spc_eq_coco_name}Coco Pommel" voice="ironic" is_template="true" age="23" default_group="Infantry" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_10_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Honor" value="1" />
+			<Trait id="Calculating" value="1" />
+			<Trait id="Generosity" value="1" />
+			<Trait id="Mercy" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_sassy" name="{=spc_eq_sassy_name}Sassy Saddles" voice="earnest" age="35" default_group="Infantry" is_template="true" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_11_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		<Traits>
+			
+			
+			<Trait id="Honor" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_minuette" name="{=spc_eq_minuette_name}Minuette" voice="curt" age="24" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_0_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_lemon_hearts" name="{=spc_eq_lemon_hearts_name}Lemon Hearts" voice="earnest" age="24" is_template="true" default_group="Infantry" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_1_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="-1" />
+			<Trait id="Calculating" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_twinkleshine" name="{=spc_eq_twinkleshine_name}Twinkleshine" voice="softspoken" age="24" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_2_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_sunset" name="{=spc_eq_sunset_name}Sunset Shimmer" voice="ironic" age="25" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_3_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="1" />
+			<Trait id="Mercy" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_tempest" name="{=spc_eq_tempest_name}Tempest Shadow" voice="ironic" age="30" default_group="Infantry" is_hero="false" is_template="true" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_4_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Honor" value="-1" />
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_quibble" name="{=spc_eq_quibble_name}Quibble Pants" voice="curt" age="29" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_5_skills" is_female="false" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		<Traits>
+			<Trait id="Mercy" value="-1" />
+			<Trait id="Honor" value="-1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_wind_rider" name="{=spc_eq_wind_rider_name}Wind Rider" voice="curt" age="52" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_6_skills" is_female="false" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		
+		<Traits>
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_sky_stinger" name="{=spc_eq_sky_stinger_name}Sky Stinger" voice="ironic" age="22" is_template="true" default_group="Infantry" is_female="false" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_7_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Calculating" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_vapor_trail" name="{=spc_eq_vapor_trail_name}Vapor Trail" voice="curt" age="22" default_group="Infantry" is_template="true" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_8_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			
+			<Trait id="Honor" value="1" />
+			<Trait id="Mercy" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_carrot_top" name="{=spc_eq_carrot_top_name}Carrot Top" voice="curt" age="26" default_group="Infantry" is_template="true" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_9_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Generosity" value="1" />
+			
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_nurse_redheart" name="{=spc_eq_nurse_redheart_name}Nurse Redheart" voice="ironic" is_template="true" age="34" default_group="Infantry" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_10_skills" is_female="true" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townsman_empire" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Honor" value="1" />
+			<Trait id="Calculating" value="1" />
+			<Trait id="Generosity" value="1" />
+			<Trait id="Mercy" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_mayor_mare" name="{=spc_eq_mayor_mare_name}Mayor Mare" voice="earnest" age="50" default_group="Infantry" is_template="true" is_female="true" is_hero="false" culture="Culture.empire" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_empire_11_skills" race="pony">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_empire" />
+		</face>
+		<Traits>
+			
+			
+			<Trait id="Honor" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_empire" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_empire" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_gallus" name="{=spc_eq_gallus_name}Gallus" voice="earnest" age="19" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.vlandia" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_vlandia_0_skills" is_female="false" race="griffon">
+		<face>
+			<face_key_template value="BodyProperty.fighter_vlandia" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_vlandia" equipmentType="Civilian" />
+			<EquipmentSet id="spc_wanderer_vlandia_0" />
+			<EquipmentSet id="npc_companion_equipment_template_vlandia" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_gimme_moar" name="{=spc_eq_gimme_moar_name}Gimme Moar" voice="earnest" age="40" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.vlandia" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_vlandia_1_skills" is_female="false" race="griffon">
+		<face>
+			<face_key_template value="BodyProperty.fighter_vlandia" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Generosity" value="-1" />
+			<Trait id="Calculating" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_vlandia" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_vlandia" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_haven_bay" name="{=spc_eq_haven_bay_name}Haven Bay" voice="ironic" age="30" is_female="true" is_template="true" default_group="Infantry" is_hero="false" culture="Culture.battania" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_battania_0_skills" race="hippogriff">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_battania" />
+		</face>
+		<Traits>
+			
+			<Trait id="Calculating" value="1" />
+			<Trait id="Honor" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_battania" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_battania" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_salina_blue" name="{=spc_eq_salina_blue_name}Salina Blue" voice="earnest" age="28" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.battania" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_battania_1_skills" is_female="true" race="hippogriff">
+		<face>
+			<face_key_template value="BodyProperty.fighter_battania" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Honor" value="-1" />
+			<Trait id="Calculating" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_battania" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_battania" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_billy" name="{=spc_eq_billy_name}Billy" voice="softspoken" age="24" is_template="true" is_female="false" default_group="Infantry" is_hero="false" culture="Culture.sturgia" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_sturgia_0_skills" race="dragon">
+		<face>
+			<face_key_template value="BodyProperty.townswoman_sturgia" />
+		</face>
+		<Traits>
+			
+			<Trait id="Calculating" value="1" />
+			<Trait id="Mercy" value="1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_sturgia" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_sturgia" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_crackle" name="{=spc_eq_crackle_name}Crackle" voice="earnest" age="35" is_template="true" default_group="Infantry" is_hero="false" culture="Culture.sturgia" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_sturgia_1_skills" is_female="true" race="dragon">
+		<face>
+			<face_key_template value="BodyProperty.townsman_sturgia" />
+		</face>
+		<Traits>
+			
+			<Trait id="Valor" value="1" />
+			<Trait id="Calculating" value="-1" />
+			<Trait id="Mercy" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_sturgia" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_sturgia" />
+		</Equipments>
+	</NPCCharacter>
+	<NPCCharacter id="spc_eq_ocellus" name="{=spc_eq_ocellus_name}Ocellus" voice="ironic" age="19" default_group="Infantry" is_template="true" is_hero="false" culture="Culture.aserai" occupation="Wanderer" skill_template="SkillSet.spc_wanderer_aserai_0_skills" is_female="true" race="changeling">
+		<face>
+			<face_key_template value="BodyProperty.fighter_aserai" />
+		</face>
+		
+		<Traits>
+			
+			<Trait id="Mercy" value="1" />
+			<Trait id="Generosity" value="-1" />
+		</Traits>
+		<Equipments>
+			<EquipmentSet id="npc_companion_equipment_template_aserai" equipmentType="Civilian" />
+			<EquipmentSet id="npc_companion_equipment_template_aserai" />
+		</Equipments>
+	</NPCCharacter>
+</NPCCharacters>

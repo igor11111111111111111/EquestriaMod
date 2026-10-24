@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Спрайты интерфейса мода. Собран tools/make_loading_screen.py — правьте скрипт, не этот файл. -->
+<SpriteData>
+  <SpriteCategories>
+    <SpriteCategory>
+      <Name>ui_eq_loading</Name>
+      <SpriteSheetCount>2</SpriteSheetCount>
+      <SpriteSheetSize ID="1" Width="1920" Height="1080" />
+      <SpriteSheetSize ID="2" Width="1920" Height="1080" />
+    </SpriteCategory>
+  </SpriteCategories>
+  <SpriteParts>
+    <SpritePart>
+      <SheetID>1</SheetID>
+      <Name>eq_loading_01</Name>
+      <Width>1920</Width>
+      <Height>1080</Height>
+      <SheetX>0</SheetX>
+      <SheetY>0</SheetY>
+      <CategoryName>ui_eq_loading</CategoryName>
+    </SpritePart>
+    <SpritePart>
+      <SheetID>2</SheetID>
+      <Name>eq_loading_02</Name>
+      <Width>1920</Width>
+      <Height>1080</Height>
+      <SheetX>0</SheetX>
+      <SheetY>0</SheetY>
+      <CategoryName>ui_eq_loading</CategoryName>
+    </SpritePart>
+  </SpriteParts>
+  <!-- Без записи в <Sprites> движок не находит картинку по имени и показывает ванильную.
+       Комментарии ВНУТРИ <Sprites> ставить нельзя: разбор идёт по всем узлам подряд и спотыкается
+       о комментарий, теряя весь список спрайтов (проверено 2026-09-18). -->
+  <Sprites>
+    <GenericSprite>
+      <Name>eq_loading_01</Name>
+      <SpritePartName>eq_loading_01</SpritePartName>
+    </GenericSprite>
+    <GenericSprite>
+      <Name>eq_loading_02</Name>
+      <SpritePartName>eq_loading_02</SpritePartName>
+    </GenericSprite>
+  </Sprites>
+</SpriteData>

@@ -1,0 +1,87 @@
+<!-- Жёсткие крылья для машущих крыльев (10.10.2026): меши из tools/make_wing_meshes.py (аргумент: раса)
+     (assets/wings/eq_РАСА_wing_lr.fbx), начало координат каждого — корень крыла у позвоночника.
+     Расы: пони, дракон, грифон, гиппогриф, чейнджлинг (таблица Races в EquestriaWingsTest).
+     Взмах делает код (src/EquestriaWingsTest.cs): сущности каждый кадр ставятся на кость spine2
+     агента и поворачиваются вокруг корня по синусу. -->
+<prefabs>
+	<game_entity name="eq_pony_wing_l" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_pony_wing_l"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_pony_wing_r" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_pony_wing_r"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_dragon_wing_l" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_dragon_wing_l"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_dragon_wing_r" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_dragon_wing_r"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_griffon_wing_l" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_griffon_wing_l"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_griffon_wing_r" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_griffon_wing_r"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_hippogriff_wing_l" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_hippogriff_wing_l"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_hippogriff_wing_r" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_hippogriff_wing_r"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_changeling_wing_l" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_changeling_wing_l"/>
+		</components>
+	</game_entity>
+	<game_entity name="eq_changeling_wing_r" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<components>
+			<meta_mesh_component name="eq_changeling_wing_r"/>
+		</components>
+	</game_entity>
+</prefabs>

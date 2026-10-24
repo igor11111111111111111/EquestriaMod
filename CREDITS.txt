@@ -1,0 +1,6 @@
+Third-party assets (test only, not for public release)
+
+assets/twilight_anthro
+  "Twilight Sparkle (Anthro)" (https://sketchfab.com/3d-models/twilight-sparkle-anthro-425aa1f769d04555bf0ec1fbf4b17ad7)
+  by VV (https://sketchfab.com/VV2006), licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/).
+  Uploader credits an MMD MLP Anthro model by p1nke (DeviantArt) as the original source.

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+	<!-- Имя в лаунчере и уникальный Id (должен совпадать с именем папки в Modules).
+	     Id не трогаем: по нему сделана ссылка Modules\EquestriaMod и по нему сохранения находят мод.
+	     Версия: игре нужны ровно три числа (ApplicationVersion.FromString) — короче не разбирается
+	     и мод считается версии 0.0.0. -->
+	<Name value="Equestria: Fall of Harmony"/>
+	<Id value="EquestriaMod"/>
+	<Version value="v1.0.1"/>
+	<DefaultModule value="false"/>
+	<ModuleCategory value="Singleplayer"/>
+	<ModuleType value="Community"/>
+
+	<!-- Мод грузится после этих официальных модулей -->
+	<DependedModules>
+		<DependedModule Id="Native" DependentVersion="v1.4.8" Optional="false"/>
+		<DependedModule Id="SandBoxCore" DependentVersion="v1.4.8" Optional="false"/>
+		<DependedModule Id="Sandbox" DependentVersion="v1.4.8" Optional="false"/>
+	</DependedModules>
+
+	<!-- C#-код мода: bin\Win64_Shipping_Client\EquestriaMod.dll -->
+	<SubModules>
+		<SubModule>
+			<Name value="EquestriaMod"/>
+			<DLLName value="EquestriaMod.dll"/>
+			<SubModuleClassType value="EquestriaMod.SubModule"/>
+			<Tags>
+				<Tag key="DedicatedServerType" value="none"/>
+				<Tag key="IsNoRenderModeElement" value="false"/>
+			</Tags>
+		</SubModule>
+	</SubModules>
+
+	<!-- XML-данные из ModuleData. Раса pony (skins, action sets) регистрируется для движка
+	     в ModuleData\project.mbproj; монстры — и там, и здесь (как в The Old Realms). -->
+	<Xmls>
+		<XmlNode>
+			<XmlName id="Monsters" path="pony_monsters"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+				<GameType value="CustomGame"/>
+				<GameType value="EditorGame"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="Items" path="equestria_items"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+				<GameType value="CustomGame"/>
+				<GameType value="EditorGame"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<!-- Шаблоны снаряжения по культуре и роли (правитель/лорд, мужчина/женщина).
+		     Без них игра падает при смене правящего клана: подходящего набора нет, а проверки тоже. -->
+		<XmlNode>
+			<XmlName id="EquipmentRosters" path="equestria_equipment_sets"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+				<GameType value="CustomGame"/>
+				<GameType value="EditorGame"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="SPCultures" path="equestria_cultures"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="GameText" path="equestria_strings"/>
+		</XmlNode>
+		<!-- Свои значки для знамён: добавляются к ванильным группам (см. сам файл и docs/banners.md).
+		     БЕЗ IncludedGameTypes, и это важно: знамёна читаются один раз при запуске модуля, когда
+		     игры ещё нет (BannerManager.ResetAndLoad). Тип игры в этот момент пустая строка, а узел
+		     со списком типов в такой проверке отсеивается — с ним наша группа в игру не попадала
+		     вовсе (проверено 25.09.2026). У ванильного узла banner_icons списка типов тоже нет. -->
+		<XmlNode>
+			<XmlName id="BannerIcons" path="equestria_banner_icons"/>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="NPCCharacters" path="equestria_characters"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+				<GameType value="CustomGame"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<!-- Войска Эквестрии: ванильное имперское дерево под пони (tools/make_troops.py) -->
+		<XmlNode>
+			<XmlName id="NPCCharacters" path="equestria_troops"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+				<GameType value="CustomGame"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<!-- Отряды мародёров: по стопке на народ, чтобы в ватаге были все расы (tools/make_troops.py) -->
+		<XmlNode>
+			<XmlName id="partyTemplates" path="equestria_party_templates"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<!-- Королевство, клан и лорды. Порядок как в ванильном SandBox: сначала персонажи,
+		     затем герои (родство и принадлежность к клану), потом королевства и кланы. -->
+		<!-- Спутники в тавернах: перекрывают ванильные шаблоны по id (раса пони, свои прозвища) -->
+		<XmlNode>
+			<XmlName id="NPCCharacters" path="equestria_companions"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="NPCCharacters" path="equestria_lords"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="Heroes" path="equestria_heroes"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<!-- Поселения: переопределяют ванильные записи по идентификатору. Наши шесть получают
+		     эквестрийские имена и владельца, остальные уводятся в угол нашей карты. -->
+		<XmlNode>
+			<XmlName id="Settlements" path="equestria_settlements"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="Kingdoms" path="equestria_kingdoms"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="Factions" path="equestria_clans"/>
+			<IncludedGameTypes>
+				<GameType value="Campaign"/>
+				<GameType value="CampaignStoryMode"/>
+			</IncludedGameTypes>
+		</XmlNode>
+	</Xmls>
+</Module>

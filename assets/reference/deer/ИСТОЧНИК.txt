@@ -1,0 +1,4 @@
+Лист референсов оленей (Оления). Собран из мода Equestria at War для Hearts of Iron IV
+(мастерская Steam, id 1826643372): gfx/leaders/OLE, gfx/interface/ideas/Advisors/OLE,
+gfx/event_pictures. Права принадлежат авторам Equestria at War.
+Использовался как образец формы, пока олень лепился из пони; в мод эти картинки не попадают.

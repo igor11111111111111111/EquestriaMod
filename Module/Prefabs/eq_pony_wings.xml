@@ -1,0 +1,18 @@
+<!-- Машущие крылья пони (10.10.2026): проп на ванильном bird_skeleton с мешем крыльев пони
+     (assets/wings/eq_pony_wings_rig.fbx, tools/make_wings_rig.py). Структура — как у ванильной
+     птицы (Native/Prefabs/building_details.xml, game_entity "hawk"). Клип взмаха играет код:
+     EquestriaWings — Skeleton.SetAnimationAtChannel("anim_bird_cycle", 0), сущность каждый кадр
+     ставится на кость spine2 агента с масштабом EquestriaWings.Scale. -->
+<prefabs>
+	<game_entity name="eq_pony_wings_rig" old_prefab_name="" mobility="1" season_mask="255">
+		<flags>
+			<flag name="record_to_scene_replay" value="true"/>
+		</flags>
+		<physics mass="1.000"/>
+		<skeleton skeleton_model="bird_skeleton">
+			<components>
+				<meta_mesh_component name="eq_pony_wings_rig"/>
+			</components>
+		</skeleton>
+	</game_entity>
+</prefabs>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <!-- Собран скриптом из tools/. Русский текст берётся из таблиц мода,
+     английский (базовый, лежит в самих XML) — из tools/lang_words.py. -->
+  <tags>
+    <tag language="Русский" />
+  </tags>
+  <strings>
+    <string id="eq_merc_camp_name" text="Лагерь наёмников" />
+    <string id="eq_merc_camp_hire_option" text="Нанять наёмников" />
+    <string id="eq_merc_camp_line_empty" text="Пусто у нас. Все клинки разобрали, подходи через день-другой." />
+    <string id="eq_merc_camp_line_greet" text="Лагерь вольных рот. Клинки продаём поштучно — были бы деньги." />
+    <string id="eq_merc_camp_line_show" text="Показать, кто у вас есть." />
+    <string id="eq_merc_camp_line_ask_discount" text="А скидка будет?" />
+    <string id="eq_merc_camp_line_discount" text="Кому как. За каждые три единицы доверия — процент скидки с цены найма. Доверие у тебя {EQ_MERC_RELATION} из {EQ_MERC_RELATION_MAX} — это {EQ_MERC_DISCOUNT}% скидки. Растёт оно от денег: единица за каждые четыреста монет, оставленные в лагере. И считаем мы только своё: в других лагерях доверие своё." />
+    <string id="eq_merc_camp_line_ask_stock" text="Когда придут наёмники?" />
+    <string id="eq_merc_camp_line_stock" text="Каждый день подходит примерно {EQ_MERC_COME} человек, а кто заждался — уходит искать нанимателя сам. Больше {EQ_MERC_LIMIT} у нас не помещается; сейчас стоит {EQ_MERC_STOCK}. Чем выше доверие, тем и мест больше, и народу приходит гуще: по одному лишнему месту за единицу доверия и по человеку за каждые десять." />
+    <string id="eq_merc_camp_line_leave" text="В другой раз." />
+    <string id="eq_merc_camp_empty_tooltip" text="Сейчас в лагере никого нет — заходите через день-другой." />
+    <string id="eq_merc_camp_title" text="Лагерь наёмников у {TOWN}" />
+    <string id="eq_prisoner_butcher_hint" text="Пустить на фарш" />
+    <string id="eq_hair_plain" text="Сплошная" />
+    <string id="eq_hair_stripe" text="Полосатая" />
+    <string id="eq_wings_label" text="Крылья: {STATE}" />
+    <string id="eq_tail_label" text="Хвост: {STATE}" />
+    <string id="eq_horn_label" text="Рог: {STATE}" />
+    <string id="eq_state_on" text="вкл" />
+    <string id="eq_state_off" text="выкл" />
+    <string id="eq_race_party_menu" text="Эквестрия: смотр рас" />
+    <string id="eq_race_restored_note" text="Эквестрия: раса восстановлена у {COUNT} героев" />
+    <string id="eq_start_poor" text="Обычный нищий старт" />
+    <string id="eq_start_mercenary" text="Наёмник державы (тир клана 1)" />
+    <string id="eq_start_vassal" text="Вассал державы (тир клана 3, одно владение)" />
+    <string id="eq_start_king" text="Правитель державы (тир клана 4, одно владение)" />
+    <string id="eq_start_title" text="Выберите начало игры" />
+    <string id="eq_start_desc" text="С чего вы начинаете своё приключение в Эквестрии?" />
+    <string id="eq_start_confirm" text="Подтвердить" />
+    <string id="eq_start_poor_note" text="Эквестрия: обычный нищий старт" />
+    <string id="eq_start_kingdom_title" text="Выберите державу" />
+    <string id="eq_start_kingdom_desc" text="Какой державе вы будете служить?" />
+    <string id="eq_start_done" text="Эквестрия: старт применён ({TYPE}, {KINGDOM})" />
+    <string id="eq_start_type_mercenary" text="наёмник" />
+    <string id="eq_start_type_vassal" text="вассал" />
+    <string id="eq_start_type_king" text="правитель" />
+    <string id="eq_flight_speed" text="Скорость полёта" />
+    <string id="eq_race_tooltip" text="Раса" />
+    <string id="eq_butcher_meat" text="+{MEAT} мяса (всего в отряде: {TOTAL})" />
+    <string id="eq_banner_group" text="Эквестрия" />
+  </strings>
+</base>

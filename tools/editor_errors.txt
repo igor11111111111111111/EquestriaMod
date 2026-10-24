@@ -1,0 +1,15 @@
+﻿Запуск редактора 08.10.2026 10:49:04
+
+=== окно 1 : RGL WARNING
+    Button: ОК
+    Static: Unable to get Optimal Settings! Disabling DLSS. code = 0xbad0000c
+
+=== окно 2 : *_*
+    Button: &Да
+    Button: &Нет
+    Static: The application faced a problem. We need to collect necessary files to fix this problem. Would you like to proceed?
+
+=== окно 3 : Always Ignore?
+    Button: ОК
+    Button: Отмена
+    Static: Would you like to always ignore this failure?

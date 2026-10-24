@@ -1,0 +1,19 @@
+# Промежуточные файлы сборки (готовая DLL лежит в Module\bin)
+src/bin/
+src/obj/
+
+# Кэш редактора Modding Kit — пересоздаётся сам
+Module/RuntimeDataCache/
+
+# Сторонние инструменты (скачиваются отдельно)
+tools/external/
+tools/__pycache__/
+tools/tpac_export/out/
+tools/tpac_export/obj/
+tools/tpac_export/bin/
+
+# Автобэкапы Blender
+*.blend1
+
+# Превью-рендеры скриптов (пересоздаются convert_twilight.py)
+assets/**/preview/
